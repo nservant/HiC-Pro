@@ -1,0 +1,41 @@
+## Nicolas Servant
+## Hi-C pipeline
+## v 1.0
+## 16-12-13
+
+
+## *** What is it ? ***
+
+This pipeline was designed to process a Hi-C sample, from the raw fastq failes (paired-end Illumina data) to the normalized interaction maps.
+It is linked to the HiTC BioConductor package.
+
+## *** Dependancies ? ***
+
+The Hi-C pipeline requires :
+- The bowtie2 mapper
+- Perl
+- R with the HiTC BioConductor package
+
+## *** How to use it ? ***
+
+1- Edit the configuration file
+2- Run the Makefile
+
+make --file Makefile CONFIG_FILE=config.txt all
+
+
+## *** Folders description ***
+
+- rawdata
+All rawdata should be available on this folder. Multiple files for one sample are allowed
+- scripts
+This is the core of the pipeline. All the scripts are in this folder
+- Annotation
+Annotation files such as mappability tracks, chromosome size, restriction sites, etc.
+- bowtie_results
+To store the mapping results
+- doc
+To store the file results such as the mapping statistics, etc.
+- hic_results
+To store the Hi-C processed data
+- logs

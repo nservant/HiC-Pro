@@ -1,0 +1,83 @@
+# Please change the variable settings below if necessary
+
+#########################################################################
+## Paths and Settings 
+#########################################################################
+
+BOWTIE2_PATH = /bioinfo/local/build/bowtie2-2.1.0/
+SAMTOOLS_PATH= /bioinfo/local/build/samtools_0.1.19/
+BOWTIE2_IDX_PATH = /data/annotations/Mouse/mm9/bowtie2_indexes
+R_PATH=/bioinfo/local/build/R/R-devel/bin
+BASH = /bin/bash
+LOGFILE = hic_pipeline_mF1216.log
+
+
+## In most of the case, do not change
+SCRIPTS = scripts
+ANNOT_DIR = annotation
+LOGS_DIR = logs
+BOWTIE2_OUTPUT_DIR = bowtie_results
+MAPC_OUTPUT = hic_results
+
+#PBS_MODE = 0
+#PBS_OPT = -m ae -j oe -q batch -l nodes=1:ppn=8,mem=5gb
+
+#########################################################################
+## Data
+#########################################################################
+
+RAW_DIR = /data/analyses/sequencing_ESC_NPC_HIC_405/TADs_atlas_proj/hic_pipeline/rawdata/EHSNP-mF1216-Rep2
+
+#######################################################################
+## Alignment options
+#######################################################################
+
+N_CPU = 6
+FORMAT = phred33
+
+## LOCAL
+## No mismatch in the seed (25nt). Only one mismatch is allowed in the full alignment.
+## --very-fast Same as: -D 5 -R 1 -N 0 -L 22 -i S,0,2.50
+## --fast Same as: -D 10 -R 2 -N 0 -L 22 -i S,0,2.50
+## --sensitive Same as: -D 15 -R 2 -L 22 -i S,1,1.15 (default in --end-to-end mode)
+## --very-sensitive Same as: -D 20 -R 3 -N 0 -L 20 -i S,1,0.50
+##
+## GLOBAL
+## No mismatch in the seed (30nt). Only perfect alignments are reported.
+## --very-fast-local Same as: -D 5 -R 1 -N 0 -L 25 -i S,1,2.00
+## --fast-local Same as: -D 10 -R 2 -N 0 -L 22 -i S,1,1.75
+## --sensitive-local Same as: -D 15 -R 2 -N 0 -L 20 -i S,1,0.75 (default in --local mode)
+## --very-sensitive-local Same as: -D 20 -R 3 -N 0 -L 20 -i S,1,0.50
+
+##BOWTIE2_GLOBAL_OPTIONS = -N 0 -L 25 -D 1 -R 1 -i S,0,2.50 --end-to-end --mp 5,5 --np 5 --rdg 5,5 --rfg 5,5 --score-min L,-5,0 --reorder
+##BOWTIE2_LOCAL_OPTIONS = -N 0 -L 30 -D 1 -R 1 -i S,1,0.75 --local --mp 100,100 --np 100 --rdg 100,100 --rfg 100,100 --score-min G,20,10 --reorder
+
+
+BOWTIE2_GLOBAL_OPTIONS = -N 0 -L 25 --fast --end-to-end --reorder
+BOWTIE2_LOCAL_OPTIONS = -N 0 -L 30 --sensitive-local --local --mp 100,100 --np 100 --rdg 100,100 --rfg 100,100 --score-min G,20,10 --reorder
+
+#######################################################################
+## Annotation files
+#######################################################################
+
+ORGANISM = mm9
+GENOME_FRAGMENT = annotation/HiCMM9Hin3.head
+
+
+#######################################################################
+## list of chromosomes of the genome
+#######################################################################
+
+GENOME_CHRMS = 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 X
+
+#######################################################################
+## Generate interaction count matrices
+#######################################################################
+
+BIN_SIZE = 20000 ##5500000, 300000, 1400000, 140000, 40000, 
+BIN_STEP = 1
+BIN_OPTS = ##--binAdjust
+MAPS = cis
+
+
+
