@@ -39,3 +39,40 @@ To store the file results such as the mapping statistics, etc.
 - hic_results
 To store the Hi-C processed data
 - logs
+
+#
+# Eric Viara optimizations
+# 2014-06-19
+#
+
+I.
+
+If you want to use HiC pipeline without torque, simply type:
+make CONFIG_FILE=config.txt all
+as previously
+
+BUT: note that some operations will not be performed by all target and have to be done separately:
+make CONFIG_FILE=config.txt plot_MappingProportion plot_FragmentInfo
+make CONFIG_FILE=config.txt norm
+make CONFIG_FILE=config.txt mapping_clean
+
+II.
+A.
+If you want to use torque (the prefered way), type:
+make CONFIG_FILE=config.txt init
+
+sh scripts/make_torque_script.sh -c config.txt ev_test
+you will get the following message:
+The following command will launch 3 torque jobs:
+qsub HiC_torque_ev_test.sh
+
+B.
+execute the displayed command:
+qsub HiC_torque_ev_test.sh
+774410[].torque.curie.fr
+
+C.
+then wait for the torque mails... :)
+
+Once executed succesfully (may take several hours), then type:
+make CONFIG_FILE=config.txt build_matrix

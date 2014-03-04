@@ -39,13 +39,13 @@ my ($bwt2_output,$output)=($opts{a},$opts{o});
 #load and store bwt2 output
 my $bam=($bwt2_output =~ /.bam$/)? 1:0;
 if($bam){
-    open(BWT2, "samtools view $bwt2_output |") or die "$0: can't open ".$bwt2_output.":$!\n";
+    open(BWT2, "/bioinfo/local/build/samtools_0.1.19/samtools view $bwt2_output |") or die "$0: can't open ".$bwt2_output.":$!\n";
 }else{
     open BWT2, "<".$bwt2_output or die "$0: can't open ".$bwt2_output.":$!\n";
 }
 
 #open(BWT2,"$bwt2_output") || die;
-open(OUT,">$output");
+open(OUT,">$output")|| die;
 
 while(<BWT2>){
     next if (/^\@/);

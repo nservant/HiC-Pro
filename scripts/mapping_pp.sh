@@ -4,24 +4,28 @@
 
 ## Mapping post_process
 
+dir=$(dirname $0)
+
+. $dir/hic.inc.sh
+
 ## Usage
 function usage {
     echo -e "Usage : ./mapping_pp.sh"
-    echo -e "-i"" <input directory>"
     echo -e "-u"" Generate unmapped fastq file"
+    echo -e "-l"" local"
     echo -e "-h"" <help>"
     exit
 }
 
-
-################### Initialize ###################
 unmap=0
-set -- $(getopt i:u "$@")
+local=0
+
 while [ $# -gt 0 ]
 do
     case "$1" in
-	(-i) input_dir=$2; shift;;
+	(-c) ncrna_conf=$2; shift;;
 	(-u) unmap=1; shift;;
+	(-l) local=1; shift;;
 	(-h) usage;;
 	(--) shift; break;;
 	(-*) echo "$0: error - unrecognized option $1" 1>&2; exit 1;;
@@ -30,20 +34,39 @@ do
     shift
 done
 
-if [ ! -d $input_dir ]
-then
-    echo "$input_dir" is not a directory
-    usage
-    exit
-fi
+read_config $ncrna_conf
 
-## Alignment Post-process
-SCRIPTS=`dirname $0`
+mapping_pp()
+{
+    local file="$1"
+    local output_aln="$2"
+    local cmd="perl ${SCRIPTS}/BWT2output2Novoformat.pl -a ${file} -o ${output_aln}"
 
-for r in ${input_dir}/*.bam
-do
-    output_aln=`echo ${r} | sed -e 's/bam/aln/'`
+    exec_cmd "$cmd"
     
+    ## Get unmapped reads
+    if [[ $unmap == 1 ]]; then
+	local output_unmapped=`echo ${file} | sed -e 's/bam/unmap.fastq/'`
+	
+	cmd="perl ${SCRIPTS}/extractUndefineSeq.pl -a $output_aln -o ${output_unmapped}"
+	exec_cmd "$cmd"
+    fi
+}
+
+echo "mapping_fastq_pp local $local"
+for r in $(get_bam_for_pp $local)
+do
+    R1=$r
+    R2=$(echo $r | get_R2)
+    output_aln1=$(echo $R1 | sed -e 's/bam/aln/')
+    output_aln2=$(echo $R2 | sed -e 's/bam/aln/')
+    
+    mapping_pp $R1 $output_aln1 &
+    mapping_pp $R2 $output_aln2 &
+
+    wait
+
+    if [ 0 = 1 ]; then
     ## Post-processing
     cmd="perl ${SCRIPTS}/BWT2output2Novoformat.pl -a ${r} -o ${output_aln}"
     echo $cmd
@@ -57,6 +80,5 @@ do
 	echo $cmd
 	eval $cmd
     fi
+    fi
 done
-
-

@@ -35,7 +35,8 @@ if (org == "mm9"){
 }
 
 map <- import(mapFile, format="BIGWIG", asRangedData=FALSE)
-datannot <- setGenomicFeatures(data, genomePack=genomePack, mappability=map)
+cutSites <- getAnnotatedRestrictionSites(resSite="AAGCTT", overhangs5=1, chromosome=seqlevels(data), genomePack=genomePack, wingc=200, mappability=map, winmap=500)
+datannot <- setGenomicFeatures(data, cutSites)
 objannot <- paste(obj, "annot", sep="_")
 assign(objannot, datannot)
 save(list=objannot, file=file.path(rdataDir, paste(objannot, ".RData", sep="")))

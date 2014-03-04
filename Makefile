@@ -54,17 +54,28 @@ GLOBAL_PROCESS=$(GLOBAL_SAM:.sam=.aln)
 PROCESS_PREFIX=$(patsubst %, $(BOWTIE2_GLOBAL_OUTPUT_DIR)/%_$(ORGANISM).bwt2glob.sam, $(basename $(notdir $(READSFILE_FQ))))
 
 
-all : configure mapping hic norm
+all : init mapping_prep_hic build_matrix
+
+init : $(SCRIPTS)/build_matrix configure
+
+mapping_prep_hic: mapping_noplot prep_hic
+
+build_matrix: AssignRead2bin_all matrix2RData
+
+mapping_noplot: mapping_glob mapping_loc merge_global_local
+
+prep_hic: separateAlignment_all Mapped2HiCFragments_all
 
 mapping: mapping_glob mapping_loc merge_global_local plot_MappingProportion mapping_clean
-
-hic: separateAlignment_all Mapped2HiCFragments_all plot_FragmentInfo AssignRead2bin_all  matrix2RData
 
 mapping_glob: bowtie_global bowtie_global_pp bowtie_global_stat
 
 mapping_loc:  bowtie_local bowtie_local_pp bowtie_local_stat
 
 norm: ICEnorm LGFnorm
+
+test_config:
+	$(SCRIPTS)/test_config.sh $(CONFIG_FILE)
 
 debug:
 	@echo $(RAW_DIR)
@@ -77,16 +88,11 @@ debug:
 
 configure:
 	mkdir -p $(BOWTIE2_OUTPUT_DIR)
-	mkdir -p $(BOWTIE2_GLOBAL_OUTPUT_DIR)
-	mkdir -p $(BOWTIE2_LOCAL_OUTPUT_DIR)
-	mkdir -p $(BOWTIE2_FINAL_OUTPUT_DIR)
 	mkdir -p $(MAPC_OUTPUT)
-	mkdir -p $(DATA_DIR)
 	mkdir -p $(DOC_DIR)
 	mkdir -p $(PIC_DIR)
 	mkdir -p $(MATRIX_DIR)
 	mkdir -p $(ICED_MATRIX_DIR)
-	mkdir -p $(RDATA_DIR)
 	mkdir -p $(LOGS_DIR)
 	@echo "## Hi-C Mapping v1.0" > $(LOGFILE)
 	@date >> $(LOGFILE)
@@ -97,6 +103,9 @@ configure:
 ## Bowtie2 Global Alignment
 ##
 ######################################
+
+make_torque_script:
+	@$(SCRIPTS)/make_torque_script.sh -c $(CONFIG_FILE) $(TORQUE_SUFFIX)
 
 ## Global Alignement
 bowtie_global:
@@ -110,15 +119,14 @@ bowtie_global_pp:
 	@echo "--------------------------------------------" >> $(LOGFILE)
 	@date >> $(LOGFILE)	
 	@echo "Bowtie2 global alignment post-process ..." >> $(LOGFILE)
-	$(SCRIPTS)/mapping_pp.sh -i $(BOWTIE2_GLOBAL_OUTPUT_DIR) -u
-
+	$(SCRIPTS)/mapping_pp.sh -c $(CONFIG_FILE) -u
 
 ## bowtie2 global mapping stats
 bowtie_global_stat:
 	@echo "--------------------------------------------" >> $(LOGFILE)
 	@date >> $(LOGFILE)
 	@echo "Bowtie2 global mapping statistics for R1 and R2 tags ..." >> $(LOGFILE)
-	$(SCRIPTS)/mappingstat.sh -i $(BOWTIE2_GLOBAL_OUTPUT_DIR) -o ${BOWTIE2_GLOBAL_OUTPUT_DIR}/${RES_FILE_NAME}
+	$(SCRIPTS)/mapping_stat.sh -c $(CONFIG_FILE)
 
 ######################################
 ##  Bowtie2 Local Alignment
@@ -137,14 +145,14 @@ bowtie_local_pp:
 	@echo "--------------------------------------------" >> $(LOGFILE)
 	@date >> $(LOGFILE)	
 	@echo "Bowtie2 local alignment post-process ..." >> $(LOGFILE)
-	$(SCRIPTS)/mapping_pp.sh -i $(BOWTIE2_LOCAL_OUTPUT_DIR)
+	$(SCRIPTS)/mapping_pp.sh -c $(CONFIG_FILE) -l
 
 ## bowtie2 global mapping stats
 bowtie_local_stat:
 	@echo "--------------------------------------------" >> $(LOGFILE)
 	@date >> $(LOGFILE)
 	@echo "Bowtie2 local mapping statistics for R1 and R2 tags ..." >> $(LOGFILE)
-	$(SCRIPTS)/mappingstat.sh -i $(BOWTIE2_LOCAL_OUTPUT_DIR) -o ${BOWTIE2_LOCAL_OUTPUT_DIR}/${RES_FILE_NAME}
+	$(SCRIPTS)/mapping_stat.sh -c $(CONFIG_FILE) -l
 
 ######################################
 ## Merge Bowtie2 local and global mapping
@@ -155,13 +163,13 @@ merge_global_local:
 	@echo "--------------------------------------------" >> $(LOGFILE)
 	@date >> $(LOGFILE)
 	@echo "Merge both alignment ..." >> $(LOGFILE)
-	$(SCRIPTS)/bowtie_combine.sh -c $(CONFIG_FILE) -g $(BOWTIE2_GLOBAL_OUTPUT_DIR) -l $(BOWTIE2_LOCAL_OUTPUT_DIR) -o $(BOWTIE2_FINAL_OUTPUT_DIR)
+	$(SCRIPTS)/bowtie_combine.sh -c $(CONFIG_FILE)
 
 plot_MappingProportion:
 	@echo "--------------------------------------------" >> $(LOGFILE)
 	@date >> $(LOGFILE)
 	@echo "Plot Mapping Proportion ..." >> $(LOGFILE)
-	$(R_PATH)/R --no-save CMD BATCH "--args picDir='$(PIC_DIR)' docDir='$(DOC_DIR)' bwtDir='$(BOWTIE2_OUTPUT_DIR)' sampleName='$(RES_FILE_NAME)'" $(SCRIPTS)/plotMappingPortion.R $(LOGS_DIR)/plotMappingPortion.Rout
+	$(SCRIPTS)/plotMappingPortion.sh -c $(CURDIR)/$(CONFIG_FILE)
 
 mapping_clean:
 	/bin/rm -f $(BOWTIE2_GLOBAL_OUTPUT_DIR)/*.sam
@@ -180,35 +188,33 @@ separateAlignment_all:
 	@echo "--------------------------------------------" >> $(LOGFILE)
 	@date >> $(LOGFILE)
 	@echo "Filter out reads alignement ..." >> $(LOGFILE)
-	perl $(SCRIPTS)/separatePEalignment.pl -a $(BOWTIE2_FINAL_OUTPUT_DIR)/$(RES_FILE_NAME)_R1.final.aln -b $(BOWTIE2_FINAL_OUTPUT_DIR)/$(RES_FILE_NAME)_R2.final.aln -g $(ORGANISM) -o $(BOWTIE2_FINAL_OUTPUT_DIR)/$(RES_FILE_NAME)
+	 $(SCRIPTS)/separatePEalignment.sh -c $(CONFIG_FILE)
 
 ## Assign alignments to regions segmented by HindIII sites
 Mapped2HiCFragments_all:
 	@echo "--------------------------------------------" >> $(LOGFILE)
 	@date >> $(LOGFILE)
 	@echo "Assign alignments to HindIII sites ..." >> $(LOGFILE)
-	perl $(SCRIPTS)/overlapMapped2HiCFragments.pl -f1 $(GENOME_FRAGMENT) -f2 $(GENOME_FRAGMENT)  -m1 $(BOWTIE2_FINAL_OUTPUT_DIR)/$(RES_FILE_NAME).$(ORGANISM).1.out -m2 $(BOWTIE2_FINAL_OUTPUT_DIR)/$(RES_FILE_NAME).$(ORGANISM).2.out > $(LOGS_DIR)/overlapRS.log
-	mv -f $(RES_FILE_NAME).$(ORGANISM)* $(DATA_DIR)
-	gunzip -f $(DATA_DIR)/$(RES_FILE_NAME).$(ORGANISM)*.gz
+	$(SCRIPTS)/overlapMapped2HiCFragments.sh -c $(CONFIG_FILE) # > $(LOGS_DIR)/overlapRS.log
 
 ## assign segmented regions to defined bins
 AssignRead2bin_all:
 	@echo "--------------------------------------------" >> $(LOGFILE)
 	@date >> $(LOGFILE)
 	@echo "Generate binned matrix files ..." >> $(LOGFILE)
-	$(foreach BSIZE,$(subst $(comma),$(space),$(BIN_SIZE)), $(SCRIPTS)/assignRead2bins.sh -c $(CURDIR)/$(CONFIG_FILE) -i $(DATA_DIR)/$(RES_FILE_NAME).$(ORGANISM).interaction -g $(ANNOT_DIR)/chrom.sizes -b $(BSIZE);)
+	$(SCRIPTS)/assignRead2bins.sh -c $(CURDIR)/$(CONFIG_FILE) -i $(DATA_DIR)/$(RES_FILE_NAME).$(ORGANISM).interaction -g $(ANNOT_DIR)/chrom.sizes
 
 plot_FragmentInfo:
 	@echo "--------------------------------------------" >> $(LOGFILE)
 	@date >> $(LOGFILE)
 	@echo "Plot Fragment Informations ..." >> $(LOGFILE)
-	$(R_PATH)/R --no-save CMD BATCH "--args picDir='$(PIC_DIR)' dataDir='$(DATA_DIR)' sampleName='$(RES_FILE_NAME)'" $(SCRIPTS)/plotHiCFragment.R $(LOGS_DIR)/plotHiCFragment.Rout
+	$(SCRIPTS)/plotHiCFragment.sh -c $(CURDIR)/$(CONFIG_FILE)
 
 matrix2RData:
 	@echo "--------------------------------------------" >> $(LOGFILE)
 	@date >> $(LOGFILE)
 	@echo "Generate RData files ..." >> $(LOGFILE)
-	$(foreach BSIZE,$(subst $(comma),$(space),$(BIN_SIZE)), mkdir -p $(MATRIX_DIR)/$(BSIZE);$(R_PATH)/R --no-save CMD BATCH "--args matDir='$(MATRIX_DIR)/$(BSIZE)' obj='$(RES_FILE_NAME_OBJ)_$(BSIZE)' cpu='$(N_CPU)' rdataDir='$(RDATA_DIR)' org='$(ORGANISM)'" $(SCRIPTS)/matrix2RData.R $(LOGS_DIR)/matrix2RData.Rout;)
+	$(SCRIPTS)/matrix2RData.sh -c $(CURDIR)/$(CONFIG_FILE)
 
 ######################################
 ## Normalization
@@ -232,6 +238,10 @@ LGFnorm:
 	@echo "Generate Matrix files from RData ..." >> $(LOGFILE)
 	$(foreach BSIZE,$(subst $(comma),$(space),$(BIN_SIZE)),mkdir -p $(LGF_MATRIX_DIR)/$(BSIZE); $(R_PATH)/R --no-save CMD BATCH "--args matDir='$(LGF_MATRIX_DIR)/$(BSIZE)' cpu='$(N_CPU)' rdata='$(RDATA_DIR)/$(RES_FILE_NAME_OBJ)_$(BSIZE)_annot_lgf.RData' org='$(ORGANISM)'" $(SCRIPTS)/rData2matrix.R $(LOGS_DIR)/rData2matrix.Rout;)
 
+$(SCRIPTS)/build_matrix: $(SCRIPTS)/build_matrix.cpp
+	(cd $(SCRIPTS); g++ -Wall -O2 -std=c++0x -o build_matrix build_matrix.cpp)
+
+
 ######################################
 ## Clean
 ##
@@ -243,3 +253,30 @@ clean:
 
 reset:
 	/bin/rm -rf bowtie_results hic_results $(LOGS_DIR)/*
+
+# EV: to be removed
+
+plot_MappingProportion_old:
+	@echo "--------------------------------------------" >> $(LOGFILE)
+	@date >> $(LOGFILE)
+	@echo "Plot Mapping Proportion ..." >> $(LOGFILE)
+	$(R_PATH)/R --no-save CMD BATCH "--args picDir='$(PIC_DIR)' docDir='$(DOC_DIR)' bwtDir='$(BOWTIE2_OUTPUT_DIR)' sampleName='$(RES_FILE_NAME)'" $(SCRIPTS)/plotMappingPortion.R $(LOGS_DIR)/plotMappingPortion.Rout
+
+AssignRead2bin_all_old:
+	@echo "--------------------------------------------" >> $(LOGFILE)
+	@date >> $(LOGFILE)
+	@echo "Generate binned matrix files ..." >> $(LOGFILE)
+	$(foreach BSIZE,$(subst $(comma),$(space),$(BIN_SIZE)), $(SCRIPTS)/assignRead2bins.sh -c $(CURDIR)/$(CONFIG_FILE) -i $(DATA_DIR)/$(RES_FILE_NAME).$(ORGANISM).interaction -g $(ANNOT_DIR)/chrom.sizes -b $(BSIZE);)
+
+matrix2RData_old:
+	@echo "--------------------------------------------" >> $(LOGFILE)
+	@date >> $(LOGFILE)
+	@echo "Generate RData files ..." >> $(LOGFILE)
+	$(foreach BSIZE,$(subst $(comma),$(space),$(BIN_SIZE)), mkdir -p $(MATRIX_DIR)/$(BSIZE);$(R_PATH)/R --no-save CMD BATCH "--args matDir='$(MATRIX_DIR)/$(BSIZE)' obj='$(RES_FILE_NAME_OBJ)_$(BSIZE)' cpu='$(N_CPU)' rdataDir='$(RDATA_DIR)' org='$(ORGANISM)'" $(SCRIPTS)/matrix2RData.R $(LOGS_DIR)/matrix2RData.Rout;)
+
+plot_FragmentInfo_old:
+	@echo "--------------------------------------------" >> $(LOGFILE)
+	@date >> $(LOGFILE)
+	@echo "Plot Fragment Informations ..." >> $(LOGFILE)
+	$(R_PATH)/R --no-save CMD BATCH "--args picDir='$(PIC_DIR)' dataDir='$(DATA_DIR)' sampleName='$(RES_FILE_NAME)'" $(SCRIPTS)/plotHiCFragment.R $(LOGS_DIR)/plotHiCFragment.Rout
+

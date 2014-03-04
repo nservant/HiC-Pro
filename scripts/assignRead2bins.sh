@@ -1,17 +1,19 @@
 #!/bin/bash
 ## Nicolas Servant
-## Launcher for assignRead2bins.pl scripts
+## Eric Viara
+## assignRead2bins.sh
+## Launcher for assignRead2bins.pl script
+
+dir=$(dirname $0)
+
+. $dir/hic.inc.sh
 
 ################### Initialize ###################
-set -- $(getopt c:i:g:b:s:h "$@")
+
 while [ $# -gt 0 ]
 do
     case "$1" in
-	(-c) conf=$2; shift;;
-	(-i) map=$2; shift;;
-	(-g) genome=$2; shift;;
-	(-b) bsize=$2; shift;;
-##	(-s) step=$2; shift;;
+	(-c) ncrna_conf=$2; shift;;
 	(-h) usage;;
 	(--) shift; break;;
 	(-*) echo "$0: error - unrecognized option $1" 1>&2; exit 1;;
@@ -22,37 +24,25 @@ done
 
 ################### Read the config file ###################
 
-while read curline_read; do
-    curline=`echo ${curline_read} | sed -e 's/ = /=/'`
-
-    if [[ $curline != \#* && ! -z $curline ]]; then
-	var=`echo $curline | awk -F= '{print $1}'`
-	val=`echo $curline | awk -F= '{print $2}'`
-	export ${var}="${val}"
-    fi
-done < $conf
+read_config $ncrna_conf
 
 ################### Define Variables ###################
 
-RES_FILE_NAME=`basename ${RAW_DIR}`
-DATA_DIR=${MAPC_OUTPUT}/data/${RES_FILE_NAME}
-MATRIX_DIR=${MAPC_OUTPUT}/matrix/${RES_FILE_NAME}/raw
-
-mkdir -p ${MATRIX_DIR}/${bsize}
+DATA_DIR=${MAPC_OUTPUT}/data/
 
 ################### Combine Bowtie mapping ###################
 
-for i in $GENOME_CHRMS
+for RES_FILE_NAME in ${DATA_DIR}/*
 do
-    for j in $GENOME_CHRMS
-    do
-	if [[ "$i" == "$j" && (${MAPS} == "cis" || ${MAPS} == "all") ]]
-	then
-	    perl ${SCRIPTS}/assignRead2bins.pl --mapTxt=${DATA_DIR}/${RES_FILE_NAME}.${ORGANISM}.interaction --genomeDesc=$genome --binSize=${bsize} --step=${BIN_STEP} ${BIN_OPTS} --chrchr=chr${i}_${ORGANISM}.chr${j}_${ORGANISM} --output=${MATRIX_DIR}/${bsize}/${RES_FILE_NAME}_${bsize}
-	fi
-	if [[ "$i" != "$j" && (${MAPS} == "trans" || ${MAPS} == "all") ]]
-	then
-	    perl ${SCRIPTS}/assignRead2bins.pl --mapTxt=${DATA_DIR}/${RES_FILE_NAME}.${ORGANISM}.interaction --genomeDesc=$genome --binSize=${bsize} --step=${BIN_STEP} ${BIN_OPTS} --chrchr=chr${i}_${ORGANISM}.chr${j}_${ORGANISM} --output=${MATRIX_DIR}/${bsize}/${RES_FILE_NAME}_${bsize}
-	fi
-    done
+    RES_FILE_NAME=$(basename $RES_FILE_NAME)
+    if [ -d ${DATA_DIR}/${RES_FILE_NAME} ]; then
+	echo RES: $RES_FILE_NAME $bsize
+	MATRIX_DIR=${MAPC_OUTPUT}/matrix/${RES_FILE_NAME}/raw
+	for bsize in ${BIN_SIZE}
+	do
+	    mkdir -p ${MATRIX_DIR}/${bsize}
+	    cat ${DATA_DIR}/${RES_FILE_NAME}/*.interaction | ${SCRIPTS}/build_matrix --binsize ${bsize} --chrsizes $genome --ifile /dev/stdin --oprefix ${MATRIX_DIR}/${bsize}/${RES_FILE_NAME}_${bsize} &
+	done
+    fi
+    wait
 done

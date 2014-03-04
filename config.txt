@@ -9,7 +9,7 @@ SAMTOOLS_PATH= /bioinfo/local/build/samtools_0.1.19/
 BOWTIE2_IDX_PATH = /data/annotations/Mouse/mm9/bowtie2_indexes
 R_PATH=/bioinfo/local/build/R/R-devel/bin
 BASH = /bin/bash
-LOGFILE = hic_pipeline_mF1216.log
+LOGFILE = hic_pipeline_test_SRR941287_EV.log
 
 
 ## In most of the case, do not change
@@ -26,13 +26,14 @@ MAPC_OUTPUT = hic_results
 ## Data
 #########################################################################
 
-RAW_DIR = /data/analyses/sequencing_ESC_NPC_HIC_405/TADs_atlas_proj/hic_pipeline/rawdata/EHSNP-mF1216-Rep2
+#RAW_DIR = ./rawdata/test_SRR941287
+RAW_DIR = ./rawdata
 
 #######################################################################
 ## Alignment options
 #######################################################################
 
-N_CPU = 6
+N_CPU = 4
 FORMAT = phred33
 
 ## LOCAL
@@ -74,7 +75,7 @@ GENOME_CHRMS = 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 X
 ## Generate interaction count matrices
 #######################################################################
 
-BIN_SIZE = 20000 ##5500000, 300000, 1400000, 140000, 40000, 
+BIN_SIZE = 5500000 300000 1400000 140000 40000 20000
 BIN_STEP = 1
 BIN_OPTS = ##--binAdjust
 MAPS = cis

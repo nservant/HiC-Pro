@@ -1,4 +1,12 @@
 ***********************************
+CHANGES IN VERSION 2.0
+
+NEW FEATURES
+   o Major release by E. Viara
+   o New parallelized version of the pipeline. The workflow is parallelized by read pairs from the alignment, to the list of valid interactions
+   o New version of build_matrix tool written in C++
+
+***********************************
 CHANGES IN VERSION 1.0
 
 NEW FEATURES

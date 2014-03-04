@@ -665,11 +665,12 @@ sub overlapMappedReads($$$$$$) {
 	close(DANGLINGEND);
 	close(ERROR);
 	
-	system("gzip $interactionFile");
-	system("gzip $singleFile");
-	system("gzip $selfCircleFile");
-	system("gzip $danglingEndFile");
-	system("gzip $errorFile");
+	# EV: 2014-10-30 added -f option
+	system("gzip -f $interactionFile");
+	system("gzip -f $singleFile");
+	system("gzip -f $selfCircleFile");
+	system("gzip -f $danglingEndFile");
+	system("gzip -f $errorFile");
 
 	open(HEAD,">".$statFile.".head");
 	print HEAD "## Mapping\n";
