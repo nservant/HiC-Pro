@@ -1,4 +1,12 @@
 ***********************************
+CHANGES IN VERSION 2.1
+
+NEW FEATURES
+   o Remove file conversion sam to .aln
+   o Additional filters on MAPQ
+   o Additional check to discard invalid reads pair
+
+***********************************
 CHANGES IN VERSION 2.0
 
 NEW FEATURES

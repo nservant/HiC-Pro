@@ -1,0 +1,47 @@
+## Nicolas Servant
+## Hi-C pipeline
+
+################################################################################
+##
+## NEXT STEPS
+##
+################################################################################
+
+   o See with Eric about the PBS reporting and '&'
+   o remove duplicates 
+
+################################################################################
+##
+## LOGBOOK
+##
+################################################################################
+##--------------------
+## 30-09-14
+##--------------------
+
+   o New version of overlapMapped2HiCFragments.py. The script starts with a SAM file as input and output the valid ligation pairs.
+
+##--------------------
+## 01-09-14
+##--------------------
+
+   o New version of mapping_stat script
+
+##--------------------
+## 13-08-14
+##--------------------
+
+   o Test the complete mapping step from raw reads to single PE file. The results are a little bit different from v2.0. This comes from the format of unaligned reads after the global alignment. The read's name seems to have an impact on the mapping results !!! (exemple with SRR941287.278)
+   o Add filter on MAPQ
+   o Fix bug in discarding multiple hits. The regexp in v2.0 was not correct (-?)
+   o New mergeSAM.pl script. Create a PE file from two SE files and clean the reads (unique, multiple, MAPQ)
+
+##--------------------
+## 10-08-14
+##--------------------
+   
+   o Remove separateAlignment step and replace by Bowtie2 --un option
+   o Remove all .aln file generator from the Makefile
+   o Update the Makefile to run only the mapping
+   o Clean the scripts dir to remove all unused scripts
+
