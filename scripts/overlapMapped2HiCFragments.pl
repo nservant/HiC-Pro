@@ -366,7 +366,7 @@ sub overlapMappedReads($$$$$$) {
 	
 	print "\tsorting file ...\n";
 	system("sort -k1,1 -k2,2n ".$name_1.".1 > ".$name_1.".1.sorted");
-	system("rm ".$name_1.".1");
+	##system("rm ".$name_1.".1");
 	print "\tdone\n";
 	
 	## Assign the first read to a HindIII fragment
@@ -410,14 +410,14 @@ sub overlapMappedReads($$$$$$) {
 	}
 	close(IN);
 	
-	system("rm ".$name_1.".1.sorted");
+	##system("rm ".$name_1.".1.sorted");
 	
 	close(OUT);
 	
 	print "\tsorting file...\n";
 	# now sort by second fragment
 	system("sort -k4,4 -k5,5n ".$name_1.".2 > ".$name_1.".2.sorted");
-	system("rm ".$name_1.".2");
+	##system("rm ".$name_1.".2");
 	# now sort by second fragment
 	print "\tdone\n";
 
@@ -460,7 +460,7 @@ sub overlapMappedReads($$$$$$) {
 	}
 	close(IN);
 	
-	system("rm ".$name_1.".2.sorted");
+	##system("rm ".$name_1.".2.sorted");
 	
 	close(OUT);
 	print "\tdone\n";
@@ -522,6 +522,9 @@ sub overlapMappedReads($$$$$$) {
 		chomp($line);
 		
 		my ($chr1,$side1Offset,$side1Strand,$chr2,$side2Offset,$side2Strand,$side1Align,$side2Align)=split(/\t/,$line);		
+		my $read1pos=$side1Offset;
+		my $read2pos=$side2Offset;
+
 		$side1Offset++;
 		$side2Offset++;
 		
@@ -555,8 +558,8 @@ sub overlapMappedReads($$$$$$) {
 		if(($side1Align ne "") and ($side2Align ne "")) {
 
 		    my ($interaction,$interactionOffset,$direction1,$direction2,$direction)=annotate($side1Strand,$side2Strand,$side1Align,$side2Align,$side1Offset,$side2Offset);
-		    #print "A= $side1Strand - $side2Strand - $side1Align - $side2Align - $side1Offset - $side2Offset \n";
-		    #print "B= $interaction - $interactionOffset - $direction1 - $direction2 - $direction \n";
+		    print "$chr1\t$read1pos\t$side1Strand\t$side1Align\t$chr2\t$read2pos\t$side2Strand\t$side2Align\t";
+		    #print "==> $interaction - $interactionOffset - $direction1 - $direction2 - $direction \n";
 		    
 		    ## to the same fragment
 		    if($side1Align eq $side2Align) {  
@@ -566,38 +569,41 @@ sub overlapMappedReads($$$$$$) {
 			    ($moleculeSize)=distanceDirection('selfCircle',$direction1,$side1Align,$side1Offset,$side1Length,$side1Junction,$direction2,$side2Align,$side2Offset,$side2Length,$side2Junction);
 			    print SELFCIRCLESIZES "$moleculeSize\n";
 
-			    print "SELFCYCLE -$moleculeSize\n";
+			    print "SELFCYCLE\n";## -$moleculeSize\n";
 
 			} elsif($direction eq "->.<-") { #danglingEnd
 			    print DANGLINGEND "$interactionOffset\n";
 			    ($moleculeSize)=distanceDirection('danglingEnd',$direction1,$side1Align,$side1Offset,$side1Length,$side1Junction,$direction2,$side2Align,$side2Offset,$side2Length,$side2Junction);
 			    print DANGLINGENDSIZES "$moleculeSize\n";
 
-			    print "DANGLINGEND -$moleculeSize\n";
+			    print "DANGLINGEND\n";## -$moleculeSize\n";
 
 			} else {
 			    print ERROR "$interactionOffset\n";
+			    print "ERROR\n";
 			}
-		    }else {		  
+		    }else{		  
 			## To different fragments
 			$stats->{'different'}{$direction}++;
 			$stats->{'valid'}++;				
 			print INTERACTION "$interactionOffset\n";
 			($moleculeSize)=distanceDirection('interaction',$direction1,$side1Align,$side1Offset,$side1Length,$side1Junction,$direction2,$side2Align,$side2Offset,$side2Length,$side2Junction);
 			print INTERACTIONSIZES "$moleculeSize\n";
-			
-			print "INTERACTION -$moleculeSize\n";
-
+			print "INTERACTION\n";## $moleculeSize\n";
 		    }
 		    $stats->{'peMapped'}++;	
 		} elsif(($side1Align ne "") and ($side2Align eq "")) {
 		    my $singleOffset=$side1Align."@".$side1Offset;
 		    $stats->{'single'}++;
 		    print SINGLE "$singleOffset\n";
+		    print "SINGLE\n";
+
 		} elsif(($side1Align eq "") and ($side2Align ne "")) {
 		    my $singleOffset=$side2Align."@".$side2Offset;
 		    $stats->{'single'}++;
 		    print SINGLE "$singleOffset\n";
+		    print "SINGLE\n";
+
 		} else {
 		    print "ERROR\n";
 		    exit;
@@ -606,7 +612,7 @@ sub overlapMappedReads($$$$$$) {
 	}
 	close(IN);
 
-	system("rm ".$name_1.".3");
+	##system("rm ".$name_1.".3");
 	
 	my $peReads = $stats->{'peReads'};
 

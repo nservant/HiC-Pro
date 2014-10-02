@@ -56,7 +56,7 @@ while(<BWT2>){
 	next;
     }
     ## Multiple hits based on XS Flag (i.e. secondary aligment)
-    if(/^(\S+)\s+\d+\s+\S+\s+\S+\s+\d+\s+\S+\s+\S+\s+\d+\s+\d+\s+(\S+)\s+(\S+).*\s+AS\:i\:(\d+)\s+XS\:i\:(\d+)/){
+    if(/^(\S+)\s+\d+\s+\S+\s+\S+\s+\d+\s+\S+\s+\S+\s+\d+\s+\d+\s+(\S+)\s+(\S+).*\s+AS\:i\:(-?\d+)\s+XS\:i\:(-?\d+)/){
 	my ($cur_seq_name,$cur_seq,$cur_quality,$best_score,$secondary_score)=($1,$2,$3,$4,$5);
 	if ($best_score==$secondary_score){
 	    print OUT "@",$cur_seq_name,"\tS\t",$cur_seq,"\t",$cur_quality,"\tR\t2\n";
