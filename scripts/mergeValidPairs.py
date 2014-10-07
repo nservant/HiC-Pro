@@ -2,7 +2,7 @@
 import argparse
 import sys
 
-def getSortInformation( data ):
+def getIntervals( data ):
     data=data.strip()
     linetab = data.split("\t")
     number_of_columns = len(linetab)
@@ -69,7 +69,6 @@ def  compareDataList( data_list, chromosomes_list ):
     return min_index
 
 
-
 ################################################################################
 ##
 ##  __MAIN__
@@ -99,8 +98,18 @@ for cur_file in args.filelist:
     files_handlers.append(cur_handler)
     
     ## Init data list with first line
-    line_list.append(cur_handler.readline().strip())
-    data_list.append(getSortInformation(line_list[cur_pos]))
+    firstline = cur_handler.readline().strip()
+    lastposition = cur_handler.tell()
+    secondline = cur_handler.readline().strip()
+
+    ## Remove duplicates from the same file
+    while (isDuplicated(getIntervals(firstline),getIntervals(secondline))):
+        lastposition = cur_handler.tell()
+        secondline=cur_handler.readline().strip()
+
+    cur_handler.seek(lastposition)
+    line_list.append(firstline)
+    data_list.append(getIntervals(line_list[cur_pos]))
 
 
 index=compareDataList(data_list, chromosomes_list)
@@ -120,9 +129,14 @@ while (index != None):
             count_dup+=1
 
     ## Read a new line for this handler
-    line_list[index]=files_handlers[index].readline().strip()
+    newline=files_handlers[index].readline().strip()
+    ## Remove duplicates from the same file
+    while (newline == line_list[index]):
+        newline=files_handlers[index].readline().strip()
+    line_list[index]=newline
+
     if line_list[index]:
-        data_list[index]=getSortInformation(line_list[index])
+        data_list[index]=getIntervals(line_list[index])
     else:
         files_handlers[index].close()
         data_list[index]=None
