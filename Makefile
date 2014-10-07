@@ -59,7 +59,7 @@ init : configure src_compile
 
 mapping: bowtie_global bowtie_local merge_global_local mapping_stat ##plot_MappingProportion 
 
-proc_hic : bowtie_pairing mapped2HiCFragments
+proc_hic : bowtie_pairing mapped2HiCFragments merge_multi
 
 build_contact_maps: build_raw_maps ##matrix2RData
 
@@ -226,6 +226,18 @@ mapped2HiCFragments:
 	@date >> $(LOGFILE)
 	@echo "Assign alignments to HindIII sites ..." >> $(LOGFILE)
 	$(SCRIPTS)/overlapMapped2HiCFragments.sh -c $(CONFIG_FILE) > $(LOGS_DIR)/overlapRS.log
+
+merge_multi:
+	@echo "--------------------------------------------" >> $(LOGFILE)
+	@date >> $(LOGFILE)
+	@echo "Merge multiple files from the same sample ..." >> $(LOGFILE)
+	$(SCRIPTS)/mergeValidInteractions.sh -c $(CONFIG_FILE) > $(LOGS_DIR)/mergeMulti.log
+
+merge_multi2:
+	@echo "--------------------------------------------" >> $(LOGFILE)
+	@date >> $(LOGFILE)
+	@echo "Merge multiple files from the same sample ..." >> $(LOGFILE)
+	$(SCRIPTS)/mergeValidInteractions_v2.sh -c $(CONFIG_FILE) > $(LOGS_DIR)/mergeMulti_v2.log
 
 ## Only keep alignments which have both ends uniquely mapped to the genome
 ## Inputs : final.aln files (R1 + R2)
