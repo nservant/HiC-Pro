@@ -59,7 +59,7 @@ init : configure src_compile
 
 mapping: bowtie_global bowtie_local merge_global_local mapping_stat ##plot_MappingProportion 
 
-proc_hic : bowtie_pairing mapped2HiCFragments merge_multi
+proc_hic : bowtie_pairing mapped2HiCFragments merge_rmdup
 
 build_contact_maps: build_raw_maps ##matrix2RData
 
@@ -112,7 +112,7 @@ ifndef CONFIG_FILE
 endif
 	mkdir -p $(BOWTIE2_OUTPUT_DIR)
 	mkdir -p $(MAPC_OUTPUT)
-	##mkdir -p $(DOC_DIR)
+	mkdir -p $(TMP_DIR)
 	mkdir -p $(DATA_DIR)
 	mkdir -p $(PIC_DIR)
 	mkdir -p $(MATRIX_DIR)
@@ -227,13 +227,13 @@ mapped2HiCFragments:
 	@echo "Assign alignments to HindIII sites ..." >> $(LOGFILE)
 	$(SCRIPTS)/overlapMapped2HiCFragments.sh -c $(CONFIG_FILE) > $(LOGS_DIR)/overlapRS.log
 
-merge_multi:
+merge_rmdup:
 	@echo "--------------------------------------------" >> $(LOGFILE)
 	@date >> $(LOGFILE)
 	@echo "Merge multiple files from the same sample ..." >> $(LOGFILE)
 	$(SCRIPTS)/mergeValidInteractions.sh -c $(CONFIG_FILE) > $(LOGS_DIR)/mergeMulti.log
 
-merge_multi2:
+merge_rmdup2:
 	@echo "--------------------------------------------" >> $(LOGFILE)
 	@date >> $(LOGFILE)
 	@echo "Merge multiple files from the same sample ..." >> $(LOGFILE)

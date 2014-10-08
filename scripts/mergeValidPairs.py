@@ -2,6 +2,8 @@
 import argparse
 import sys
 
+## getIntervals
+## Split line from validPairs file
 def getIntervals( data ):
     data=data.strip()
     linetab = data.split("\t")
@@ -14,35 +16,62 @@ def getIntervals( data ):
     return {'chr1':chr1, 'pos1':pos1, 'strand1':strand1, 'chr2':chr2, 'pos2':pos2, 'strand2':strand2}
 
 
-def isOrdered( chr1, pos1, chr2, pos2, chromosomes_list):
+## isOrdered
+## Compare the order between two intervals
+def isOrdered( data1, data2, side, chromosomes_list ):
+    if side == "R1":
+        chr1=data1['chr1']
+        pos1=data1['pos1']
+        chr2=data2['chr1']
+        pos2=data2['pos1']
+    elif side == "R2":
+        chr1=data1['chr2']
+        pos1=data1['pos2']
+        chr2=data2['chr2']
+        pos2=data2['pos2']
+ 
     if chromosomes_list.index(chr1) < chromosomes_list.index(chr2):
         return True
-    elif chr1 == chr2 and int(pos1) < int(pos2):
+    elif chr1 == chr2 and int(pos1) <= int(pos2):
         return True
     else:
         return False
 
-def isEqual( chr1, pos1, chr2, pos2):
+## isEqual
+## Compare two intervals
+def isEqual( data1, data2, side):
+    if side == "R1":
+        chr1=data1['chr1']
+        pos1=data1['pos1']
+        chr2=data2['chr1']
+        pos2=data2['pos1']
+    elif side == "R2":
+        chr1=data1['chr2']
+        pos1=data1['pos2']
+        chr2=data2['chr2']
+        pos2=data2['pos2']
+
     if chr1==chr2 and pos1==pos2:
         return True
     else:
         return False
 
+## isDuplicated
+## Compare two intervals
 def isDuplicated (data1, data2):
     if data1 == None or data2 == None:
         return False
 
-    if isEqual(data1['chr1'], data1['pos1'], data2['chr1'], data2['pos1']) and isEqual(data1['chr2'], data1['pos2'], data2['chr2'], data2['pos2']):
+    if isEqual(data1, data2, "R1") and isEqual(data1, data2, "R2"):
         return True
     else:
-        return False
+         return False
+        
 
+## compareDataList
+## Compare all data within the list and return the index of the upstream intervals
 def  compareDataList( data_list, chromosomes_list ):
     
-    #print "--------compare------------"
-    #print data_list
-    #print "--------------------------"
-
     min_index=None
 
     ## Check list of available buffers
@@ -58,14 +87,18 @@ def  compareDataList( data_list, chromosomes_list ):
         ## compare with other data
         for i in allindex[1:len(allindex)]:
             cur_data=data_list[i]
+            ##print "---"+ str(min_data) + str(cur_data) + str(isOrdered(min_data, cur_data, "R1", chromosomes_list))+ str(isEqual(min_data, cur_data, "R1")) + str(isOrdered(min_data, cur_data, "R2", chromosomes_list))+ "---"
+
             ## Compare first mate
-            if not isOrdered(min_data['chr1'], min_data['pos1'], cur_data['chr1'], cur_data['pos1'], chromosomes_list):
+            if not isEqual(min_data, cur_data, "R1") and not isOrdered(min_data, cur_data, "R1", chromosomes_list):
                 min_data=cur_data
                 min_index=i
                 ## Compare second mate
-                if isEqual(min_data['chr1'], min_data['pos1'], cur_data['chr1'], cur_data['pos1']) and not isOrdered(min_data['chr2'], min_data['pos2'], cur_data['chr2'], cur_data['pos2'], chromosomes_list):
+            elif isEqual(min_data, cur_data, "R1") and not isOrdered(min_data, cur_data, "R2", chromosomes_list):
                     min_data=cur_data
                     min_index=i
+
+            ##print min_data
     return min_index
 
 
@@ -85,15 +118,16 @@ args = parser.parse_args()
 rmdup = args.rmdup
 nbfiles = len(args.filelist)
 
-## Open handler on valid pairs files
+## Initialize values
 files_handlers = []
 line_list = []
 data_list = []
 count_dup = 0
+prec_data=None
 
+## Open handler on valid pairs files
 for cur_file in args.filelist:
     cur_pos=len(files_handlers)
-    ##print cur_pos
     cur_handler=open(cur_file, 'r')
     files_handlers.append(cur_handler)
     
@@ -103,21 +137,26 @@ for cur_file in args.filelist:
     secondline = cur_handler.readline().strip()
 
     ## Remove duplicates from the same file
-    while (isDuplicated(getIntervals(firstline),getIntervals(secondline))):
-        lastposition = cur_handler.tell()
-        secondline=cur_handler.readline().strip()
+    if rmdup:
+        while (isDuplicated(getIntervals(firstline),getIntervals(secondline))):
+            lastposition = cur_handler.tell()
+            secondline=cur_handler.readline().strip()
+            count_dup+=1
 
     cur_handler.seek(lastposition)
     line_list.append(firstline)
     data_list.append(getIntervals(line_list[cur_pos]))
 
-
+## Get first data line in the genome coordinate
 index=compareDataList(data_list, chromosomes_list)
-prec_data=None
-while (index != None):
-    ## Get sorted line
-    ## Print output and remove duplicates
 
+while (index != None):
+    ##print "--------compare------------"
+    ##print data_list
+    ##print data_list[index]
+    ##print isDuplicated(prec_data, data_list[index])
+
+    ## Remove duplicates if require
     if not rmdup:
         print line_list[index]
         prec_data=data_list[index]
@@ -130,9 +169,13 @@ while (index != None):
 
     ## Read a new line for this handler
     newline=files_handlers[index].readline().strip()
-    ## Remove duplicates from the same file
-    while (newline == line_list[index]):
-        newline=files_handlers[index].readline().strip()
+
+    ## Remove duplicates reads from the current handler
+    if rmdup:
+        while (newline == line_list[index]):
+            newline=files_handlers[index].readline().strip()
+            count_dup+=1
+
     line_list[index]=newline
 
     if line_list[index]:
@@ -143,5 +186,6 @@ while (index != None):
         line_list[index]=None
             
     index=compareDataList(data_list, chromosomes_list)
+    ##print "--------------------------"
 
-print >> sys.stderr, "rm_duplicates\t", count_dup
+print >> sys.stderr, "## nb_duplicates\t", count_dup
