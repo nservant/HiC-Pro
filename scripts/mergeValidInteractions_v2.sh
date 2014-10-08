@@ -41,7 +41,6 @@ do
 	else
 	    echo "Remove duplicates..."
 	    fls=`ls ${DATA_DIR}/${RES_FILE_NAME}/*.validPairs`
-  	    for i in $fls ; do sort -k2,2V -k3,3n -k5,5V -k6,6n -o $i $i ; done
 	    ${SCRIPTS}/mergeValidPairs.py --rmdup $fls > ${DATA_DIR}/${RES_FILE_NAME}/${RES_FILE_NAME}_2allValidPairs
 	fi
     fi

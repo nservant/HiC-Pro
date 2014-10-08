@@ -6,7 +6,7 @@
 
 SCRIPTS = scripts
 SOURCES = scripts/src
-TMP_DIR = local_tmp
+TMP_DIR = tmp
 ANNOT_DIR = annotation
 LOGS_DIR = logs
 BOWTIE2_OUTPUT_DIR = bowtie_results

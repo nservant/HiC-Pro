@@ -32,4 +32,7 @@ do
     
     cmd="python ${SCRIPTS}/overlapMapped2HiCFragments.py ${opts} -f ${GENOME_FRAGMENT} -r ${r} -o ${datadir}"
     exec_cmd $cmd
+
+    ## Valid pairs are already sorted
+    sort -k2,2V -k3,3n -k5,5V -k6,6n -o ${datadir}/${sample_dir}_allValidPairs ${datadir}/${sample_dir}_allValidPairs
 done
