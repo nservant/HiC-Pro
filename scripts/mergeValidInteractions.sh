@@ -40,7 +40,11 @@ do
 	    cat ${DATA_DIR}/${RES_FILE_NAME}/*.validPairs > ${DATA_DIR}/${RES_FILE_NAME}/${RES_FILE_NAME}_allValidPairs
 	else
 	    echo "Remove duplicates ..."
-	     sort -k2,2V -k3,3n -k5,5V -k6,6n -T ${TMP_DIR} -m ${DATA_DIR}/${RES_FILE_NAME}/*.validPairs | awk -F"\t" 'BEGIN{c1=0;c2=0;s1=0;s2=0}(c1!=$2 || c2!=$5 || s1!=$3 || s2!=$6){print;c1=$2;c2=$5;s1=$3;s2=$6}' > ${DATA_DIR}/${RES_FILE_NAME}/${RES_FILE_NAME}_allValidPairs
+	    allcount=`cat *.validPairs | wc -l`
+	    sort -k2,2V -k3,3n -k5,5V -k6,6n -T ${TMP_DIR} -m ${DATA_DIR}/${RES_FILE_NAME}/*.validPairs | awk -F"\t" 'BEGIN{c1=0;c2=0;s1=0;s2=0}(c1!=$2 || c2!=$5 || s1!=$3 || s2!=$6){print;c1=$2;c2=$5;s1=$3;s2=$6}' > ${DATA_DIR}/${RES_FILE_NAME}/${RES_FILE_NAME}_allValidPairs
+	    allcount_rmdup=`cat ${DATA_DIR}/${RES_FILE_NAME}/${RES_FILE_NAME}_allValidPairs | wc -l`
+	    nbdup=$(( allcount-allcount_rmdup ))
+	    echo "$nbdup detected duplicates"
 	fi
     fi
     wait
