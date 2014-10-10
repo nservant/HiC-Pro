@@ -7,14 +7,23 @@
 ##
 ################################################################################
 
-   o See with Eric about the PBS reporting and '&'
-   o remove duplicates 
+   o Test new options
+   o Test on large data
+   o Try to change the bowtie 2 options
 
 ################################################################################
 ##
 ## LOGBOOK
 ##
 ################################################################################
+##--------------------
+## 10-10-14
+##--------------------
+
+   o New options for overlapMapped2HiCFragments.py (-S) to produce a SAM file with tags related to pairs classification
+   o New filter on mapping pairs. Check the presence of 5' overhang fo locally align reads
+   o Remove duplicate (currently 2 versions. The unix sort looks the best way)
+
 ##--------------------
 ## 30-09-14
 ##--------------------

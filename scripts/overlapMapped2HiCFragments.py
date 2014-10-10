@@ -14,6 +14,7 @@ def usage():
     print "[-s/--shortestInsertSize] <Shortest insert size of mapped reads to consider>"
     print "[-l/--longestInsertSize] <Longest insert size of mapped reads to consider>"
     print "[-a/--all] <Write all additional output files, with information about the discarded reads>"
+    print "[-S/--sam] <Output an additional SAM file with flag 'CT' for pairs classification>"
     print "[-v/--verbose] <Verbose>"
     print "[-h/--help] <Help>"
     return
@@ -22,7 +23,7 @@ def usage():
 ## getArgs function
 def getArgs():
     try:
-        opts, args = getopt.getopt(sys.argv[1:], "f:r:o:s:l:vah", ["fragmentFile=", "mappedReadsFile=", "outputDir=", "minInsertSize=", "maxInsertSize", "verbose", "all", "help"])
+        opts, args = getopt.getopt(sys.argv[1:], "f:r:o:c:s:l:Svah", ["fragmentFile=", "mappedReadsFile=", "outputDir=", "cutSite=", "minInsertSize=", "maxInsertSize", "samOut", "verbose", "all", "help"])
     except getopt.GetoptError as err:
 	    usage()
 	    sys.exit(-1)
@@ -40,15 +41,23 @@ def getReadStrand ( read ):
     return strand
 
 
-## getReadStart
-## Return read 5' end (zero-based) according to the mapping strand
+## getReadPos
+## Return the read position (zero-based) used for the intersection with the restriction fragment
+## The 5' end is not a good choice for the reverse reads (which contain part of the restriction site, and thus overlap the next restriction fragment)
+## Using the left-most position (5' for forward, 3' for reverse) or the middle of the read should work but the middle of the reads might be more safe
 ##
 ## read = [AlignedRead]
-def getRead5end ( read ):
-    if (read.is_reverse):
-        pos = read.pos + read.alen + 1 ##(50 - 5) + 1 ## zero-based transformation
-    else:
-        pos = read.pos 
+def getReadPos ( read ):
+
+    ## 5 end
+    ##if (read.is_reverse):
+    ##    pos = read.pos + read.alen + 1 ##(50 - 5) + 1 ## zero-based transformation
+    ##else:
+    ##    pos = read.pos 
+    
+    ## Middle of the reads
+    pos = read.pos + read.alen/2
+    
     return pos
 
 ## getOrderedReads
@@ -58,7 +67,7 @@ def getRead5end ( read ):
 ## read2 = [AlignedRead]
 def getOrderedReads ( read1, read2 ):
     if read1.tid == read2.tid:
-        if getRead5end(read1) < getRead5end(read2):
+        if getReadPos(read1) < getReadPos(read2):
             r1 = read1
             r2 = read2
         else:
@@ -118,7 +127,7 @@ def loadRestrictionFragment( in_file, verbose ):
 ## read = the read to intersect [AlignedRead]
 def getOverlappingRestrictionFragment ( resFrag, chrom, read ):
     ## Get 5' end
-    pos = getRead5end(read)
+    pos = getReadPos(read)
     ## Overlap with the 5' end of the read (zero-based)
     resfrag = resFrag[chrom].find(pos, pos+1)
     if len(resfrag)>1:
@@ -155,7 +164,16 @@ def isDanglingEnd ( read1, read2 ):
     if getReadStrand(r1) == "+" and getReadStrand(r2) == "-":
         ret=True
     return ret
-   
+
+## overlapRestrictionSite
+## Check wether the read alignment overlap with the restriction site in its 5' or 3' ends
+## read : [AlignedRead]
+## cut_site : [String]
+# def overlapRestrictionSite (read, cut_site):
+#     exp=re.compile("^"+cut_site+"|"+cut_site+"$")
+#     out=re.search(exp, read.seq) != None
+#     return out
+
 
 ## getValidOrientation
 ## Both reads are expected to be on the different restriction fragments
@@ -197,14 +215,14 @@ def getPEFragmentSize ( read1, read2, resFrag1, resFrag2, interactionType ):
         rfrag1=resFrag1
         rfrag2=resFrag2
 
-    r1pos = getRead5end(r1)
-    r2pos = getRead5end(r2)
+    r1pos = getReadPos(r1)
+    r2pos = getReadPos(r2)
 
     if interactionType == "DE":
         fragmentsize=r2pos - r1pos 
     elif interactionType == "SC":
         fragmentsize=(r1pos - rfrag1.start) + (rfrag2.end - r2pos)
-    elif interactionType == "VALID":
+    elif interactionType == "VI":
         if getReadStrand(r1)=="+":
             dr1 = rfrag1.end - r1pos
         else:
@@ -252,14 +270,19 @@ def  getInteractionType( read1, read1_chrom, resfrag1, read2, read2_chrom, resfr
             elif isDanglingEnd(read1, read2):
                 InteractionType="DE"
         else:
-            InteractionType="VALID"
+            InteractionType="VI"
     elif r1.is_unmapped or r2.is_unmapped:
-        InteractionType="SINGLE"
+        InteractionType="SI"
                     
     return InteractionType
 
 
-
+def getReadTag( read, tag ):
+    for t in read.tags:
+        if t[0] == tag:
+            return tag[1]
+    return None
+                       
 
 ################################################################################
 ##
@@ -271,6 +294,7 @@ def  getInteractionType( read1, read1_chrom, resfrag1, read2, read2_chrom, resfr
 opts=getArgs()
 inputFile = None
 outputFile = None
+samOut=False
 verbose = False
 allOutput = False
 minInsertSize = None
@@ -297,6 +321,8 @@ for opt, arg in opts:
 		maxInsertSize = arg
 	elif opt in ("-a", "--all"):
 		allOutput = True
+	elif opt in ("-S", "--samOut"):
+		samOut = True
 	elif opt in ("-v", "--verbose"):
 		verbose = True	
 	else:
@@ -323,7 +349,6 @@ valid_counter_FR=0
 valid_counter_RF=0
 single_counter=0
 error_counter=0
-##dist_hash={}
 
 baseReadsFile = os.path.basename(mappedReadsFile)
 baseReadsFile = re.sub(r'.bam|.sam', '', baseReadsFile)
@@ -336,6 +361,9 @@ if allOutput:
     handle_sc = open(outputDir + '/' + baseReadsFile + '.SCPairs', 'w')
     handle_err = open(outputDir + '/' + baseReadsFile + '.ErrorPairs', 'w')
     handle_single = open(outputDir + '/' + baseReadsFile + '.SinglePairs', 'w')
+
+if samOut:
+    handle_sam = open(outputDir + '/' + baseReadsFile + '_interaction.sam', 'w')
 
 ## Read the BED file
 resFrag=loadRestrictionFragment(fragmentFile, verbose)
@@ -368,12 +396,18 @@ for read in samfile.fetch():
         r2_resfrag = getOverlappingRestrictionFragment(resFrag, r2_chrom, r2)
         interactionType=getInteractionType(r1, r1_chrom, r1_resfrag, r2, r2_chrom, r2_resfrag, verbose)
         dist=getPEFragmentSize(r1, r2, r1_resfrag, r2_resfrag, interactionType)
+        
+        # ## Check cut site in local mapping reads
+        # if getReadTag(r1, "RG") == "BML" or  getReadTag(r2, "RG") == "BML":
+        #     bowloc_counter+=1
+        #     if cutSite and (overlapRestrictionSite(r1, cutSite) or overlapRestrictionSite(r2, cutSite)):
+        #         cutsite_counter+=1
+
+        ## Check Insert size criteria
         if (minInsertSize != None and dist != None and dist < int(minInsertSize)) or (maxInsertSize != None and dist != None and dist > int(maxInsertSize)):
             interactionType=None
-        ##else:
-        ##    dist_hash[str(dist)]=dist_hash[str(dist)]+1 if dist_hash.has_key(str(dist)) else 1
-
-        if interactionType == "VALID":
+     
+        if interactionType == "VI":
             valid_counter+=1
             cur_handler = handle_valid
             validType=getValidOrientation(r1, r2)
@@ -390,7 +424,7 @@ for read in samfile.fetch():
             sc_counter+=1
             cur_handler = handle_sc if allOutput else None
            
-        elif interactionType == "SINGLE":
+        elif interactionType == "SI":
             single_counter+=1
             cur_handler = handle_single if allOutput else None
 
@@ -399,7 +433,13 @@ for read in samfile.fetch():
             cur_handler = handle_err if allOutput else None
 
         if cur_handler != None:
-            cur_handler.write(r1.qname + "\t" + r1_chrom + "\t" + str(r1.pos) + "\t" + str(getReadStrand(r1)) + "\t" + r2_chrom + "\t" + str(r2.pos) + "\t" + str(getReadStrand(r2)) + "\t" + str(dist) + "\n")
+            cur_handler.write(r1.qname + "\t" + r1_chrom + "\t" + getReadPos(r1) + "\t" + str(getReadStrand(r1)) + "\t" + r2_chrom + "\t" + getReadPos(r2) + "\t" + str(getReadStrand(r2)) + "\t" + str(dist) + "\n")
+        
+        if samOut:
+            r1.tags=r1.tags + [('CT', interactionType)]
+            r2.tags=r2.tags + [('CT', interactionType)]
+            handle_sam.write(r1)
+            handle_sam.write(r2)
 
     if (reads_counter % 100000 == 0 and verbose):
         print "##", reads_counter
@@ -413,6 +453,8 @@ if allOutput:
     handle_single.close()
 
 if verbose:
+    ##print "Pairs with local mapping sites\t", bowloc_counter
+    ##print "Local mapped pairs overlapping the restriction site\t", cutsite_counter
     print "Valid interaction pairs\t", valid_counter
     print "Valid interaction pairs FF\t", valid_counter_FF
     print "Valid interaction pairs RR\t", valid_counter_RR

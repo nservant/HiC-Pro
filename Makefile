@@ -260,7 +260,7 @@ build_raw_maps:
 	@echo "--------------------------------------------" >> $(LOGFILE)
 	@date >> $(LOGFILE)
 	@echo "Generate binned matrix files ..." >> $(LOGFILE)
-	$(SCRIPTS)/assignRead2bins.sh -c $(CONFIG_FILE) ##-i $(DATA_DIR)/$(RES_FILE_NAME).$(ORGANISM).interaction -g $(ANNOT_DIR)/chrom.sizes
+	$(SCRIPTS)/assignRead2bins.sh -c $(CONFIG_FILE) > $(LOGS_DIR)/build_raw_maps.log ##-i $(DATA_DIR)/$(RES_FILE_NAME).$(ORGANISM).interaction -g $(ANNOT_DIR)/chrom.sizes
 
 # plot_FragmentInfo:
 # 	@echo "--------------------------------------------" >> $(LOGFILE)

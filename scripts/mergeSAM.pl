@@ -9,15 +9,15 @@ use strict;
 
 ## get options from command line
 my $arg_num = scalar @ARGV;
-my %opts= ('f'=>'','r'=>'', 'o'=>'', 'u'=>'', 'm'=>'', 'q'=>'', 'v'=>'');
+my %opts= ('f'=>'','r'=>'', 'c'=>'', 'o'=>'', 'u'=>'', 'm'=>'', 'q'=>'', 'v'=>'');
 
 sub usage{
 print STDERR <<EOF;
     Merge two SE SAM files into one PE SAM file.
-    Reads can be filtered according to MAPQ, mappability and uniqueness.
+    Reads can be filtered according to MAPQ, mappability, uniqueness and restriction site.
     A pair is reported only if both mates pass the different filters.
 
-    usage:  $0 [-u -m -q -h] -f forward_mapped_file -r reverse_mapped_file -o output.sam 
+    usage:  $0 [-u -m -q -h -c cut_site] -f forward_mapped_file -r reverse_mapped_file -o output.sam 
 
      -h   : help message;
      -f   : forward read mapped file
@@ -25,6 +25,7 @@ print STDERR <<EOF;
      -u   : Do NOT report unmapped read pairs
      -m   : Do NOT report multiple mapped reads
      -q   : Do NOT report reads with a mapping quality lower than 'q'
+     -c   : 5\' overhang restriction site. Do NOT report reads align locally which do not overlap with a restriction site
      -v   : verbose mode
      -o   : output file name
 
@@ -33,19 +34,20 @@ EOF
     exit;
 }
 
-getopts('r:f:o:q:umhv', \%opts) || usage();
+getopts('r:f:o:c:q:umhv', \%opts) || usage();
 usage() if ($opts{h});
 usage() if $arg_num==0;
 
-my($forward_file, $reverse_file, $output_file, $rm_unmapped, $rm_multi, $mapq, $quiet)=($opts{f},$opts{r}, ${opts{o}}, $opts{u}, $opts{m}, $opts{q}, $opts{v});
+my($forward_file, $reverse_file, $cutSite, $output_file, $rm_unmapped, $rm_multi, $mapq, $quiet)=($opts{f}, $opts{r}, $opts{c}, $opts{o}, $opts{u}, $opts{m}, $opts{q}, $opts{v});
 
 ## Default - report all
 $rm_unmapped=0 unless $rm_unmapped;
 $rm_multi=0 unless $rm_multi;
 $mapq=0 unless $mapq;
 $quiet=0 unless $quiet;
+$cutSite="" unless $cutSites;
 
-paire_sam($forward_file, $reverse_file, $output_file, $rm_unmapped, $rm_multi, $mapq, $quiet);
+paire_sam($forward_file, $reverse_file, $cutSite, $output_file, $rm_unmapped, $rm_multi, $mapq, $quiet);
 
 
 ###################
@@ -53,11 +55,13 @@ paire_sam($forward_file, $reverse_file, $output_file, $rm_unmapped, $rm_multi, $
 ## Merge two SE files in one PE file
 
 sub paire_sam{
-    my ($fileForward, $fileReverse, $filePair, $rm_unmap, $rm_mult, $rm_mapq, $verb) = @_;
+    my ($fileForward, $fileReverse, $cutSite, $filePair, $rm_unmap, $rm_mult, $rm_mapq, $verb) = @_;
     if ($verb == 1){
 	print "##Pairing '$fileForward' and '$fileReverse' in '$filePair'\n";
 	print "##Discard unmapped reads: $rm_unmap\n";
 	print "##Discard multiple reads: $rm_mult\n";
+	if ($cutSite != "")
+	    print "##Discard local mapped reads without restriction site: $cutSite\n";
 	print "##Report reads with MAPQ >= $rm_mapq\n";
     }
     
@@ -68,7 +72,7 @@ sub paire_sam{
     my @r_split_read;
 
     ##stats
-    my ($tot_pairs_counter, $multi_pairs_counter, $uniq_pairs_counter, $unmapped_pairs_counter, $lowq_pairs_counter, $paired_reads_counter)=(0, 0, 0, 0, 0, 0);
+    my ($tot_pairs_counter, $multi_pairs_counter, $uniq_pairs_counter, $unmapped_pairs_counter, $lowq_pairs_counter, $cutSite_counter, $local_counter, $paired_reads_counter)=(0, 0, 0, 0, 0, 0, 0, 0);
 
     open (PAIRED, ">$filePair") or die "Can't create \'$filePair\' : $!";
     open (FORWARD, $fileForward) or die "Can't read \'$fileForward\' : $!";
@@ -136,6 +140,18 @@ sub paire_sam{
 		    if( ($f_split_read[4] < $rm_mapq) or ($r_split_read[4] < $rm_mapq)){
 			$lowq_pairs_counter++;
 			next;
+		    }
+
+		    ## CutSite
+		    if ($r_read =~ /RG:Z:BML/ || $f_read =~ /RG:Z:BML/){
+			$local_counter++;
+			if ($r_read =~ /RG:Z:BML/ && $r_split_read[10] !~ '/^$cutSite|$cutSite$/'){
+			    $cutSite_counter++;
+			    next;
+			}elsif ($f_read =~ /RG:Z:BML/ && $f_split_read[10] !~ '/^$cutSite|$cutSite$/'){
+			    $cutSite_counter++;
+			    next;
+			}
 		    }
 		    
 		    ## Reporting
