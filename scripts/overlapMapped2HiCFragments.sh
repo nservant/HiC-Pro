@@ -34,5 +34,7 @@ do
     exec_cmd $cmd
 
     ## Valid pairs are already sorted
-    sort -k2,2V -k3,3n -k5,5V -k6,6n -o ${datadir}/${sample_dir}_allValidPairs ${datadir}/${sample_dir}_allValidPairs
+    echo "## Sorting valid interaction file ..."
+    output=`basename ${r} | sed -e 's/.sam$/.validPairs/'`
+    sort -k2,2V -k3,3n -k5,5V -k6,6n -o ${datadir}/${output} ${datadir}/${output} 
 done
