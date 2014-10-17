@@ -21,7 +21,7 @@ BOWTIE2_PATH = /bioinfo/local/build/bowtie2-2.1.0/
 SAMTOOLS_PATH= /bioinfo/local/build/samtools_0.1.19/
 R_PATH=/bioinfo/local/build/R/R-devel/bin
 BASH = /bin/bash
-LOGFILE = hic_pipeline_test_SRR941287_EV.log
+LOGFILE = hic_pipeline_test_SRR941287.log
 
 #########################################################################
 ## Data
@@ -36,6 +36,8 @@ RAW_DIR = ./rawdata/test_SRR941287
 N_CPU = 2
 FORMAT = phred33
 MIN_MAPQ = 0
+CUT_SITE_5OVER = AGCTT 
+
 BOWTIE2_IDX_PATH = /data/annotations/Mouse/mm9/bowtie2_indexes
 BOWTIE2_GLOBAL_OPTIONS = -N 0 -L 25 --fast --end-to-end --reorder
 BOWTIE2_LOCAL_OPTIONS = -N 0 -L 30 --sensitive-local --local --mp 100,100 --np 100 --rdg 100,100 --rfg 100,100 --score-min G,20,10 --reorder
@@ -71,7 +73,8 @@ GENOME_CHRMS = 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 X Y
 
 MIN_INSERT_SIZE = 50
 MAX_INSERT_SIZE = 500
-ALL_OUTPUT = 1
+GET_ALL_INTERACTION_CLASSES = 1
+GET_PROCESS_SAM = 1
 RMDUP = 1
 
 #######################################################################

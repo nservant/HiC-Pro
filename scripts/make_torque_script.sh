@@ -52,7 +52,7 @@ cat > ${torque_script} <<EOF
 cd \$PBS_O_WORKDIR
 
 FASTQFILE=\$PBS_O_WORKDIR/$fastqfile; export FASTQFILE
-make CONFIG_FILE=${ncrna_conf} mapping_prep_hic
+make CONFIG_FILE=${ncrna_conf}
 EOF
 
 chmod +x ${torque_script}

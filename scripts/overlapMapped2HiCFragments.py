@@ -251,15 +251,13 @@ def getPEFragmentSize ( read1, read2, resFrag1, resFrag2, interactionType ):
 ## resfrag2 = restrictin fragment overlapping the R2 read [interval]
 ## verbose = verbose mode [logical]
 def  getInteractionType( read1, read1_chrom, resfrag1, read2, read2_chrom, resfrag2, verbose):               
-    ## If returned InteractionType=None -> Same restriction fragment and same strand = Error
+    ## If returned InteractionType=None -> Same restriction fragment and same strand = Dump
     InteractionType = None
     strand1 = getReadStrand(read1)
     strand2 = getReadStrand(read2)
     chr1 = read1_chrom
     chr2 = read2_chrom
-        
-    ##print chr1,"\t",read1.pos+1,"\t",strand1,"\t",resfrag1.value['name'],"|mm9|",chr1,":",resfrag1.start+1,"-",resfrag1.end,"\t",chr2,"\t",read2.pos+1,"\t",strand2,"\t",resfrag2.value['name'],"|mm9|",chr2,":",resfrag2.start+1,"-",resfrag2.end,
-        
+                
     if not (r1.is_unmapped) and  not (r2.is_unmapped):
         ## same restriction fragment
         if resfrag1 == resfrag2:
@@ -274,6 +272,9 @@ def  getInteractionType( read1, read1_chrom, resfrag1, read2, read2_chrom, resfr
     elif r1.is_unmapped or r2.is_unmapped:
         InteractionType="SI"
                     
+    print read1.qname,"\t",chr1,"\t",read1.pos+1,"\t",strand1,"\t",resfrag1.value['name'],"|mm9|",chr1,":",resfrag1.start+1,"-",resfrag1.end,"\t",chr2,"\t",read2.pos+1,"\t",strand2,"\t",resfrag2.value['name'],"|mm9|",chr2,":",resfrag2.start+1,"-",resfrag2.end,InteractionType,"\n"
+
+
     return InteractionType
 
 
@@ -336,6 +337,7 @@ if verbose:
     print "## minInsertSize=", minInsertSize
     print "## maxInsertSize=", maxInsertSize
     print "## allOuput=", allOutput
+    print "## SAM ouput=", samOut
     print "## verbose=", verbose, "\n"
  
 ## Initialize variables
@@ -348,7 +350,7 @@ valid_counter_RR=0
 valid_counter_FR=0
 valid_counter_RF=0
 single_counter=0
-error_counter=0
+dump_counter=0
 
 baseReadsFile = os.path.basename(mappedReadsFile)
 baseReadsFile = re.sub(r'.bam|.sam', '', baseReadsFile)
@@ -359,11 +361,8 @@ handle_valid = open(outputDir + '/' + baseReadsFile + '.validPairs', 'w')
 if allOutput:
     handle_de = open(outputDir + '/' + baseReadsFile + '.DEPairs', 'w')
     handle_sc = open(outputDir + '/' + baseReadsFile + '.SCPairs', 'w')
-    handle_err = open(outputDir + '/' + baseReadsFile + '.ErrorPairs', 'w')
+    handle_dump = open(outputDir + '/' + baseReadsFile + '.DumpPairs', 'w')
     handle_single = open(outputDir + '/' + baseReadsFile + '.SinglePairs', 'w')
-
-if samOut:
-    handle_sam = open(outputDir + '/' + baseReadsFile + '_interaction.sam', 'w')
 
 ## Read the BED file
 resFrag=loadRestrictionFragment(fragmentFile, verbose)
@@ -371,8 +370,11 @@ resFrag=loadRestrictionFragment(fragmentFile, verbose)
 ## Read the SAM/BAM file
 if verbose:
     print "## Opening SAM/BAM file '", mappedReadsFile,"'..."
-
 samfile = pysam.Samfile( mappedReadsFile, "r" )
+
+if samOut:
+    handle_sam = open(outputDir + '/' + baseReadsFile + '_interaction.sam', 'w')
+    handle_sam = pysam.Samfile(outputDir + '/' + baseReadsFile + '_interaction.sam' , "wh", header = samfile.header)
 
 ## Reads are 0-based too (for both SAM and BAM format)
 ## Loop on all reads
@@ -396,7 +398,7 @@ for read in samfile.fetch():
         r2_resfrag = getOverlappingRestrictionFragment(resFrag, r2_chrom, r2)
         interactionType=getInteractionType(r1, r1_chrom, r1_resfrag, r2, r2_chrom, r2_resfrag, verbose)
         dist=getPEFragmentSize(r1, r2, r1_resfrag, r2_resfrag, interactionType)
-        
+
         # ## Check cut site in local mapping reads
         # if getReadTag(r1, "RG") == "BML" or  getReadTag(r2, "RG") == "BML":
         #     bowloc_counter+=1
@@ -405,7 +407,7 @@ for read in samfile.fetch():
 
         ## Check Insert size criteria
         if (minInsertSize != None and dist != None and dist < int(minInsertSize)) or (maxInsertSize != None and dist != None and dist > int(maxInsertSize)):
-            interactionType=None
+            interactionType="DUMP"
      
         if interactionType == "VI":
             valid_counter+=1
@@ -427,17 +429,17 @@ for read in samfile.fetch():
         elif interactionType == "SI":
             single_counter+=1
             cur_handler = handle_single if allOutput else None
-
         else:
-            error_counter+=1
-            cur_handler = handle_err if allOutput else None
+            interactionType="DUMP"
+            dump_counter+=1
+            cur_handler = handle_dump if allOutput else None
 
         if cur_handler != None:
-            cur_handler.write(r1.qname + "\t" + r1_chrom + "\t" + getReadPos(r1) + "\t" + str(getReadStrand(r1)) + "\t" + r2_chrom + "\t" + getReadPos(r2) + "\t" + str(getReadStrand(r2)) + "\t" + str(dist) + "\n")
+            cur_handler.write(r1.qname + "\t" + r1_chrom + "\t" + str(getReadPos(r1)) + "\t" + str(getReadStrand(r1)) + "\t" + r2_chrom + "\t" + str(getReadPos(r2)) + "\t" + str(getReadStrand(r2)) + "\t" + str(dist) + "\n")
         
         if samOut:
-            r1.tags=r1.tags + [('CT', interactionType)]
-            r2.tags=r2.tags + [('CT', interactionType)]
+            r1.tags=r1.tags + [('CT', str(interactionType))]
+            r2.tags=r2.tags + [('CT', str(interactionType))]
             handle_sam.write(r1)
             handle_sam.write(r2)
 
@@ -449,7 +451,7 @@ handle_valid.close()
 if allOutput:
     handle_de.close()
     handle_sc.close()
-    handle_err.close()
+    handle_dump.close()
     handle_single.close()
 
 if verbose:
@@ -463,7 +465,7 @@ if verbose:
     print "Dangling end pairs\t", de_counter
     print "Self Cycle pairs\t", sc_counter
     print "Single-end pairs\t", single_counter
-    print "Error pairs\t", error_counter, "\n"
+    print "Dumped pairs\t", dump_counter, "\n"
 
 
 samfile.close()

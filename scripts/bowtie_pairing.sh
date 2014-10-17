@@ -34,7 +34,7 @@ merge_pairs()
     local prefix_out=$(echo $prefix_r1 | get_pairs)
 
     ## Merge two SAM files into 1 paired-end SAM file / removed unmapped and multihits reads
-    cmd="${SCRIPTS}/mergeSAM.pl -u -m -q ${MIN_MAPQ} -v -f ${BOWTIE2_FINAL_OUTPUT_DIR}/${prefix_r1}.bwt2merged.sam -r ${BOWTIE2_FINAL_OUTPUT_DIR}/${prefix_r2}.bwt2merged.sam -o ${BOWTIE2_FINAL_OUTPUT_DIR}/${prefix_out}.bwt2pairs.sam > ${LOGS_DIR}/"$(basename ${prefix_out})"_merge.log"
+    cmd="${SCRIPTS}/mergeSAM.pl -u -m -q ${MIN_MAPQ} -c ${CUT_SITE_5OVER} -v -f ${BOWTIE2_FINAL_OUTPUT_DIR}/${prefix_r1}.bwt2merged.sam -r ${BOWTIE2_FINAL_OUTPUT_DIR}/${prefix_r2}.bwt2merged.sam -o ${BOWTIE2_FINAL_OUTPUT_DIR}/${prefix_out}.bwt2pairs.sam > ${LOGS_DIR}/"$(basename ${prefix_out})"_merge.log"
     exec_cmd $cmd
 
     ## Generate BAM file

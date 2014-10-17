@@ -45,7 +45,7 @@ $rm_unmapped=0 unless $rm_unmapped;
 $rm_multi=0 unless $rm_multi;
 $mapq=0 unless $mapq;
 $quiet=0 unless $quiet;
-$cutSite="" unless $cutSites;
+$cutSite="" unless $cutSite;
 
 paire_sam($forward_file, $reverse_file, $cutSite, $output_file, $rm_unmapped, $rm_multi, $mapq, $quiet);
 
@@ -60,8 +60,9 @@ sub paire_sam{
 	print "##Pairing '$fileForward' and '$fileReverse' in '$filePair'\n";
 	print "##Discard unmapped reads: $rm_unmap\n";
 	print "##Discard multiple reads: $rm_mult\n";
-	if ($cutSite != "")
+	if ($cutSite ne ""){
 	    print "##Discard local mapped reads without restriction site: $cutSite\n";
+	}
 	print "##Report reads with MAPQ >= $rm_mapq\n";
     }
     
@@ -145,10 +146,13 @@ sub paire_sam{
 		    ## CutSite
 		    if ($r_read =~ /RG:Z:BML/ || $f_read =~ /RG:Z:BML/){
 			$local_counter++;
-			if ($r_read =~ /RG:Z:BML/ && $r_split_read[10] !~ '/^$cutSite|$cutSite$/'){
+			## The read sequence is always in 5'->3' direction. So looking for 5' restriction site is enough
+			if ($r_read =~ /RG:Z:BML/ && $r_split_read[9] !~ /$cutSite/){#'/^$cutSite|$cutSite$/'){
+			    #print $r_read;
+			    #print $r_split_read[9]."\n";
 			    $cutSite_counter++;
 			    next;
-			}elsif ($f_read =~ /RG:Z:BML/ && $f_split_read[10] !~ '/^$cutSite|$cutSite$/'){
+			}elsif ($f_read =~ /RG:Z:BML/ && $f_split_read[9] !~ /$cutSite/){#'/^$cutSite|$cutSite$/'){
 			    $cutSite_counter++;
 			    next;
 			}
@@ -171,7 +175,7 @@ sub paire_sam{
     close(FORWARD);
     close(REVERSE);
     if ($verb == 1){
-	printf ("File\t%s\nTotal_pairs_processed\t%d\t(100)\nUnmapped_pairs\t%d\t(%.3f)\nLow_qual_pairs\t%d\t(%.3f)\nUnique_paired_alignments\t%d\t(%.3f)\nMultiple_pairs_alignments\t%d\t(%.3f)\nReported pairs\t%d\t(%.3f)\n",$filePair, $tot_pairs_counter, $unmapped_pairs_counter, $unmapped_pairs_counter/$tot_pairs_counter*100, $lowq_pairs_counter, $lowq_pairs_counter/$tot_pairs_counter*100, $uniq_pairs_counter, $uniq_pairs_counter/$tot_pairs_counter*100, $multi_pairs_counter, $multi_pairs_counter/$tot_pairs_counter*100, $paired_reads_counter, $paired_reads_counter/$tot_pairs_counter*100);
+	printf ("File\t%s\nTotal_pairs_processed\t%d\t(100)\nUnmapped_pairs\t%d\t(%.3f)\nLow_qual_pairs\t%d\t(%.3f)\nUnique_paired_alignments\t%d\t(%.3f)\nMultiple_pairs_alignments\t%d\t(%.3f)\nLocal_alignments\t%d\t(%.3f)\nLocal_align_nocutSite\t%d\t(%.3f)\nReported pairs\t%d\t(%.3f)\n",$filePair, $tot_pairs_counter, $unmapped_pairs_counter, $unmapped_pairs_counter/$tot_pairs_counter*100, $lowq_pairs_counter, $lowq_pairs_counter/$tot_pairs_counter*100, $uniq_pairs_counter, $uniq_pairs_counter/$tot_pairs_counter*100, $multi_pairs_counter, $multi_pairs_counter/$tot_pairs_counter*100, $local_counter, $local_counter/$tot_pairs_counter*100, $cutSite_counter, $cutSite_counter/$tot_pairs_counter*100, $paired_reads_counter, $paired_reads_counter/$tot_pairs_counter*100);
     }
 }
 

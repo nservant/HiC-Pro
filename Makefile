@@ -42,7 +42,7 @@ PIC_DIR = $(MAPC_OUTPUT)/pic/$(RES_FILE_NAME)
 ##PROB_DIR = $(MAPC_OUTPUT)/prob_matrix/$(RES_FILE_NAME)
 MATRIX_DIR = $(MAPC_OUTPUT)/matrix/$(RES_FILE_NAME)/raw
 ICED_MATRIX_DIR = $(MAPC_OUTPUT)/matrix/$(RES_FILE_NAME)/iced
-LGF_MATRIX_DIR = $(MAPC_OUTPUT)/matrix/$(RES_FILE_NAME)/lgf
+##LGF_MATRIX_DIR = $(MAPC_OUTPUT)/matrix/$(RES_FILE_NAME)/lgf
 RDATA_DIR = $(MAPC_OUTPUT)/rdata/$(RES_FILE_NAME)
 
 
@@ -76,12 +76,12 @@ build_contact_maps: build_raw_maps ##matrix2RData
 
 ##norm: ICEnorm LGFnorm
 
-test_config:
-	$(SCRIPTS)/test_config.sh $(CONFIG_FILE)
+#test_config:
+#	$(SCRIPTS)/test_config.sh $(CONFIG_FILE)
 
 debug:
-	@echo $(RAW_DIR)
-	@echo $(READSFILE_FQ)
+	@echo "RAW_DIR="$(RAW_DIR)
+	@echo "FASTQ_FILE="$(READSFILE_FQ)
 
 
 ######################################
@@ -260,7 +260,7 @@ build_raw_maps:
 	@echo "--------------------------------------------" >> $(LOGFILE)
 	@date >> $(LOGFILE)
 	@echo "Generate binned matrix files ..." >> $(LOGFILE)
-	$(SCRIPTS)/assignRead2bins.sh -c $(CONFIG_FILE) > $(LOGS_DIR)/build_raw_maps.log ##-i $(DATA_DIR)/$(RES_FILE_NAME).$(ORGANISM).interaction -g $(ANNOT_DIR)/chrom.sizes
+	$(SCRIPTS)/assignRead2bins.sh -c $(CONFIG_FILE) 2> $(LOGS_DIR)/build_raw_maps.log
 
 # plot_FragmentInfo:
 # 	@echo "--------------------------------------------" >> $(LOGFILE)
