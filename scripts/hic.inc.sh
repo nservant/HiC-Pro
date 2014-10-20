@@ -1,8 +1,55 @@
-#
-# hic.inc.sh
-#
-# Eric Viara for Institut Curie, copyright (c) May 2014
-#
+##
+## hic.inc.sh
+##
+## Eric Viara for Institut Curie, copyright (c) May 2014
+## Modified Nicolas Servant Octobre 14 
+##
+
+###########################
+## Load Configuration
+###########################
+
+tmpfile1=/tmp/hic1.$$
+tmpfile2=/tmp/hic2.$$
+tmpmkfile=/tmp/hicmk.$$
+trap "rm -f $tmpfile1 $tmpfile2 $tmpmkfile" 0 1 2 3
+
+filter_config()
+{
+    sed -e 's/#.*//' | egrep '^[ \t]*[a-zA-Z_][a-zA-Z0-9_]*[ \t]*:?=' | sed -e 's/[ \t]*:=[ \t]*/ :=/' -e 's/[ \t][^:]*=[ \t]*/ =/' -e 's/\([^ \t]*\)=/\1 =/' | sort -u -k 1b,1
+
+}
+
+read_config()
+{
+    local conf=$1
+    cat $conf > $tmpmkfile
+    echo "_dummy_target_:" >> $tmpmkfile
+    make -f $tmpmkfile -p -n | filter_config > $tmpfile1
+    cat $conf | filter_config > $tmpfile2
+
+    eval "$(join $tmpfile1 $tmpfile2 | awk -F' =' '{printf("%s=\"%s\"; export %s;\n", $1, $2, $1)}')"
+
+    ## Define BOWTIE outputs
+    BOWTIE2_IDX=${BOWTIE2_IDX_PATH}/${ORGANISM}; export BOWTIE2_IDX
+    BOWTIE2_GLOBAL_OUTPUT_DIR=$BOWTIE2_OUTPUT_DIR/bwt2_global; export BOWTIE2_GLOBAL_OUTPUT_DIR
+    BOWTIE2_LOCAL_OUTPUT_DIR=$BOWTIE2_OUTPUT_DIR/bwt2_local; export BOWTIE2_LOCAL_OUTPUT_DIR
+    BOWTIE2_FINAL_OUTPUT_DIR=$BOWTIE2_OUTPUT_DIR/bwt2; export BOWTIE2_FINAL_OUTPUT_DIR
+ 
+    ## Clean RAW_DIR variable
+    RAW_DIR=$(echo $RAW_DIR | sed -e 's|^\./||')
+}
+
+## load config
+if [ ! -z "$CONF" ]; then
+    read_config $CONF
+fi
+
+
+###########################
+## Subroutine for scripts
+###########################
+
 
 exec_cmd()
 {
@@ -17,39 +64,6 @@ exec_ret()
     if [ -z "$DRY_RUN" ]; then
 	eval "$@"
     fi
-}
-
-filter_config()
-{
-    sed -e 's/#.*//' | egrep '^[ \t]*[a-zA-Z_][a-zA-Z0-9_]*[ \t]*:?=' | sed -e 's/[ \t]*:=[ \t]*/ :=/' -e 's/[ \t][^:]*=[ \t]*/ =/' -e 's/\([^ \t]*\)=/\1 =/' | sort -u -k 1b,1
-
-}
-
-tmpfile1=/tmp/hic1.$$
-tmpfile2=/tmp/hic2.$$
-tmpmkfile=/tmp/hicmk.$$
-
-trap "rm -f $tmpfile1 $tmpfile2 $tmpmkfile" 0 1 2 3
-
-#tmpfile1=/tmp/hic1
-#tmpfile2=/tmp/hic2
-#tmpmkfile=/tmp/hicmk
-
-read_config()
-{
-    local conf=$1
-    cat $conf > $tmpmkfile
-    echo "_dummy_target_:" >> $tmpmkfile
-    make -f $tmpmkfile -p -n | filter_config > $tmpfile1
-    cat $conf | filter_config > $tmpfile2
-
-    eval "$(join $tmpfile1 $tmpfile2 | awk -F' =' '{printf("%s=\"%s\"; export %s;\n", $1, $2, $1)}')"
-
-    BOWTIE2_IDX=${BOWTIE2_IDX_PATH}/${ORGANISM}; export BOWTIE2_IDX
-    BOWTIE2_GLOBAL_OUTPUT_DIR=$BOWTIE2_OUTPUT_DIR/bwt2_global; export BOWTIE2_GLOBAL_OUTPUT_DIR
-    BOWTIE2_LOCAL_OUTPUT_DIR=$BOWTIE2_OUTPUT_DIR/bwt2_local; export BOWTIE2_LOCAL_OUTPUT_DIR
-    BOWTIE2_FINAL_OUTPUT_DIR=$BOWTIE2_OUTPUT_DIR/bwt2; export BOWTIE2_FINAL_OUTPUT_DIR
-    RAW_DIR=$(echo $RAW_DIR | sed -e 's|^\./||')
 }
 
 add_ext()
@@ -77,33 +91,24 @@ add_fastq()
     add_ext $1 $2
 }
 
-pair1_ext=_R1
-pair2_ext=_R2
-
-must_filter_pairs=1
-
 get_R1()
 {
-    sed -e "s/${pair2_ext}/${pair1_ext}/"
+    sed -e "s/${PAIR2_EXT}/${PAIR1_EXT}/"
 }
 
 get_R2()
 {
-    sed -e "s/${pair1_ext}/${pair2_ext}/"
+    sed -e "s/${PAIR1_EXT}/${PAIR2_EXT}/"
 }
 
 get_pairs()
 {
-    sed -e "s/${pair1_ext}//;s/${pair2_ext}//"
+    sed -e "s/${PAIR1_EXT}//;s/${PAIR2_EXT}//"
 }
 
 filter_pairs()
 {
-    if [ $must_filter_pairs = 1 ]; then
 	get_R1 | sort -u
-    else
-	cat
-    fi
 }
 
 #
@@ -232,6 +237,5 @@ get_sam_for_combine()
 
 get_files_for_overlap()
 {
-    #pair=$1
-    get_hic_files ${BOWTIE2_FINAL_OUTPUT_DIR} _${ORGANISM}.bwt2pairs.sam
+    get_hic_files ${BOWTIE2_FINAL_OUTPUT_DIR} _${ORGANISM}.bwt2pairs.sam | get_R1 | sed -e "s/${PAIR1_EXT}//"
 }

@@ -272,7 +272,7 @@ def  getInteractionType( read1, read1_chrom, resfrag1, read2, read2_chrom, resfr
     elif r1.is_unmapped or r2.is_unmapped:
         InteractionType="SI"
                     
-    print read1.qname,"\t",chr1,"\t",read1.pos+1,"\t",strand1,"\t",resfrag1.value['name'],"|mm9|",chr1,":",resfrag1.start+1,"-",resfrag1.end,"\t",chr2,"\t",read2.pos+1,"\t",strand2,"\t",resfrag2.value['name'],"|mm9|",chr2,":",resfrag2.start+1,"-",resfrag2.end,InteractionType,"\n"
+    ##print read1.qname,"\t",chr1,"\t",read1.pos+1,"\t",strand1,"\t",resfrag1.value['name'],"|mm9|",chr1,":",resfrag1.start+1,"-",resfrag1.end,"\t",chr2,"\t",read2.pos+1,"\t",strand2,"\t",resfrag2.value['name'],"|mm9|",chr2,":",resfrag2.start+1,"-",resfrag2.end,InteractionType,"\n"
 
 
     return InteractionType

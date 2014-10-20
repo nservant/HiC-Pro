@@ -17,52 +17,54 @@ undsc := _
 ##
 #####################################
 
-ALL_CHRS := $(subst $(space),$(comma),$(patsubst %,chr%,$(MOUSE_CHRMS)))
+##ALL_CHRS := $(subst $(space),$(comma),$(patsubst %,chr%,$(MOUSE_CHRMS)))
+## ??
+#READSFILE_FQ := $(wildcard $(RAW_DIR)/*.f*q) 
+#READSFILE_FQ += $(wildcard $(RAW_DIR)/*.f*q.gz)
+#READSFILE_FQ_R1 := $(wildcard $(RAW_DIR)/*_R1_*.f*q)
+#READSFILE_FQ_R1 += $(wildcard $(RAW_DIR)/*_R1_*.f*q.gz)
+#READSFILE_FQ_R2 := $(wildcard $(RAW_DIR)/*_R2_*.f*q)
+#READSFILE_FQ_R2 += $(wildcard $(RAW_DIR)/*_R2_*.f*q.gz)
+## ??
 
-READSFILE_FQ := $(wildcard $(RAW_DIR)/*.f*q)
-READSFILE_FQ += $(wildcard $(RAW_DIR)/*.f*q.gz)
-READSFILE_FQ_R1 := $(wildcard $(RAW_DIR)/*_R1_*.f*q)
-READSFILE_FQ_R1 += $(wildcard $(RAW_DIR)/*_R1_*.f*q.gz)
-READSFILE_FQ_R2 := $(wildcard $(RAW_DIR)/*_R2_*.f*q)
-READSFILE_FQ_R2 += $(wildcard $(RAW_DIR)/*_R2_*.f*q.gz)
+#RES_FILE_NAME := $(notdir $(RAW_DIR))
+#RES_FILE_NAME_OBJ := $(subst $(tick),$(undsc),$(RES_FILE_NAME))
 
-RES_FILE_NAME := $(notdir $(RAW_DIR))
-RES_FILE_NAME_OBJ := $(subst $(tick),$(undsc),$(RES_FILE_NAME))
+##BOWTIE_GENOME_LOGFILE := $(LOGS_DIR)/bowtie_mapping
 
-BOWTIE_GENOME_LOGFILE := $(LOGS_DIR)/bowtie_mapping
-
-BOWTIE2_IDX = $(BOWTIE2_IDX_PATH)/$(ORGANISM)
-BOWTIE2_LOCAL_OUTPUT_DIR = $(BOWTIE2_OUTPUT_DIR)/bwt2_local/$(RES_FILE_NAME)
-BOWTIE2_GLOBAL_OUTPUT_DIR = $(BOWTIE2_OUTPUT_DIR)/bwt2_global/$(RES_FILE_NAME)
-BOWTIE2_FINAL_OUTPUT_DIR = $(BOWTIE2_OUTPUT_DIR)/bwt2/$(RES_FILE_NAME)
-UNMAP_READ_DIR = $(BOWTIE2_OUTPUT_DIR)/unmap/$(RES_FILE_NAME)
-DATA_DIR = $(MAPC_OUTPUT)/data/$(RES_FILE_NAME)
+#BOWTIE2_IDX = $(BOWTIE2_IDX_PATH)/$(ORGANISM)
+#BOWTIE2_LOCAL_OUTPUT_DIR = $(BOWTIE2_OUTPUT_DIR)/bwt2_local/$(RES_FILE_NAME)
+#BOWTIE2_GLOBAL_OUTPUT_DIR = $(BOWTIE2_OUTPUT_DIR)/bwt2_global/$(RES_FILE_NAME)
+#BOWTIE2_FINAL_OUTPUT_DIR = $(BOWTIE2_OUTPUT_DIR)/bwt2/$(RES_FILE_NAME)
+##UNMAP_READ_DIR = $(BOWTIE2_OUTPUT_DIR)/unmap/$(RES_FILE_NAME)
+#DATA_DIR = $(MAPC_OUTPUT)/data/$(RES_FILE_NAME)
 ##DOC_DIR = $(MAPC_OUTPUT)/doc/$(RES_FILE_NAME)
-PIC_DIR = $(MAPC_OUTPUT)/pic/$(RES_FILE_NAME)
+#PIC_DIR = $(MAPC_OUTPUT)/pic/$(RES_FILE_NAME)
 ##PROB_DIR = $(MAPC_OUTPUT)/prob_matrix/$(RES_FILE_NAME)
-MATRIX_DIR = $(MAPC_OUTPUT)/matrix/$(RES_FILE_NAME)/raw
-ICED_MATRIX_DIR = $(MAPC_OUTPUT)/matrix/$(RES_FILE_NAME)/iced
+#MATRIX_DIR = $(MAPC_OUTPUT)/matrix/$(RES_FILE_NAME)/raw
+#ICED_MATRIX_DIR = $(MAPC_OUTPUT)/matrix/$(RES_FILE_NAME)/iced
 ##LGF_MATRIX_DIR = $(MAPC_OUTPUT)/matrix/$(RES_FILE_NAME)/lgf
-RDATA_DIR = $(MAPC_OUTPUT)/rdata/$(RES_FILE_NAME)
+##RDATA_DIR = $(MAPC_OUTPUT)/rdata/$(RES_FILE_NAME)
 
+##??
+##GLOBAL_SAM=$(patsubst %, $(BOWTIE2_GLOBAL_OUTPUT_DIR)/%_$(ORGANISM).bwt2glob.sam, $(basename $(notdir $(READSFILE_FQ))))
+##GLOBAL_BAM=$(GLOBAL_SAM:.sam=.bam)
+##GLOBAL_PROCESS=$(GLOBAL_SAM:.sam=.aln)
 
-GLOBAL_SAM=$(patsubst %, $(BOWTIE2_GLOBAL_OUTPUT_DIR)/%_$(ORGANISM).bwt2glob.sam, $(basename $(notdir $(READSFILE_FQ))))
-GLOBAL_BAM=$(GLOBAL_SAM:.sam=.bam)
-GLOBAL_PROCESS=$(GLOBAL_SAM:.sam=.aln)
-
-PROCESS_PREFIX=$(patsubst %, $(BOWTIE2_GLOBAL_OUTPUT_DIR)/%_$(ORGANISM).bwt2glob.sam, $(basename $(notdir $(READSFILE_FQ))))
-
+##PROCESS_PREFIX=$(patsubst %, $(BOWTIE2_GLOBAL_OUTPUT_DIR)/%_$(ORGANISM).bwt2glob.sam, $(basename $(notdir $(READSFILE_FQ))))
+##??
 
 all : init mapping proc_hic build_contact_maps clean
+
+all_qsub : init mapping proc_hic
 
 init : configure src_compile
 
 mapping: bowtie_global bowtie_local merge_global_local mapping_stat ##plot_MappingProportion 
 
-proc_hic : bowtie_pairing mapped2HiCFragments merge_rmdup
+proc_hic : bowtie_pairing mapped2HiCFragments 
 
-build_contact_maps: build_raw_maps ##matrix2RData
-
+build_contact_maps: merge_rmdup build_raw_maps ##matrix2RData
 
 ##mapping_prep_hic: mapping_noplot prep_hic
 
@@ -82,7 +84,8 @@ build_contact_maps: build_raw_maps ##matrix2RData
 debug:
 	@echo "RAW_DIR="$(RAW_DIR)
 	@echo "FASTQ_FILE="$(READSFILE_FQ)
-
+	@echo "RES_FILE="$(RES_FILE_NAME)
+	@echo "RES_FILE_OBJ="$(RES_FILE_NAME_OBJ)
 
 ######################################
 ## System
@@ -93,8 +96,8 @@ make_torque_script:
 	@$(SCRIPTS)/make_torque_script.sh -c $(CONFIG_FILE) $(TORQUE_SUFFIX)
 
 clean:
-	/bin/rm -f $(BOWTIE2_GLOBAL_OUTPUT_DIR)/*.sam
-	/bin/rm -f $(BOWTIE2_LOCAL_OUTPUT_DIR)/*.sam
+	#/bin/rm -f $(BOWTIE2_GLOBAL_OUTPUT_DIR)/*.sam
+	#/bin/rm -f $(BOWTIE2_LOCAL_OUTPUT_DIR)/*.sam
 
 reset: 
 ifdef LOGS_DIR
@@ -113,15 +116,15 @@ endif
 	mkdir -p $(BOWTIE2_OUTPUT_DIR)
 	mkdir -p $(MAPC_OUTPUT)
 	mkdir -p $(TMP_DIR)
-	mkdir -p $(DATA_DIR)
-	mkdir -p $(PIC_DIR)
-	mkdir -p $(MATRIX_DIR)
-	mkdir -p $(ICED_MATRIX_DIR)
+	#mkdir -p $(DATA_DIR)
+	#mkdir -p $(PIC_DIR)
+	#mkdir -p $(MATRIX_DIR)
+	#mkdir -p $(ICED_MATRIX_DIR)
 	mkdir -p $(LOGS_DIR)
 	@echo "## Hi-C Mapping $(VERSION)" > $(LOGFILE)
 	@date >> $(LOGFILE)
-	@echo "\n## INPUT FILES :" >> $(LOGFILE)
-	@echo $(READSFILE_FQ)  >> $(LOGFILE)
+	#@echo "\n## INPUT FILES :" >> $(LOGFILE)
+	#@echo $(READSFILE_FQ)  >> $(LOGFILE)
 
 ######################################
 ## Compile

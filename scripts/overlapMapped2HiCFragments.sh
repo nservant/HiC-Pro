@@ -4,7 +4,7 @@
 
 dir=$(dirname $0)
 
-. $dir/hic.inc.sh
+##. $dir/hic.inc.sh
 
 while [ $# -gt 0 ]
 do
@@ -17,7 +17,8 @@ do
     shift
 done
 
-read_config $ncrna_conf
+##read_config $ncrna_conf
+CONF=$ncrna_conf . $dir/hic.inc.sh
 
 opts="-v"
 if [[ "${GET_ALL_INTERACTION_CLASSES}" -eq "1" ]]; then opts=$opts" -a"; fi
@@ -25,7 +26,7 @@ if [[ "${GET_PROCESS_SAM}" -eq "1" ]]; then opts=$opts" -S"; fi
 if [[ "${MIN_INSERT_SIZE}" -ge "0" ]]; then opts=$opts" -s ${MIN_INSERT_SIZE}"; fi
 if [[ "${MAX_INSERT_SIZE}" -ge "0" ]]; then opts=$opts" -l ${MAX_INSERT_SIZE}"; fi
 
-for r in $(get_files_for_overlap 1)
+for r in $(get_files_for_overlap)
 do
     sample_dir=$(get_sample_dir ${r})
     datadir=${MAPC_OUTPUT}/data/${sample_dir}
@@ -37,17 +38,17 @@ do
     ## Valid pairs are already sorted
     outVALID=`basename ${r} | sed -e 's/.sam$/.validPairs/'`
     outSAM=`basename ${r} | sed -e 's/.sam$/_interaction.sam/'`
-    preBAM=`basename ${r} | sed -e 's/.sam$/_interaction/'`
-
+    sortBAM=`basename ${r} | sed -e 's/.sam$/_interaction/'`
+    
     echo "## Sorting valid interaction file ..."
     sort -k2,2V -k3,3n -k5,5V -k6,6n -o ${datadir}/${outVALID} ${datadir}/${outVALID} 
 
     echo "## Creating BAM and index files ..."
     if [ -f ${datadir}/${outSAM} ]
     then 
-	cmd="${SAMTOOLS_PATH}/samtools view -bS ${datadir}/${outSAM} | ${SAMTOOLS_PATH}/samtools sort - ${datadir}/${preBAM}"
+	cmd="${SAMTOOLS_PATH}/samtools view -bS ${datadir}/${outSAM} | ${SAMTOOLS_PATH}/samtools sort - ${datadir}/${sortBAM}"
 	exec_cmd $cmd
-	cmd="${SAMTOOLS_PATH}/samtools index ${datadir}/${preBAM}.bam"
+	cmd="${SAMTOOLS_PATH}/samtools index ${datadir}/${sortBAM}.bam"
 	exec_cmd $cmd
     fi
 done
