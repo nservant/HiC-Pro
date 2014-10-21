@@ -1,7 +1,7 @@
 # Please change the variable settings below if necessary
 
 #########################################################################
-## Paths and Settings  - Do not edit
+## Paths and Settings  - Do not edit !
 #########################################################################
 
 SCRIPTS = scripts
@@ -27,7 +27,9 @@ LOGFILE = hic_pipeline_test_SRR941287.log
 ## Data
 #########################################################################
 
-RAW_DIR = ./rawdata/test_SRR941287
+RAW_DIR = ./rawdata
+PAIR1_EXT = _R1
+PAIR2_EXT = _R2
 
 #######################################################################
 ## Alignment options
@@ -40,21 +42,22 @@ CUT_SITE_5OVER = AGCTT
 
 BOWTIE2_IDX_PATH = /data/annotations/Mouse/mm9/bowtie2_indexes
 BOWTIE2_GLOBAL_OPTIONS = -N 0 -L 25 --fast --end-to-end --reorder
-BOWTIE2_LOCAL_OPTIONS = -N 0 -L 30 --sensitive-local --local --mp 100,100 --np 100 --rdg 100,100 --rfg 100,100 --score-min G,20,10 --reorder
+BOWTIE2_LOCAL_OPTIONS = -N 0 -L 30 --sensitive-local --local --mp 100,100 --np 100 --rdg 100,100 --rfg 100,100 --reorder
 
-## LOCAL
+## GLOBAL
 ## No mismatch in the seed (25nt). Only one mismatch is allowed in the full alignment.
 ## --very-fast Same as: -D 5 -R 1 -N 0 -L 22 -i S,0,2.50
 ## --fast Same as: -D 10 -R 2 -N 0 -L 22 -i S,0,2.50
 ## --sensitive Same as: -D 15 -R 2 -L 22 -i S,1,1.15 (default in --end-to-end mode)
 ## --very-sensitive Same as: -D 20 -R 3 -N 0 -L 20 -i S,1,0.50
 ##
-## GLOBAL
+## LOCAL
 ## No mismatch in the seed (30nt). Only perfect alignments are reported.
 ## --very-fast-local Same as: -D 5 -R 1 -N 0 -L 25 -i S,1,2.00
 ## --fast-local Same as: -D 10 -R 2 -N 0 -L 22 -i S,1,1.75
 ## --sensitive-local Same as: -D 15 -R 2 -N 0 -L 20 -i S,1,0.75 (default in --local mode)
 ## --very-sensitive-local Same as: -D 20 -R 3 -N 0 -L 20 -i S,1,0.50
+
 ##BOWTIE2_GLOBAL_OPTIONS = -N 0 -L 25 -D 1 -R 1 -i S,0,2.50 --end-to-end --mp 5,5 --np 5 --rdg 5,5 --rfg 5,5 --score-min L,-5,0 --reorder
 ##BOWTIE2_LOCAL_OPTIONS = -N 0 -L 30 -D 1 -R 1 -i S,1,0.75 --local --mp 100,100 --np 100 --rdg 100,100 --rfg 100,100 --score-min G,20,10 --reorder
 
@@ -63,9 +66,8 @@ BOWTIE2_LOCAL_OPTIONS = -N 0 -L 30 --sensitive-local --local --mp 100,100 --np 1
 #######################################################################
 
 ORGANISM = mm9
-GENOME_FRAGMENT = /data/tmp/HiC-pipeline/v2.1/annotation/HindIII_resfrag_mm9.bed
-GENOME_SIZE = /data/tmp/HiC-pipeline/v2.1/annotation/chrom_mm9.sizes
-GENOME_CHRMS = 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 X Y
+GENOME_FRAGMENT = annotation/HindIII_resfrag_mm9.bed
+GENOME_SIZE = annotation/chrom_mm9.sizes
 
 #######################################################################
 ## Hi-C processing
@@ -84,7 +86,6 @@ RMDUP = 1
 BIN_SIZE = 5500000 300000 1400000 140000 40000 20000
 BIN_STEP = 1
 BIN_OPTS = ##--binAdjust
-MAPS = cis
 
 
 

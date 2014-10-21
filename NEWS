@@ -2,25 +2,34 @@
 CHANGES IN VERSION 2.1
 
 NEW FEATURES
+
    o Check cutSite for local mapped reads (mergeSAM.pl)
+
    o New output option for overlapMapped2HiCFragment.py --samOutput
+
    o Change read position used for fragment overlap (middle instead of 5' end to avoid cutting site sequencing)
 
    o Remove file conversion sam to .aln
+
    o Additional filters on MAPQ (mergeSAM.pl)
+
    o Additional check to discard invalid reads pair (mergeSAM.pl)
 
 ***********************************
 CHANGES IN VERSION 2.0
 
 NEW FEATURES
+
    o Major release by E. Viara
+
    o New parallelized version of the pipeline. The workflow is parallelized by read pairs from the alignment, to the list of valid interactions
+
    o New version of build_matrix tool written in C++
 
 ***********************************
 CHANGES IN VERSION 1.0
 
 NEW FEATURES
+
    o First version of the pipeline
 

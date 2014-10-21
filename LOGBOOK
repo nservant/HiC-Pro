@@ -9,6 +9,8 @@
 
    o Test on large data
    o Try to change the bowtie 2 options
+   o Write mergeSAM.pl in python
+   o Add R plots for QC
 
 ################################################################################
 ##
