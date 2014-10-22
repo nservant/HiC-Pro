@@ -6,7 +6,7 @@
 
 dir=$(dirname $0)
 
-. $dir/hic.inc.sh
+#. $dir/hic.inc.sh
 
 ## Usage
 function usage {
@@ -22,7 +22,7 @@ mode=global
 while [ $# -gt 0 ]
 do
     case "$1" in
-	(-c) ncrna_conf=$2; shift;;
+	(-c) conf_file=$2; shift;;
 	(-i) input_dir=$2; shift;;
 	(-o) output_dir=$2; shift;;
 	(-l) mode=local; shift;;
@@ -34,7 +34,8 @@ do
     shift
 done
 
-read_config $ncrna_conf
+##read_config $ncrna_conf
+CONF=$conf_file . $dir/hic.inc.sh
 
 ##
 ## Mapping stat

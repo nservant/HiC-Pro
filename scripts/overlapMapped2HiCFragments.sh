@@ -4,12 +4,10 @@
 
 dir=$(dirname $0)
 
-##. $dir/hic.inc.sh
-
 while [ $# -gt 0 ]
 do
     case "$1" in
-	(-c) ncrna_conf=$2; shift;;
+	(-c) conf_file=$2; shift;;
 	(--) shift; break;;
 	(-*) echo "$0: error - unrecognized option $1" 1>&2; exit 1;;
 	(*)  break;;
@@ -18,7 +16,7 @@ do
 done
 
 ##read_config $ncrna_conf
-CONF=$ncrna_conf . $dir/hic.inc.sh
+CONF=$conf_file . $dir/hic.inc.sh
 
 opts="-v"
 if [[ "${GET_ALL_INTERACTION_CLASSES}" -eq "1" ]]; then opts=$opts" -a"; fi

@@ -4,7 +4,7 @@
 
 dir=$(dirname $0)
 
-. $dir/hic.inc.sh
+##. $dir/hic.inc.sh
 
 usage()
 {
@@ -14,7 +14,7 @@ usage()
 while [ $# -gt 0 ]
 do
     case "$1" in
-	(-c) ncrna_conf=$2; shift;;
+	(-c) conf_file=$2; shift;;
 	(--) shift; break;;
 	(-*) echo "$0: error - unrecognized option $1" 1>&2; exit 1;;
 	(*)  suffix=$1; break;;
@@ -25,6 +25,7 @@ done
 if [ -z "$suffix" -o -z "$ncrna_conf" ]; then usage; exit 1; fi
 
 read_config $ncrna_conf
+CONF=$conf_file . $dir/hic.inc.sh
 
 unset FASTQFILE
 

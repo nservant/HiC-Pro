@@ -1,7 +1,10 @@
+## Nicolas Servant
+## Plot mapping proportion
+
+
 rm(list=ls())
 require(RColorBrewer)
 
-### were additional arguments to R CMD BATCH given ?
 args <- commandArgs(TRUE)
 la <- length(args)
 if (la > 0){
@@ -24,8 +27,6 @@ plotMappingStat <- function(bg, bl, bm, xlab, legend=FALSE){
     nl.map.perc <-  round(100*nl.map/(n), digits=1)
     
     stopifnot(ng.map+nl.map == n.map)
-
-    ## Create barplot plot for  mapping:
 
     sel.colours <- brewer.pal(6,"Blues")
     mat <- matrix(c(n.map, 0, 0, n.unmap, 0, ng.map, nl.map, n.unmap), ncol=2)

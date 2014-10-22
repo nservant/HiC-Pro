@@ -2,11 +2,6 @@
 ## Nicolas Servant
 
 ## DO NOT EDIT THE REST OF THIS FILE!!
-ifndef CONFIG_FILE
-	$(error CONFIG_FILE is not defined)
-else
-	include $(CONFIG_FILE)
-endif
 
 ## special characters
 comma := ,
@@ -38,11 +33,17 @@ debug:
 ## System
 ##
 ######################################
+config_check:
+ifndef CONFIG_FILE
+	$(error CONFIG_FILE is not defined)
+else
+	include $(CONFIG_FILE)
+endif
 
-make_torque_script:
+make_torque_script: config_check
 	@$(SCRIPTS)/make_torque_script.sh -c $(CONFIG_FILE) $(TORQUE_SUFFIX)
 
-clean:
+clean:  config_check
 ifdef $(BOWTIE2_OUTPUT_DIR)
 	/bin/rm -f $(BOWTIE2_OUTPUT_DIR)/*/*/*.sam
 endif
@@ -60,7 +61,7 @@ reset: clean
 ######################################
 
 ## Create output folders
-configure:
+configure:  config_check
 	mkdir -p $(BOWTIE2_OUTPUT_DIR)
 	mkdir -p $(MAPC_OUTPUT)
 	mkdir -p $(TMP_DIR)
@@ -84,7 +85,7 @@ src_compile: $(SOURCES)/build_matrix.cpp
 ######################################
 
 ## Global Alignement
-bowtie_global:
+bowtie_global:  config_check
 	@echo "--------------------------------------------" >> $(LOGFILE)
 	@date >> $(LOGFILE)
 	@echo "Bowtie2 global alignment ..." >> $(LOGFILE)
@@ -96,7 +97,7 @@ bowtie_global:
 ######################################
 
 ## Local Alignement
-bowtie_local:
+bowtie_local:  config_check
 	@echo "--------------------------------------------" >> $(LOGFILE)
 	@date >> $(LOGFILE)
 	@echo "Bowtie2 local alignment ..." >> $(LOGFILE)
@@ -108,24 +109,24 @@ bowtie_local:
 ######################################
 
 ## Merge global and local alignment in a single file
-merge_global_local:
+merge_global_local:  config_check
 	@echo "--------------------------------------------" >> $(LOGFILE)
 	@date >> $(LOGFILE)
 	@echo "Merge both alignment ..." >> $(LOGFILE)
 	$(SCRIPTS)/bowtie_combine.sh -c $(CONFIG_FILE)
 
 ## Compute mapping statistics
-mapping_stat:
+mapping_stat:  config_check
 	@echo "--------------------------------------------" >> $(LOGFILE)
 	@date >> $(LOGFILE)
 	@echo "Bowtie2 mapping statistics for R1 and R2 tags ..." >> $(LOGFILE)
 	$(SCRIPTS)/mapping_stat.sh -c $(CONFIG_FILE)
 
-# plot_MappingProportion:
-# 	@echo "--------------------------------------------" >> $(LOGFILE)
-# 	@date >> $(LOGFILE)
-# 	@echo "Plot Mapping Proportion ..." >> $(LOGFILE)
-# 	$(SCRIPTS)/plotMappingPortion.sh -c $(CURDIR)/$(CONFIG_FILE)
+plot_MappingProportion:
+	@echo "--------------------------------------------" >> $(LOGFILE)
+	@date >> $(LOGFILE)
+	@echo "Plot Mapping Proportion ..." >> $(LOGFILE)
+	$(SCRIPTS)/plotMappingPortion.sh -c $(CURDIR)/$(CONFIG_FILE)
 
 
 ######################################
@@ -134,21 +135,21 @@ mapping_stat:
 ######################################
 
 ## Pairing of R1 and R2 mates and reads filtering
-bowtie_pairing:
+bowtie_pairing:  config_check
 	@echo "--------------------------------------------" >> $(LOGFILE)
 	@date >> $(LOGFILE)
 	@echo "Pairing of R1 and R2 tags ..." >> $(LOGFILE)
 	$(SCRIPTS)/bowtie_pairing.sh -c $(CONFIG_FILE)
 
 ## Assign alignments to regions segmented by HindIII sites
-mapped2HiCFragments:
+mapped2HiCFragments:  config_check
 	@echo "--------------------------------------------" >> $(LOGFILE)
 	@date >> $(LOGFILE)
 	@echo "Assign alignments to HindIII sites ..." >> $(LOGFILE)
 	$(SCRIPTS)/overlapMapped2HiCFragments.sh -c $(CONFIG_FILE) > $(LOGS_DIR)/overlapRS.log
 
 ## Combine multiple BAM files from the same sample, and remove duplicates
-merge_rmdup:
+merge_rmdup:  config_check
 	@echo "--------------------------------------------" >> $(LOGFILE)
 	@date >> $(LOGFILE)
 	@echo "Merge multiple files from the same sample ..." >> $(LOGFILE)
@@ -160,7 +161,7 @@ merge_rmdup:
 # 	@echo "Merge multiple files from the same sample ..." >> $(LOGFILE)
 # 	$(SCRIPTS)/mergeValidInteractions_v2.sh -c $(CONFIG_FILE) > $(LOGS_DIR)/mergeMulti_v2.log
 
-build_raw_maps:
+build_raw_maps:  config_check
 	@echo "--------------------------------------------" >> $(LOGFILE)
 	@date >> $(LOGFILE)
 	@echo "Generate binned matrix files ..." >> $(LOGFILE)

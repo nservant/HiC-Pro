@@ -4,14 +4,14 @@
 
 dir=$(dirname $0)
 
-. $dir/hic.inc.sh
+##. $dir/hic.inc.sh
 
 ################### Initialize ###################
 
 while [ $# -gt 0 ]
 do
     case "$1" in
-	(-c) ncrna_conf=$2; shift;;
+	(-c) conf_file=$2; shift;;
 	(-h) usage;;
 	(--) shift; break;;
 	(-*) echo "$0: error - unrecognized option $1" 1>&2; exit 1;;
@@ -22,7 +22,8 @@ done
 
 ################### Read the config file ###################
 
-read_config $ncrna_conf
+##read_config $ncrna_conf
+CONF=$conf_file . $dir/hic.inc.sh
 
 ################### Define Variables ###################
 

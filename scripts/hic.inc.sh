@@ -45,7 +45,6 @@ if [ ! -z "$CONF" ]; then
     read_config $CONF
 fi
 
-
 ###########################
 ## Subroutine for scripts
 ###########################
@@ -213,11 +212,7 @@ get_stat_file()
     local sample_dir=$(get_sample_dir ${file})
     local prefix=$(echo ${sample_dir}/$(basename $file) | sed -e 's/.bwt2glob.sam//')
 
-    #if [ "$mode" = local ]; then
-	echo ${BOWTIE2_FINAL_OUTPUT_DIR}/$prefix.mapstat
-    #else
-#	echo ${BOWTIE2_GLOBAL_OUTPUT_DIR}/$prefix.mapstat
- #   fi
+    echo ${BOWTIE2_FINAL_OUTPUT_DIR}/$prefix.mapstat
 }
 
 get_sam_for_merge()
@@ -229,11 +224,6 @@ get_sam_for_combine()
 {
     get_hic_files ${BOWTIE2_GLOBAL_OUTPUT_DIR} _${ORGANISM}.bwt2glob.sam   
 }
-
-#get_aln_for_separatePE()
-#{
-#    get_hic_files ${BOWTIE2_FINAL_OUTPUT_DIR} _${ORGANISM}_bwt2merged.aln
-#}
 
 get_files_for_overlap()
 {

@@ -5,14 +5,14 @@
 
 ## Init
 dir=$(dirname $0)
-. $dir/hic.inc.sh
+##. $dir/hic.inc.sh
 MODE='global'
 
 ## Get args
 while [ $# -gt 0 ]
 do
     case "$1" in
-	(-c) CONF=$2; shift;;
+	(-c) conf_file=$2; shift;;
 	(-l) MODE='local'; shift;;
 	(-p) FASTQLIST=$2; shift;;
 	(-u) UNMAP=1; shift;;
@@ -25,7 +25,8 @@ do
 done
 
 ## Read configuration files
-read_config $CONF
+##read_config $CONF
+CONF=$conf_file . $dir/hic.inc.sh
 
 ## Bowtie2 wrapper
 ## Global Alignment
@@ -90,7 +91,7 @@ echo "BOWTIE_FASTQ_WRAP mode $MODE"
 if [[ ${MODE} == 'global' ]]; then
     for r in $(get_fastq_for_bowtie_global)
     do
-	R1=$r
+       	R1=$r
 	R2=$(echo $r | get_R2)
 	sample_dir=$(get_sample_dir $r)
 	prefix1=$(basename ${R1} | sed -e 's/.fastq//')

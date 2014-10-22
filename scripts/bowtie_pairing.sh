@@ -4,12 +4,12 @@
 ##
 
 dir=$(dirname $0)
-. $dir/hic.inc.sh
+##. $dir/hic.inc.sh
 
 while [ $# -gt 0 ]
 do
     case "$1" in
-	(-c) CONF=$2; shift;;
+	(-c) conf_file=$2; shift;;
 	(-h) usage;;
 	(--) shift; break;;
 	(-*) echo "$0: error - unrecognized option $1" 1>&2; exit 1;;
@@ -18,7 +18,8 @@ do
     shift
 done
 
-read_config $CONF
+##read_config $CONF
+CONF=$conf_file . $dir/hic.inc.sh
 
 ##
 ## Merge SE file into one PE file and filter the reads
