@@ -90,7 +90,7 @@ sub paire_sam{
 	    @f_split_read=split /\t/, $f_read;
 	    $f_read_id = $f_split_read[0];
 	    
-	    print "f=$f_read_id\n";
+	    #print "f=$f_read_id\n";
 
 	    while ($r_read_id ne $f_read_id){    
 		$r_read = scalar <REVERSE> or last;
@@ -103,10 +103,10 @@ sub paire_sam{
 		    @r_split_read=split /\t/, $r_read;
 		    $r_read_id = $r_split_read[0];
 		}
-			print "r=$r_read_id\n";
+		##print "r=$r_read_id\n";
 
 		if($f_read_id eq $r_read_id){
-		    print "EQUAL\n";
+		  ##  print "EQUAL\n";
 		    $isMulti=0;
 		    $tot_pairs_counter++;
 		    @f_split_read = split /\t/, $f_read;

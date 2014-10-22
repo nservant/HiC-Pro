@@ -35,9 +35,9 @@ debug:
 ######################################
 config_check:
 ifndef CONFIG_FILE
-	$(error CONFIG_FILE is not defined)
+$(error CONFIG_FILE is not defined)
 else
-	include $(CONFIG_FILE)
+include $(CONFIG_FILE)
 endif
 
 make_torque_script: config_check
@@ -47,12 +47,12 @@ clean:  config_check
 ifdef $(BOWTIE2_OUTPUT_DIR)
 	/bin/rm -f $(BOWTIE2_OUTPUT_DIR)/*/*/*.sam
 endif
+
+reset: 
 ifdef LOGS_DIR
 	/bin/rm -f $(LOGS_DIR)/*
 endif
-
-reset: clean
-	/bin/rm -rf bowtie_results hic_results $(LOGS_DIR)/*
+	/bin/rm -rf bowtie_results hic_results
 
 
 ######################################

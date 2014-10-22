@@ -38,6 +38,12 @@ mapping_combine()
     cmd="${SAMTOOLS_PATH}/samtools merge -n -f ${BOWTIE2_FINAL_OUTPUT_DIR}/${prefix}.bwt2merged.bam ${BOWTIE2_GLOBAL_OUTPUT_DIR}/${prefix}.bwt2glob.bam ${BOWTIE2_LOCAL_OUTPUT_DIR}/${prefix}.bwt2glob.unmap_bwt2loc.bam "
     exec_cmd $cmd
 
+    ## Sort merge file. In theory, should be perform by "merge -n", but do not work in some cases ... depending on read name ?
+    cmd="${SAMTOOLS_PATH}/samtools sort -n ${BOWTIE2_FINAL_OUTPUT_DIR}/${prefix}.bwt2merged.bam ${BOWTIE2_FINAL_OUTPUT_DIR}/${prefix}.bwt2merged.sorted"
+    exec_cmd $cmd
+    cmd="mv ${BOWTIE2_FINAL_OUTPUT_DIR}/${prefix}.bwt2merged.sorted.bam ${BOWTIE2_FINAL_OUTPUT_DIR}/${prefix}.bwt2merged.bam"
+    exec_cmd $cmd
+
     ## Generate SAM files with header
     cmd="${SAMTOOLS_PATH}/samtools view -h ${BOWTIE2_FINAL_OUTPUT_DIR}/${prefix}.bwt2merged.bam > ${BOWTIE2_FINAL_OUTPUT_DIR}/${prefix}.bwt2merged.sam"
     exec_cmd $cmd 
