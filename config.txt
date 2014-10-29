@@ -11,7 +11,7 @@ ANNOT_DIR = annotation
 LOGS_DIR = logs
 BOWTIE2_OUTPUT_DIR = bowtie_results
 MAPC_OUTPUT = hic_results
-VERSION = 2.1
+VERSION = 2.2
 
 #########################################################################
 ## Paths and Settings  - Start editing here !
