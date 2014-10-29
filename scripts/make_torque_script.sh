@@ -22,9 +22,9 @@ do
     shift
 done
 
-if [ -z "$suffix" -o -z "$ncrna_conf" ]; then usage; exit 1; fi
+if [ -z "$suffix" -o -z "$conf_file" ]; then usage; exit 1; fi
 
-read_config $ncrna_conf
+##read_config $conf_file
 CONF=$conf_file . $dir/hic.inc.sh
 
 unset FASTQFILE
@@ -53,7 +53,7 @@ cat > ${torque_script} <<EOF
 cd \$PBS_O_WORKDIR
 
 FASTQFILE=\$PBS_O_WORKDIR/$fastqfile; export FASTQFILE
-make CONFIG_FILE=${ncrna_conf} all_qsub
+make CONFIG_FILE=${conf_file} all_qsub
 EOF
 
 chmod +x ${torque_script}

@@ -24,8 +24,13 @@ if [[ "${GET_PROCESS_SAM}" -eq "1" ]]; then opts=$opts" -S"; fi
 if [[ "${MIN_INSERT_SIZE}" -ge "0" ]]; then opts=$opts" -s ${MIN_INSERT_SIZE}"; fi
 if [[ "${MAX_INSERT_SIZE}" -ge "0" ]]; then opts=$opts" -l ${MAX_INSERT_SIZE}"; fi
 
+echo "input"
+echo $(get_files_for_overlap)
+
+
 for r in $(get_files_for_overlap)
 do
+    echo $r
     sample_dir=$(get_sample_dir ${r})
     datadir=${MAPC_OUTPUT}/data/${sample_dir}
     mkdir -p ${datadir}

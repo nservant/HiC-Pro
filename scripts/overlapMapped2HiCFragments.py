@@ -454,18 +454,20 @@ if allOutput:
     handle_dump.close()
     handle_single.close()
 
-if verbose:
-    ##print "Pairs with local mapping sites\t", bowloc_counter
-    ##print "Local mapped pairs overlapping the restriction site\t", cutsite_counter
-    print "Valid interaction pairs\t", valid_counter
-    print "Valid interaction pairs FF\t", valid_counter_FF
-    print "Valid interaction pairs RR\t", valid_counter_RR
-    print "Valid interaction pairs RF\t", valid_counter_RF
-    print "Valid interaction pairs FR\t", valid_counter_FR
-    print "Dangling end pairs\t", de_counter
-    print "Self Cycle pairs\t", sc_counter
-    print "Single-end pairs\t", single_counter
-    print "Dumped pairs\t", dump_counter, "\n"
+## Write stats file
+handle_stat = open(outputDir + '/' + baseReadsFile + '.RSstat', 'w')
+handle_stat.write("## Hi-C processing\n")
+handle_stat.write("Valid_interaction_pairs\t" + str(valid_counter) + "\n")
+handle_stat.write("Valid_interaction_pairs_FF\t" + str(valid_counter_FF) + "\n")
+handle_stat.write("Valid_interaction_pairs_RR\t" + str(valid_counter_RR) + "\n")
+handle_stat.write("Valid_interaction_pairs_RF\t" + str(valid_counter_RF) + "\n")
+handle_stat.write("Valid_interaction_pairs_FR\t" + str(valid_counter_FR) + "\n")
+handle_stat.write("Dangling_end_pairs\t" + str(de_counter) + "\n")
+handle_stat.write("Self_Cycle_pairs\t" + str(sc_counter) + "\n")
+handle_stat.write("Single-end_pairs\t" + str(single_counter) + "\n")
+handle_stat.write("Dumped_pairs\t" + str(dump_counter) + "\n")
+handle_stat.close()
 
 
-samfile.close()
+if samOut:
+    samfile.close()

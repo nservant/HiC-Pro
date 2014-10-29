@@ -1,9 +1,6 @@
 ## Nicolas Servant
 ## Plot mapping proportion
-
-
 rm(list=ls())
-require(RColorBrewer)
 
 args <- commandArgs(TRUE)
 la <- length(args)
@@ -12,70 +9,138 @@ if (la > 0){
     eval(parse(text=args[[i]]))
 }
 
-bwt_glob <- file.path(bwtDir, "bwt2_global", sampleName)
-bwt_loc <- file.path(bwtDir, "bwt2_local", sampleName)
-bwt_merge <- file.path(bwtDir, "bwt2", sampleName)
+## Multiple plot function
+##
+## ggplot objects can be passed in ..., or to plotlist (as a list of ggplot objects)
+## - cols:   Number of columns in layout
+## - layout: A matrix specifying the layout. If present, 'cols' is ignored.
+##
+## If the layout is something like matrix(c(1,2,3,3), nrow=2, byrow=TRUE),
+## then plot 1 will go in the upper left, 2 will go in the upper right, and
+## 3 will go all the way across the bottom.
+##
+multiplot <- function(..., plotlist=NULL, file, cols=1, layout=NULL) {
+  require(grid)
 
-plotMappingStat <- function(bg, bl, bm, xlab, legend=FALSE){
-    n <- sum(bm[,2])
-    n.map <- sum(bm[which(bm[,1]=="Uniquely_Mapped"),2])
-    n.unmap <- n - n.map
-    n.map.perc <- round(100*n.map/n, digits=1)
-    ng.map <- sum(bg[which(bg[,1]=="Uniquely_Mapped"),2])
-    ng.map.perc <-  round(100*ng.map/(n), digits=1)
-    nl.map <- sum(bl[which(bl[,1]=="Uniquely_Mapped"),2])
-    nl.map.perc <-  round(100*nl.map/(n), digits=1)
-    
-    stopifnot(ng.map+nl.map == n.map)
+  # Make a list from the ... arguments and plotlist
+  plots <- c(list(...), plotlist)
+  numPlots = length(plots)
 
-    sel.colours <- brewer.pal(6,"Blues")
-    mat <- matrix(c(n.map, 0, 0, n.unmap, 0, ng.map, nl.map, n.unmap), ncol=2)
-    xpos <- barplot(mat, col=c(sel.colours[6:4],"gray"), ylab="Number of Reads",
-                    las=2, xlab=xlab, cex.axis=.7, cex.lab=.7, cex.names=.8, xlim=c(0,4))
-    
-    mtext(side=1, line=-1.3, at=xpos, text=paste(c(n.map.perc, ng.map.perc),"%",sep=""), font=2)
-    text(x=xpos[2],y=ng.map, labels=paste(nl.map.perc,"%",sep=""), font=2, pos=3)
-    text(x=xpos,y=n.map, labels=paste(100-n.map.perc,"%",sep=""), font=2, pos=3)
+  # If layout is NULL, then use 'cols' to determine layout
+  if (is.null(layout)) {
+    # Make the panel
+    # ncol: Number of columns of plots
+    # nrow: Number of rows needed, calculated from # of cols
+    layout <- matrix(seq(1, cols * ceiling(numPlots/cols)),
+                    ncol = cols, nrow = ceiling(numPlots/cols))
+  }
+ if (numPlots==1) {
+    print(plots[[1]])
 
-    legend(x="topright", legend=c("Unique matches(%)", "Global mapping(%)", "Local Mapping(%)", "Not matches(%)"), 
-           fill=c(sel.colours[6:4], "gray"), cex=0.7, inset=0.01)   
+  } else {
+    # Set up the page
+    grid.newpage()
+    pushViewport(viewport(layout = grid.layout(nrow(layout), ncol(layout))))
+
+    # Make each plot, in the correct location
+    for (i in 1:numPlots) {
+      # Get the i,j matrix positions of the regions that contain this subplot
+      matchidx <- as.data.frame(which(layout == i, arr.ind = TRUE))
+      print(plots[[i]], vp = viewport(layout.pos.row = matchidx$row,
+                                      layout.pos.col = matchidx$col))
+    }
+  }
 }
 
-writeSummaryTable <- function(bg, bl, bm, tags, ...){
-    n <- sum(bm[,2])
-    n.map <- sum(bm[which(bm[,1]=="Uniquely_Mapped"),2])
-    n.unmap <- n - n.map
-    n.map.perc <- round(100*n.map/n, digits=1)
-    ng.map <- sum(bg[which(bg[,1]=="Uniquely_Mapped"),2])
-    ng.map.perc <-  round(100*ng.map/(n), digits=1)
-    nl.map <- sum(bl[which(bl[,1]=="Uniquely_Mapped"),2])
-    nl.map.perc <-  round(100*nl.map/(n), digits=1)
-    
-    out <- as.data.frame(matrix(c(paste("nbreads_", tags, sep=""), n,
-                                  paste("nbreads_mapped_", tags, sep=""), n.map,
-                                  paste("nbreads_unmapped_", tags, sep=""), n.unmap,
-                                  paste("nbreads_mapped_global_", tags, sep=""),ng.map,
-                                  paste("nbreads_mapped_local_", tags, sep=""),nl.map)
-                                , ncol=2, byrow=TRUE))
+## getMapMat
+## Generate data.frame for ggplot2 graphical output
+## n = numeric. Total number of reads
+## n.map = numeric. Total number of aligned reads
+## n.map.glob = numeric. Total number of aligned reads with global mapping
+## n.map.loc = numeric. Total number of aligned reads with local mapping
+##
+getMapMat <- function(n, n.map, n.map.glob, n.map.loc){
 
-    write.table(out, sep="\t", quote=FALSE, col.names=FALSE, row.names=FALSE, ...)
+  ## check
+  stopifnot(n.map.glob+n.map.loc==n.map)
+  n.unmap = n - n.map
+  
+  ## Get percentage
+  n.map.perc <- round(100*n.map/n, digits=1)
+  n.unmap.perc <- round(100*n.unmap/n, digits=1)
+  n.map.glob.perc <-  round(100*n.map.glob/n, digits=1)
+  n.map.loc.perc <-  round(100*n.map.loc/n, digits=1)
+
+  p <- c(rep("1",2), rep("2",3))
+  count <- c(n.map, n.unmap, n.map.glob, n.map.loc, n.unmap)
+  perc <- c(n.map.perc, n.unmap.perc, n.map.glob.perc, n.map.loc.perc, n.unmap.perc)
+  lab <- c("n.map","n.un","n.glob","n.loc","n.un")
+  mmat <- data.frame(cbind(lab, p, count, perc), stringsAsFactors=FALSE)
+  mmat$pos <- as.vector(unlist(sapply(unique(mmat$p), function(i){
+    idx <-  which(mmat$p==i)
+    cumsum(as.numeric(as.character(mmat$count[idx])))-as.numeric(as.character(mmat$count[idx]))/2
+  })))
+
+  mmat
 }
 
-## R1 tag
-bg.1 <- read.table(file.path(bwt_glob, paste(sampleName,"_R1.mapstat", sep="")))
-bl.1 <- read.table(file.path(bwt_loc, paste(sampleName,"_R1.mapstat", sep="")))
-bm.1 <- read.table(file.path(bwt_merge, paste(sampleName,"_R1.mapstat", sep="")))
+## ploMapStat
+## Generate ggplot2 plot
+## mat = data.frame for ggplot2 input. see getMapMat()
+## xlab = character for xlabel
+## legend = logical. If true, the legend is plotted
+##
+ploMapStat <- function(mat, sampleName="", tag="", legend=TRUE){
+  require(RColorBrewer)
+  require(ggplot2)
+  require(grid)
+  
+  sel.colours <- brewer.pal(6,"Blues")
+  tit <- "Statistics of Reads Alignment"
+  if (tag != ""){
+    tit <- paste0(tit," - ", tag," Tags")
+  }
+   
+  
+  gp <- ggplot(mat, aes(x=p, as.numeric(count), fill=as.character(lab))) +
+    geom_bar(width=.7,stat="identity", colour="gray") +
+      theme(axis.title=element_text(face="bold", size=6), axis.ticks = element_blank(), axis.text.y = element_text(size=5), axis.text.x = element_blank()) +
+          xlab(sampleName) + ylab("Reads Count")  +
+            geom_text(aes(x=p, y=as.numeric(pos), label=paste(perc,"%")),fontface="bold", size=2)+
+                ggtitle(tit) + theme(plot.title = element_text(lineheight=.8, face="bold", size=6))
 
-## R2 tag
-bg.2 <- read.table(file.path(bwt_glob, paste(sampleName,"_R2.mapstat", sep="")))
-bl.2 <- read.table(file.path(bwt_loc, paste(sampleName,"_R2.mapstat", sep="")))
-bm.2 <- read.table(file.path(bwt_merge, paste(sampleName,"_R2.mapstat", sep="")))
+  if (legend){
+    gp = gp + scale_fill_manual(values=sel.colours[2:6], labels = c("Global mapping (%)",  "Local Mapping (%)", "Aligned reads (%)", "Not aligned (%)")) + guides(fill=guide_legend(title="")) + theme(plot.margin=unit(x=c(1,0,0,0), units="cm"), legend.position="bottom", legend.margin=unit(.5,"cm"), legend.text=element_text(size=4))
+  }else{
+    gp = gp + scale_fill_manual(values=sel.colours[2:6]) + theme(plot.margin=unit(c(1,0,1.9,0),"cm"))+ guides(fill=FALSE)
+  }
+  gp
+}
 
-png(file.path(picDir,"plotGenomeMapping.png"), units="in", res=300, heigh=5, width=9)
-par(font.lab=2, mai=c(1.2, 1.1, 0.2, 0.1), mfrow=c(1,2))
-plotMappingStat(bg.1, bl.1, bm.1, xlab=paste(sampleName,"- R1 Tags"))
-plotMappingStat(bg.2, bl.2, bm.2, xlab=paste(sampleName,"- R2 Tags"))
+
+####################################
+##
+## plotMappingPortion.R
+##
+####################################
+
+## Get Mapping stat files for all fastq files of a given sample
+allmapstat_r1 <- list.files(path=bwtDir, pattern=paste0("^[[:print:]]*",r1tag,"[[:print:]]*mapstat$"), full.names=TRUE)
+allmapstat_r2 <- list.files(path=bwtDir, pattern=paste0("^[[:print:]]*",r2tag,"[[:print:]]*mapstat$"), full.names=TRUE)
+stopifnot(length(allmapstat_r1)>0 && length(allmapstat_r2)>0)
+
+## Get statistics summary
+stats_per_fastq_r1<- sapply(allmapstat_r1, read.csv, sep=" ", row.names=2, as.is=TRUE)
+stats_per_sample_r1<- colSums(do.call(rbind, stats_per_fastq_r1))
+stats_per_fastq_r2<- sapply(allmapstat_r2, read.csv, sep=" ", row.names=2, as.is=TRUE)
+stats_per_sample_r2<- colSums(do.call(rbind, stats_per_fastq_r2))
+
+## Make plots
+mat_r1 <- getMapMat(stats_per_sample_r1[1], stats_per_sample_r1[2], stats_per_sample_r1[3], stats_per_sample_r1[4])
+p1 <- ploMapStat(mat_r1, sampleName=sampleName, tag="R1")
+mat_r2 <- getMapMat(stats_per_sample_r2[1], stats_per_sample_r2[2], stats_per_sample_r2[3], stats_per_sample_r2[4])
+p2 <- ploMapStat(mat_r2, sampleName=sampleName, tag="R2", legend=FALSE)
+
+pdf(file.path(picDir, paste0("plotMapping_",sampleName,".pdf")), width=7, height=4)
+multiplot(p1, p2, cols=2)
 dev.off()
-
-writeSummaryTable(bg.1, bl.1, bm.1, tags="R1", file=file.path(docDir,paste(sampleName,"mappingstat.tsv", sep="_")))
-writeSummaryTable(bg.2, bl.2, bm.2, tags="R2", file=file.path(docDir,paste(sampleName,"mappingstat.tsv", sep="_")), append=TRUE)

@@ -17,11 +17,12 @@ all_qsub : init mapping proc_hic
 
 init : configure src_compile
 
-mapping: bowtie_global bowtie_local merge_global_local mapping_stat ##plot_MappingProportion 
+mapping: bowtie_global bowtie_local merge_global_local mapping_stat
 
 proc_hic : bowtie_pairing mapped2HiCFragments 
 
-build_contact_maps: merge_rmdup build_raw_maps ##matrix2RData
+## Per sample
+build_contact_maps: merge_rmdup build_raw_maps plots ##matrix2RData
 
 debug:
 	@echo "RAW_DIR="$(RAW_DIR)
@@ -122,11 +123,11 @@ mapping_stat:  config_check
 	@echo "Bowtie2 mapping statistics for R1 and R2 tags ..." >> $(LOGFILE)
 	$(SCRIPTS)/mapping_stat.sh -c $(CONFIG_FILE)
 
-plot_MappingProportion:
+plots:
 	@echo "--------------------------------------------" >> $(LOGFILE)
 	@date >> $(LOGFILE)
-	@echo "Plot Mapping Proportion ..." >> $(LOGFILE)
-	$(SCRIPTS)/plotMappingPortion.sh -c $(CURDIR)/$(CONFIG_FILE)
+	@echo "Make plots per sample ..." >> $(LOGFILE)
+	$(SCRIPTS)/make_plots.sh -c $(CURDIR)/$(CONFIG_FILE)
 
 
 ######################################

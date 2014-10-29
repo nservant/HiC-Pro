@@ -10,19 +10,26 @@
    o Test on large data
    o Try to change the bowtie 2 options
    o Write mergeSAM.pl in python
-   o Add R plots for QC
 
 ################################################################################
 ##
 ## LOGBOOK
 ##
 ################################################################################
+
+##--------------------
+## 29-10-14
+##--------------------
+
+   o Plotting functions for mapping and valid pairs statistics
+
 ##--------------------
 ## 20-10-14
 ##--------------------
 
    o Removed unused variable
-   o Test on small dataset - 3 x 1M reads - v2.1 (local) = 16m14.715s / v2.1_pbs = 00:09:59 + 0m11.259s
+   o Test on small dataset - 3 x 1M reads - v2.1 (local) = 16m14.715s / v2.1_pbs = 00:09:52 + 0m11.259s / v2.0 = 20min40.009s / v2.0_pbs = 00:14:04
+   o disk results (bowtie_results, hic_results, logs) without SAM files - v2.0 = 3.6 Go / v2.1 = 1.8 Go
 
 ##--------------------
 ## 10-10-14
