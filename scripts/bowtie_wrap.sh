@@ -45,13 +45,22 @@ global_align()
 	BOWTIE2_GLOBAL_OPTIONS=${BOWTIE2_GLOBAL_OPTIONS}" --un ${BOWTIE2_GLOBAL_OUTPUT_DIR}/${sample_dir}/${prefix}_${ORGANISM}.bwt2glob.unmap.fastq"
     fi
 
+echo $file
+
+    ## Check for gz files
+    if [[ ! -e $file &&  -e $file.gz ]]; then
+	    file=$file.gz
+    else
+	    exit
+    fi
+
     ## Run bowtie
     cmd="${BOWTIE2_PATH}/bowtie2 ${BOWTIE2_GLOBAL_OPTIONS} --rg-id BMG --rg SM:${prefix} --${FORMAT}-quals -p ${N_CPU} -x ${BOWTIE2_IDX} -U ${file} -S ${BOWTIE2_GLOBAL_OUTPUT_DIR}/${sample_dir}/${prefix}_${ORGANISM}.bwt2glob.sam 2>>${LOGS_DIR}/bowtie_${prefix}_global_${ORGANISM}.log"
+    echo $cmd
     exec_cmd $cmd
 
     # Generate BAM files with map reads only
     cmd="${SAMTOOLS_PATH}/samtools view -F 4 -bS ${BOWTIE2_GLOBAL_OUTPUT_DIR}/${sample_dir}/${prefix}_${ORGANISM}.bwt2glob.sam > ${BOWTIE2_GLOBAL_OUTPUT_DIR}/${sample_dir}/${prefix}_${ORGANISM}.bwt2glob.bam"
-
     exec_cmd $cmd
 }
 
@@ -93,9 +102,10 @@ if [[ ${MODE} == 'global' ]]; then
     do
        	R1=$r
 	R2=$(echo $r | get_R2)
+
 	sample_dir=$(get_sample_dir $r)
-	prefix1=$(basename ${R1} | sed -e 's/.fastq//')
-	prefix2=$(basename ${R2} | sed -e 's/.fastq//')
+	prefix1=$(basename ${R1} | sed -e 's/.fastq\(.gz\)*//')
+	prefix2=$(basename ${R2} | sed -e 's/.fastq\(.gz\)*//')
 	
 	global_align "$sample_dir" "$R1" "$prefix1" "$UNMAP"&
 	global_align "$sample_dir" "$R2" "$prefix2" "$UNMAP"&
@@ -108,8 +118,8 @@ else
 	R1=$r
 	R2=$(echo $r | get_R2)
 	sample_dir=$(get_sample_dir $r)
-	prefix1=$(basename ${R1} | sed -e 's/.fastq//')
-	prefix2=$(basename ${R2} | sed -e 's/.fastq//')
+	prefix1=$(basename ${R1} | sed -e 's/.fastq[.gz]*//')
+	prefix2=$(basename ${R2} | sed -e 's/.fastq[.gz]*//')
 	
 	local_align "$sample_dir" "$R1" "$prefix1" "$UNMAP"&
 	local_align "$sample_dir" "$R2" "$prefix2" "$UNMAP"&

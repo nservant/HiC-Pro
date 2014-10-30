@@ -7,7 +7,9 @@ CHANGES IN VERSION 2.1
 
 NEW FEATURES
 
-   o New pictures for mapping and valid pairs results
+   o Manage .fastq.gz files
+
+   o New pictures for mapping, pairing and valid pairs results
 
    o Check cutSite for local mapped reads (mergeSAM.pl)
 

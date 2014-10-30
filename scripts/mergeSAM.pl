@@ -179,9 +179,13 @@ sub paire_sam{
     close(PAIRED);
     close(FORWARD);
     close(REVERSE);
-    if ($verb == 1){
-	printf ("File\t%s\nTotal_pairs_processed\t%d\t(100)\nUnmapped_pairs\t%d\t(%.3f)\nLow_qual_pairs\t%d\t(%.3f)\nUnique_paired_alignments\t%d\t(%.3f)\nMultiple_pairs_alignments\t%d\t(%.3f)\nLocal_alignments\t%d\t(%.3f)\nLocal_align_nocutSite\t%d\t(%.3f)\nReported pairs\t%d\t(%.3f)\n",$filePair, $tot_pairs_counter, $unmapped_pairs_counter, $unmapped_pairs_counter/$tot_pairs_counter*100, $lowq_pairs_counter, $lowq_pairs_counter/$tot_pairs_counter*100, $uniq_pairs_counter, $uniq_pairs_counter/$tot_pairs_counter*100, $multi_pairs_counter, $multi_pairs_counter/$tot_pairs_counter*100, $local_counter, $local_counter/$tot_pairs_counter*100, $cutSite_counter, $cutSite_counter/$tot_pairs_counter*100, $paired_reads_counter, $paired_reads_counter/$tot_pairs_counter*100);
-    }
+    
+    my $fileStat=$filePair;
+    $fileStat=~ s/.sam$/.pairstat/;
+    open (STAT, ">$fileStat") or die "Can't create \'$fileStat\' : $!";
+
+    printf STAT ("##File\t%s\nTotal_pairs_processed\t%d\t100\nUnmapped_pairs\t%d\t%.3f\nLow_qual_pairs\t%d\t%.3f\nUnique_paired_alignments\t%d\t%.3f\nMultiple_pairs_alignments\t%d\t%.3f\nLocal_alignments\t%d\t%.3f\nLocal_align_nocutSite\t%d\t%.3f\nReported_pairs\t%d\t%.3f\n",$filePair, $tot_pairs_counter, $unmapped_pairs_counter, $unmapped_pairs_counter/$tot_pairs_counter*100, $lowq_pairs_counter, $lowq_pairs_counter/$tot_pairs_counter*100, $uniq_pairs_counter, $uniq_pairs_counter/$tot_pairs_counter*100, $multi_pairs_counter, $multi_pairs_counter/$tot_pairs_counter*100, $local_counter, $local_counter/$tot_pairs_counter*100, $cutSite_counter, $cutSite_counter/$tot_pairs_counter*100, $paired_reads_counter, $paired_reads_counter/$tot_pairs_counter*100);
+    
 }
 
 

@@ -9,7 +9,7 @@ if (la > 0){
     eval(parse(text=args[[i]]))
 }
 
-## getMapMat
+## getHiCMat
 ## Generate data.frame for ggplot2 graphical output
 ## x = vector with all expected Hi-C results
 ##
@@ -46,15 +46,15 @@ getHiCMat <- function(x){
   mmat$pos[which(mmat$count==0)] <- NA
 
   ## Colours
-  sel.val <- brewer.pal(7,"Blues")
-  sel.inval <- brewer.pal(7,"Greys")
+  sel.val <- brewer.pal(8,"Blues")
+  sel.inval <- brewer.pal(8,"Reds")
 
   col <- rep(NA, dim(mmat)[1])
   names(col) <- names(x)
   col[invalid.lab] <- sel.inval[1:length(invalid.lab)]
   col[valid.lab] <- sel.val[1:length(valid.lab)]
-  col["Invalid_pairs"] <- sel.inval[length(sel.inval)-1]
-  col["Valid_interaction_pairs"] <- sel.val[length(sel.val)]
+  col["Invalid_pairs"] <- "darkgray"
+  col["Valid_interaction_pairs"] <- sel.val[5]
   mmat$selcol <- col
   
   mmat[order(mmat$p), ]
@@ -75,12 +75,12 @@ plotHiCStat <- function(mat, xlab="", legend=TRUE){
   mat$lab <- paste0(gsub("_", " ", mat$lab)," (%)")
 
   gp <-ggplot(mat, aes(x=p, as.numeric(count), fill=as.character(lab))) +
-    geom_bar(width=.7,stat="identity") + 
+    geom_bar(width=.7,stat="identity", colour="gray") + 
       theme(axis.title=element_text(face="bold", size=6), axis.ticks = element_blank(),  axis.text.y = element_text(size=5), axis.text.x = element_text(size=6))+
         xlab(xlab) + ylab("Reads Count") +
-            scale_x_discrete(breaks=c("1", "2", "3"), labels=c("All Pairs","Valid Pairs","Invalid Pairs"))+
+            scale_x_discrete(breaks=c("1", "2", "3"), labels=c("All Pairs","Valid 3C Pairs","Invalid 3C Pairs"))+
               geom_text(aes(x=p, y=as.numeric(pos), label=paste(perc,"%")),fontface="bold", size=2) +
-                ggtitle("Statistics of Read pairs Alignment on Restriction Fragments") + theme(plot.title = element_text(lineheight=.8, face="bold", size=6))
+                ggtitle("Statistics of Read Pairs Alignment on Restriction Fragments") + theme(plot.title = element_text(lineheight=.8, face="bold", size=6))
 
   if (legend){
     scol <- mat$selcol
@@ -105,7 +105,7 @@ print(allrsstat)
 stopifnot(length(allrsstat)>0)
 
 ## Get statistics summary
-stats_per_fastq<- lapply(allrsstat, read.csv, sep="\t", as.is=TRUE)
+stats_per_fastq<- lapply(allrsstat, read.csv, sep="\t", as.is=TRUE, comment.char="#", header=FALSE, row.names=1)
 stats_per_sample<- rowSums(do.call(cbind,stats_per_fastq))
 
 ## Make plots

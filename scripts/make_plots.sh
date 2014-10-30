@@ -44,6 +44,10 @@ do
     ## make plots
     echo "Plot mapping results ..."
     ${R_PATH}/R --no-save CMD BATCH "--args picDir='${PIC_DIR}' bwtDir='${BOWTIE2_FINAL_OUTPUT_DIR}/${RES_FILE_NAME}' sampleName='${RES_FILE_NAME}' r1tag='${PAIR1_EXT}' r2tag='${PAIR2_EXT}'" ${SCRIPTS}/plotMappingPortion.R ${LOGS_DIR}/plotMappingPortion.Rout
+    
+    echo "Plot pairing results ..."
+    ${R_PATH}/R --no-save CMD BATCH "--args picDir='${PIC_DIR}' bwtDir='${BOWTIE2_FINAL_OUTPUT_DIR}/${RES_FILE_NAME}' sampleName='${RES_FILE_NAME}'" ${SCRIPTS}/plotPairingPortion.R ${LOGS_DIR}/plotPairingPortion.Rout
+    
     echo "Plot Hi-C processing ..."
     ${R_PATH}/R --no-save CMD BATCH "--args picDir='${PIC_DIR}' hicDir='${DATA_DIR}' sampleName='${RES_FILE_NAME}'" ${SCRIPTS}/plotHiCFragment.R ${LOGS_DIR}/plotHiCFragment.Rout  
     wait

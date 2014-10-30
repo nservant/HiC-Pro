@@ -18,10 +18,17 @@
 ################################################################################
 
 ##--------------------
-## 29-10-14
+## 30-10-14
 ##--------------------
 
    o Release version 2.1
+   o Changes to support fastq.gz files
+   o Plotting function for pairing statistics
+
+##--------------------
+## 29-10-14
+##--------------------
+
    o Plotting functions for mapping and valid pairs statistics
 
 ##--------------------

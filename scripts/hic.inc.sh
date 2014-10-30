@@ -2,7 +2,7 @@
 ## hic.inc.sh
 ##
 ## Eric Viara for Institut Curie, copyright (c) May 2014
-## Modified Nicolas Servant Octobre 14 
+## Modified Nicolas Servant Octobre 29 
 ##
 
 ###########################
@@ -17,7 +17,6 @@ trap "rm -f $tmpfile1 $tmpfile2 $tmpmkfile" 0 1 2 3
 filter_config()
 {
     sed -e 's/#.*//' | egrep '^[ \t]*[a-zA-Z_][a-zA-Z0-9_]*[ \t]*:?=' | sed -e 's/[ \t]*:=[ \t]*/ :=/' -e 's/[ \t][^:]*=[ \t]*/ =/' -e 's/\([^ \t]*\)=/\1 =/' | sort -u -k 1b,1
-
 }
 
 read_config()
@@ -140,7 +139,7 @@ get_hic_files()
     local ext=$2
     if [ ! -z "$FASTQFILE" ]; then
 	if [ ! -z "$PBS_ARRAYID" ]; then
-	    cat $FASTQFILE | filter_rawdir | filter_pairs | awk "NR == $PBS_ARRAYID {printf(\"%s/%s${ext}\n\", \"$idir\", gensub(\".fastq\", \"\", \$1));}"
+	    cat $FASTQFILE | filter_rawdir | filter_pairs | awk "NR == $PBS_ARRAYID {printf(\"%s/%s${ext}\n\", \"$idir\", gensub(\".fastq(.gz)\", \"\", \$1));}"
 	    return
 	fi
 	local list=
@@ -155,7 +154,7 @@ get_hic_files()
 	done
 	echo "$list" | filter_pairs
     else
-	find $idir -name \*${ext} -follow -print | filter_pairs
+	find $idir \( -name \*${ext} -o -name \*${ext}.gz \) -follow -print | filter_pairs
     fi
 }
 
