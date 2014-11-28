@@ -13,7 +13,7 @@ undsc := _
 
 all : init mapping proc_hic build_contact_maps clean
 
-all_qsub : init mapping proc_hic
+all_qsub : mapping proc_hic
 
 init : configure src_compile
 
@@ -22,7 +22,7 @@ mapping: bowtie_global bowtie_local merge_global_local mapping_stat
 proc_hic : bowtie_pairing mapped2HiCFragments 
 
 ## Per sample
-build_contact_maps: merge_rmdup build_raw_maps plots ##matrix2RData
+build_contact_maps: merge_rmdup build_raw_maps ice_norm plots
 
 debug:
 	@echo "RAW_DIR="$(RAW_DIR)
@@ -41,11 +41,11 @@ else
 include $(CONFIG_FILE)
 endif
 
-make_torque_script: config_check
+make_torque_script: config_check init
 	@$(SCRIPTS)/make_torque_script.sh -c $(CONFIG_FILE) $(TORQUE_SUFFIX)
 
-clean:  config_check
-ifdef $(BOWTIE2_OUTPUT_DIR)
+clean: config_check 
+ifdef BOWTIE2_OUTPUT_DIR
 	/bin/rm -f $(BOWTIE2_OUTPUT_DIR)/*/*/*.sam
 endif
 
@@ -77,8 +77,8 @@ configure:  config_check
 
 ## Build C++ code
 src_compile: $(SOURCES)/build_matrix.cpp
-	(cd $(SOURCES); g++ -Wall -O2 -std=c++0x -o build_matrix build_matrix.cpp)
-
+	(g++ -Wall -O2 -std=c++0x -o build_matrix ${SOURCES}/build_matrix.cpp; mv build_matrix ${SCRIPTS})
+	(cp $(SOURCES)/ice_mod/iced/scripts/ice ${SCRIPTS}; cd $(SOURCES)/ice_mod/; python setup.py install --user;)
 
 ######################################
 ## Bowtie2 Global Alignment
@@ -173,12 +173,10 @@ build_raw_maps:  config_check
 ##
 ######################################
 
-# ICEnorm:
-# 	@echo "--------------------------------------------" >> $(LOGFILE)
-# 	@date >> $(LOGFILE)
-# 	@echo "Run ICE Normalization ..." >> $(LOGFILE)
-# 	$(foreach BSIZE,$(subst $(comma),$(space),$(BIN_SIZE)),$(R_PATH)/R --no-save CMD BATCH "--args rdata='$(RDATA_DIR)/$(RES_FILE_NAME_OBJ)_$(BSIZE).RData' norm='ICE' cpu='$(N_CPU)' outDir='$(RDATA_DIR)'" $(SCRIPTS)/hicNorm.R $(LOGS_DIR)/hicNorm.Rout;)
-# 	@echo "Generate Matrix files from RData ..." >> $(LOGFILE)
-# 	$(foreach BSIZE,$(subst $(comma),$(space),$(BIN_SIZE)),mkdir -p $(ICED_MATRIX_DIR)/$(BSIZE); $(R_PATH)/R --no-save CMD BATCH "--args matDir='$(ICED_MATRIX_DIR)/$(BSIZE)' cpu='$(N_CPU)' rdata='$(RDATA_DIR)/$(RES_FILE_NAME_OBJ)_$(BSIZE)_iced.RData' org='$(ORGANISM)'" $(SCRIPTS)/rData2matrix.R $(LOGS_DIR)/rData2matrix.Rout;)
-
+## Apply ICE normalization
+ice_norm:
+	@echo "--------------------------------------------" >> $(LOGFILE)
+	@date >> $(LOGFILE)
+	@echo "Run ICE Normalization ..." >> $(LOGFILE)
+	$(SCRIPTS)/normContactMaps.sh -c $(CONFIG_FILE) 2> $(LOGS_DIR)/normICE.log
 

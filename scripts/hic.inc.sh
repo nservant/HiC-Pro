@@ -139,7 +139,7 @@ get_hic_files()
     local ext=$2
     if [ ! -z "$FASTQFILE" ]; then
 	if [ ! -z "$PBS_ARRAYID" ]; then
-	    cat $FASTQFILE | filter_rawdir | filter_pairs | awk "NR == $PBS_ARRAYID {printf(\"%s/%s${ext}\n\", \"$idir\", gensub(\".fastq(.gz)\", \"\", \$1));}"
+	    cat $FASTQFILE | filter_rawdir | filter_pairs | awk "NR == $PBS_ARRAYID {printf(\"%s/%s${ext}\n\", \"$idir\", gensub(\".fastq(.gz)*\", \"\", \$1));}"
 	    return
 	fi
 	local list=
