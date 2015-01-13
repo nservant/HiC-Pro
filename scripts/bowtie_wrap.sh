@@ -73,14 +73,21 @@ local_align()
     echo ${file} >> ${LOGFILE}
     mkdir -p ${BOWTIE2_LOCAL_OUTPUT_DIR}/${sample_dir}
 
+    ## Starts trimming reads from the restriction site
+    tfile=`echo $file | sed -e s/.fastq/_trimmed.fastq/`
+    if [[ ${RM_LOCAL_NO_CUTSITE} == 1 ]]; then
+	${SCRIPTS}/cutsite_trimming --fastq $file --cutsite ${CUT_SITE_5OVER} --out $tfile --rmuntrim 2> ${LOGS_DIR}/readsTrimming.log
+    else
+	${SCRIPTS}/cutsite_trimming --fastq $file --cutsite ${CUT_SITE_5OVER} --out $tfile  2> ${LOGS_DIR}/readsTrimming.log
+    fi
+
     ## Unmapped reads
     if [[ $unmap == 1 ]]; then
 	BOWTIE2_LOCAL_OPTIONS=${BOWTIE2_LOCAL_OPTIONS}" --un ${BOWTIE2_LOCAL_OUTPUT_DIR}/${sample_dir}/${prefix}_${ORGANISM}.bwt2glob.unmap.fastq"
     fi
 
     ## Run bowtie
-    cmd="${BOWTIE2_PATH}/bowtie2 ${BOWTIE2_LOCAL_OPTIONS} --rg-id BML --rg SM:${prefix} --${FORMAT}-quals -p ${N_CPU} -x ${BOWTIE2_IDX} -U ${file} -S ${BOWTIE2_LOCAL_OUTPUT_DIR}/${sample_dir}/${prefix}_bwt2loc.sam 2>>${LOGS_DIR}/bowtie_${prefix}_local.log"
-
+    cmd="${BOWTIE2_PATH}/bowtie2 ${BOWTIE2_LOCAL_OPTIONS} --rg-id BML --rg SM:${prefix} --${FORMAT}-quals -p ${N_CPU} -x ${BOWTIE2_IDX} -U ${tfile} -S ${BOWTIE2_LOCAL_OUTPUT_DIR}/${sample_dir}/${prefix}_bwt2loc.sam 2>>${LOGS_DIR}/bowtie_${prefix}_local.log"
     exec_cmd "$cmd"
 
     ## Generate BAM files with all reads so that the sum of global + local reads = total reads

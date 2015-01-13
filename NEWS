@@ -1,6 +1,9 @@
 ***********************************
 CHANGES IN VERSION 2.2
 
+   o Add ICE normalization
+
+   o Change mapping strategy. Local mapping is replaced by a global approach on trimmed reads
 
 ***********************************
 CHANGES IN VERSION 2.1

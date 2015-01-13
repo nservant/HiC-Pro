@@ -13,10 +13,17 @@ if (la > 0){
 ## Generate data.frame for ggplot2 graphical output
 ## x = vector with all expected Hi-C results
 ##
-getPairMat <- function(x, x.perc){
+getPairMat <- function(x, x.perc, rmMulti=0, rmSingle=0){
   require(RColorBrewer)
+
+  notreported.lab <- c("Low_qual_pairs")
+  if (rmMulti == 1){
+      notreported.lab <- c(notreported.lab, "Multiple_pairs_alignments")
+  }
+  if (rmSingle == 1){
+    notreported.lab <- c(notreported.lab, "Pairs_with_Singleton")
+  }
   
-  notreported.lab <- c("Low_qual_pairs", "Multiple_pairs_alignments", "Local_align_nocutSite")
   reported.lab <- "Reported_pairs"
   allnotreported.lab <- "Not_Reported_pairs"
   un.lab <- "Unmapped_pairs"
@@ -108,11 +115,11 @@ stopifnot(length(allpairstat)>0)
 ## Get statistics summary
 stats_per_fastq<- lapply(allpairstat, read.csv, sep="\t", as.is=TRUE, header=FALSE, comment.char="#", row.names=1)
 stats_per_sample<- rowSums(do.call(cbind,lapply(stats_per_fastq, "[", 1)))
-perc_per_sample<- rowSums(do.call(cbind,lapply(stats_per_fastq, "[", 2)))
+perc_per_sample<- rowMeans(do.call(cbind,lapply(stats_per_fastq, "[", 2)))
 
 
 ## Make plots
-mat <- getPairMat(stats_per_sample, perc_per_sample)
+mat <- getPairMat(stats_per_sample, perc_per_sample, rmMulti=rmMulti, rmSingle=rmSingle)
 p1 <- plotPairStat(mat, xlab=sampleName)
 
 pdf(file.path(picDir, paste0("plotMappingFiltering_",sampleName,".pdf")), width=5, height=5)

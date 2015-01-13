@@ -43,6 +43,7 @@ To store the Hi-C processed data
 #
 # Eric Viara optimizations
 # 2014-06-19
+# Change NS - 05/01/2015
 #
 
 I.
@@ -59,9 +60,8 @@ make CONFIG_FILE=config.txt mapping_clean
 II.
 A.
 If you want to use torque (the prefered way), type:
-make CONFIG_FILE=config.txt init
+make CONFIG_FILE=config.txt make_torque_script
 
-sh scripts/make_torque_script.sh -c config.txt ev_test
 you will get the following message:
 The following command will launch 3 torque jobs:
 qsub HiC_torque_ev_test.sh
@@ -75,4 +75,4 @@ C.
 then wait for the torque mails... :)
 
 Once executed succesfully (may take several hours), then type:
-make CONFIG_FILE=config.txt build_matrix
+make CONFIG_FILE=config.txt build_contact_maps

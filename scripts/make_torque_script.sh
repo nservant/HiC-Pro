@@ -8,7 +8,7 @@ dir=$(dirname $0)
 
 usage()
 {
-    echo "usage: $0 -c CONFIG TORQUE_SUFFIX"
+    echo "usage: $0 -c CONFIG"
 }
 
 while [ $# -gt 0 ]
@@ -22,31 +22,26 @@ do
     shift
 done
 
-if [ -z "$suffix" -o -z "$conf_file" ]; then usage; exit 1; fi
+if [ -z "$conf_file" ]; then usage; exit 1; fi
 
 ##read_config $conf_file
 CONF=$conf_file . $dir/hic.inc.sh
-
 unset FASTQFILE
 
-fastqfile=fastqfile_${suffix}.txt
-
+fastqfile=fastqfile_${PBS_SUFFIX}.txt
 get_hic_files $RAW_DIR .fastq | sed -e "s|$RAW_DIR||" -e "s|^/||" > $fastqfile
-
 count=$(cat $fastqfile | wc -l)
 
-torque_script=HiC_torque_${suffix}.sh
-#PPN=8
-#PPN=12
-PPN=4
+torque_script=HiC_torque_${PBS_SUFFIX}.sh
+PPN=$(( ${N_CPU} * 2))
 cat > ${torque_script} <<EOF
 #!/bin/bash
-#PBS -l nodes=1:ppn=${PPN},mem=10gb,walltime=6:00:00
-#PBS -M $(id -u -n)@curie.fr
+#PBS -l nodes=1:ppn=${PPN},mem=${PBS_MEM},walltime=${PBS_WALLTIME}
+#PBS -M ${PBS_MAIL}
 #PBS -m ae
 #PBS -j eo
-#PBS -N HiC_${suffix}
-#PBS -q batch
+#PBS -N HiCpro_${PBS_SUFFIX}
+#PBS -q ${PBS_QUEUE}
 #PBS -V
 #PBS -t 1-$count
 

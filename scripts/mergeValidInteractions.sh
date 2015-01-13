@@ -35,7 +35,7 @@ for RES_FILE_NAME in ${DATA_DIR}/*
 do
     RES_FILE_NAME=$(basename $RES_FILE_NAME)
     if [ -d ${DATA_DIR}/${RES_FILE_NAME} ]; then
-	if [ ${RMDUP} != 1 ]
+	if [[ ${RM_DUP} != 1 ]]
 	then
 	    cat ${DATA_DIR}/${RES_FILE_NAME}/*.validPairs > ${DATA_DIR}/${RES_FILE_NAME}/${RES_FILE_NAME}_allValidPairs
 	else

@@ -48,7 +48,6 @@ def getReadStrand ( read ):
 ##
 ## read = [AlignedRead]
 def getReadPos ( read ):
-
     ## 5 end
     ##if (read.is_reverse):
     ##    pos = read.pos + read.alen + 1 ##(50 - 5) + 1 ## zero-based transformation
@@ -206,32 +205,34 @@ def getValidOrientation ( read1, read2 ):
 ## interactionType = Type of interaction from getInteractionType() [character]
 def getPEFragmentSize ( read1, read2, resFrag1, resFrag2, interactionType ):
     fragmentsize=None
+
     ## Get oriented reads
     r1, r2 = getOrderedReads(read1, read2)
-    if r1==read2:
-        rfrag1=resFrag2
-        rfrag2=resFrag1
-    else:
-        rfrag1=resFrag1
-        rfrag2=resFrag2
-
-    r1pos = getReadPos(r1)
-    r2pos = getReadPos(r2)
-
-    if interactionType == "DE":
-        fragmentsize=r2pos - r1pos 
-    elif interactionType == "SC":
-        fragmentsize=(r1pos - rfrag1.start) + (rfrag2.end - r2pos)
-    elif interactionType == "VI":
-        if getReadStrand(r1)=="+":
-            dr1 = rfrag1.end - r1pos
+    if not r1.is_unmapped and not r2.is_unmapped:
+        if r1==read2:
+            rfrag1=resFrag2
+            rfrag2=resFrag1
         else:
-            dr1 = r1pos - rfrag1.start
-        if getReadStrand(r2)=="+":
-            dr2 = rfrag2.end - r2pos
-        else:
-            dr2 = r2pos - rfrag2.start
-        fragmentsize = dr2 + dr1
+            rfrag1=resFrag1
+            rfrag2=resFrag2
+            
+        r1pos = getReadPos(r1)
+        r2pos = getReadPos(r2)
+            
+        if interactionType == "DE":
+            fragmentsize=r2pos - r1pos 
+        elif interactionType == "SC":
+            fragmentsize=(r1pos - rfrag1.start) + (rfrag2.end - r2pos)
+        elif interactionType == "VI":
+            if getReadStrand(r1)=="+":
+                dr1 = rfrag1.end - r1pos
+            else:
+                dr1 = r1pos - rfrag1.start
+            if getReadStrand(r2)=="+":
+                dr2 = rfrag2.end - r2pos
+            else:
+                dr2 = r2pos - rfrag2.start
+            fragmentsize = dr2 + dr1
 
     return fragmentsize
 
@@ -272,7 +273,7 @@ def  getInteractionType( read1, read1_chrom, resfrag1, read2, read2_chrom, resfr
     elif r1.is_unmapped or r2.is_unmapped:
         InteractionType="SI"
                     
-    ##print read1.qname,"\t",chr1,"\t",read1.pos+1,"\t",strand1,"\t",resfrag1.value['name'],"|mm9|",chr1,":",resfrag1.start+1,"-",resfrag1.end,"\t",chr2,"\t",read2.pos+1,"\t",strand2,"\t",resfrag2.value['name'],"|mm9|",chr2,":",resfrag2.start+1,"-",resfrag2.end,InteractionType,"\n"
+    ##print read1.qname,"\t",chr1,"\t",read1.pos+1,"\t",strand1,"\t",resfrag1.value['name'],"|mm9|",chr1,":",resfrag1.start+1,"-",resfrag1.end,"\t",chr2,"\t",read2.pos+1,"\t",strand2,"\t",resfrag2.value['name'],"|mm9|",chr2,":",resfrag2.start+1,"-",resfrag2.end,InteractionType
 
 
     return InteractionType
@@ -388,27 +389,30 @@ for read in samfile.fetch():
     ## First mate
     if read.is_read1:
         r1 = read
-        r1_chrom = samfile.getrname(r1.tid)
-        r1_resfrag = getOverlappingRestrictionFragment(resFrag, r1_chrom, r1)
+        if not r1.is_unmapped:
+            r1_chrom = samfile.getrname(r1.tid)
+            r1_resfrag = getOverlappingRestrictionFragment(resFrag, r1_chrom, r1)
   
     ## Second mate
     elif read.is_read2:
         r2 = read
-        r2_chrom = samfile.getrname(r2.tid)
-        r2_resfrag = getOverlappingRestrictionFragment(resFrag, r2_chrom, r2)
+        if not r2.is_unmapped:
+            r2_chrom = samfile.getrname(r2.tid)
+            r2_resfrag = getOverlappingRestrictionFragment(resFrag, r2_chrom, r2)
+            
         interactionType=getInteractionType(r1, r1_chrom, r1_resfrag, r2, r2_chrom, r2_resfrag, verbose)
         dist=getPEFragmentSize(r1, r2, r1_resfrag, r2_resfrag, interactionType)
 
-        # ## Check cut site in local mapping reads
-        # if getReadTag(r1, "RG") == "BML" or  getReadTag(r2, "RG") == "BML":
-        #     bowloc_counter+=1
-        #     if cutSite and (overlapRestrictionSite(r1, cutSite) or overlapRestrictionSite(r2, cutSite)):
-        #         cutsite_counter+=1
+        ## Check cut site in local mapping reads
+        ## if getReadTag(r1, "RG") == "BML" or  getReadTag(r2, "RG") == "BML":
+        ##     bowloc_counter+=1
+        ##     if cutSite and (overlapRestrictionSite(r1, cutSite) or overlapRestrictionSite(r2, cutSite)):
+        ##         cutsite_counter+=1
 
         ## Check Insert size criteria
         if (minInsertSize != None and dist != None and dist < int(minInsertSize)) or (maxInsertSize != None and dist != None and dist > int(maxInsertSize)):
             interactionType="DUMP"
-     
+            
         if interactionType == "VI":
             valid_counter+=1
             cur_handler = handle_valid
@@ -435,16 +439,21 @@ for read in samfile.fetch():
             cur_handler = handle_dump if allOutput else None
 
         if cur_handler != None:
-            cur_handler.write(r1.qname + "\t" + r1_chrom + "\t" + str(getReadPos(r1)) + "\t" + str(getReadStrand(r1)) + "\t" + r2_chrom + "\t" + str(getReadPos(r2)) + "\t" + str(getReadStrand(r2)) + "\t" + str(dist) + "\n")
-        
+            if not r1.is_unmapped and not r2.is_unmapped:
+                cur_handler.write(r1.qname + "\t" + r1_chrom + "\t" + str(getReadPos(r1)) + "\t" + str(getReadStrand(r1)) + "\t" + r2_chrom + "\t" + str(getReadPos(r2)) + "\t" + str(getReadStrand(r2)) + "\t" + str(dist) + "\n")
+            elif r2.is_unmapped:
+                cur_handler.write(r1.qname + "\t" + r1_chrom + "\t" + str(getReadPos(r1)) + "\t" + str(getReadStrand(r1)) + "\t" + "+" + "\t" + "0" + "\t" + "*" + "\t" + str(dist) + "\n")
+            else:
+                cur_handler.write(r1.qname + "\t" + "*" + "\t" + "0" + "\t" + "*" + "\t" + r2_chrom + "\t" + str(getReadPos(r2)) + "\t" + str(getReadStrand(r2)) + "\t" + str(dist) + "\n")
+
         if samOut:
             r1.tags=r1.tags + [('CT', str(interactionType))]
             r2.tags=r2.tags + [('CT', str(interactionType))]
             handle_sam.write(r1)
             handle_sam.write(r2)
 
-    if (reads_counter % 100000 == 0 and verbose):
-        print "##", reads_counter
+        if (reads_counter % 100000 == 0 and verbose):
+            print "##", reads_counter
  
 ## Close handler
 handle_valid.close()

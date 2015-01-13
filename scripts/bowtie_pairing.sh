@@ -35,7 +35,15 @@ merge_pairs()
     local prefix_out=$(echo $prefix_r1 | get_pairs)
 
     ## Merge two SAM files into 1 paired-end SAM file / removed unmapped and multihits reads
-    cmd="${SCRIPTS}/mergeSAM.pl -u -m -q ${MIN_MAPQ} -c ${CUT_SITE_5OVER} -v -f ${BOWTIE2_FINAL_OUTPUT_DIR}/${prefix_r1}.bwt2merged.sam -r ${BOWTIE2_FINAL_OUTPUT_DIR}/${prefix_r2}.bwt2merged.sam -o ${BOWTIE2_FINAL_OUTPUT_DIR}/${prefix_out}.bwt2pairs.sam > ${LOGS_DIR}/"$(basename ${prefix_out})"_merge.log"
+    OPTS="-q ${MIN_MAPQ} -v"
+    if [[ ${RM_SINGLETON} == 1 ]]; then
+	OPTS=$OPTS" -s"
+    fi
+    if [[ ${RM_MULTI} == 1 ]]; then
+	OPTS=$OPTS" -m"
+    fi
+
+    cmd="${SCRIPTS}/mergeSAM.pl ${OPTS} -f ${BOWTIE2_FINAL_OUTPUT_DIR}/${prefix_r1}.bwt2merged.sam -r ${BOWTIE2_FINAL_OUTPUT_DIR}/${prefix_r2}.bwt2merged.sam -o ${BOWTIE2_FINAL_OUTPUT_DIR}/${prefix_out}.bwt2pairs.sam > ${LOGS_DIR}/"$(basename ${prefix_out})"_pairs.log"
     exec_cmd $cmd
 
     ## Generate BAM file
@@ -50,5 +58,5 @@ do
     R2=$(echo $r | get_R2)
     sample_dir=$(get_sample_dir $r)
 
-    merge_pairs $sample_dir $R1 $R2 &
+    merge_pairs $sample_dir $R1 $R2 
 done

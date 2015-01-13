@@ -7,8 +7,6 @@
 ##
 ################################################################################
 
-   o Test on large data
-   o Try to change the bowtie 2 options
    o Write mergeSAM.pl in python
 
 ################################################################################
@@ -16,6 +14,12 @@
 ## LOGBOOK
 ##
 ################################################################################
+##--------------------
+## 15-12-14
+##--------------------
+
+   o Change mapping strategy. Local mapping is replaced by a global mapping on trimmed reads. This avoid the reporting of 3' end site, and therefore decrease the number of DE.
+
 ##--------------------
 ## 28-11-14
 ##--------------------

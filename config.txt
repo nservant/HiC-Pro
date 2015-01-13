@@ -21,7 +21,17 @@ BOWTIE2_PATH = /bioinfo/local/build/bowtie2-2.1.0/
 SAMTOOLS_PATH= /bioinfo/local/build/samtools_0.1.19/
 R_PATH=/bioinfo/local/build/R/R-devel/bin
 BASH = /bin/bash
-LOGFILE = hic_pipeline_test_SRR941287.log
+LOGFILE = hicpro_IRM90_rep1_split.log
+
+#######################################################################
+## SYSTEM - PBS
+#######################################################################
+N_CPU = 2
+PBS_SUFFIX = IMR90_split
+PBS_MEM = 10gb
+PBS_WALLTIME = 6:00:00
+PBS_QUEUE = batch
+PBS_MAIL = nservant@curie.fr
 
 #########################################################################
 ## Data
@@ -35,63 +45,46 @@ PAIR2_EXT = _R2
 ## Alignment options
 #######################################################################
 
-N_CPU = 2
 FORMAT = phred33
 MIN_MAPQ = 0
 CUT_SITE_5OVER = AGCTT 
 
-BOWTIE2_IDX_PATH = /data/annotations/Mouse/mm9/bowtie2_indexes
-BOWTIE2_GLOBAL_OPTIONS = -N 0 -L 25 --fast --end-to-end --reorder
-BOWTIE2_LOCAL_OPTIONS = -N 0 -L 30 --sensitive-local --local --mp 100,100 --np 100 --rdg 100,100 --rfg 100,100 --reorder
-
-## GLOBAL
-## No mismatch in the seed (25nt). Only one mismatch is allowed in the full alignment.
-## --very-fast Same as: -D 5 -R 1 -N 0 -L 22 -i S,0,2.50
-## --fast Same as: -D 10 -R 2 -N 0 -L 22 -i S,0,2.50
-## --sensitive Same as: -D 15 -R 2 -L 22 -i S,1,1.15 (default in --end-to-end mode)
-## --very-sensitive Same as: -D 20 -R 3 -N 0 -L 20 -i S,1,0.50
-##
-## LOCAL
-## No mismatch in the seed (30nt). Only perfect alignments are reported.
-## --very-fast-local Same as: -D 5 -R 1 -N 0 -L 25 -i S,1,2.00
-## --fast-local Same as: -D 10 -R 2 -N 0 -L 22 -i S,1,1.75
-## --sensitive-local Same as: -D 15 -R 2 -N 0 -L 20 -i S,1,0.75 (default in --local mode)
-## --very-sensitive-local Same as: -D 20 -R 3 -N 0 -L 20 -i S,1,0.50
-
-##BOWTIE2_GLOBAL_OPTIONS = -N 0 -L 25 -D 1 -R 1 -i S,0,2.50 --end-to-end --mp 5,5 --np 5 --rdg 5,5 --rfg 5,5 --score-min L,-5,0 --reorder
-##BOWTIE2_LOCAL_OPTIONS = -N 0 -L 30 -D 1 -R 1 -i S,1,0.75 --local --mp 100,100 --np 100 --rdg 100,100 --rfg 100,100 --score-min G,20,10 --reorder
+BOWTIE2_IDX_PATH = /data/annotations/Human/hg19/bowtie2_indexes/base/
+BOWTIE2_GLOBAL_OPTIONS = --very-sensitive -L 30 --score-min L,-0.6,-0.2 --end-to-end --reorder
+BOWTIE2_LOCAL_OPTIONS =  --very-sensitive -L 20 --score-min L,-0.6,-0.2 --end-to-end --reorder
 
 #######################################################################
 ## Annotation files
 #######################################################################
 
-ORGANISM = mm9
-GENOME_FRAGMENT = annotation/HindIII_resfrag_mm9.bed
-GENOME_SIZE = annotation/chrom_mm9.sizes
+ORGANISM = hg19
+GENOME_FRAGMENT = annotation/HindIII_resfrag_hg19.bed
+GENOME_SIZE = annotation/chrom_hg19.sizes
 
 #######################################################################
 ## Hi-C processing
 #######################################################################
 
-MIN_INSERT_SIZE = 50
-MAX_INSERT_SIZE = 500
+MIN_INSERT_SIZE = 
+MAX_INSERT_SIZE = 
 GET_ALL_INTERACTION_CLASSES = 1
 GET_PROCESS_SAM = 1
-RMDUP = 1
+RM_SINGLETON = 1
+RM_MULTI = 1
+RM_DUP = 1
+
 
 #######################################################################
 ## Generate interaction count matrices
 #######################################################################
 
-BIN_SIZE = 5500000 300000 1400000 140000 40000 20000
+BIN_SIZE = 20000 40000 150000 500000 1000000
 BIN_STEP = 1
 BIN_OPTS = ##--binAdjust
 
 #######################################################################
-## Normalization
+## ICE Normalization
 #######################################################################
 MAX_ITER = 100
 SPARSE_FILTERING = 0.02
 EPS = 0.1
-
-

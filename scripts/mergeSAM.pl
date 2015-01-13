@@ -9,7 +9,7 @@ use strict;
 
 ## get options from command line
 my $arg_num = scalar @ARGV;
-my %opts= ('f'=>'','r'=>'', 'c'=>'', 'o'=>'', 'u'=>'', 'm'=>'', 'q'=>'', 'v'=>'');
+my %opts= ('f'=>'','r'=>'', 'c'=>'', 'o'=>'', 's'=>'', 'm'=>'', 'q'=>'', 'v'=>'');
 
 sub usage{
 print STDERR <<EOF;
@@ -17,15 +17,14 @@ print STDERR <<EOF;
     Reads can be filtered according to MAPQ, mappability, uniqueness and restriction site.
     A pair is reported only if both mates pass the different filters.
 
-    usage:  $0 [-u -m -q -h -c cut_site] -f forward_mapped_file -r reverse_mapped_file -o output.sam 
+    usage:  $0 [-s -m -q -h] -f forward_mapped_file -r reverse_mapped_file -o output.sam 
 
      -h   : help message;
      -f   : forward read mapped file
      -r   : reverse read mapped file
-     -u   : Do NOT report unmapped read pairs
+     -s   : Do NOT report singleton
      -m   : Do NOT report multiple mapped reads
      -q   : Do NOT report reads with a mapping quality lower than 'q'
-     -c   : 5\' overhang restriction site. Do NOT report reads align locally which do not overlap with a restriction site
      -v   : verbose mode
      -o   : output file name
 
@@ -34,20 +33,19 @@ EOF
     exit;
 }
 
-getopts('r:f:o:c:q:umhv', \%opts) || usage();
+getopts('r:f:o:q:smhv', \%opts) || usage();
 usage() if ($opts{h});
 usage() if $arg_num==0;
 
-my($forward_file, $reverse_file, $cutSite, $output_file, $rm_unmapped, $rm_multi, $mapq, $quiet)=($opts{f}, $opts{r}, $opts{c}, $opts{o}, $opts{u}, $opts{m}, $opts{q}, $opts{v});
+my($forward_file, $reverse_file, $output_file, $rm_singleton, $rm_multi, $mapq, $quiet)=($opts{f}, $opts{r}, $opts{o}, $opts{s}, $opts{m}, $opts{q}, $opts{v});
 
 ## Default - report all
-$rm_unmapped=0 unless $rm_unmapped;
+$rm_singleton=0 unless $rm_singleton;
 $rm_multi=0 unless $rm_multi;
 $mapq=0 unless $mapq;
 $quiet=0 unless $quiet;
-$cutSite="" unless $cutSite;
 
-paire_sam($forward_file, $reverse_file, $cutSite, $output_file, $rm_unmapped, $rm_multi, $mapq, $quiet);
+paire_sam($forward_file, $reverse_file, $output_file, $rm_singleton, $rm_multi, $mapq, $quiet);
 
 
 ###################
@@ -55,14 +53,11 @@ paire_sam($forward_file, $reverse_file, $cutSite, $output_file, $rm_unmapped, $r
 ## Merge two SE files in one PE file
 
 sub paire_sam{
-    my ($fileForward, $fileReverse, $cutSite, $filePair, $rm_unmap, $rm_mult, $rm_mapq, $verb) = @_;
+    my ($fileForward, $fileReverse, $filePair, $rm_single, $rm_mult, $rm_mapq, $verb) = @_;
     if ($verb == 1){
 	print "##Pairing '$fileForward' and '$fileReverse' in '$filePair'\n";
-	print "##Discard unmapped reads: $rm_unmap\n";
+	print "##Discard singleton reads: $rm_single\n";
 	print "##Discard multiple reads: $rm_mult\n";
-	if ($cutSite ne ""){
-	    print "##Discard local mapped reads without restriction site: $cutSite\n";
-	}
 	print "##Report reads with MAPQ >= $rm_mapq\n";
     }
     
@@ -71,9 +66,10 @@ sub paire_sam{
     my $f_read_id="";
     my @f_split_read;
     my @r_split_read;
+    my $read_size=-1;
 
     ##stats
-    my ($tot_pairs_counter, $multi_pairs_counter, $uniq_pairs_counter, $unmapped_pairs_counter, $lowq_pairs_counter, $cutSite_counter, $local_counter, $paired_reads_counter)=(0, 0, 0, 0, 0, 0, 0, 0);
+    my ($tot_pairs_counter, $multi_pairs_counter, $uniq_pairs_counter, $unmapped_pairs_counter, $lowq_pairs_counter, $local_counter, $paired_reads_counter, $singleton_counter)=(0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
 
     open (PAIRED, ">$filePair") or die "Can't create \'$filePair\' : $!";
     open (FORWARD, $fileForward) or die "Can't read \'$fileForward\' : $!";
@@ -90,6 +86,14 @@ sub paire_sam{
 	    @f_split_read=split /\t/, $f_read;
 	    $f_read_id = $f_split_read[0];
 	    
+	    ## set reads size if == -1
+	    if ($f_read =~ /RG:Z:BMG/ && $read_size==-1){
+		$read_size=length($f_split_read[9]);
+		if ($verb == 1){
+		    print "##Reads length: $read_size\n";
+		}
+	    }
+
 	    #print "f=$f_read_id\n";
 
 	    while ($r_read_id ne $f_read_id){    
@@ -106,16 +110,24 @@ sub paire_sam{
 		##print "r=$r_read_id\n";
 
 		if($f_read_id eq $r_read_id){
-		  ##  print "EQUAL\n";
+		    ##  print "EQUAL\n";
 		    $isMulti=0;
 		    $tot_pairs_counter++;
 		    @f_split_read = split /\t/, $f_read;
 		    @r_split_read = split /\t/, $r_read;
 
-		    ## Unmapped reads
-		    if(  (($f_split_read[1] & 0x4) or ($r_split_read[1] & 0x4)) and $rm_unmap eq 1){
+		    ## Both unmapped reads are always removed
+		    if(  (($f_split_read[1] & 0x4) and ($r_split_read[1] & 0x4)) ){
 			$unmapped_pairs_counter++;
 			next;
+		    }
+		    
+		    ## Singleton
+		    if(  (($f_split_read[1] & 0x4) or ($r_split_read[1] & 0x4)) ){
+			$singleton_counter++;
+			if ( $rm_single == 1){
+			    next;
+			}
 		    }
 
 		    ## Unique versus Multiple hits (bowtie 2 only) - note that should give the same results than filter out MAPQ=0 or 1
@@ -147,22 +159,12 @@ sub paire_sam{
 			$lowq_pairs_counter++;
 			next;
 		    }
-
-		    ## CutSite
+		    
+		    ## Local Alignment
 		    if ($r_read =~ /RG:Z:BML/ || $f_read =~ /RG:Z:BML/){
 			$local_counter++;
-			## The read sequence is always in 5'->3' direction. So looking for 5' restriction site is enough
-			if ($r_read =~ /RG:Z:BML/ && $r_split_read[9] !~ /$cutSite/){#'/^$cutSite|$cutSite$/'){
-			    #print $r_read;
-			    #print $r_split_read[9]."\n";
-			    $cutSite_counter++;
-			    next;
-			}elsif ($f_read =~ /RG:Z:BML/ && $f_split_read[9] !~ /$cutSite/){#'/^$cutSite|$cutSite$/'){
-			    $cutSite_counter++;
-			    next;
-			}
 		    }
-		    
+	
 		    ## Reporting
 		    if($f_read and $r_read){
 		 	## Build pairs
@@ -183,9 +185,15 @@ sub paire_sam{
     my $fileStat=$filePair;
     $fileStat=~ s/.sam$/.pairstat/;
     open (STAT, ">$fileStat") or die "Can't create \'$fileStat\' : $!";
-
-    printf STAT ("##File\t%s\nTotal_pairs_processed\t%d\t100\nUnmapped_pairs\t%d\t%.3f\nLow_qual_pairs\t%d\t%.3f\nUnique_paired_alignments\t%d\t%.3f\nMultiple_pairs_alignments\t%d\t%.3f\nLocal_alignments\t%d\t%.3f\nLocal_align_nocutSite\t%d\t%.3f\nReported_pairs\t%d\t%.3f\n",$filePair, $tot_pairs_counter, $unmapped_pairs_counter, $unmapped_pairs_counter/$tot_pairs_counter*100, $lowq_pairs_counter, $lowq_pairs_counter/$tot_pairs_counter*100, $uniq_pairs_counter, $uniq_pairs_counter/$tot_pairs_counter*100, $multi_pairs_counter, $multi_pairs_counter/$tot_pairs_counter*100, $local_counter, $local_counter/$tot_pairs_counter*100, $cutSite_counter, $cutSite_counter/$tot_pairs_counter*100, $paired_reads_counter, $paired_reads_counter/$tot_pairs_counter*100);
+    printf STAT ("##File\t%s\nTotal_pairs_processed\t%d\t100\nUnmapped_pairs\t%d\t%.3f\nPairs_with_Singleton\t%d\t%.3f\nLow_qual_pairs\t%d\t%.3f\nUnique_paired_alignments\t%d\t%.3f\nMultiple_pairs_alignments\t%d\t%.3f\nLocal_alignments\t%d\t%.3f\nReported_pairs\t%d\t%.3f\n",$filePair, $tot_pairs_counter, $unmapped_pairs_counter, $unmapped_pairs_counter/$tot_pairs_counter*100, $singleton_counter, $singleton_counter/$tot_pairs_counter*100, $lowq_pairs_counter, $lowq_pairs_counter/$tot_pairs_counter*100, $uniq_pairs_counter, $uniq_pairs_counter/$tot_pairs_counter*100, $multi_pairs_counter, $multi_pairs_counter/$tot_pairs_counter*100, $local_counter, $local_counter/$tot_pairs_counter*100, $paired_reads_counter, $paired_reads_counter/$tot_pairs_counter*100);
     
+    if  ($verb == 1){
+	print "##Outputs in $filePair \n";
+	print "##Done !";
+	    
+    }
+	
+
 }
 
 

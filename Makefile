@@ -11,7 +11,7 @@ slash := |
 tick := -
 undsc := _
 
-all : init mapping proc_hic build_contact_maps clean
+all : init mapping proc_hic build_contact_maps
 
 all_qsub : mapping proc_hic
 
@@ -24,25 +24,19 @@ proc_hic : bowtie_pairing mapped2HiCFragments
 ## Per sample
 build_contact_maps: merge_rmdup build_raw_maps ice_norm plots
 
-debug:
-	@echo "RAW_DIR="$(RAW_DIR)
-	@echo "FASTQ_FILE="$(READSFILE_FQ)
-	@echo "RES_FILE="$(RES_FILE_NAME)
-	@echo "RES_FILE_OBJ="$(RES_FILE_NAME_OBJ)
-
 ######################################
 ## System
 ##
 ######################################
 config_check:
 ifndef CONFIG_FILE
-$(error CONFIG_FILE is not defined)
-else
+	$(error CONFIG_FILE is not defined)
+else		
 include $(CONFIG_FILE)
 endif
 
 make_torque_script: config_check init
-	@$(SCRIPTS)/make_torque_script.sh -c $(CONFIG_FILE) $(TORQUE_SUFFIX)
+	@$(SCRIPTS)/make_torque_script.sh -c $(CONFIG_FILE)
 
 clean: config_check 
 ifdef BOWTIE2_OUTPUT_DIR
@@ -55,6 +49,11 @@ ifdef LOGS_DIR
 endif
 	/bin/rm -rf bowtie_results hic_results
 
+debug: config_check
+	@echo "RAW_DIR="$(RAW_DIR)
+	@echo "FASTQ_FILE="$(READSFILE_FQ)
+	@echo "RES_FILE="$(RES_FILE_NAME)
+	@echo "RES_FILE_OBJ="$(RES_FILE_NAME_OBJ)
 
 ######################################
 ## Configure outputs
@@ -78,6 +77,7 @@ configure:  config_check
 ## Build C++ code
 src_compile: $(SOURCES)/build_matrix.cpp
 	(g++ -Wall -O2 -std=c++0x -o build_matrix ${SOURCES}/build_matrix.cpp; mv build_matrix ${SCRIPTS})
+	(g++ -Wall -O2 -std=c++0x -o cutsite_trimming ${SOURCES}/cutsite_trimming.cpp; mv cutsite_trimming ${SCRIPTS})
 	(cp $(SOURCES)/ice_mod/iced/scripts/ice ${SCRIPTS}; cd $(SOURCES)/ice_mod/; python setup.py install --user;)
 
 ######################################
