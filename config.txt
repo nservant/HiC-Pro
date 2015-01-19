@@ -11,7 +11,7 @@ ANNOT_DIR = annotation
 LOGS_DIR = logs
 BOWTIE2_OUTPUT_DIR = bowtie_results
 MAPC_OUTPUT = hic_results
-VERSION = 2.2
+VERSION = 2.3
 
 #########################################################################
 ## Paths and Settings  - Start editing here !
@@ -21,12 +21,13 @@ BOWTIE2_PATH = /bioinfo/local/build/bowtie2-2.1.0/
 SAMTOOLS_PATH= /bioinfo/local/build/samtools_0.1.19/
 R_PATH=/bioinfo/local/build/R/R-devel/bin
 BASH = /bin/bash
-LOGFILE = hicpro_IRM90_rep1_split.log
 
 #######################################################################
 ## SYSTEM - PBS
 #######################################################################
 N_CPU = 2
+LOGFILE = hicpro_IRM90_rep1_split.log
+
 PBS_SUFFIX = IMR90_split
 PBS_MEM = 10gb
 PBS_WALLTIME = 6:00:00

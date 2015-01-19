@@ -66,6 +66,7 @@ configure:  config_check
 	mkdir -p $(MAPC_OUTPUT)
 	mkdir -p $(TMP_DIR)
 	mkdir -p $(LOGS_DIR)
+	@echo $(LOGFILE)
 	@echo "## Hi-C Mapping $(VERSION)" > $(LOGFILE)
 	@date >> $(LOGFILE)
 
