@@ -43,7 +43,7 @@ do
 	do
 	    echo ${DATA_DIR}/${RES_FILE_NAME}/*.validPairs
 	    mkdir -p ${MATRIX_DIR}/${bsize}
-	    cat ${DATA_DIR}/${RES_FILE_NAME}/*.validPairs | ${SCRIPTS}/build_matrix --public-data --binsize ${bsize} --chrsizes $GENOME_SIZE --ifile /dev/stdin --oprefix ${MATRIX_DIR}/${bsize}/${RES_FILE_NAME}_${bsize} &
+	    cat ${DATA_DIR}/${RES_FILE_NAME}/*.validPairs | ${SCRIPTS}/build_matrix --matrix-format asis --binsize ${bsize} --chrsizes $GENOME_SIZE --ifile /dev/stdin --oprefix ${MATRIX_DIR}/${bsize}/${RES_FILE_NAME}_${bsize} &
 	done
     fi
     wait
