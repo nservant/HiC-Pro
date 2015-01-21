@@ -13,6 +13,7 @@
 #include <string.h>
 #include <assert.h>
 #include <math.h>
+#include <unistd.h>
 
 static const int SPARSE_FMT = 0x1;
 static const int BED_FMT = 0x2;
@@ -237,23 +238,51 @@ void Chromosome::computeSizes(chrsize_t ori_binsize, chrsize_t step, bool binadj
 
 static int usage(int ret = 1)
 {
-  std::cerr << "usage: " << prog << " --binsize BINSIZE --chrsizes CHRSIZES --ifile INTERACTION_FILE --oprefix OUTPUT_FILE_PREFIX [--fmt sparse_bed|sparse_ind|expanded] [--bed-prefix PREFIX] [--binadjust] [--step STEP] [--public-data] [--binoffset OFFSET] [--chrA CHR... --chrB CHR...] [--organism ORGANISM]\n";
-  std::cerr << "usage: " << prog << " --help\n";
+  std::cerr << "usage: " << prog << " --binsize BINSIZE --chrsizes FILE --ifile FILE\n";
+  //  std::cerr << "       --oprefix PREFIX [--fmt sparse_bed|sparse_ind|expanded] [--bed-prefix PREFIX]\n";
+  std::cerr << "       --oprefix PREFIX [--binadjust] [--step STEP] [--binoffset OFFSET]\n";
+  std::cerr << "       [--matrix-format asis|upper|lower|complete][--chrA CHR... --chrB CHR...]\n";
+  std::cerr << "       [--legacy-data]\n";
+  std::cerr << "\nusage: " << prog << " --help\n";
   return ret;
 }
 
 static int help()
 {
+  // TBD: complete help
   std::cerr << "\n";
   (void)usage();
   std::cerr << "\nOPTIONS\n\n";
-  std::cerr << "--binsize BINSIZE     :\n";
-  std::cerr << "--chrsizes CHRSIZES     :\n";
-  std::cerr << "etc.\n";
+  std::cerr << "  --binsize BINSIZE      : bin size\n";
+  std::cerr << "  --chrsizes FILE        : file containing chromosome sizes\n";
+  std::cerr << "  --ifile FILE           : input interaction file\n";
+  std::cerr << "  --oprefix PREFIX       : output prefix of generated files (matrix and bed)\n";
+  //  std::cerr << "  --fmt FORMAT             : \n";
+  //  std::cerr << "  --bed-prefix PREFIX      :\n";
+  std::cerr << "  --binadjust            : [optional] adjust bin sizes, default is false\n";
+  std::cerr << "  --step STEP            : [optional] step size, default is 1\n";
+  std::cerr << "  --binoffset OFFSET     : [optional] starting bin offset, default is 1\n";
+  std::cerr << "  --matrix-format FORMAT : [optional] FORMAT may be:\n";
+  std::cerr << "                           - asis: matrix is generated according to input data (default)\n";
+  std::cerr << "                           - upper: only the upper matrix is generated\n";
+  std::cerr << "                           - lower: only the lower matrix is generated\n";
+  std::cerr << "                           - complete: generate both parts of the matrix (upper and lower);\n";
+  std::cerr << "                             input data must contain only one part (upper or lower) \n";
+  std::cerr << "  --chrA CHR             : [optional] colon separated list of abscissa chromosomes; default is all chromosomes\n";
+  std::cerr << "  --chrB CHR             : [optional] colon separated list of ordinate chromosomes; default is all chromosomes\n";
+  //  std::cerr << "  --organism ORGANISM      :\n";
+  std::cerr << "  --legacy-data          : [optional] use for compatibility mode for old format \n";
   return -1;
 }
 
-static int get_options(int argc, char* argv[], chrsize_t& binsize, const char*& chrsize_file, const char*& ifile, const char*& oprefix, Format& format, std::string& bed_prefix, bool& binadjust, bool& symetric, chrsize_t& step, bool& whole_genome, bool& public_data, int& binoffset, const char*& chrA, const char*& chrB)
+enum MatrixFormat {
+  ASIS_MATRIX = 1,
+  UPPER_MATRIX,
+  LOWER_MATRIX,
+  COMPLETE_MATRIX
+};
+  
+static int get_options(int argc, char* argv[], chrsize_t& binsize, const char*& chrsize_file, const char*& ifile, const char*& oprefix, Format& format, std::string& bed_prefix, bool& binadjust, MatrixFormat& matrix_format, chrsize_t& step, bool& whole_genome, bool& public_data, int& binoffset, const char*& chrA, const char*& chrB)
 {
   prog = argv[0];
   for (int ac = 1; ac < argc; ++ac) {
@@ -261,8 +290,22 @@ static int get_options(int argc, char* argv[], chrsize_t& binsize, const char*& 
     if (*opt == '-') {
       if (!strcmp(opt, "--binadjust")) {
 	binadjust = true;
-      } else if (!strcmp(opt, "--symetric")) {
-	symetric = true;
+      } else if (!strcmp(opt, "--matrix-format")) {
+	if (ac == argc-1) {
+	  return usage();
+	}
+	std::string matrix_format_str = argv[++ac];
+	if (matrix_format_str == "asis") {
+	  matrix_format = ASIS_MATRIX;
+	} else if (matrix_format_str == "upper") {
+	  matrix_format = UPPER_MATRIX;
+	} else if (matrix_format_str == "lower") {
+	  matrix_format = LOWER_MATRIX;
+	} else if (matrix_format_str == "complete") {
+	  matrix_format = COMPLETE_MATRIX;
+	} else {
+	  return usage();
+	}
       } else if (!strcmp(opt, "--step")) {
 	if (ac == argc-1) {
 	  return usage();
@@ -275,6 +318,8 @@ static int get_options(int argc, char* argv[], chrsize_t& binsize, const char*& 
 	binsize = atoi(argv[++ac]);
       } else if (!strcmp(opt, "--public-data")) {
 	public_data = true;
+      } else if (!strcmp(opt, "--legacy-data")) {
+	public_data = false;
       } else if (!strcmp(opt, "--binoffset")) {
 	if (ac == argc-1) {
 	  return usage();
@@ -295,6 +340,7 @@ static int get_options(int argc, char* argv[], chrsize_t& binsize, const char*& 
 	  return usage();
 	}
 	chrsize_file = argv[++ac];
+	/*
       } else if (!strcmp(opt, "--fmt")) {
 	if (ac == argc-1) {
 	  return usage();
@@ -314,6 +360,7 @@ static int get_options(int argc, char* argv[], chrsize_t& binsize, const char*& 
 	  return usage();
 	}
 	bed_prefix = argv[++ac];
+	*/
       } else if (!strcmp(opt, "--chrA")) {
 	if (ac == argc-1) {
 	  return usage();
@@ -681,7 +728,7 @@ static bool is_empty_line(const char* buffer)
   return true;
 }
 
-static int build_matrix(bool public_data, int binoffset, chrsize_t ori_binsize, const char* chrsize_file, const char* ifile, const char* oprefix, Format format, const std::string& bed_prefix, bool binadjust, bool symetric, chrsize_t step, bool whole_genome, const char* chrA, const char* chrB)
+static int build_matrix(bool public_data, int binoffset, chrsize_t ori_binsize, const char* chrsize_file, const char* ifile, const char* oprefix, Format _dummy_format, const std::string& _dummy_bed_prefix, bool binadjust, MatrixFormat matrix_format, chrsize_t step, bool whole_genome, const char* chrA, const char* chrB)
 {
   std::ifstream ifs;
   std::ofstream matfs, xbedfs, ybedfs;
@@ -716,9 +763,34 @@ static int build_matrix(bool public_data, int binoffset, chrsize_t ori_binsize, 
       }
       chrsize_t abs_bin = assign_bin(lorg, abs_chr, lstart, 1);
       chrsize_t ord_bin = assign_bin(rorg, ord_chr, rstart, 1);
-      matrix.add(abs_bin, ord_bin);
-      if (symetric && abs_bin != ord_bin) {
-	matrix.add(ord_bin, abs_bin);
+      switch(matrix_format) {
+
+      case ASIS_MATRIX:
+	matrix.add(abs_bin, ord_bin);
+	break;
+
+      case UPPER_MATRIX:
+	if (abs_bin < ord_bin) {
+	  matrix.add(abs_bin, ord_bin);
+	} else {
+	  matrix.add(ord_bin, abs_bin);
+	}
+	break;
+
+      case LOWER_MATRIX:
+	if (abs_bin > ord_bin) {
+	  matrix.add(abs_bin, ord_bin);
+	} else {
+	  matrix.add(ord_bin, abs_bin);
+	}
+	break;
+
+      case COMPLETE_MATRIX:
+	matrix.add(abs_bin, ord_bin);
+	if (abs_bin != ord_bin) {
+	  matrix.add(ord_bin, abs_bin);
+	}
+	break;
       }
       line_cnt++;
       if ((line_cnt % 100000) == 0) {
@@ -726,7 +798,7 @@ static int build_matrix(bool public_data, int binoffset, chrsize_t ori_binsize, 
       }
     }
   } else {
-
+    // legacy format
     int ldist, rdist;
     char left[512];
     char right[512];
@@ -763,9 +835,11 @@ static int build_matrix(bool public_data, int binoffset, chrsize_t ori_binsize, 
       chrsize_t abs_bin = assign_bin(lorg, abs_chr, lstart, ldist);
       chrsize_t ord_bin = assign_bin(rorg, ord_chr, rstart, rdist);
       matrix.add(abs_bin, ord_bin);
+      /*
       if (symetric && abs_bin != ord_bin) {
 	matrix.add(ord_bin, abs_bin);
       }
+      */
       line_cnt++;
       if ((line_cnt % 100000) == 0) {
 	std::cerr << line_cnt << std::endl;
@@ -787,7 +861,7 @@ int main(int argc, char* argv[])
 {
   chrsize_t step = 1;
   bool binadjust = false;
-  bool symetric = false;
+  MatrixFormat matrix_format = ASIS_MATRIX;
   chrsize_t binsize = 0;
   const char* ifile = NULL;
   const char* oprefix = NULL;
@@ -795,12 +869,12 @@ int main(int argc, char* argv[])
   const char* chrB = NULL;
   const char* chrsize_file = NULL;
   bool whole_genome = true;
-  bool public_data = false;
+  bool public_data = true; // EV: 2015-01-21: default becomes true
   int binoffset = 1;
   std::string bed_prefix;
   Format format = SPARSE_BED_FMT;
 
-  if (int ret = get_options(argc, argv, binsize, chrsize_file, ifile, oprefix, format, bed_prefix, binadjust, symetric, step, whole_genome, public_data, binoffset, chrA, chrB)) {
+  if (int ret = get_options(argc, argv, binsize, chrsize_file, ifile, oprefix, format, bed_prefix, binadjust, matrix_format, step, whole_genome, public_data, binoffset, chrA, chrB)) {
     if (ret < 0) {
       return 0;
     }
@@ -819,5 +893,5 @@ int main(int argc, char* argv[])
     return usage();
   }
 
-  return build_matrix(public_data, binoffset, binsize, chrsize_file, ifile, oprefix, format, bed_prefix, binadjust, symetric, step, whole_genome, chrA, chrB);
+  return build_matrix(public_data, binoffset, binsize, chrsize_file, ifile, oprefix, format, bed_prefix, binadjust, matrix_format, step, whole_genome, chrA, chrB);
 }
