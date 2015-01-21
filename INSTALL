@@ -15,7 +15,7 @@ The installation process will generate a config-system.txt file which defines al
 ## 
 
 Dependencies are checked during installation.
-A couple of tools such as bowtie2 and samtools can be automatically installed if not detected.
+A couple of tools such as bowtie2 and samtools (>1.0) can be automatically installed if not detected.
 Others have to be installed before starting the installation :
 
 - R http://www.r-project.org/

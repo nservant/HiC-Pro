@@ -13,8 +13,6 @@
 
 dir=$(dirname $0)
 
-#. $dir/hic.inc.sh
-
 ################### Initialize ###################
 
 while [ $# -gt 0 ]
@@ -43,14 +41,12 @@ DATA_DIR=${MAPC_OUTPUT}/data/
 for RES_FILE_NAME in ${DATA_DIR}/*
 do
     RES_FILE_NAME=$(basename $RES_FILE_NAME)
-    echo $RES_FILE_NAME
     if [ -d ${DATA_DIR}/${RES_FILE_NAME} ]; then
 	MATRIX_DIR=${MAPC_OUTPUT}/matrix/${RES_FILE_NAME}/raw
 	for bsize in ${BIN_SIZE}
 	do
-	    echo ${DATA_DIR}/${RES_FILE_NAME}/*.validPairs
 	    mkdir -p ${MATRIX_DIR}/${bsize}
-	    cat ${DATA_DIR}/${RES_FILE_NAME}/*.validPairs | ${SCRIPTS}/build_matrix --matrix-format asis --binsize ${bsize} --chrsizes $GENOME_SIZE --ifile /dev/stdin --oprefix ${MATRIX_DIR}/${bsize}/${RES_FILE_NAME}_${bsize} &
+	    cat ${DATA_DIR}/${RES_FILE_NAME}/*.validPairs | ${SCRIPTS}/build_matrix --matrix-format ${MATRIX_FORMAT} --binsize ${bsize} --chrsizes $ANNOT_DIR/$GENOME_SIZE --ifile /dev/stdin --oprefix ${MATRIX_DIR}/${bsize}/${RES_FILE_NAME}_${bsize} &
 	done
     fi
     wait
