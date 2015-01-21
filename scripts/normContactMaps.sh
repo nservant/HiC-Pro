@@ -1,7 +1,14 @@
 #!/bin/bash
-## Nicolas Servant
-## normContactMaps.sh
-## Launcher for normalization scripts
+## HiC-Pro
+## Copyleft 2015 Institut Curie                               
+## Author(s): Nicolas Servant, Nelle Varoquaux
+## Contact: nicolas.servant@curie.fr
+## This software is distributed without any guarantee under the terms of the GNU General
+## Public License, either Version 2, June 1991 or Version 3, June 2007.
+
+##
+## Launcher for ICE normalization scripts
+##
 
 dir=$(dirname $0)
 

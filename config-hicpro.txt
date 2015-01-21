@@ -4,26 +4,13 @@
 ## Paths and Settings  - Do not edit !
 #########################################################################
 
-SCRIPTS = scripts
-SOURCES = scripts/src
 TMP_DIR = tmp
-ANNOT_DIR = annotation
 LOGS_DIR = logs
 BOWTIE2_OUTPUT_DIR = bowtie_results
 MAPC_OUTPUT = hic_results
-VERSION = 2.3
-
-#########################################################################
-## Paths and Settings  - Start editing here !
-#########################################################################
-
-BOWTIE2_PATH = /bioinfo/local/build/bowtie2-2.1.0/
-SAMTOOLS_PATH= /bioinfo/local/build/samtools_0.1.19/
-R_PATH=/bioinfo/local/build/R/R-devel/bin
-BASH = /bin/bash
 
 #######################################################################
-## SYSTEM - PBS
+## SYSTEM - PBS - Start Editing Here !!
 #######################################################################
 N_CPU = 2
 LOGFILE = hicpro_IRM90_rep1_split.log
@@ -59,8 +46,8 @@ BOWTIE2_LOCAL_OPTIONS =  --very-sensitive -L 20 --score-min L,-0.6,-0.2 --end-to
 #######################################################################
 
 ORGANISM = hg19
-GENOME_FRAGMENT = annotation/HindIII_resfrag_hg19.bed
-GENOME_SIZE = annotation/chrom_hg19.sizes
+GENOME_FRAGMENT = HindIII_resfrag_hg19.bed
+GENOME_SIZE = chrom_hg19.sizes
 
 #######################################################################
 ## Hi-C processing

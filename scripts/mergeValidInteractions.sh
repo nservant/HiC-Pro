@@ -1,6 +1,14 @@
 #!/bin/bash
-## Nicolas Servant
-## mergeValidInteraction.sh
+## HiC-Pro
+## Copyleft 2015 Institut Curie                               
+## Author(s): Nicolas Servant, Eric Viara
+## Contact: nicolas.servant@curie.fr
+## This software is distributed without any guarantee under the terms of the GNU General
+## Public License, either Version 2, June 1991 or Version 3, June 2007.
+
+##
+## Merge all valid interaction file and remove duplicates
+##
 
 dir=$(dirname $0)
 

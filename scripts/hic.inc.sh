@@ -8,6 +8,7 @@
 ###########################
 ## Load Configuration
 ###########################
+CURRENT_PATH=`dirname $0`
 
 tmpfile1=/tmp/hic1.$$
 tmpfile2=/tmp/hic2.$$
@@ -39,7 +40,18 @@ read_config()
     RAW_DIR=$(echo $RAW_DIR | sed -e 's|^\./||')
 }
 
-## load config
+## Load System config
+SYS_CONF=$CURRENT_PATH/../config-system.txt
+echo $SYS_CONF
+if [ -e "$SYS_CONF" ]; then
+    read_config $SYS_CONF
+else
+    echo "Error - System config file not available"
+    exit
+fi
+
+
+## load Hi-C config
 if [ ! -z "$CONF" ]; then
     read_config $CONF
 fi

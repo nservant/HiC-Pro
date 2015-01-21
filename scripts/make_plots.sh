@@ -1,11 +1,17 @@
 #!/bin/bash
-## Eric Viara
-## plotMappingPortion.sh
-## Launcher for plotMappingPortiont.R script
+## HiC-Pro
+## Copyleft 2015 Institut Curie                               
+## Author(s): Nicolas Servant, Eric Viara
+## Contact: nicolas.servant@curie.fr
+## This software is distributed without any guarantee under the terms of the GNU General
+## Public License, either Version 2, June 1991 or Version 3, June 2007.
+
+##
+## Launcher for all plotting function in R
+##
 
 dir=$(dirname $0)
 
-##. $dir/hic.inc.sh
 
 ################### Initialize ###################
 #set -- $(getopt c:i:g:b:s:h "$@")

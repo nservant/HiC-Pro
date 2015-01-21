@@ -1,8 +1,15 @@
 #!/usr/bin/perl -w
+## HiC-Pro
+## Copyleft 2015 Institut Curie                               
+## Author(s): Nicolas Servant, Eric Viara
+## Contact: nicolas.servant@curie.fr
+## This software is distributed without any guarantee under the terms of the GNU General
+## Public License, either Version 2, June 1991 or Version 3, June 2007.
 
-## Nicolas Servant
+##
 ## Merge two SAM files (SE) into one BAM file
 ## Clean de SAM files by MAPQ, uniqueness, mapped
+##
 
 use Getopt::Std;
 use strict;

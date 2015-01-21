@@ -33,7 +33,7 @@ do
     datadir=${MAPC_OUTPUT}/data/${sample_dir}
     mkdir -p ${datadir}
     
-    cmd="python ${SCRIPTS}/overlapMapped2HiCFragments.py ${opts} -f ${GENOME_FRAGMENT} -r ${r} -o ${datadir}"
+    cmd="python ${SCRIPTS}/overlapMapped2HiCFragments.py ${opts} -f ${ANNOT_DIR}/${GENOME_FRAGMENT} -r ${r} -o ${datadir}"
     exec_cmd $cmd
 
     ## Valid pairs are already sorted

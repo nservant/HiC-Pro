@@ -1,12 +1,16 @@
 #!/bin/bash
-## Nicolas Servant
-## Institut Curie
+## HiC-Pro
+## Copyleft 2015 Institut Curie                               
+## Author(s): Nicolas Servant, Eric Viara
+## Contact: nicolas.servant@curie.fr
+## This software is distributed without any guarantee under the terms of the GNU General
+## Public License, either Version 2, June 1991 or Version 3, June 2007.
 
+##
 ## Mapping statistics for Hi-C data
+##
 
 dir=$(dirname $0)
-
-#. $dir/hic.inc.sh
 
 ## Usage
 function usage {
@@ -34,7 +38,6 @@ do
     shift
 done
 
-##read_config $ncrna_conf
 CONF=$conf_file . $dir/hic.inc.sh
 
 ##

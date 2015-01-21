@@ -1,10 +1,16 @@
 #!/bin/bash
-## Nicolas Servant updated 2014-08-13
-## Eric Viara updated 2014-04-28
+## HiC-Pro
+## Copyleft 2015 Institut Curie                               
+## Author(s): Nicolas Servant, Eric Viara
+## Contact: nicolas.servant@curie.fr
+## This software is distributed without any guarantee under the terms of the GNU General
+## Public License, either Version 2, June 1991 or Version 3, June 2007.
+
+##
+## Combine two steps alignment files
 ##
 
 dir=$(dirname $0)
-##. $dir/hic.inc.sh
 
 while [ $# -gt 0 ]
 do
@@ -19,7 +25,6 @@ do
 done
 
 CONF=$conf_file . $dir/hic.inc.sh
-##read_config $CONF
 
 ##
 ## Combine Global and Local Bowtie2 mapping

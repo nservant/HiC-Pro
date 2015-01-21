@@ -1,0 +1,58 @@
+#!/bin/bash
+
+SOFT="HiC-Pro"
+VERSION="2.3.0"
+
+NORMAL="\\033[0;39m" 
+RED="\\033[1;31m"
+BLUE="\033[1;34m"
+
+function usage {
+    echo -e "$RED""Usage : $SOFT" v"$VERSION""$NORMAL"
+    echo -e "$RED""-c""$NORMAL"" <configuration file>"
+    echo -e "$RED""[-s""$NORMAL"" <analysis step define as follow :]"
+    echo -e "$BLUE""mapping:""$NORMAL"" Reads alignment"
+    echo -e "$BLUE""pro_hic:""$NORMAL"" Hi-C filtering"
+    echo -e "$BLUE""build_contact_maps:""$NORMAL"" Maps builder and normalization"
+    echo -e "$RED""-h""$NORMAL"" <help>"
+    exit;
+}
+
+function version {
+    echo -e "$SOFT version $VERSION"
+    exit;
+}
+
+if [ $# == 0 ]
+then
+    usage
+    exit
+fi
+
+make_options=""
+set -- $(getopt c:s:hm:v "$@")
+while [ $# -gt 0 ]
+do
+    case "$1" in
+	(-c) conf=$2; shift;;
+	(-s) make_options="$make_options $2"; echo $OPTARG; shift;;
+	(-v) version;;
+	(-h) usage;;
+	(--) shift; break;;
+	(-*) echo "$0: error - unrecognized option $1" 1>&2; exit 1;;
+	(*)  break;;
+    esac
+    shift
+done
+
+
+## Set PATHS
+bin_path=`dirname $0`
+scripts_path="$bin_path/../scripts/"
+install_path="$bin_path/../"
+cur_path=$PWD
+
+## Run HiC-Pro
+make --file $scripts_path/Makefile CONFIG_FILE=$cur_path/$conf CONFIG_SYS=$install_path"config-system.txt" $make_options 2>&1
+
+

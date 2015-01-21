@@ -3,8 +3,17 @@ CHANGES IN VERSION 2.3
 
 NEW FEATURES
 
+   o Change scripts folder
 
+   o Automatic installation process, using make install
 
+   o HiC-Pro can now be run using the bin/HiC-Pro bash script
+
+   o Add licence in all scripts
+
+   o Bug fixed in build_map - new option matrix_format asis/lower/upper/complete
+
+   o New version of ICE normalization
 
 
 ***********************************

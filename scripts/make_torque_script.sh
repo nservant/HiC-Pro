@@ -1,10 +1,16 @@
 #!/bin/bash
-## Eric Viara updated 2014-05-05
+## HiC-Pro
+## Copyleft 2015 Institut Curie                               
+## Author(s): Eric Viara
+## Contact: nicolas.servant@curie.fr
+## This software is distributed without any guarantee under the terms of the GNU General
+## Public License, either Version 2, June 1991 or Version 3, June 2007.
+
+##
+## Create PBS Torque file
 ##
 
 dir=$(dirname $0)
-
-##. $dir/hic.inc.sh
 
 usage()
 {
