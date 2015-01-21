@@ -19,10 +19,10 @@ init : configure
 
 mapping: bowtie_global bowtie_local merge_global_local mapping_stat
 
-proc_hic : bowtie_pairing mapped2HiCFragments 
+proc_hic : bowtie_pairing mapped2HiCFragments plots
 
 ## Per sample
-build_contact_maps: merge_rmdup build_raw_maps ice_norm plots
+build_contact_maps: merge_rmdup build_raw_maps ice_norm 
 
 ######################################
 ## System

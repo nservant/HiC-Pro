@@ -1,11 +1,6 @@
 #!/bin/bash
+## Nicolas Servant
 ## HiC-Pro
-## Copyleft 2015 Institut Curie
-## Author(s): Nicolas Servant
-## Contact: nicolas.servant@curie.fr
-## This software is distributed without any guarantee under the terms of the GNU General
-## Public License, either Version 2, June 1991 or Version 3, June 2007. 
-
 ##
 ## This script aims in installing most of the dependies of the HiC-Pro tool.
 ## Serval checks are done to ensure compilation of code.
@@ -36,7 +31,7 @@ echo -e "$BLUE""Starting $SOFT installation ...""$NORMAL";
 
 ################### Initialize ###################
 
-set -- $(getopt c:h "$@")
+set -- $(getopt c: "$@")
 while [ $# -gt 0 ]
 do
     case "$1" in
@@ -60,7 +55,8 @@ while read curline_read; do
 	if [[ $var =~ "_PATH" ]]
 	then
 	    if [[ ! -z $val ]]; then
-		export PATH=$PATH:$val
+		echo "export $val in PATH"
+		export PATH=$val:$PATH
 	    fi
 	fi
     fi
@@ -264,8 +260,8 @@ rm -rf ./tmp
 echo -e "$RED""Dependencies checked !""$NORMAL"
 
 ################ Create the config-system file ###################
-echo
-echo  "$BLUE""Start $SOFT configuration ... ""$NORMAL"
+CUR_DIR=`pwd`
+echo -e "$BLUE""Check $SOFT configuration ... ""$NORMAL"
 
 echo "#######################################################################" > config-system.txt
 echo "## $SOFT - System settings" >> config-system.txt
@@ -311,6 +307,10 @@ if [ $? = "0" ]; then
 else
     die "PYTHON_PATH not found. Exit."
 fi
+
+echo "SCRIPTS = $CUR_DIR/scripts" >> config-system.txt
+echo "SOURCES = $CUR_DIR/scripts/src" >> config-system.txt
+echo "ANNOT_DIR = $CUR_DIR/annotation" >> config-system.txt
 
 echo ;
 ## End of dependencies check ##
