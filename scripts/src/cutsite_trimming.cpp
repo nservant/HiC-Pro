@@ -5,6 +5,7 @@
 #include <iostream>     // std::cout
 #include <stdlib.h>
 #include <string.h>
+#include <vector>
 #include <fstream>
 
 static const char* prog;
@@ -16,7 +17,8 @@ static int usage(int ret=1)
   return ret;
 }
 
-static int get_options(int argc, char* argv[], std::string& fastqFile, std::string& cutSite, std::string& output, bool& rmuntrim)
+static int get_options(int argc, char* argv[], std::string& fastqFile,
+                       std::vector<std::string>& cutSites, std::string& output, bool& rmuntrim)
 {
   prog = argv[0];
   if (argc == 1){
@@ -26,9 +28,20 @@ static int get_options(int argc, char* argv[], std::string& fastqFile, std::stri
     const char* opt = argv[ac];
     if (*opt == '-') {
       if (!strcmp(opt, "--fastq")) {
-	fastqFile = std::string(argv[++ac]);
+        fastqFile = std::string(argv[++ac]);
       } else if (!strcmp(opt, "--cutsite")) {
-	cutSite = std::string(argv[++ac]);
+
+        std::string cutSitesSequence;
+        cutSitesSequence = std::string(argv[++ac]);
+        size_t pos = cutSitesSequence.find(",");
+        size_t begin = 0;
+        while(pos != std::string::npos){
+          cutSites.push_back(cutSitesSequence.substr(begin, pos - begin));
+          begin = pos + 1;
+          pos = cutSitesSequence.find(",", begin + 1);
+        }
+        cutSites.push_back(cutSitesSequence.substr(begin, pos));
+
       } 
       else if (!strcmp(opt, "--out")) {
         output = std::string(argv[++ac]);
@@ -44,7 +57,9 @@ static int get_options(int argc, char* argv[], std::string& fastqFile, std::stri
   return 0;
 }
 
-static int trim_fastq(std::string& fastqFile, std::string& cutSite, std::string& outFile, bool& rmuntrim)
+static int trim_fastq(std::string& fastqFile,
+                      std::vector<std::string>& cutSites,
+                      std::string& outFile, bool& rmuntrim)
 {
 
   int trim_count=0;
@@ -61,22 +76,40 @@ static int trim_fastq(std::string& fastqFile, std::string& cutSite, std::string&
       getline(ifs, seq);
       getline(ifs, dummy);
       getline(ifs, qual);
-      size_t pos = seq.find(cutSite);
+
+      bool find_pos = false;
+      size_t pos = std::string::npos;
+      for (std::vector<std::string>::iterator it = cutSites.begin(); it != cutSites.end(); ++it){
+        size_t tmp_pos = seq.find(*it);
+        if (tmp_pos != std::string::npos) {
+          // If find_pos is alread True, there is a problem (there are two cut
+          // sites in the same read).)
+          if (find_pos == true){
+            if(tmp_pos < pos) {
+              pos = tmp_pos;
+            }
+          } else {
+            find_pos = true;
+            pos = tmp_pos;
+          }
+        }
+      }
       
       if (pos != std::string::npos) {
-	trim_count++;
-	ofs << ID << '\n';
-	ofs << seq.substr(0, pos) << '\n';
-	ofs << "+\n";
-	ofs << qual.substr(0, pos) << '\n';
+        trim_count++;
+        ofs << ID << '\n';
+        ofs << seq.substr(0, pos) << '\n';
+        ofs << "+\n";
+        ofs << qual.substr(0, pos) << '\n';
       } else {
-	if (!rmuntrim){
-	  ofs << ID << '\n';
-       	  ofs << seq << '\n';
-	  ofs << "+\n";
-	  ofs << qual << '\n';
-	}
+        if (!rmuntrim){
+          ofs << ID << '\n';
+          ofs << seq << '\n';
+          ofs << "+\n";
+          ofs << qual << '\n';
+        }
       }
+      find_pos = false;
     }
   }else{
     std::cerr << "Error : Cannot open file : " << fastqFile;
@@ -88,21 +121,24 @@ int main(int argc, char* argv[])
 {
   
   std::string fastqFile;
-  std::string cutSite;
+  std::vector<std::string> cutSites;
   std::string outFile;
   bool rmuntrim = false;
 
-  int ret = get_options(argc, argv, fastqFile, cutSite, outFile, rmuntrim);
+  int ret = get_options(argc, argv, fastqFile, cutSites, outFile, rmuntrim);
   printf("##Fastq file: %s\n", fastqFile.c_str());
-  printf("##Restriction site: %s\n", cutSite.c_str());
+  printf("##Restriction sites:\n");
+  for(std::vector<std::string>::iterator it = cutSites.begin(); it != cutSites.end(); ++it){
+    std::cout << *it << std::endl;
+  }
   printf("##Output File: %s\n", outFile.c_str());
 
-  if (fastqFile.empty() || cutSite.empty() || outFile.empty()){
+  if (fastqFile.empty() || cutSites.size() == 0 || outFile.empty()){
     usage();
     exit(ret);
   }
 
-  int trim_count=trim_fastq(fastqFile, cutSite, outFile, rmuntrim);
+  int trim_count=trim_fastq(fastqFile, cutSites, outFile, rmuntrim);
   printf("\n##Trimmed reads: %d\n", trim_count);
   return(0);
  }
