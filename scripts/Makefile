@@ -11,9 +11,9 @@ slash := |
 tick := -
 undsc := _
 
-all : mapping proc_hic build_contact_maps
+all : init mapping proc_hic build_contact_maps
 
-all_qsub : mapping proc_hic
+all_qsub : init mapping proc_hic
 
 init : configure 
 
@@ -172,7 +172,7 @@ build_raw_maps:  config_check
 	@echo "--------------------------------------------" >> $(LOGFILE)
 	@date >> $(LOGFILE)
 	@echo "Generate binned matrix files ..." >> $(LOGFILE)
-	$(SCRIPTS)/assignRead2bins.sh -c $(CONFIG_FILE) 2> $(LOGS_DIR)/build_raw_maps.log
+	$(SCRIPTS)/assignRead2bins.sh -c $(CONFIG_FILE) > $(LOGS_DIR)/build_raw_maps.log
 
 ######################################
 ## Normalization

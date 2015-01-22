@@ -13,13 +13,13 @@ MAPC_OUTPUT = hic_results
 ## SYSTEM - PBS - Start Editing Here !!
 #######################################################################
 N_CPU = 2
-LOGFILE = hicpro_IRM90_rep1_split.log
+LOGFILE = hicpro.log
 
-PBS_SUFFIX = IMR90_split
-PBS_MEM = 10gb
-PBS_WALLTIME = 6:00:00
-PBS_QUEUE = batch
-PBS_MAIL = nservant@curie.fr
+PBS_SUFFIX = 
+PBS_MEM = 
+PBS_WALLTIME = 
+PBS_QUEUE = 
+PBS_MAIL = 
 
 #########################################################################
 ## Data

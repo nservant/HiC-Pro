@@ -8,6 +8,15 @@
 ###########################
 ## Load Configuration
 ###########################
+#function error_handler() {
+#  echo "Error occurred in script at line: ${1}."
+#  echo "Line exited with status: ${2}"
+#}
+
+#trap 'error_handler ${LINENO} $?' ERR
+
+#set -e -o pipefail 
+
 CURRENT_PATH=`dirname $0`
 
 tmpfile1=/tmp/hic1.$$
@@ -30,26 +39,25 @@ read_config()
 
     eval "$(join $tmpfile1 $tmpfile2 | awk -F' =' '{printf("%s=\"%s\"; export %s;\n", $1, $2, $1)}')"
 
+    
     ## Define BOWTIE outputs
     BOWTIE2_IDX=${BOWTIE2_IDX_PATH}/${ORGANISM}; export BOWTIE2_IDX
     BOWTIE2_GLOBAL_OUTPUT_DIR=$BOWTIE2_OUTPUT_DIR/bwt2_global; export BOWTIE2_GLOBAL_OUTPUT_DIR
     BOWTIE2_LOCAL_OUTPUT_DIR=$BOWTIE2_OUTPUT_DIR/bwt2_local; export BOWTIE2_LOCAL_OUTPUT_DIR
     BOWTIE2_FINAL_OUTPUT_DIR=$BOWTIE2_OUTPUT_DIR/bwt2; export BOWTIE2_FINAL_OUTPUT_DIR
- 
+    
     ## Clean RAW_DIR variable
     RAW_DIR=$(echo $RAW_DIR | sed -e 's|^\./||')
 }
 
 ## Load System config
 SYS_CONF=$CURRENT_PATH/../config-system.txt
-echo $SYS_CONF
 if [ -e "$SYS_CONF" ]; then
     read_config $SYS_CONF
 else
     echo "Error - System config file not available"
     exit
 fi
-
 
 ## load Hi-C config
 if [ ! -z "$CONF" ]; then

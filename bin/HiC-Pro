@@ -83,21 +83,35 @@ if [ -d $OUTPUT ]; then
     if [ XX${ans} = XXy ]; then
 	make --file $SCRIPTS_PATH/Makefile CONFIG_FILE=$CUR_PATH/$CONF CONFIG_SYS=$INSTALL_PATH"/config-system.txt" clean reset 2>&1
     fi
+else
+    mkdir -p $OUTPUT
 fi
-echo "Init HiC-Pro ..."
     
 if [ ! -e $OUTPUT/rawdata ]; then
     ln -s $INPUT $OUTPUT/rawdata
 fi
-    
+
+## cp config file in output
+cp $CUR_PATH/$CONF $OUTPUT
+
 cd $OUTPUT
-make --file $SCRIPTS_PATH/Makefile CONFIG_FILE=$CUR_PATH/$CONF CONFIG_SYS=$INSTALL_PATH"/config-system.txt" init 2>&1
+
+## Check rawdata structure
+nbin=`find -L rawdata -mindepth 2 -maxdepth 2 -name "*.fastq" -o -name "*.fastq.gz" | wc -l`
+if [ $nbin == 0 ]; then
+    echo "Error: Directory Hierarchy of rawdata is not correct. No fastq(gz) files detected"
+    exit
+fi
 
 ###################
 ## Run HiC-Pro
 ###################
 echo
-echo "Run HiC-Pro"
-make --file $SCRIPTS_PATH/Makefile CONFIG_FILE=$CUR_PATH/$CONF CONFIG_SYS=$INSTALL_PATH"/config-system.txt" $MAKE_OPTS 2>&1
-
+if [ $PBS == 0 ]; then
+    echo "Run HiC-Pro"
+    make --file $SCRIPTS_PATH/Makefile CONFIG_FILE=$CUR_PATH/$CONF CONFIG_SYS=$INSTALL_PATH"/config-system.txt" init 2>&1
+    make --file $SCRIPTS_PATH/Makefile CONFIG_FILE=$CUR_PATH/$CONF CONFIG_SYS=$INSTALL_PATH"/config-system.txt" $MAKE_OPTS 2>&1
+else
+    make --file $SCRIPTS_PATH/Makefile CONFIG_FILE=$CUR_PATH/$CONF CONFIG_SYS=$INSTALL_PATH"/config-system.txt" make_torque_script 2>&1
+fi
 

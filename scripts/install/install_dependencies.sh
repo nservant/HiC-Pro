@@ -308,6 +308,7 @@ else
     die "PYTHON_PATH not found. Exit."
 fi
 
+echo "INSTALL_PATH = $CUR_DIR" >> config-system.txt
 echo "SCRIPTS = $CUR_DIR/scripts" >> config-system.txt
 echo "SOURCES = $CUR_DIR/scripts/src" >> config-system.txt
 echo "ANNOT_DIR = $CUR_DIR/annotation" >> config-system.txt
