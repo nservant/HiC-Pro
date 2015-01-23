@@ -38,14 +38,13 @@ global_align()
     local unmap="$4"
     local cmd
     echo ${file} >> ${LOGFILE}
+
     mkdir -p ${BOWTIE2_GLOBAL_OUTPUT_DIR}/${sample_dir}
 
     ## Unmapped reads
     if [[ $unmap == 1 ]]; then
 	BOWTIE2_GLOBAL_OPTIONS=${BOWTIE2_GLOBAL_OPTIONS}" --un ${BOWTIE2_GLOBAL_OUTPUT_DIR}/${sample_dir}/${prefix}_${ORGANISM}.bwt2glob.unmap.fastq"
     fi
-
-echo $file
 
     ## Check for gz files
     if [[ ! -e $file &&  -e $file.gz ]]; then
@@ -57,7 +56,7 @@ echo $file
     exec_cmd $cmd
 
     # Generate BAM files with map reads only
-    cmd="${SAMTOOLS_PATH}/samtools view -F 4 -bS ${BOWTIE2_GLOBAL_OUTPUT_DIR}/${sample_dir}/${prefix}_${ORGANISM}.bwt2glob.sam > ${BOWTIE2_GLOBAL_OUTPUT_DIR}/${sample_dir}/${prefix}_${ORGANISM}.bwt2glob.bam"
+    cmd="${SAMTOOLS_PATH}/samtools view -F 4 -bS ${BOWTIE2_GLOBAL_OUTPUT_DIR}/${sample_dir}/${prefix}_${ORGANISM}.bwt2glob.sam > ${BOWTIE2_GLOBAL_OUTPUT_DIR}/${sample_dir}/${prefix}_${ORGANISM}.bwt2glob.bam 2>>${LOGS_DIR}/bowtie_${prefix}_global_${ORGANISM}.log"
     exec_cmd $cmd
 }
 
@@ -91,12 +90,10 @@ local_align()
     exec_cmd "$cmd"
 
     ## Generate BAM files with all reads so that the sum of global + local reads = total reads
-    cmd="${SAMTOOLS_PATH}/samtools view -bS ${BOWTIE2_LOCAL_OUTPUT_DIR}/${sample_dir}/${prefix}_bwt2loc.sam > ${BOWTIE2_LOCAL_OUTPUT_DIR}/${sample_dir}/${prefix}_bwt2loc.bam"
+    cmd="${SAMTOOLS_PATH}/samtools view -bS ${BOWTIE2_LOCAL_OUTPUT_DIR}/${sample_dir}/${prefix}_bwt2loc.sam > ${BOWTIE2_LOCAL_OUTPUT_DIR}/${sample_dir}/${prefix}_bwt2loc.bam 2>>${LOGS_DIR}/bowtie_${prefix}_local.log"
 
     exec_cmd "$cmd"
 }
-
-
 
 
 echo "BOWTIE_FASTQ_WRAP mode $MODE"
@@ -113,13 +110,13 @@ if [[ ${MODE} == 'global' ]]; then
 	
 	echo $R1
 	echo $R2
-	echo $prefix1
-	echo $prefix2
 	
 	global_align "$sample_dir" "$R1" "$prefix1" "$UNMAP"&
+	pid1=$!
 	global_align "$sample_dir" "$R2" "$prefix2" "$UNMAP"&
-	
-	wait
+	pid2=$!
+
+	wait $pid1 $pid2 || die "Error in Bowtie alignment"
     done
 else
     for r in $(get_fastq_for_bowtie_local)
@@ -129,10 +126,15 @@ else
 	sample_dir=$(get_sample_dir $r)
 	prefix1=$(basename ${R1} | sed -e 's/.fastq\(.gz\)*//')
 	prefix2=$(basename ${R2} | sed -e 's/.fastq\(.gz\)*//')
+
+	echo $R1
+	echo $R2
 	
 	local_align "$sample_dir" "$R1" "$prefix1" "$UNMAP"&
+	pid1=$!
 	local_align "$sample_dir" "$R2" "$prefix2" "$UNMAP"&
-	
-	wait
+	pid2=$!
+
+	wait $pid1 $pid2 || die "Error in Bowtie alignment"
     done
 fi

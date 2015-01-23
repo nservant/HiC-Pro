@@ -138,6 +138,8 @@ ploMapStat <- function(mat, sampleName="", tag="", legend=TRUE){
 allmapstat_r1 <- list.files(path=bwtDir, pattern=paste0("^[[:print:]]*",r1tag,"[[:print:]]*mapstat$"), full.names=TRUE)
 allmapstat_r2 <- list.files(path=bwtDir, pattern=paste0("^[[:print:]]*",r2tag,"[[:print:]]*mapstat$"), full.names=TRUE)
 stopifnot(length(allmapstat_r1)>0 && length(allmapstat_r2)>0)
+print(allmapstat_r1)
+print(allmapstat_r2)
 
 ## Get statistics summary
 stats_per_fastq_r1<- sapply(allmapstat_r1, read.csv, sep=" ", row.names=2, as.is=TRUE, comment.char="#", header=FALSE)

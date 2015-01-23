@@ -45,16 +45,16 @@ endif
 make_torque_script: config_check init
 	@$(SCRIPTS)/make_torque_script.sh -c $(CONFIG_FILE)
 
-clean: config_check 
+rmsam: config_check 
 ifdef BOWTIE2_OUTPUT_DIR
-	/bin/rm -f $(BOWTIE2_OUTPUT_DIR)/*/*/*.sam
+	@/bin/rm -f $(BOWTIE2_OUTPUT_DIR)/*/*/*.sam
 endif
 
-reset: 
+clean: 
 ifdef LOGS_DIR
-	/bin/rm -f $(LOGS_DIR)/*
+	@/bin/rm -f $(LOGS_DIR)/*
 endif
-	/bin/rm -rf bowtie_results hic_results
+	@/bin/rm -rf bowtie_results hic_results
 
 debug: config_check
 	@echo "RAW_DIR="$(RAW_DIR)
@@ -69,10 +69,10 @@ debug: config_check
 
 ## Create output folders
 configure:  config_check
-	mkdir -p $(BOWTIE2_OUTPUT_DIR)
-	mkdir -p $(MAPC_OUTPUT)
-	mkdir -p $(TMP_DIR)
-	mkdir -p $(LOGS_DIR)
+	@mkdir -p $(BOWTIE2_OUTPUT_DIR)
+	@mkdir -p $(MAPC_OUTPUT)
+	@mkdir -p $(TMP_DIR)
+	@mkdir -p $(LOGS_DIR)
 
 
 ######################################
@@ -93,10 +93,10 @@ src_compile: $(SOURCES)/build_matrix.cpp
 
 ## Global Alignement
 bowtie_global:  config_check
-	@echo "--------------------------------------------" >> $(LOGFILE)
-	@date >> $(LOGFILE)
-	@echo "Bowtie2 global alignment ..." >> $(LOGFILE)
-	$(SCRIPTS)/bowtie_wrap.sh -c $(CONFIG_FILE) -u
+	@echo "--------------------------------------------" 
+	@date 
+	@echo "Bowtie2 global alignment ..." 
+	$(SCRIPTS)/bowtie_wrap.sh -c $(CONFIG_FILE) -u >> $(LOGFILE)
 
 ######################################
 ##  Bowtie2 Local Alignment
@@ -105,10 +105,10 @@ bowtie_global:  config_check
 
 ## Local Alignement
 bowtie_local:  config_check
-	@echo "--------------------------------------------" >> $(LOGFILE)
-	@date >> $(LOGFILE)
-	@echo "Bowtie2 local alignment ..." >> $(LOGFILE)
-	$(SCRIPTS)/bowtie_wrap.sh -c $(CONFIG_FILE) -l
+	@echo "--------------------------------------------" 
+	@date 
+	@echo "Bowtie2 local alignment ..." 
+	$(SCRIPTS)/bowtie_wrap.sh -c $(CONFIG_FILE) -l >> $(LOGFILE)
 
 ######################################
 ## Merge Bowtie2 local and global mapping
@@ -117,23 +117,23 @@ bowtie_local:  config_check
 
 ## Merge global and local alignment in a single file
 merge_global_local:  config_check
-	@echo "--------------------------------------------" >> $(LOGFILE)
-	@date >> $(LOGFILE)
-	@echo "Merge both alignment ..." >> $(LOGFILE)
-	$(SCRIPTS)/bowtie_combine.sh -c $(CONFIG_FILE)
+	@echo "--------------------------------------------" 
+	@date 
+	@echo "Merge both alignment ..."
+	$(SCRIPTS)/bowtie_combine.sh -c $(CONFIG_FILE) >> $(LOGFILE)
 
 ## Compute mapping statistics
 mapping_stat:  config_check
-	@echo "--------------------------------------------" >> $(LOGFILE)
-	@date >> $(LOGFILE)
-	@echo "Bowtie2 mapping statistics for R1 and R2 tags ..." >> $(LOGFILE)
-	$(SCRIPTS)/mapping_stat.sh -c $(CONFIG_FILE)
+	@echo "--------------------------------------------" 
+	@date 
+	@echo "Bowtie2 mapping statistics for R1 and R2 tags ..." 
+	$(SCRIPTS)/mapping_stat.sh -c $(CONFIG_FILE) >> $(LOGFILE)
 
 plots:
-	@echo "--------------------------------------------" >> $(LOGFILE)
-	@date >> $(LOGFILE)
-	@echo "Make plots per sample ..." >> $(LOGFILE)
-	$(SCRIPTS)/make_plots.sh -c $(CONFIG_FILE)
+	@echo "--------------------------------------------" 
+	@date 
+	@echo "Make plots per sample ..."
+	$(SCRIPTS)/make_plots.sh -c $(CONFIG_FILE) >> $(LOGFILE)
 
 
 ######################################
@@ -143,36 +143,30 @@ plots:
 
 ## Pairing of R1 and R2 mates and reads filtering
 bowtie_pairing:  config_check
-	@echo "--------------------------------------------" >> $(LOGFILE)
-	@date >> $(LOGFILE)
-	@echo "Pairing of R1 and R2 tags ..." >> $(LOGFILE)
-	$(SCRIPTS)/bowtie_pairing.sh -c $(CONFIG_FILE)
+	@echo "--------------------------------------------"
+	@date 
+	@echo "Pairing of R1 and R2 tags ..." 
+	$(SCRIPTS)/bowtie_pairing.sh -c $(CONFIG_FILE) >> $(LOGFILE)
 
 ## Assign alignments to regions segmented by HindIII sites
 mapped2HiCFragments:  config_check
-	@echo "--------------------------------------------" >> $(LOGFILE)
-	@date >> $(LOGFILE)
-	@echo "Assign alignments to HindIII sites ..." >> $(LOGFILE)
-	$(SCRIPTS)/overlapMapped2HiCFragments.sh -c $(CONFIG_FILE) > $(LOGS_DIR)/overlapRS.log
+	@echo "--------------------------------------------"
+	@date 
+	@echo "Assign alignments to HindIII sites ..." 
+	$(SCRIPTS)/overlapMapped2HiCFragments.sh -c $(CONFIG_FILE) >> $(LOGFILE) ##> $(LOGS_DIR)/overlapRS.log
 
 ## Combine multiple BAM files from the same sample, and remove duplicates
 merge_rmdup:  config_check
-	@echo "--------------------------------------------" >> $(LOGFILE)
-	@date >> $(LOGFILE)
-	@echo "Merge multiple files from the same sample ..." >> $(LOGFILE)
-	$(SCRIPTS)/mergeValidInteractions.sh -c $(CONFIG_FILE) > $(LOGS_DIR)/mergeMulti.log
-
-# merge_rmdup2:
-# 	@echo "--------------------------------------------" >> $(LOGFILE)
-# 	@date >> $(LOGFILE)
-# 	@echo "Merge multiple files from the same sample ..." >> $(LOGFILE)
-# 	$(SCRIPTS)/mergeValidInteractions_v2.sh -c $(CONFIG_FILE) > $(LOGS_DIR)/mergeMulti_v2.log
+	@echo "--------------------------------------------" 
+	@date 
+	@echo "Merge multiple files from the same sample ..." 
+	$(SCRIPTS)/mergeValidInteractions.sh -c $(CONFIG_FILE) >> $(LOGFILE) ## > $(LOGS_DIR)/mergeMulti.log
 
 build_raw_maps:  config_check
-	@echo "--------------------------------------------" >> $(LOGFILE)
-	@date >> $(LOGFILE)
-	@echo "Generate binned matrix files ..." >> $(LOGFILE)
-	$(SCRIPTS)/assignRead2bins.sh -c $(CONFIG_FILE) > $(LOGS_DIR)/build_raw_maps.log
+	@echo "--------------------------------------------" 
+	@date 
+	@echo "Generate binned matrix files ..." 
+	$(SCRIPTS)/assignRead2bins.sh -c $(CONFIG_FILE) >> $(LOGFILE) #> $(LOGS_DIR)/build_raw_maps.log
 
 ######################################
 ## Normalization
@@ -181,8 +175,8 @@ build_raw_maps:  config_check
 
 ## Apply ICE normalization
 ice_norm:
-	@echo "--------------------------------------------" >> $(LOGFILE)
-	@date >> $(LOGFILE)
-	@echo "Run ICE Normalization ..." >> $(LOGFILE)
-	$(SCRIPTS)/normContactMaps.sh -c $(CONFIG_FILE) 2> $(LOGS_DIR)/normICE.log
+	@echo "--------------------------------------------" 
+	@date 
+	@echo "Run ICE Normalization ..." 
+	$(SCRIPTS)/normContactMaps.sh -c $(CONFIG_FILE) >> $(LOGFILE) # 2> $(LOGS_DIR)/normICE.log
 
