@@ -6,6 +6,7 @@
 
 #include <iostream>
 #include <fstream>
+#include <sstream>
 #include <unordered_map>
 #include <map>
 #include <vector>
@@ -463,11 +464,16 @@ static int build_matrix_init(Matrix& matrix, const char* ifile, std::ifstream& i
 
   std::vector<const Chromosome*> all_chr_v;
   while (!chrsizefs.eof()) {
-    char buffer[1024];
-    chrsizefs.getline(buffer, sizeof(buffer)-1);
-    char name[32];
+    std::string buffer;
+    getline(chrsizefs, buffer);
+
     chrsize_t chrsize;
-    if (sscanf(buffer, "%s %u", name, &chrsize) == 2) {
+    std::istringstream istr(buffer);
+    std::string name;
+    char c;
+    istr >> name >> c >> chrsize;
+    //    if (sscanf(buffer.c_str(), "%s %u", name, &chrsize) == 2) {
+    if (!istr.fail()) {
       Chromosome* chromosome = new Chromosome(name, chrsize, ori_binsize, step, binadjust);
       all_chr_v.push_back(chromosome);
     }
@@ -738,7 +744,7 @@ static int build_matrix(bool public_data, int binoffset, chrsize_t ori_binsize, 
     return ret;
   }
 
-  char buffer[2048];
+  char buffer[4096];
   size_t line_cnt = 1;
   size_t line_num = 0;
   std::string lmark, rmark, lorg, rorg, lchr, rchr;
