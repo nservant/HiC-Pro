@@ -468,11 +468,16 @@ static int build_matrix_init(Matrix& matrix, const char* ifile, std::ifstream& i
     getline(chrsizefs, buffer);
 
     chrsize_t chrsize;
+    /*
+    char name[256];
+    if (sscanf(buffer.c_str(), "%s %u", name, &chrsize) == 2) {
+      Chromosome* chromosome = new Chromosome(name, chrsize, ori_binsize, step, binadjust);
+      all_chr_v.push_back(chromosome);
+    }
+    */
     std::istringstream istr(buffer);
     std::string name;
-    char c;
-    istr >> name >> c >> chrsize;
-    //    if (sscanf(buffer.c_str(), "%s %u", name, &chrsize) == 2) {
+    istr >> name >> chrsize;
     if (!istr.fail()) {
       Chromosome* chromosome = new Chromosome(name, chrsize, ori_binsize, step, binadjust);
       all_chr_v.push_back(chromosome);
