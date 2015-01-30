@@ -81,7 +81,7 @@ if [ -d $OUTPUT ]; then
     echo "$OUTPUT folder alreads exists. Do you want to clean it before running ?(y/n) [n] : "
     read ans
     if [ XX${ans} = XXy ]; then
-	make --file $SCRIPTS_PATH/Makefile CONFIG_FILE=$CUR_PATH/$CONF CONFIG_SYS=$INSTALL_PATH"/config-system.txt" clean reset 2>&1
+	make --file $SCRIPTS_PATH/Makefile CONFIG_FILE=$CUR_PATH/$CONF CONFIG_SYS=$INSTALL_PATH"/config-system.txt" clean 2>&1
     fi
 else
     mkdir -p $OUTPUT
@@ -92,7 +92,9 @@ if [ ! -e $OUTPUT/rawdata ]; then
 fi
 
 ## cp config file in output
-cp $CUR_PATH/$CONF $OUTPUT
+if [ ! -e $OUTPUT/$CONF ]; then
+    cp $CUR_PATH/$CONF $OUTPUT
+fi
 
 cd $OUTPUT
 

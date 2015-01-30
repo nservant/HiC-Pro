@@ -14,8 +14,8 @@
 #}
 
 #trap 'error_handler ${LINENO} $?' ERR
-
-#set -e -o pipefail 
+set -o pipefail  # trace ERR through pipes
+set -o errexit   ## set -e : exit the script if any statement returns a non-true return value
 
 CURRENT_PATH=`dirname $0`
 
@@ -68,19 +68,20 @@ fi
 ## Subroutine for scripts
 ###########################
 
+die() { echo "Exit: $@" 1>&2 ; exit 1; }
 
 exec_cmd()
 {
     echo $*
     if [ -z "$DRY_RUN" ]; then
-	eval "$@"
+	eval "$@" ##|| die 'Error'
     fi
 }
 
 exec_ret()
 {
     if [ -z "$DRY_RUN" ]; then
-	eval "$@"
+	eval "$@" ##|| die 'Error'
     fi
 }
 
