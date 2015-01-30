@@ -420,7 +420,7 @@ static int build_matrix_init(Matrix& matrix, const char* ifile, std::ifstream& i
 
   std::ifstream chrsizefs;
   chrsizefs.open(chrsize_file);
-  if (chrsizefs.bad()) {
+  if (chrsizefs.bad() || chrsizefs.fail()) {
     std::cerr << prog << " cannot open chrsizes file: " << chrsize_file << " for reading\n";
     return 1;
   }
