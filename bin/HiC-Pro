@@ -1,10 +1,12 @@
 #!/bin/bash
-## HiC-Pro                                                                                                                                                                                                                                
+
+## HiC-Pro           
 ## Copyleft 2015 Institut Curie
 ## Author(s): Nicolas Servant
 ## Contact: nicolas.servant@curie.fr
 ## This software is distributed without any guarantee under the terms of the GNU General
-## Public License, either Version 2, June 1991 or Version 3, June 2007.                                                                                                                                                                      
+## Public License, either Version 2, June 1991 or Version 3, June 2007.
+                                                                   
 SOFT="HiC-Pro"
 VERSION="2.3.0"
 
@@ -74,6 +76,9 @@ SCRIPTS_PATH="$BIN_PATH/../scripts/"
 INSTALL_PATH="$BIN_PATH/../"
 CUR_PATH=$PWD
 
+## Read conf file                                                                                                                                                        
+. $SCRIPTS_PATH/hic.inc.sh
+
 #####################
 ## Init HiC-Pro
 ####################
@@ -87,8 +92,8 @@ else
     mkdir -p $OUTPUT
 fi
     
-if [ ! -e $OUTPUT/rawdata ]; then
-    ln -s $INPUT $OUTPUT/rawdata
+if [ ! -e $OUTPUT/$RAW_DIR ]; then
+    ln -s $INPUT $OUTPUT/$RAW_DIR
 fi
 
 ## cp config file in output
@@ -99,9 +104,9 @@ fi
 cd $OUTPUT
 
 ## Check rawdata structure
-nbin=`find -L rawdata -mindepth 2 -maxdepth 2 -name "*.fastq" -o -name "*.fastq.gz" | wc -l`
+nbin=`find -L $INPUT -mindepth 2 -maxdepth 2 -name "*.fastq" -o -name "*.fastq.gz" | wc -l`
 if [ $nbin == 0 ]; then
-    echo "Error: Directory Hierarchy of rawdata is not correct. No fastq(gz) files detected"
+    echo "Error: Directory Hierarchy of rawdata '$RAW_DIR' is not correct. No fastq(gz) files detected"
     exit
 fi
 
