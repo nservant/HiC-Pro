@@ -36,7 +36,7 @@ CONF=$conf_file . $dir/hic.inc.sh
 unset FASTQFILE
 
 fastqfile=fastqfile_${PBS_SUFFIX}.txt
-get_hic_files $RAW_DIR .fastq | sed -e "s|$RAW_DIR||" -e "s|^/||" > $fastqfile
+get_hic_files $RAW_DIR .fastq | grep $PAIR1_EXT | sed -e "s|$RAW_DIR||" -e "s|^/||" > $fastqfile
 count=$(cat $fastqfile | wc -l)
 
 ## step 1 - parallel

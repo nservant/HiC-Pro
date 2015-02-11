@@ -8,7 +8,7 @@
 ## Public License, either Version 2, June 1991 or Version 3, June 2007.
                                                                    
 SOFT="HiC-Pro"
-VERSION="2.3.0"
+VERSION="2.3.1"
 
 function usage {
     echo -e "usage : $SOFT -i INPUT -o OUTPUT -c CONFIG [-p] [-s ANALYSIS_STEP] [-h]"
