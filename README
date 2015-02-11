@@ -11,7 +11,10 @@ See LICENSE for license information
 ===  What is HiC-Pro ?  ===
 ===========================
 
-HiC-Pro was designed to process Hi-C data, from raw fastq failes (paired-end Illumina data) to the normalized contacts maps. The pipeline is flexible, scalable and optimized. It can operate either on a single laptop or on a computational cluster using the PBS-Torque scheduler
+HiC-Pro was designed to process Hi-C data, from raw fastq files (paired-end Illumina data) to the normalized contact maps. The pipeline is flexible, scalable and optimized. It can operate either on a single laptop or on a computational cluster using the PBS-Torque scheduler
+
+If you use HiC-Pro, please cite :
+HiC-Pro: An optimized and flexible pipeline for Hi-C processing. Servant N. et al. 2015. submitted
 
 ===========================
 === How to install it ? ===
