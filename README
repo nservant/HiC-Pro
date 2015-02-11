@@ -1,78 +1,65 @@
 ## Nicolas Servant
-## Hi-C pipeline
-## v 1.0
-## 16-12-13
+## HiC-Pro
+## v2.3.1
+## 15-11-02
 
+See NEWS for information about changes in this and previous versions
+See LOGBOOK for details about the HiC-Pro development
+See LICENSE for license information
 
-## *** What is it ? ***
+===========================
+===  What is HiC-Pro ?  ===
+===========================
 
-This pipeline was designed to process a Hi-C sample, from the raw fastq failes (paired-end Illumina data) to the normalized interaction maps.
-It is linked to the HiTC BioConductor package.
+HiC-Pro was designed to process Hi-C data, from raw fastq failes (paired-end Illumina data) to the normalized contacts maps. The pipeline is flexible, scalable and optimized. It can operate either on a single laptop or on a computational cluster using the PBS-Torque scheduler
 
-## *** Dependancies ? ***
+===========================
+=== How to install it ? ===
+===========================
 
-The Hi-C pipeline requires :
-- The bowtie2 mapper
-- Perl
-- R with the HiTC BioConductor package
+The HiC-Pro pipeline requires the following dependencies :
+- The bowtie2 mapper (or any other mapper)
+- Python with pysam, bx, numpy, and scipy libraries
+- R with the RColorBrewer and ggplot2 packages
+- g++ compiler
+- Samtools (>0.1.18)
 
-## *** How to use it ? ***
+To install HiC-Pro
 
-1- Edit the configuration file
-2- Run the Makefile
+> tar -zxvf HiC-Pro.2.3.1.tar.gz
+> cd HiC-Pro_2.3.1
+> make install
 
-make --file Makefile CONFIG_FILE=config.txt all
+Note that if some of these dependencies are not installed (i.e. not detected in the $PATH), HiC-Pro will try to install them. You can also edit the config-install.txt file and manually defined the paths to dependencies.
 
+===========================
+=== How to use it ? ===
+===========================
 
-## *** Folders description ***
+1- Copy and edit the configuration file 'config-hicpro.txt' in your local folder
 
-- rawdata
-All rawdata should be available on this folder. Multiple files for one sample are allowed
-- scripts
-This is the core of the pipeline. All the scripts are in this folder
-- Annotation
-Annotation files such as mappability tracks, chromosome size, restriction sites, etc.
-- bowtie_results
-To store the mapping results
-- doc
-To store the file results such as the mapping statistics, etc.
-- hic_results
-To store the Hi-C processed data
-- logs
+2- Put all fastq files in a rawdata folder. Each fastq file has to be put in a folder per sample.
 
-#
-# Eric Viara optimizations
-# 2014-06-19
-# Change NS - 05/01/2015
-#
+3- Run HiC-Pro
 
-I.
+I. Without PBS-Torque 
+MY_INSTALL_PATH/bin/HiC-Pro -i FULL_PATH_TO_RAW_DATA -o FULL_PATH_TO_OUTPUTS -c MY_LOCAL_CONFIG_FILE
 
-If you want to use HiC pipeline without torque, simply type:
-make CONFIG_FILE=config.txt all
-as previously
+II. With PBS-Torque
+MY_INSTALL_PATH/bin/HiC-Pro -i FULL_PATH_TO_RAW_DATA -o FULL_PATH_TO_OUTPUTS -c MY_LOCAL_CONFIG_FILE -p
 
-BUT: note that some operations will not be performed by all target and have to be done separately:
-make CONFIG_FILE=config.txt plot_MappingProportion plot_FragmentInfo
-make CONFIG_FILE=config.txt norm
-make CONFIG_FILE=config.txt mapping_clean
+You will get the following message :
+Please run HiC-Pro in two steps :
+1- The following command will launch the parallel workflow through 12 torque jobs:
+qsub HiCPro_step1.sh
+2- The second command will merge all outputs to generate the contact maps:
+qsub HiCPro_step2.sh
 
-II.
-A.
-If you want to use torque (the prefered way), type:
-make CONFIG_FILE=config.txt make_torque_script
-
-you will get the following message:
-The following command will launch 3 torque jobs:
-qsub HiC_torque_ev_test.sh
-
-B.
-execute the displayed command:
-qsub HiC_torque_ev_test.sh
+Execute the displayed command:
+qsub HiCPro_step1.sh
 774410[].torque.curie.fr
 
-C.
-then wait for the torque mails... :)
-
+Then wait for the torque mails... :)
 Once executed succesfully (may take several hours), then type:
-make CONFIG_FILE=config.txt build_contact_maps
+qsub HiCPro_step2.sh
+
