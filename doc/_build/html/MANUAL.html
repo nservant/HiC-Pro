@@ -1,0 +1,212 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>HiC-Pro Manual &mdash; HiC-Pro 2.3.1 documentation</title>
+    
+    <link rel="stylesheet" href="_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     '2.3.1',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <link rel="top" title="HiC-Pro 2.3.1 documentation" href="index.html" />
+    <link rel="next" title="FAQ" href="FAQ.html" />
+    <link rel="prev" title="HiC-Pro Quick Start Guide" href="QUICKSTART.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="FAQ.html" title="FAQ"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="QUICKSTART.html" title="HiC-Pro Quick Start Guide"
+             accesskey="P">previous</a> |</li>
+        <li><a href="index.html">HiC-Pro 2.3.1 documentation</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="hic-pro-manual">
+<h1>HiC-Pro Manual<a class="headerlink" href="#hic-pro-manual" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="hi-c-overview">
+<h2>Hi-C Overview<a class="headerlink" href="#hi-c-overview" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="what-is-hic-pro">
+<h2>What is HiC-Pro ?<a class="headerlink" href="#what-is-hic-pro" title="Permalink to this headline">¶</a></h2>
+<p>HiC-Pro was designed to process Hi-C data, from raw fastq files (paired-end Illumina data) to the normalized contact maps.
+The pipeline is flexible, scalable and optimized. It can operate either on a single laptop or on a computational cluster using the PBS-Torque scheduler</p>
+<p>ADD HiC-Pro Wklfow</p>
+<p>If you use HiC-Pro, please cite :</p>
+<p>HiC-Pro: An optimized and flexible pipeline for Hi-C processing. <em>Servant N., Varoquaux N., Lajoie BR., Viara E., Chen CJ., Vert JP., Dekker J., Heard E., Barillot E.</em>. 2015. submitted</p>
+</div>
+<div class="section" id="how-to-install-it">
+<h2>How to install it ?<a class="headerlink" href="#how-to-install-it" title="Permalink to this headline">¶</a></h2>
+<p>The HiC-Pro pipeline requires the following dependencies :</p>
+<ul class="simple">
+<li>The bowtie2 mapper (or any other mapper)</li>
+<li>Python with <em>pysam</em>, <em>bx</em>, <em>numpy</em>, and <em>scipy</em> libraries</li>
+<li>R with the <em>RColorBrewer</em> and <em>ggplot2</em> packages</li>
+<li>g++ compiler</li>
+<li>Samtools (&gt;0.1.18)</li>
+</ul>
+<p>To install HiC-Pro:</p>
+<div class="highlight-guess"><div class="highlight"><pre><span class="n">tar</span> <span class="o">-</span><span class="n">zxvf</span> <span class="n">HiC</span><span class="o">-</span><span class="n">Pro</span><span class="mf">.2.3.1</span><span class="p">.</span><span class="n">tar</span><span class="p">.</span><span class="n">gz</span>
+<span class="n">cd</span> <span class="n">HiC</span><span class="o">-</span><span class="n">Pro_2</span><span class="mf">.3.1</span>
+<span class="n">make</span> <span class="n">install</span>
+</pre></div>
+</div>
+<p>Note that if some of these dependencies are not installed (i.e. not detected in the $PATH), HiC-Pro will try to install them.
+You can also edit the <em>config-install.txt</em> file and manually defined the paths to dependencies.</p>
+</div>
+<div class="section" id="annotation-files">
+<h2>Annotation Files<a class="headerlink" href="#annotation-files" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="how-to-use-it">
+<h2>How to use it ?<a class="headerlink" href="#how-to-use-it" title="Permalink to this headline">¶</a></h2>
+<ol class="arabic simple">
+<li>Copy and edit the configuration file <em>&#8216;config-hicpro.txt&#8217;</em> in your local folder</li>
+</ol>
+<p>TODO : details of the configuration file</p>
+<ol class="arabic simple" start="2">
+<li>Put all fastq files in a rawdata folder. Each fastq file has to be put in a folder per sample.</li>
+<li>Run HiC-Pro</li>
+</ol>
+<blockquote>
+<div><ul class="simple">
+<li>Without PBS-Torque</li>
+</ul>
+<div class="highlight-guess"><div class="highlight"><pre><span class="n">MY_INSTALL_PATH</span><span class="o">/</span><span class="n">bin</span><span class="o">/</span><span class="n">HiC</span><span class="o">-</span><span class="n">Pro</span> <span class="o">-</span><span class="n">i</span> <span class="n">FULL_PATH_TO_RAW_DATA</span> <span class="o">-</span><span class="n">o</span> <span class="n">FULL_PATH_TO_OUTPUTS</span> <span class="o">-</span><span class="n">c</span> <span class="n">MY_LOCAL_CONFIG_FILE</span>
+</pre></div>
+</div>
+<ul class="simple">
+<li>With PBS-Torque</li>
+</ul>
+<div class="highlight-guess"><div class="highlight"><pre><span class="n">MY_INSTALL_PATH</span><span class="o">/</span><span class="n">bin</span><span class="o">/</span><span class="n">HiC</span><span class="o">-</span><span class="n">Pro</span> <span class="o">-</span><span class="n">i</span> <span class="n">FULL_PATH_TO_RAW_DATA</span> <span class="o">-</span><span class="n">o</span> <span class="n">FULL_PATH_TO_OUTPUTS</span> <span class="o">-</span><span class="n">c</span> <span class="n">MY_LOCAL_CONFIG_FILE</span> <span class="o">-</span><span class="n">p</span>
+</pre></div>
+</div>
+</div></blockquote>
+<p>You will get the following message :</p>
+<div class="highlight-guess"><div class="highlight"><pre><span class="n">Please</span> <span class="n">run</span> <span class="n">HiC</span><span class="o">-</span><span class="n">Pro</span> <span class="n">in</span> <span class="n">two</span> <span class="n">steps</span> <span class="o">:</span>
+<span class="mi">1</span><span class="o">-</span> <span class="n">The</span> <span class="n">following</span> <span class="n">command</span> <span class="n">will</span> <span class="n">launch</span> <span class="n">the</span> <span class="n">parallel</span> <span class="n">workflow</span> <span class="n">through</span> <span class="mi">12</span> <span class="n">torque</span> <span class="n">jobs</span><span class="o">:</span>
+<span class="n">qsub</span> <span class="n">HiCPro_step1</span><span class="p">.</span><span class="n">sh</span>
+<span class="mi">2</span><span class="o">-</span> <span class="n">The</span> <span class="n">second</span> <span class="n">command</span> <span class="n">will</span> <span class="n">merge</span> <span class="n">all</span> <span class="n">outputs</span> <span class="n">to</span> <span class="n">generate</span> <span class="n">the</span> <span class="n">contact</span> <span class="n">maps</span><span class="o">:</span>
+<span class="n">qsub</span> <span class="n">HiCPro_step2</span><span class="p">.</span><span class="n">sh</span>
+</pre></div>
+</div>
+<p>Execute the displayed command:</p>
+<div class="highlight-guess"><div class="highlight"><pre><span class="n">qsub</span> <span class="n">HiCPro_step1</span><span class="p">.</span><span class="n">sh</span>
+<span class="mi">774410</span><span class="p">[].</span><span class="n">torque</span><span class="p">.</span><span class="n">curie</span><span class="p">.</span><span class="n">fr</span>
+</pre></div>
+</div>
+<p>Then wait for the torque mails... :)
+Once executed succesfully (may take several hours), then type:</p>
+<div class="highlight-guess"><div class="highlight"><pre><span class="n">qsub</span> <span class="n">HiCPro_step2</span><span class="p">.</span><span class="n">sh</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="how-does-hic-pro-work">
+<h2>How does HiC-Pro work ?<a class="headerlink" href="#how-does-hic-pro-work" title="Permalink to this headline">¶</a></h2>
+<ol class="arabic simple">
+<li>Reads Mapping</li>
+<li>Fragment assignment and filtering</li>
+<li>Map builder</li>
+<li>ICE normalization</li>
+</ol>
+</div>
+<div class="section" id="data-format">
+<h2>Data format<a class="headerlink" href="#data-format" title="Permalink to this headline">¶</a></h2>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">HiC-Pro Manual</a><ul>
+<li><a class="reference internal" href="#hi-c-overview">Hi-C Overview</a></li>
+<li><a class="reference internal" href="#what-is-hic-pro">What is HiC-Pro ?</a></li>
+<li><a class="reference internal" href="#how-to-install-it">How to install it ?</a></li>
+<li><a class="reference internal" href="#annotation-files">Annotation Files</a></li>
+<li><a class="reference internal" href="#how-to-use-it">How to use it ?</a></li>
+<li><a class="reference internal" href="#how-does-hic-pro-work">How does HiC-Pro work ?</a></li>
+<li><a class="reference internal" href="#data-format">Data format</a></li>
+</ul>
+</li>
+</ul>
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="QUICKSTART.html"
+                        title="previous chapter">HiC-Pro Quick Start Guide</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="FAQ.html"
+                        title="next chapter">FAQ</a></p>
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="_sources/MANUAL.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="FAQ.html" title="FAQ"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="QUICKSTART.html" title="HiC-Pro Quick Start Guide"
+             >previous</a> |</li>
+        <li><a href="index.html">HiC-Pro 2.3.1 documentation</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2015, Nicolas Servant.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.2.
+    </div>
+  </body>
+</html>
