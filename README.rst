@@ -39,7 +39,7 @@ To install HiC-Pro:
 
   tar -zxvf HiC-Pro.2.3.1.tar.gz
   cd HiC-Pro_2.3.1
-  make install
+  make CONFIG_SYS=config-install.txt install
 
 
 

@@ -33,7 +33,7 @@ To install HiC-Pro:
 
   tar -zxvf HiC-Pro.2.3.1.tar.gz
   cd HiC-Pro_2.3.1
-  make install
+  make CONFIG_SYS=config-install.txt install
 
 Note that if some of these dependencies are not installed (i.e. not detected in the $PATH), HiC-Pro will try to install them.
 You can also edit the *config-install.txt* file and manually defined the paths to dependencies.
