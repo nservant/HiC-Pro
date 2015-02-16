@@ -6,10 +6,6 @@
 HiC-Pro Manual
 ******************
 
-Hi-C Overview
-=============
-
-
 What is HiC-Pro ?
 =================
 
@@ -43,7 +39,7 @@ Note that if some of these dependencies are not installed (i.e. not detected in 
 You can also edit the *config-install.txt* file and manually defined the paths to dependencies.
 
 +---------------+------------------------------------------------------------+
-|               |                                                            |
+| SYSTEM CONFIGURATION                                                       |
 +===============+============================================================+
 | BOWTIE2_PATH  | Full path the bowtie2 installation directory               |
 +---------------+------------------------------------------------------------+
@@ -221,7 +217,6 @@ Execute the displayed command:
 .. code-block:: guess
 
   qsub HiCPro_step1.sh
-  774410[].torque.curie.fr
 
 
 Then wait for the torque mails... :)
@@ -240,15 +235,42 @@ How does HiC-Pro work ?
 
 
 1. Reads Mapping
+
+Each mate is independantly aligned on the reference genome. The mapping is performed in two steps. First, the reads are aligned using an end-to-end aligner. Second, reads spanning the ligation junction are trimmmed from their 3' end, and aligned on the genome. Aligned reads for both fragment mates are then paired in a single paired-end BAM file. Singletons and multi-hits can be discarded according the confirguration parameters.
+
 2. Fragment assignment and filtering
+
+Each aligned reads can be assigned to one restriction fragment according to the reference genome and the restriction enzyme.
+The next step is to separate the invalid ligation products from the valid pairs. Dangling end and self circles pairs are therefore excluded.
+Only valid pairs involving two different restriction fragments are used to build the contact maps. Duplicated valid pairs associated to PCR artefacts are discarded.
+The fragment assignment can be visualized through a BAM files of aliged pairs where each pair is flagged according to its classification.
+
 3. Map builder
+
+Intra et inter-chromosomal contact maps are build for all specified resolutions. The genome is splitted into bins of equal size. Each valid interaction is associated with the genomic bins to generate the raw maps.
+
 4. ICE normalization
+
+Hi-C data can contain several sources of biases which has to be corrected. HiC-Pro proposes a fast implementation of the original ICE normalization algorithm (imakaev et al), making the assumption of equal visibility of each fragment. 
+
 
 Data format
 ===========
 
+A contact map is defined by :
+
+* A list of genomic intervals related to the specified resolution (BED format).
+* A matrix, stored as standard triplet sparse format (i.e. list format). Based on the observation that a contact map is symmetric and usually sparse, only non-zero values are stored for half of the matrix. The user can specified if the *'upper'*, *'lower'* or *'complete'* matrix has to be stored. The *'asis'* option allows to store the contacts as they are observed from the valid pairs.
+
+::
+
+   A   B   10
+   A   C   23
+   B   C   24
+   (...)
 
 
+This format is memory efficient, and is compatible with other analysis softwares such as the `HiTC Bioconductor package <http://bioconductor.org/packages/release/bioc/html/HiTC.html>`_.
 
 
 

@@ -46,10 +46,21 @@ To install HiC-Pro:
 Note that if some of these dependencies are not installed (i.e. not detected in the $PATH), HiC-Pro will try to install them.
 You can also edit the *config-install.txt* file and manually defined the paths to dependencies.
 
+Annotation Files
+================
+
+In order to process the raw data, HiC-Pro requires three annotation files :
+
+1. A BED file of the restriction fragments after digestion. This file depends both of the restriction enzyme and the reference genome. See the `FAQ <../html/FAQ.html>`_ for details about how to generate this file. A few annotation files are provided with the HiC-Pro sources.
+2. A table file of chromosomes' size.
+3. The bowtie2 indexes. See `the bowtie2 manual page <http://bowtie-bio.sourceforge.net/bowtie2/index.shtml>`_ for details about how to create such indexes.
+
+
+
 How to use it ?
 ===============
 
-1. Copy and edit the configuration file *'config-hicpro.txt'* in your local folder
+1. Copy and edit the configuration file *'config-hicpro.txt'* in your local folder.
 2. Put all fastq files in a rawdata folder. Each fastq file has to be put in a folder per sample.
 3. Run HiC-Pro
 
