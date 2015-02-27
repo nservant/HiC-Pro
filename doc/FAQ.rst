@@ -25,9 +25,9 @@ HiC-Pro requires two annotation files.
 
 * The chromosomes size are usually available through annotation website, such as the UCSC Genome Browser:
 
-   - `hg19<http://genome-euro.ucsc.edu/cgi-bin/hgTracks?hgsid=13085504&chromInfoPage=>`_
+   - `hg19 <http://genome-euro.ucsc.edu/cgi-bin/hgTracks?hgsid=13085504&chromInfoPage=>`_
 
-   - `mm9<http://genome.ucsc.edu/cgi-bin/hgTracks?db=mm9&chromInfoPage=>`_
+   - `mm9 <http://genome.ucsc.edu/cgi-bin/hgTracks?db=mm9&chromInfoPage=>`_
 
    - ...
 
