@@ -8,24 +8,29 @@ A log file is generated when you run HiC-Pro. Its name is specified in the confi
 
 2- How can I split my *.fastq* files into smaller files ?
 
-In linux system, you can simply use the *split* command
+In linux system, you can simply use the :code:`split` command.
 
-.. code-block:: guess
+
+.. code-block:: bash
+
    ## split the fastq file in blocks of 10M reads
    split -l 10000000 -d FILE SUFFIX
+
 
 For more information, see :code:`man split`
 
 3- How can I generate my annotation files ?
 
 HiC-Pro requires two annotation files.
-* The chromosomes size are usually available through annotation website, such as the UCSC Genome Browser. 
-`<http://genome-euro.ucsc.edu/cgi-bin/hgTracks?hgsid=13085504&chromInfoPage=>`_
-`<http://genome.ucsc.edu/cgi-bin/hgTracks?db=mm9&chromInfoPage=>`_
-...
+* The chromosomes size are usually available through annotation website, such as the UCSC Genome Browser:
+- `hg19<http://genome-euro.ucsc.edu/cgi-bin/hgTracks?hgsid=13085504&chromInfoPage=>`_
+- `mm9<http://genome.ucsc.edu/cgi-bin/hgTracks?db=mm9&chromInfoPage=>`_
+- ...
 
 Another way to generate this file is, for instance, to use the R environment.
-.. code-block:: R
+
+.. code-block:: guess
+
    ###
    ## How to generate chromosome size files ?
    ### 
@@ -39,7 +44,8 @@ Another way to generate this file is, for instance, to use the R environment.
 * The restriction fragments file has to be generated according to the reference genome, and the restriction enzyme(s) used to generate the Hi-C data.
 Here is the way to generate such file using the `HiTC<http://bioconductor.org/packages/release/bioc/html/HiTC.html>`_ BioConductor package.
 
-.. code-block:: R
+.. code-block:: guess
+
    ###
    ## How to generate restriction fragment files ?
    ### 
