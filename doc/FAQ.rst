@@ -2,11 +2,11 @@ FAQ
 ===
 
 
-1- HiC-Pro failed. How to find what's going wrong ?
+**1- HiC-Pro failed. How to find what's going wrong ?**
 
 A log file is generated when you run HiC-Pro. Its name is specified in the configuration file. In addition, some parts of the pipeline generate specific logs which are available in the *log* folder
 
-2- How can I split my *.fastq* files into smaller files ?
+**2- How can I split my .fastq files into smaller files ?**
 
 In linux system, you can simply use the :code:`split` command.
 
@@ -19,13 +19,17 @@ In linux system, you can simply use the :code:`split` command.
 
 For more information, see :code:`man split`
 
-3- How can I generate my annotation files ?
+**3- How can I generate my annotation files ?**
 
 HiC-Pro requires two annotation files.
+
 * The chromosomes size are usually available through annotation website, such as the UCSC Genome Browser:
-- `hg19<http://genome-euro.ucsc.edu/cgi-bin/hgTracks?hgsid=13085504&chromInfoPage=>`_
-- `mm9<http://genome.ucsc.edu/cgi-bin/hgTracks?db=mm9&chromInfoPage=>`_
-- ...
+
+   - `hg19<http://genome-euro.ucsc.edu/cgi-bin/hgTracks?hgsid=13085504&chromInfoPage=>`_
+
+   - `mm9<http://genome.ucsc.edu/cgi-bin/hgTracks?db=mm9&chromInfoPage=>`_
+
+   - ...
 
 Another way to generate this file is, for instance, to use the R environment.
 
