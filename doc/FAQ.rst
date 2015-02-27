@@ -46,7 +46,7 @@ Another way to generate this file is, for instance, to use the R environment.
 
 
 * The restriction fragments file has to be generated according to the reference genome, and the restriction enzyme(s) used to generate the Hi-C data.
-Here is the way to generate such file using the `HiTC<http://bioconductor.org/packages/release/bioc/html/HiTC.html>`_ BioConductor package.
+Here is the way to generate such file using the `HiTC <http://bioconductor.org/packages/release/bioc/html/HiTC.html>`_ BioConductor package.
 
 .. code-block:: guess
 
