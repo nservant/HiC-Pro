@@ -28,6 +28,7 @@ done
 ##read_config $CONF
 CONF=$conf_file . $dir/hic.inc.sh
 
+
 ## Bowtie2 wrapper
 ## Global Alignment
 global_align()
@@ -39,11 +40,17 @@ global_align()
     local cmd
     echo ${file} >> ${LOGFILE}
 
+    ## Check mapping options
+    if [[ -z ${BOWTIE2_GLOBAL_OPTIONS} ]]; then
+	echo "Mapping step1 options not defined. Exit"
+	exit -1
+    fi
+
     mkdir -p ${BOWTIE2_GLOBAL_OUTPUT_DIR}/${sample_dir}
 
     ## Unmapped reads
     if [[ $unmap == 1 ]]; then
-	BOWTIE2_GLOBAL_OPTIONS=${BOWTIE2_GLOBAL_OPTIONS}" --un ${BOWTIE2_GLOBAL_OUTPUT_DIR}/${sample_dir}/${prefix}_${ORGANISM}.bwt2glob.unmap.fastq"
+	BOWTIE2_GLOBAL_OPTIONS=${BOWTIE2_GLOBAL_OPTIONS}" --un ${BOWTIE2_GLOBAL_OUTPUT_DIR}/${sample_dir}/${prefix}_${REFERENCE_GENOME}.bwt2glob.unmap.fastq"
     fi
 
     ## Check for gz files
@@ -52,11 +59,11 @@ global_align()
     fi
 
     ## Run bowtie
-    cmd="${BOWTIE2_PATH}/bowtie2 ${BOWTIE2_GLOBAL_OPTIONS} --rg-id BMG --rg SM:${prefix} --${FORMAT}-quals -p ${N_CPU} -x ${BOWTIE2_IDX} -U ${file} -S ${BOWTIE2_GLOBAL_OUTPUT_DIR}/${sample_dir}/${prefix}_${ORGANISM}.bwt2glob.sam 2>>${LOGS_DIR}/bowtie_${prefix}_global_${ORGANISM}.log"
+    cmd="${BOWTIE2_PATH}/bowtie2 ${BOWTIE2_GLOBAL_OPTIONS} --rg-id BMG --rg SM:${prefix} --${FORMAT}-quals -p ${N_CPU} -x ${BOWTIE2_IDX} -U ${file} -S ${BOWTIE2_GLOBAL_OUTPUT_DIR}/${sample_dir}/${prefix}_${REFERENCE_GENOME}.bwt2glob.sam 2>>${LOGS_DIR}/bowtie_${prefix}_global_${REFERENCE_GENOME}.log"
     exec_cmd $cmd
 
     # Generate BAM files with map reads only
-    cmd="${SAMTOOLS_PATH}/samtools view -F 4 -bS ${BOWTIE2_GLOBAL_OUTPUT_DIR}/${sample_dir}/${prefix}_${ORGANISM}.bwt2glob.sam > ${BOWTIE2_GLOBAL_OUTPUT_DIR}/${sample_dir}/${prefix}_${ORGANISM}.bwt2glob.bam 2>>${LOGS_DIR}/bowtie_${prefix}_global_${ORGANISM}.log"
+    cmd="${SAMTOOLS_PATH}/samtools view -F 4 -bS ${BOWTIE2_GLOBAL_OUTPUT_DIR}/${sample_dir}/${prefix}_${REFERENCE_GENOME}.bwt2glob.sam > ${BOWTIE2_GLOBAL_OUTPUT_DIR}/${sample_dir}/${prefix}_${REFERENCE_GENOME}.bwt2glob.bam 2>>${LOGS_DIR}/bowtie_${prefix}_global_${REFERENCE_GENOME}.log"
     exec_cmd $cmd
 }
 
@@ -69,20 +76,26 @@ local_align()
     local unmap="$4"
     local cmd
 
+    ## Check mapping options
+    if [[ -z ${BOWTIE2_LOCAL_OPTIONS} ]]; then
+	echo "Mapping step2 options not defined. Exit"
+	exit -1
+    fi
+
     echo ${file} >> ${LOGFILE}
     mkdir -p ${BOWTIE2_LOCAL_OUTPUT_DIR}/${sample_dir}
 
-    ## Starts trimming reads from the restriction site
+    ## Starts trimming reads from the ligation site
     tfile=`echo $file | sed -e s/.fastq/_trimmed.fastq/`
     if [[ ${RM_LOCAL_NO_CUTSITE} == 1 ]]; then
-	${SCRIPTS}/cutsite_trimming --fastq $file --cutsite ${CUT_SITE_5OVER} --out $tfile --rmuntrim 2> ${LOGS_DIR}/readsTrimming.log
+	${SCRIPTS}/cutsite_trimming --fastq $file --cutsite ${LIGATION_SITE} --out $tfile --rmuntrim 2> ${LOGS_DIR}/readsTrimming.log
     else
-	${SCRIPTS}/cutsite_trimming --fastq $file --cutsite ${CUT_SITE_5OVER} --out $tfile  2> ${LOGS_DIR}/readsTrimming.log
+	${SCRIPTS}/cutsite_trimming --fastq $file --cutsite ${LIGATION_SITE} --out $tfile  2> ${LOGS_DIR}/readsTrimming.log
     fi
 
     ## Unmapped reads
     if [[ $unmap == 1 ]]; then
-	BOWTIE2_LOCAL_OPTIONS=${BOWTIE2_LOCAL_OPTIONS}" --un ${BOWTIE2_LOCAL_OUTPUT_DIR}/${sample_dir}/${prefix}_${ORGANISM}.bwt2glob.unmap.fastq"
+	BOWTIE2_LOCAL_OPTIONS=${BOWTIE2_LOCAL_OPTIONS}" --un ${BOWTIE2_LOCAL_OUTPUT_DIR}/${sample_dir}/${prefix}_${REFERENCE_GENOME}.bwt2glob.unmap.fastq"
     fi
 
     ## Run bowtie

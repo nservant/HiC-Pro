@@ -8,7 +8,7 @@
 ## Public License, either Version 2, June 1991 or Version 3, June 2007.
                                                                    
 SOFT="HiC-Pro"
-VERSION="2.3.1"
+VERSION="2.4.0"
 
 function usage {
     echo -e "usage : $SOFT -i INPUT -o OUTPUT -c CONFIG [-p] [-s ANALYSIS_STEP] [-h]"
@@ -20,16 +20,16 @@ function help {
     echo "---------------"
     echo "OPTIONS"
     echo
-    echo "   -i INPUT : input data folder; Must contains a folder per samples with fastq files"
-    echo "   -o OUTPUT : output folder"
-    echo "   -c CONFIG : configuration file for Hi-C processing"
-    echo "   [-p] : if specified run $SOFT in PBS/Torque mode"
-    echo "   [-s ANALYSIS_STEP] : run only a subset of the $SOFT workflow; if not specified the complete workflow is run"
+    echo "   -i|--input INPUT : input data folder; Must contains a folder per samples with fastq files"
+    echo "   -o|--output OUTPUT : output folder"
+    echo "   -c|--conf CONFIG : configuration file for Hi-C processing"
+    echo "   [-p|--parallel] : if specified run $SOFT in PBS/Torque mode"
+    echo "   [-s|--step ANALYSIS_STEP] : run only a subset of the $SOFT workflow; if not specified the complete workflow is run"
     echo "      mapping: perform reads alignment"
     echo "      proc_hic: perform Hi-C filtering"
     echo "      build_raw_maps: build raw contact maps"
     echo "      ice_norm : run ICE normalization on contact maps"
-    echo "   [-h HELP]: help"
+    echo "   [-h|--help HELP]: help"
     exit;
 }
 
@@ -47,20 +47,20 @@ fi
 PBS=0
 MAKE_OPTS=""
 
-set -- $(getopt c:s:i:o:pvh "$@")
+set -- $(getopt -u -o c:s:i:o:pvh -l conf:,step:,input:,output:,parallel,version,help -- "$@")
 while [ $# -gt 0 ]
 do
     case "$1" in
-	(-i) INPUT=$2; shift;;
-	(-o) OUTPUT=$2; shift;;
-	(-c) CONF=$2; shift;;
-	(-s) MAKE_OPTS="$MAKE_OPTS $2"; shift;;
-	(-p) PBS=1;;
-	(-v) version;;
-	(-h) help;;
-	(--) shift; break;;
-	(-*) echo "$0: error - unrecognized option $1" 1>&2; exit 1;;
-	(*)  break;;
+	-i|--input) INPUT=$2; shift;;
+	-o|--output) OUTPUT=$2; shift;;
+	-c|--conf) CONF=$2; shift;;
+	-s|--step) MAKE_OPTS="$MAKE_OPTS $2"; shift;;
+	-p|--parallel) PBS=1;;
+	-v|--version) version;;
+	-h|--help) help;;
+	--) shift; break;;
+	-*) echo "$0: error - unrecognized option $1" 1>&2; exit 1;;
+	*)  break;;
     esac
     shift
 done
@@ -76,8 +76,50 @@ SCRIPTS_PATH="$BIN_PATH/../scripts/"
 INSTALL_PATH="$BIN_PATH/../"
 CUR_PATH=$PWD
 
+
 ## Read conf file                                                                                                                                                        
 . $SCRIPTS_PATH/hic.inc.sh
+
+#####################
+## Check Config file
+#####################
+
+INPUT=`abspath $INPUT`
+OUTPUT=`abspath $OUTPUT`
+
+if [ ! -e $INPUT ]; then
+    echo "Inputs '$INPUT' not found. Exit."
+    exit -1
+fi
+
+if [[ -z $PAIR1_EXT || -z $PAIR2_EXT ]]; then
+    echo "Read pairs extension is not defined. Exit"
+    exit -1
+fi
+
+if [[ -z $GENOME_SIZE ]]; then
+    GENOME_SIZE_FILE=`abspath $GENOME_SIZE`
+    if [[ ! -e $GENOME_SIZE_FILE ]]; then
+	GENOME_SIZE_FILE=$ANNOT_DIR/$GENOME_SIZE
+	if [[ ! -e $GENOME_SIZE_FILE ]]; then
+	    echo "$GENOME_SIZE not found. Exit"
+	    exit -1
+	fi
+    fi
+fi
+
+if [[ -z $GENOME_FRAGMENT ]]; then
+    GENOME_FRAGMENT_FILE=`abspath $GENOME_FRAGMENT`
+    if [[ ! -e $GENOME_FRAGMENT_FILE ]]; then
+	GENOME_FRAGMENT_FILE=$ANNOT_DIR/$GENOME_FRAGMENT
+	if [[ ! -e $GENOME_FRAGMENT_FILE ]]; then
+	    echo "$GENOME_FRAGMENT not found. Exit"
+	    exit -1
+	fi
+    fi
+fi
+
+
 
 #####################
 ## Init HiC-Pro
@@ -86,7 +128,7 @@ if [ -d $OUTPUT ]; then
     echo "$OUTPUT folder alreads exists. Do you want to clean it before running ?(y/n) [n] : "
     read ans
     if [ XX${ans} = XXy ]; then
-	make --file $SCRIPTS_PATH/Makefile CONFIG_FILE=$CUR_PATH/$CONF CONFIG_SYS=$INSTALL_PATH"/config-system.txt" clean 2>&1
+	make --file $SCRIPTS_PATH/Makefile CONFIG_FILE=$CONF CONFIG_SYS=$INSTALL_PATH"/config-system.txt" clean 2>&1
     fi
 else
     mkdir -p $OUTPUT
@@ -97,8 +139,8 @@ if [ ! -e $OUTPUT/$RAW_DIR ]; then
 fi
 
 ## cp config file in output
-if [ ! -e $OUTPUT/$CONF ]; then
-    cp $CUR_PATH/$CONF $OUTPUT
+if [ ! -e $CONF ]; then
+    cp $CONF $OUTPUT
 fi
 
 cd $OUTPUT
@@ -116,9 +158,9 @@ fi
 echo
 if [ $PBS == 0 ]; then
     echo "Run HiC-Pro"
-    make --file $SCRIPTS_PATH/Makefile CONFIG_FILE=$CUR_PATH/$CONF CONFIG_SYS=$INSTALL_PATH"/config-system.txt" init 2>&1
-    make --file $SCRIPTS_PATH/Makefile CONFIG_FILE=$CUR_PATH/$CONF CONFIG_SYS=$INSTALL_PATH"/config-system.txt" $MAKE_OPTS 2>&1
+    make --file $SCRIPTS_PATH/Makefile CONFIG_FILE=$CONF CONFIG_SYS=$INSTALL_PATH"/config-system.txt" init 2>&1
+    make --file $SCRIPTS_PATH/Makefile CONFIG_FILE=$CONF CONFIG_SYS=$INSTALL_PATH"/config-system.txt" $MAKE_OPTS 2>&1
 else
-    make --file $SCRIPTS_PATH/Makefile CONFIG_FILE=$CUR_PATH/$CONF CONFIG_SYS=$INSTALL_PATH"/config-system.txt" make_torque_script 2>&1
+    make --file $SCRIPTS_PATH/Makefile CONFIG_FILE=$CONF CONFIG_SYS=$INSTALL_PATH"/config-system.txt" make_torque_script 2>&1
 fi
 

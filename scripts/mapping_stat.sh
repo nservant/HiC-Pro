@@ -14,7 +14,7 @@ dir=$(dirname $0)
 
 ## Usage
 function usage {
-    echo -e "Usage : ./mappingstat.sh"
+    echo -e "Usage : ./mapping_stat.sh"
     echo -e "-i"" <input directory>"
     echo -e "-c"" <config>"
     echo -e "-o"" <output directory/prefix>"

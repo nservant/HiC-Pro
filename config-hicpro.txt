@@ -35,7 +35,7 @@ PAIR2_EXT = _R2
 
 FORMAT = phred33
 MIN_MAPQ = 0
-CUT_SITE_5OVER = AGCTT 
+LIGATION_SITE = AAGCTAGCTT
 
 BOWTIE2_IDX_PATH = /data/annotations/Human/hg19/bowtie2_indexes/base/
 BOWTIE2_GLOBAL_OPTIONS = --very-sensitive -L 30 --score-min L,-0.6,-0.2 --end-to-end --reorder
@@ -45,7 +45,7 @@ BOWTIE2_LOCAL_OPTIONS =  --very-sensitive -L 20 --score-min L,-0.6,-0.2 --end-to
 ## Annotation files
 #######################################################################
 
-ORGANISM = hg19
+REFERENCE_GENOME = hg19
 GENOME_FRAGMENT = HindIII_resfrag_hg19.bed
 GENOME_SIZE = chrom_hg19.sizes
 

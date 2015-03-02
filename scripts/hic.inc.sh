@@ -24,6 +24,10 @@ tmpfile2=/tmp/hic2.$$
 tmpmkfile=/tmp/hicmk.$$
 trap "rm -f $tmpfile1 $tmpfile2 $tmpmkfile" 0 1 2 3
 
+abspath() {
+    [[ $1 = /* ]] && echo "$1" || echo "$PWD/${1#./}"
+}
+
 filter_config()
 {
     sed -e 's/#.*//' | egrep '^[ \t]*[a-zA-Z_][a-zA-Z0-9_]*[ \t]*:?=' | sed -e 's/[ \t]*:=[ \t]*/ :=/' -e 's/[ \t][^:]*=[ \t]*/ =/' -e 's/\([^ \t]*\)=/\1 =/' | sort -u -k 1b,1
@@ -41,7 +45,7 @@ read_config()
 
     
     ## Define BOWTIE outputs
-    BOWTIE2_IDX=${BOWTIE2_IDX_PATH}/${ORGANISM}; export BOWTIE2_IDX
+    BOWTIE2_IDX=${BOWTIE2_IDX_PATH}/${REFERENCE_GENOME}; export BOWTIE2_IDX
     BOWTIE2_GLOBAL_OUTPUT_DIR=$BOWTIE2_OUTPUT_DIR/bwt2_global; export BOWTIE2_GLOBAL_OUTPUT_DIR
     BOWTIE2_LOCAL_OUTPUT_DIR=$BOWTIE2_OUTPUT_DIR/bwt2_local; export BOWTIE2_LOCAL_OUTPUT_DIR
     BOWTIE2_FINAL_OUTPUT_DIR=$BOWTIE2_OUTPUT_DIR/bwt2; export BOWTIE2_FINAL_OUTPUT_DIR
@@ -55,13 +59,19 @@ SYS_CONF=$CURRENT_PATH/../config-system.txt
 if [ -e "$SYS_CONF" ]; then
     read_config $SYS_CONF
 else
-    echo "Error - System config file not available"
+    echo "Error - System config file not found"
     exit
 fi
 
 ## load Hi-C config
 if [ ! -z "$CONF" ]; then
-    read_config $CONF
+    CONF=`abspath $CONF`
+    if [ -e "$CONF" ]; then
+	read_config $CONF
+    else
+	echo "Error - Hi-C config file '$CONF' not found"
+	exit
+    fi
 fi
 
 ###########################
@@ -192,27 +202,27 @@ get_fastq_for_bowtie_global()
 
 get_fastq_for_bowtie_local()
 {
-    get_hic_files $BOWTIE2_GLOBAL_OUTPUT_DIR _${ORGANISM}.bwt2glob.unmap.fastq
+    get_hic_files $BOWTIE2_GLOBAL_OUTPUT_DIR _${REFERENCE_GENOME}.bwt2glob.unmap.fastq
 }
 
 get_bam_for_pp()
 {
     local=$1
     if [ "$local" = 1 ]; then
-	get_hic_files $BOWTIE2_LOCAL_OUTPUT_DIR _${ORGANISM}.bwt2glob.unmap_bwt2loc.bam
+	get_hic_files $BOWTIE2_LOCAL_OUTPUT_DIR _${REFERENCE_GENOME}.bwt2glob.unmap_bwt2loc.bam
     else
-	get_hic_files $BOWTIE2_GLOBAL_OUTPUT_DIR _${ORGANISM}.bwt2glob.bam
+	get_hic_files $BOWTIE2_GLOBAL_OUTPUT_DIR _${REFERENCE_GENOME}.bwt2glob.bam
     fi
 }
 
 get_global_aln_for_stats()
 {
-    get_hic_files ${BOWTIE2_GLOBAL_OUTPUT_DIR} _${ORGANISM}.bwt2glob.sam
+    get_hic_files ${BOWTIE2_GLOBAL_OUTPUT_DIR} _${REFERENCE_GENOME}.bwt2glob.sam
 }
 
 get_local_aln_for_stats()
 {
-    get_hic_files ${BOWTIE2_LOCAL_OUTPUT_DIR} _${ORGANISM}.bwt2glob.unmap_bwt2loc.sam
+    get_hic_files ${BOWTIE2_LOCAL_OUTPUT_DIR} _${REFERENCE_GENOME}.bwt2glob.unmap_bwt2loc.sam
 }
 
 get_aln_for_stats()
@@ -237,15 +247,15 @@ get_stat_file()
 
 get_sam_for_merge()
 {
-    get_hic_files ${BOWTIE2_FINAL_OUTPUT_DIR} _${ORGANISM}.bwt2merged.sam   
+    get_hic_files ${BOWTIE2_FINAL_OUTPUT_DIR} _${REFERENCE_GENOME}.bwt2merged.sam   
 }
 
 get_sam_for_combine()
 {
-    get_hic_files ${BOWTIE2_GLOBAL_OUTPUT_DIR} _${ORGANISM}.bwt2glob.sam   
+    get_hic_files ${BOWTIE2_GLOBAL_OUTPUT_DIR} _${REFERENCE_GENOME}.bwt2glob.sam   
 }
 
 get_files_for_overlap()
 {
-    get_hic_files ${BOWTIE2_FINAL_OUTPUT_DIR} _${ORGANISM}.bwt2pairs.sam | get_R1 | sed -e "s/${PAIR1_EXT}//"
+    get_hic_files ${BOWTIE2_FINAL_OUTPUT_DIR} _${REFERENCE_GENOME}.bwt2pairs.sam | get_R1 | sed -e "s/${PAIR1_EXT}//"
 }

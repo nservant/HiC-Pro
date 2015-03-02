@@ -17,12 +17,12 @@ all_qsub : init mapping proc_hic
 
 init : configure 
 
-mapping: bowtie_global bowtie_local merge_global_local mapping_stat
+mapping: bowtie_global bowtie_local bowtie_combine mapping_stat
 
-proc_hic : bowtie_pairing mapped2HiCFragments
+proc_hic : bowtie_pairing mapped_2hic_fragments
 
 ## Per sample
-build_contact_maps: merge_rmdup plots build_raw_maps ice_norm 
+build_contact_maps: merge_valid_interactions plots build_raw_maps ice_norm 
 
 ######################################
 ## System
@@ -116,10 +116,10 @@ bowtie_local:  config_check
 ######################################
 
 ## Merge global and local alignment in a single file
-merge_global_local:  config_check
+bowtie_combine:  config_check
 	@echo "--------------------------------------------" 
 	@date 
-	@echo "Merge both alignment ..."
+	@echo "Combine both alignment ..."
 	$(SCRIPTS)/bowtie_combine.sh -c $(CONFIG_FILE) >> $(LOGFILE)
 
 ## Compute mapping statistics
@@ -149,24 +149,24 @@ bowtie_pairing:  config_check
 	$(SCRIPTS)/bowtie_pairing.sh -c $(CONFIG_FILE) >> $(LOGFILE)
 
 ## Assign alignments to regions segmented by HindIII sites
-mapped2HiCFragments:  config_check
+mapped_2hic_fragments:  config_check
 	@echo "--------------------------------------------"
 	@date 
 	@echo "Assign alignments to HindIII sites ..." 
-	$(SCRIPTS)/overlapMapped2HiCFragments.sh -c $(CONFIG_FILE) >> $(LOGFILE) ##> $(LOGS_DIR)/overlapRS.log
+	$(SCRIPTS)/mapped_2hic_fragments.sh -c $(CONFIG_FILE) >> $(LOGFILE)
 
 ## Combine multiple BAM files from the same sample, and remove duplicates
-merge_rmdup:  config_check
+merge_valid_interactions:  config_check
 	@echo "--------------------------------------------" 
 	@date 
 	@echo "Merge multiple files from the same sample ..." 
-	$(SCRIPTS)/mergeValidInteractions.sh -c $(CONFIG_FILE) >> $(LOGFILE) ## > $(LOGS_DIR)/mergeMulti.log
+	$(SCRIPTS)/merge_valid_interactions.sh -c $(CONFIG_FILE) >> $(LOGFILE)
 
 build_raw_maps:  config_check
 	@echo "--------------------------------------------" 
 	@date 
 	@echo "Generate binned matrix files ..." 
-	$(SCRIPTS)/assignRead2bins.sh -c $(CONFIG_FILE) >> $(LOGFILE) #> $(LOGS_DIR)/build_raw_maps.log
+	$(SCRIPTS)/build_raw_maps.sh -c $(CONFIG_FILE) 2> $(LOGS_DIR)/build_raw_maps.log
 
 ######################################
 ## Normalization
@@ -178,5 +178,5 @@ ice_norm:
 	@echo "--------------------------------------------" 
 	@date 
 	@echo "Run ICE Normalization ..." 
-	$(SCRIPTS)/normContactMaps.sh -c $(CONFIG_FILE) >> $(LOGFILE) # 2> $(LOGS_DIR)/normICE.log
+	$(SCRIPTS)/ice_norm.sh -c $(CONFIG_FILE) >> $(LOGFILE) # 2> $(LOGS_DIR)/normICE.log
 

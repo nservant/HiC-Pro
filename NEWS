@@ -1,6 +1,21 @@
 ***********************************
-CHANGES IN VERSION 2.3.1
+CHANGES IN VERSION 2.4.0
 
+BUG FIXES
+
+   o Bug fixed if input path is not absolute
+
+NEW FEATURES
+
+   o Support both short and long options
+
+SIGNIFICANT USER-VISIBLE CHANGES
+
+   o ORGANISM option in config file replaced by REFERENCE_GENOME
+   
+   o CUT_SITE_5OVER option in config file replaced by LIGATION_SITE
+
+   o GENOME_SIZE and GENOME_FRAGMENT files are detected as they are specified or from the annotation folder
  
 ***********************************
 CHANGES IN VERSION 2.3

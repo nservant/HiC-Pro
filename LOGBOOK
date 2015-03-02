@@ -15,6 +15,17 @@
 ## LOGBOOK
 ##
 ################################################################################
+
+##--------------------
+##19-01-15
+##--------------------
+
+  o Update scripts' name to ease debug
+  o Change ORGANISM to REFERENCE_GENOME
+  o Change CUT_SITE_5OVER to LIGATION_SITE. The reads that do not map using the end-to-end strategy should be trimmed after the ligation site. The ligation sequence depends on the fill in strategy. In classical Hi-C, the ligation is expected to create a Nhe1 site flanked by two HindII site, ie.e AAGCTAGCTT
+  o Support both long and short options. see HiC-Pro -- help
+
+
 ##--------------------
 ##19-01-15
 ##--------------------
