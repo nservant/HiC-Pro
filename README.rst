@@ -108,4 +108,60 @@ Once executed succesfully (may take several hours), then type:
 Test Dataset
 ============
 
+Small fastq files (2M reads) extracted from the Dixon et al. 2012 paper are available for test.
+
+.. code-block:: guess
+
+   ## Get the data. Will download a test_data folder and a configuration file
+   wget -r -nH --cut-dirs=2 --no-parent --reject="index.html*" https://zerkalo.curie.fr/partage/HiC-Pro/
+
+   ## Run HiC-Pro
+   time HICPRO_INSTALL_DIR/bin/HiC-Pro -i test_data -o HiC_Pro_v2.4.0_test -c config_test.txt
+   Run HiC-Pro
+   --------------------------------------------
+   lundi 2 mars 2015, 17:00:36 (UTC+0100)
+   Bowtie2 global alignment ...
+   bowtie_wrap.sh -c /bioinfo/users/nservant/projects_dev/HiC-Pro/config_test.txt -u >> hicpro_IRM90_rep1_split.log
+   --------------------------------------------
+   lundi 2 mars 2015, 17:01:25 (UTC+0100)
+   Bowtie2 local alignment ...
+   bowtie_wrap.sh -c /bioinfo/users/nservant/projects_dev/HiC-Pro/config_test.txt -l >> hicpro_IRM90_rep1_split.log
+   --------------------------------------------
+   lundi 2 mars 2015, 17:01:41 (UTC+0100)
+   Combine both alignment ...
+   bowtie_combine.sh -c /bioinfo/users/nservant/projects_dev/HiC-Pro/config_test.txt >> hicpro_IRM90_rep1_split.log
+   --------------------------------------------
+   lundi 2 mars 2015, 17:01:52 (UTC+0100)
+   Bowtie2 mapping statistics for R1 and R2 tags ...
+   mapping_stat.sh -c /bioinfo/users/nservant/projects_dev/HiC-Pro/config_test.txt >> hicpro_IRM90_rep1_split.log
+   --------------------------------------------
+   lundi 2 mars 2015, 17:01:53 (UTC+0100)
+   Pairing of R1 and R2 tags ...
+   bowtie_pairing.sh -c /bioinfo/users/nservant/projects_dev/HiC-Pro/config_test.txt >> hicpro_IRM90_rep1_split.log
+   --------------------------------------------
+   lundi 2 mars 2015, 17:02:22 (UTC+0100)
+   Assign alignments to HindIII sites ...
+   mapped_2hic_fragments.sh -c /bioinfo/users/nservant/projects_dev/HiC-Pro/config_test.txt >> hicpro_IRM90_rep1_split.log
+   --------------------------------------------
+   lundi 2 mars 2015, 17:03:49 (UTC+0100)
+   Merge multiple files from the same sample ...
+   merge_valid_interactions.sh -c /bioinfo/users/nservant/projects_dev/HiC-Pro/config_test.txt >> hicpro_IRM90_rep1_split.log
+   --------------------------------------------
+   lundi 2 mars 2015, 17:03:49 (UTC+0100)
+   Make plots per sample ...
+   make_plots.sh -c /bioinfo/users/nservant/projects_dev/HiC-Pro/config_test.txt >> hicpro_IRM90_rep1_split.log
+   --------------------------------------------
+   lundi 2 mars 2015, 17:03:55 (UTC+0100)
+   Generate binned matrix files ...
+   build_raw_maps.sh -c /bioinfo/users/nservant/projects_dev/HiC-Pro/config_test.txt 2> logs/build_raw_maps.log
+   --------------------------------------------
+   lundi 2 mars 2015, 17:03:57 (UTC+0100)
+   Run ICE Normalization ...
+   normContactMaps.sh -c /bioinfo/users/nservant/projects_dev/HiC-Pro/config_test.txt >> hicpro_IRM90_rep1_split.log # 2> logs/normICE.log
+
+   real	3m23.902s
+   user	5m22.956s
+   sys	0m40.243s
+
+   ## All results are available in HiC_Pro_v2.4.0_test
 
