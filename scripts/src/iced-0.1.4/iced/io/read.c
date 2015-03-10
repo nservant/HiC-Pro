@@ -21,13 +21,13 @@ void read_counts(char filename [], int* array){
   while(fgets(line, 1024, fd) != NULL){
     sscanf(line, "%d %d %d",
            &array[i * 3], &array[i * 3 + 1], &array[i * 3 + 2]);
-    i++;
     // We also need the symmetric
     if(array[i * 3] != array[i * 3 + 1]){
+      i++;
       sscanf(line, "%d %d %d",
              &array[i * 3 + 1], &array[i * 3], &array[i * 3 + 2]);
-      i++;
     }
+    i++;
   }
   fclose(fd);
 }
