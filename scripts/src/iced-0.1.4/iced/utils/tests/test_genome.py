@@ -1,10 +1,10 @@
 import numpy as np
 from numpy.testing import assert_array_equal
 
-from malaria.utils._genome import get_intra_mask
-from malaria.utils._genome import get_inter_mask
-from malaria.utils._genome import _change_lengths_resolution
-from malaria.utils._genome import undersample_per_chr
+from iced.utils._genome import get_intra_mask
+from iced.utils._genome import get_inter_mask
+from iced.utils._genome import _change_lengths_resolution
+from iced.utils._genome import undersample_per_chr
 
 
 def test_get_intra_mask():

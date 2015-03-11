@@ -1,4 +1,4 @@
-from ..normalization._filter import filter_low_counts
+from iced._filter import filter_low_counts
 import numpy as np
 from numpy.testing import assert_array_equal
 from scipy import sparse
@@ -13,7 +13,7 @@ def test_filter_low_counts():
     X_filtered_true[X == 0] = np.nan
     assert_array_equal(X_filtered, X_filtered_true)
 
-    lengths = [40, 60]
+    lengths = np.array([40, 60])
     X_filtered = filter_low_counts(X, lengths=lengths)
     assert_array_equal(X_filtered, X_filtered_true)
 

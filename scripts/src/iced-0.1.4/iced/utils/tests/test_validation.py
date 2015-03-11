@@ -1,6 +1,6 @@
 import numpy as np
 from nose.tools import assert_raises
-from malaria.utils import validation
+from iced.utils import validation
 
 
 def test_is_symetric_or_tri():

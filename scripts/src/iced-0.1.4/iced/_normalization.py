@@ -10,8 +10,8 @@ def ICE_normalization(X, SS=None, max_iter=3000, eps=1e-4, copy=True,
     ICE normalization
 
     The imakaev normalization of Hi-C data consists of iteratively estimating
-    the bias. The original algorithm used the l1 norm. It was adapted to allow
-    the use of the l2 norm.
+    the bias such that all the rows and columns (ie loci) have equal
+    visibility.
 
     Parameters
     ----------
@@ -32,10 +32,13 @@ def ICE_normalization(X, SS=None, max_iter=3000, eps=1e-4, copy=True,
         algorithm is adapted to use the l2 norm, as suggested in the SCN
         paper.
 
+    output_bias : boolean, optional, default: False
+        whether to output the bias vector.
+
     Returns
     -------
-    X : ndarray
-        Normalized IF matrix
+    X, (bias) : ndarray (n, n)
+        Normalized IF matrix and bias of output_bias is True
 
     Example
     -------
