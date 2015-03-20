@@ -11,7 +11,7 @@ slash := |
 tick := -
 undsc := _
 
-all : init mapping proc_hic build_contact_maps
+all : init mapping proc_hic build_contact_maps rmsam
 
 all_qsub : init mapping proc_hic
 

@@ -7,7 +7,7 @@ SIGNIFICANT USER-VISIBLE CHANGES
 
    o Improve logs reporting and organization
 
-   o Remove SAM files by default after mapping
+   o Remove SAM files by default after all processing
 
 BUG FIXES
 
