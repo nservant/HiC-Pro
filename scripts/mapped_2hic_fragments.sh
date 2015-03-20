@@ -39,18 +39,22 @@ do
     datadir=${MAPC_OUTPUT}/data/${sample_dir}
     mkdir -p ${datadir}
     
-    cmd="python ${SCRIPTS}/mapped_2hic_fragments.py ${opts} -f ${GENOME_FRAGMENT_FILE} -r ${r} -o ${datadir}"
-    exec_cmd $cmd
+    ## Logs
+    LDIR=${LOGS_DIR}/${sample_dir}
+    mkdir -p ${LDIR}
+
+    cmd="python ${SCRIPTS}/mapped_2hic_fragments.py ${opts} -f ${GENOME_FRAGMENT_FILE} -r ${r} -o ${datadir}" 
+    exec_cmd $cmd > ${LDIR}/mapped_2hic_fragments.log 2>&1
 
     ## Valid pairs are already sorted
     outVALID=`basename ${r} | sed -e 's/.sam$/.validPairs/'`
     outSAM=`basename ${r} | sed -e 's/.sam$/_interaction.sam/'`
     sortBAM=`basename ${r} | sed -e 's/.sam$/_interaction/'`
     
-    echo "## Sorting valid interaction file ..."
+    echo "## Sorting valid interaction file ..." >> ${LDIR}/mapped_2hic_fragments.log 2>&1
     sort -k2,2V -k3,3n -k5,5V -k6,6n -T ${TMP_DIR} -o ${datadir}/${outVALID} ${datadir}/${outVALID} 
 
-    echo "## Creating BAM and index files ..."
+    echo "## Creating BAM and index files ..." >> ${LDIR}/mapped_2hic_fragments.log 2>&1
     if [ -f ${datadir}/${outSAM} ]
     then 
 	cmd="${SAMTOOLS_PATH}/samtools view -bS ${datadir}/${outSAM} | ${SAMTOOLS_PATH}/samtools sort - ${datadir}/${sortBAM}"

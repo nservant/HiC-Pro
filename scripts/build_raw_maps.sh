@@ -50,12 +50,16 @@ fi
 for RES_FILE_NAME in ${DATA_DIR}/*
 do
     RES_FILE_NAME=$(basename $RES_FILE_NAME)
+    ## Logs
+    LDIR=${LOGS_DIR}/${RES_FILE_NAME}
+    mkdir -p ${LDIR}
+
     if [ -d ${DATA_DIR}/${RES_FILE_NAME} ]; then
 	MATRIX_DIR=${MAPC_OUTPUT}/matrix/${RES_FILE_NAME}/raw
 	for bsize in ${BIN_SIZE}
 	do
 	    mkdir -p ${MATRIX_DIR}/${bsize}
-	    cat ${DATA_DIR}/${RES_FILE_NAME}/${RES_FILE_NAME}_allValidPairs | ${SCRIPTS}/build_matrix --matrix-format ${MATRIX_FORMAT} --binsize ${bsize} --chrsizes $ANNOT_DIR/$GENOME_SIZE --ifile /dev/stdin --oprefix ${MATRIX_DIR}/${bsize}/${RES_FILE_NAME}_${bsize}
+	    cat ${DATA_DIR}/${RES_FILE_NAME}/${RES_FILE_NAME}_allValidPairs | ${SCRIPTS}/build_matrix --matrix-format ${MATRIX_FORMAT} --binsize ${bsize} --chrsizes $ANNOT_DIR/$GENOME_SIZE --ifile /dev/stdin --oprefix ${MATRIX_DIR}/${bsize}/${RES_FILE_NAME}_${bsize} 2> ${LDIR}/build_raw_maps.log
 	done
     fi
     wait

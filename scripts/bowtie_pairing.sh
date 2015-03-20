@@ -49,7 +49,11 @@ merge_pairs()
 	OPTS=$OPTS" -m"
     fi
 
-    cmd="${SCRIPTS}/mergeSAM.pl ${OPTS} -f ${BOWTIE2_FINAL_OUTPUT_DIR}/${prefix_r1}.bwt2merged.sam -r ${BOWTIE2_FINAL_OUTPUT_DIR}/${prefix_r2}.bwt2merged.sam -o ${BOWTIE2_FINAL_OUTPUT_DIR}/${prefix_out}.bwt2pairs.sam > ${LOGS_DIR}/"$(basename ${prefix_out})"_pairs.log"
+    ## Logs
+    LDIR=${LOGS_DIR}/${sample_dir}
+    mkdir -p ${LDIR}
+
+    cmd="${SCRIPTS}/mergeSAM.pl ${OPTS} -f ${BOWTIE2_FINAL_OUTPUT_DIR}/${prefix_r1}.bwt2merged.sam -r ${BOWTIE2_FINAL_OUTPUT_DIR}/${prefix_r2}.bwt2merged.sam -o ${BOWTIE2_FINAL_OUTPUT_DIR}/${prefix_out}.bwt2pairs.sam > ${LDIR}/"$(basename ${prefix_out})"_pairs.log"
     exec_cmd $cmd
 
     ## Generate BAM file

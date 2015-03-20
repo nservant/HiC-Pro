@@ -54,7 +54,7 @@ clean:
 ifdef LOGS_DIR
 	@/bin/rm -f $(LOGS_DIR)/*
 endif
-	@/bin/rm -rf bowtie_results hic_results
+	@/bin/rm -rf $(BOWTIE2_OUTPUT_DIR) $(MAPC_OUTPUT)
 
 debug: config_check
 	@echo "RAW_DIR="$(RAW_DIR)
@@ -166,7 +166,7 @@ build_raw_maps:  config_check
 	@echo "--------------------------------------------" 
 	@date 
 	@echo "Generate binned matrix files ..." 
-	$(SCRIPTS)/build_raw_maps.sh -c $(CONFIG_FILE) 2> $(LOGS_DIR)/build_raw_maps.log
+	$(SCRIPTS)/build_raw_maps.sh -c $(CONFIG_FILE)
 
 ######################################
 ## Normalization

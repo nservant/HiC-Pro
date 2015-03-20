@@ -1,4 +1,19 @@
 ***********************************
+CHANGES IN VERSION 2.4.1
+
+SIGNIFICANT USER-VISIBLE CHANGES
+   
+   o Add PREFIX variable in installation configuration to set the installation directory
+
+   o Improve logs reporting and organization
+
+   o Remove SAM files by default after mapping
+
+BUG FIXES
+
+   o Bug fixed in rmdup
+
+***********************************
 CHANGES IN VERSION 2.4.0
 
 BUG FIXES

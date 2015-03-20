@@ -42,7 +42,10 @@ DATA_DIR=${MAPC_OUTPUT}/data/
 for RES_FILE_NAME in ${DATA_DIR}/*
 do
     RES_FILE_NAME=$(basename $RES_FILE_NAME)
-    echo $RES_FILE_NAME
+    ## Logs
+    LDIR=${LOGS_DIR}/${RES_FILE_NAME}
+    mkdir -p ${LDIR}
+
     if [ -d ${DATA_DIR}/${RES_FILE_NAME} ]; then
 	NORM_DIR=${MAPC_OUTPUT}/matrix/${RES_FILE_NAME}/iced
 	for bsize in ${BIN_SIZE}
@@ -51,7 +54,7 @@ do
 	    INPUT_MATRIX=${MAPC_OUTPUT}/matrix/${RES_FILE_NAME}/raw/${bsize}/${RES_FILE_NAME}_${bsize}.matrix
 	    ln -s ${MAPC_OUTPUT}/matrix/${RES_FILE_NAME}/raw/${bsize}/${RES_FILE_NAME}_${bsize}_abs.bed ${NORM_DIR}/${bsize}/${RES_FILE_NAME}_${bsize}_abs.bed
 	    ln -s ${MAPC_OUTPUT}/matrix/${RES_FILE_NAME}/raw/${bsize}/${RES_FILE_NAME}_${bsize}_ord.bed  ${NORM_DIR}/${bsize}/${RES_FILE_NAME}_${bsize}_ord.bed
-	    ${SCRIPTS}/ice --results_filename ${NORM_DIR}/${bsize}/${RES_FILE_NAME}_${bsize}_iced.matrix --filtering_perc ${SPARSE_FILTERING} --max_iter ${MAX_ITER} --eps ${EPS} --verbose 1 ${INPUT_MATRIX} &
+	    ${SCRIPTS}/ice --results_filename ${NORM_DIR}/${bsize}/${RES_FILE_NAME}_${bsize}_iced.matrix --filtering_perc ${SPARSE_FILTERING} --max_iter ${MAX_ITER} --eps ${EPS} --verbose 1 ${INPUT_MATRIX} > ${LDIR}/ice.log &
 
 	done
     fi

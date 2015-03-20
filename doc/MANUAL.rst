@@ -41,6 +41,8 @@ You can also edit the *config-install.txt* file and manually defined the paths t
 +---------------+------------------------------------------------------------+
 | SYSTEM CONFIGURATION                                                       |
 +===============+============================================================+
+| PREFIX        | HiC-Pro installation directory - default /local/bin        |
++---------------+------------------------------------------------------------+
 | BOWTIE2_PATH  | Full path the bowtie2 installation directory               |
 +---------------+------------------------------------------------------------+
 | SAMTOOLS_PATH | Full path to the samtools installation directory (>0.1.18) |

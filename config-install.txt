@@ -3,6 +3,7 @@
 ## Paths and Settings  - Start editing here !
 #########################################################################
 
+PREFIX = 
 BOWTIE2_PATH = 
 SAMTOOLS_PATH = 
 R_PATH = 

@@ -8,7 +8,7 @@
 ## Public License, either Version 2, June 1991 or Version 3, June 2007.
                                                                    
 SOFT="HiC-Pro"
-VERSION="2.4.0"
+VERSION="2.4.1"
 
 function usage {
     echo -e "usage : $SOFT -i INPUT -o OUTPUT -c CONFIG [-p] [-s ANALYSIS_STEP] [-h]"
@@ -125,14 +125,14 @@ fi
 ## Init HiC-Pro
 ####################
 if [ -d $OUTPUT ]; then
-    echo "$OUTPUT folder alreads exists. Do you want to clean it before running ?(y/n) [n] : "
+    echo "$OUTPUT folder alreads exists. Do you want to delete it before running ?(y/n) [n] : "
     read ans
     if [ XX${ans} = XXy ]; then
-	make --file $SCRIPTS_PATH/Makefile CONFIG_FILE=$CONF CONFIG_SYS=$INSTALL_PATH"/config-system.txt" clean 2>&1
+	/bin/rm -rf $OUTPUT
+	##make --file $SCRIPTS_PATH/Makefile CONFIG_FILE=$CONF CONFIG_SYS=$INSTALL_PATH"/config-system.txt" clean 2>&1
     fi
-else
-    mkdir -p $OUTPUT
 fi
+mkdir -p $OUTPUT
     
 if [ ! -e $OUTPUT/$RAW_DIR ]; then
     ln -s $INPUT $OUTPUT/$RAW_DIR
