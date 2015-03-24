@@ -74,18 +74,6 @@ configure:  config_check
 	@mkdir -p $(TMP_DIR)
 	@mkdir -p $(LOGS_DIR)
 
-
-######################################
-## Compile
-##
-######################################
-
-## Build C++ code
-src_compile: $(SOURCES)/build_matrix.cpp
-	(g++ -Wall -O2 -std=c++0x -o build_matrix ${SOURCES}/build_matrix.cpp; mv build_matrix ${SCRIPTS})
-	(g++ -Wall -O2 -std=c++0x -o cutsite_trimming ${SOURCES}/cutsite_trimming.cpp; mv cutsite_trimming ${SCRIPTS})
-	(cp $(SOURCES)/ice_mod/iced/scripts/ice ${SCRIPTS}; cd $(SOURCES)/ice_mod/; python setup.py install --user;)
-
 ######################################
 ## Bowtie2 Global Alignment
 ##

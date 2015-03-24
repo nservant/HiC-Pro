@@ -8,15 +8,7 @@ A log file is generated when you run HiC-Pro. Its name is specified in the confi
 
 **2- How can I split my .fastq files into smaller files ?**
 
-In linux system, you can simply use the :code:`split` command.
-
-
-.. code-block:: bash
-
-   ## split the fastq file in blocks of 10M reads
-   split -l 10000000 -d FILE SUFFIX
-
-
+See the HiC-pro utilities :ref:`UTILS` which is baed on the split unix command.
 For more information, see :code:`man split`
 
 **3- How can I generate my annotation files ?**

@@ -8,6 +8,7 @@ TMP_DIR = tmp
 LOGS_DIR = logs
 BOWTIE2_OUTPUT_DIR = bowtie_results
 MAPC_OUTPUT = hic_results
+RAW_DIR = rawdata
 
 #######################################################################
 ## SYSTEM - PBS - Start Editing Here !!
@@ -25,7 +26,6 @@ PBS_MAIL =
 ## Data
 #########################################################################
 
-RAW_DIR = ./rawdata
 PAIR1_EXT = _R1
 PAIR2_EXT = _R2
 
@@ -60,7 +60,6 @@ GET_PROCESS_SAM = 1
 RM_SINGLETON = 1
 RM_MULTI = 1
 RM_DUP = 1
-
 
 #######################################################################
 ## Generate interaction count matrices

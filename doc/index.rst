@@ -13,5 +13,6 @@ Contents:
 
    QUICKSTART
    MANUAL
+   UTILS
    FAQ
 

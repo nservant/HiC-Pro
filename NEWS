@@ -1,4 +1,11 @@
 ***********************************
+CHANGES IN VERSION 2.4.2
+
+NEW FEATURES
+
+   o Add HiC-Pro utilities - split_reads
+
+***********************************
 CHANGES IN VERSION 2.4.1
 
 SIGNIFICANT USER-VISIBLE CHANGES
@@ -7,7 +14,7 @@ SIGNIFICANT USER-VISIBLE CHANGES
 
    o Improve logs reporting and organization
 
-   o Remove SAM files by default after all processing
+   o Remove SAM files by default when running the complete workflow
 
 BUG FIXES
 
@@ -33,7 +40,7 @@ SIGNIFICANT USER-VISIBLE CHANGES
    o GENOME_SIZE and GENOME_FRAGMENT files are detected as they are specified or from the annotation folder
  
 ***********************************
-CHANGES IN VERSION 2.3
+CHANGES IN VERSION 2.3.0
 
 NEW FEATURES
    
@@ -53,14 +60,14 @@ NEW FEATURES
 
 
 ***********************************
-CHANGES IN VERSION 2.2
+CHANGES IN VERSION 2.2.0
 
    o Add ICE normalization
 
    o Change mapping strategy. Local mapping is replaced by a global approach on trimmed reads
 
 ***********************************
-CHANGES IN VERSION 2.1
+CHANGES IN VERSION 2.1.0
 
 NEW FEATURES
 
