@@ -1,5 +1,6 @@
 HiC-Pro Utilities
-===
+=================
+
 ..  _UTILS:
 
 
@@ -12,8 +13,10 @@ Split reads is highly recommanded in HiC-pro parallel mode.
 To split the reads in chunck, you can simply used the split_reads.py utility.
 
 .. code-block:: bash
+
    ## split the fastq file in blocks of 10M reads
    HICPRO_PATH/bin/utils/split_reads.py --results_folder OUTPUT --nreads READS_NB INPUT_FASTQ
+
 
 
 
