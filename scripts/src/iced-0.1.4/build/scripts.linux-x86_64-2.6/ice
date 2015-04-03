@@ -1,0 +1,67 @@
+#!/usr/bin/python
+
+import argparse
+import numpy as np
+from scipy import sparse
+
+import iced
+from iced.io import loadtxt, savetxt
+
+
+parser = argparse.ArgumentParser("ICE normalization")
+parser.add_argument('filename',
+                    metavar='File to load',
+                    type=str,
+                    help='Path to file of contact counts to load')
+parser.add_argument("--results_filename",
+                    "-r",
+                    type=str,
+                    default=None,
+                    help="results_filename")
+parser.add_argument("--filtering_perc", "-f",
+                    type=float,
+                    default=0.02,
+                    help="Percentage of reads to filter out")
+parser.add_argument("--max_iter", "-m", default=100, type=int,
+                    help="Maximum number of iterations")
+parser.add_argument("--eps", "-e", default=0.1, type=float,
+                    help="Precision")
+parser.add_argument("--dense", "-d", default=False, action="store_true")
+parser.add_argument("--verbose", "-v", default=False)
+
+
+args = parser.parse_args()
+filename = args.filename
+
+if args.verbose:
+    print "Loading files..."
+
+# Loads file as i, j, counts
+i, j, data = loadtxt(filename).T
+N = max(i.max(), j.max()) + 1
+counts = sparse.coo_matrix((data, (i, j)), shape=(N, N), dtype=float)
+if args.dense:
+    counts = np.array(counts.todense())
+else:
+    counts = sparse.csr_matrix(counts)
+
+if args.verbose:
+    print "Normalizing..."
+
+if args.filtering_perc != 0:
+    counts = iced.filter_low_counts(counts, percentage=args.filtering_perc,
+                                    copy=False, sparsity=False)
+counts = iced.ICE_normalization(counts, max_iter=args.max_iter, copy=False,
+                                verbose=args.verbose, eps=args.eps)
+
+if args.results_filename is None:
+    results_filename = ".".join(
+        filename.split(".")[:-1]) + "_normalized." + filename.split(".")[-1]
+else:
+    results_filename = args.results_filename
+
+counts = sparse.coo_matrix(counts)
+
+if args.verbose:
+    print "Writing results..."
+savetxt(results_filename, counts.col, counts.row, counts.data)
