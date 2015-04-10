@@ -7,14 +7,26 @@
 ##
 ################################################################################
 
-   o Check mapping according to rs site after the fill in strategy 
-   o Write mergeSAM.pl in python
 
 ################################################################################
 ##
 ## LOGBOOK
 ##
 ################################################################################
+
+##--------------------
+##03-04-15
+##--------------------
+
+   o Check version nnumber in install_dependencies.sh
+
+
+##--------------------
+##02-04-15
+##--------------------
+
+   o mergeSAM.pl is now written in python. This version is more efficient than the previous one (I/O).
+   o All SAM are removed and converted in the fly into BAM files.
 
 ##--------------------
 ##24-03-15

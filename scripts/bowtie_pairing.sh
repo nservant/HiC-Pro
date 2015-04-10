@@ -36,16 +36,16 @@ merge_pairs()
     local file_r1="$2"
     local file_r2="$3"
 
-    local prefix_r1=$(echo ${sample_dir}/$(basename $file_r1) | sed -e 's/.bwt2merged.sam//')
-    local prefix_r2=$(echo ${sample_dir}/$(basename $file_r2) | sed -e 's/.bwt2merged.sam//')
+    local prefix_r1=$(echo ${sample_dir}/$(basename $file_r1) | sed -e 's/.bwt2merged.bam//')
+    local prefix_r2=$(echo ${sample_dir}/$(basename $file_r2) | sed -e 's/.bwt2merged.bam//')
     local prefix_out=$(echo $prefix_r1 | get_pairs)
 
     ## Merge two SAM files into 1 paired-end SAM file / removed unmapped and multihits reads
-    OPTS="-q ${MIN_MAPQ} -v"
-    if [[ ${RM_SINGLETON} == 1 ]]; then
+    OPTS="-q ${MIN_MAPQ} -t -v"
+    if [[ ${RM_SINGLETON} == 0 ]]; then
 	OPTS=$OPTS" -s"
     fi
-    if [[ ${RM_MULTI} == 1 ]]; then
+    if [[ ${RM_MULTI} == 0 ]]; then
 	OPTS=$OPTS" -m"
     fi
 
@@ -53,12 +53,22 @@ merge_pairs()
     LDIR=${LOGS_DIR}/${sample_dir}
     mkdir -p ${LDIR}
 
-    cmd="${SCRIPTS}/mergeSAM.pl ${OPTS} -f ${BOWTIE2_FINAL_OUTPUT_DIR}/${prefix_r1}.bwt2merged.sam -r ${BOWTIE2_FINAL_OUTPUT_DIR}/${prefix_r2}.bwt2merged.sam -o ${BOWTIE2_FINAL_OUTPUT_DIR}/${prefix_out}.bwt2pairs.sam > ${LDIR}/"$(basename ${prefix_out})"_pairs.log"
+    ## Index BAM
+    #cmd="${SAMTOOLS_PATH}/samtools index ${BOWTIE2_FINAL_OUTPUT_DIR}/${prefix_r1}.bwt2merged.bam"
+    #exec_cmd $cmd  
+    #cmd="${SAMTOOLS_PATH}/samtools index ${BOWTIE2_FINAL_OUTPUT_DIR}/${prefix_r2}.bwt2merged.bam"
+    #exec_cmd $cmd  
+
+    cmd="${PYTHON_PATH}/python ${SCRIPTS}/mergeSAM.py ${OPTS} -f ${BOWTIE2_FINAL_OUTPUT_DIR}/${prefix_r1}.bwt2merged.bam -r ${BOWTIE2_FINAL_OUTPUT_DIR}/${prefix_r2}.bwt2merged.bam -o ${BOWTIE2_FINAL_OUTPUT_DIR}/${prefix_out}.bwt2pairs.bam > ${LDIR}/mergeSAM.log"
     exec_cmd $cmd
 
     ## Generate BAM file
-    cmd="${SAMTOOLS_PATH}/samtools view -bS ${BOWTIE2_FINAL_OUTPUT_DIR}/${prefix_out}.bwt2pairs.sam > ${BOWTIE2_FINAL_OUTPUT_DIR}/${prefix_out}.bwt2pairs.bam"
-    exec_cmd $cmd
+    ##cmd="${SAMTOOLS_PATH}/samtools view -bS ${BOWTIE2_FINAL_OUTPUT_DIR}/${prefix_out}.bwt2pairs.sam > ${BOWTIE2_FINAL_OUTPUT_DIR}/${prefix_out}.bwt2pairs.bam"
+    ##exec_cmd $cmd
+
+    ## Generate index file
+    ## cmd="${SAMTOOLS_PATH}/samtools index ${BOWTIE2_FINAL_OUTPUT_DIR}/${prefix_out}.bwt2pairs.bam"
+    ## exec_cmd $cmd
 }
 
 ## Combine R1/R2 tags in a single BAM file

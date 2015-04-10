@@ -22,7 +22,7 @@ How to install it ?
 The HiC-Pro pipeline requires the following dependencies :
 
 * The `bowtie2 <http://bowtie-bio.sourceforge.net/bowtie2/index.shtml>`_ mapper (or any other mapper)
-* Python with *pysam*, *bx*, *numpy*, and *scipy* libraries
+* Python (>2.7) with *pysam*, *bx*, *numpy*, and *scipy* libraries
 * R with the *RColorBrewer* and *ggplot2* packages
 * g++ compiler
 * Samtools (>0.1.18)
@@ -46,8 +46,6 @@ You can also edit the *config-install.txt* file and manually defined the paths t
 | SAMTOOLS_PATH | Full path to the samtools installation directory (>0.1.18) |
 +---------------+------------------------------------------------------------+
 | R_PATH        | Full path to the R installation directory                  |
-+---------------+------------------------------------------------------------+
-| PERL_PATH     | Full path to the Perl installation directory               |
 +---------------+------------------------------------------------------------+
 | PYTHON_PATH   | Full path to the python installation directory             |
 +---------------+------------------------------------------------------------+
@@ -128,7 +126,7 @@ How to use it ?
 +------------------------+---------------------------------------------------------------------------------------------------------------------+
 | MIN_MAPQ               | Minimum mapping quality. Reads with lower quality are discarded. *Default: 0*                                       |
 +------------------------+---------------------------------------------------------------------------------------------------------------------+
-| LIGATION SITE          | Ligation site sequence used for reads trimming. Depends on the fill in strategy. *Default: AAGCTAGCTT*                                        |
+| LIGATION SITE          | Ligation site sequence used for reads trimming. Depends on the fill in strategy. *Default: AAGCTAGCTT*              |
 +------------------------+---------------------------------------------------------------------------------------------------------------------+ 
 | BOWTIE2_IDX_PATH       | Path to bowtie2 indexes                                                                                             |
 +------------------------+---------------------------------------------------------------------------------------------------------------------+

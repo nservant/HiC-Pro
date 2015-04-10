@@ -1,4 +1,15 @@
 ***********************************
+CHANGES IN VERSION 2.5.0
+
+SIGNIFICANT USER-VISIBLE CHANGES
+
+   o MergeSAM.pl is now in python based on pysam library
+
+   o All SAM outputs are converted into BAM files
+
+   o Check dependencies version number during installation
+
+***********************************
 CHANGES IN VERSION 2.4.2
 
 NEW FEATURES

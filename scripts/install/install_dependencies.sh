@@ -12,6 +12,41 @@ RED="\\033[0;31m"
 BLUE="\\033[0;34m"
 SOFT="HiC-Pro"
 
+## 0 =
+## 1 >
+## 2 <
+vercomp () {
+    if [[ $1 == $2 ]]
+    then
+        return 0
+    fi
+    local IFS=.
+    local i ver1=($1) ver2=($2)
+    # fill empty fields in ver1 with zeros
+    for ((i=${#ver1[@]}; i<${#ver2[@]}; i++))
+    do
+        ver1[i]=0
+    done
+
+    for ((i=0; i<${#ver1[@]}; i++))
+    do
+        if [[ -z ${ver2[i]} ]]
+        then
+            # fill empty fields in ver2 with zeros
+            ver2[i]=0
+        fi
+        if ((10#${ver1[i]} > 10#${ver2[i]}))
+        then
+            return 1
+        fi
+        if ((10#${ver1[i]} < 10#${ver2[i]}))
+        then
+            return 2
+        fi
+    done
+    return 0
+}
+
 
 die() {
     echo -e "$RED""Exit - ""$*""$NORMAL" 1>&2
@@ -85,19 +120,21 @@ if [ $? != "0" ]; then
     exit 1;
 fi
 
-# perl
-which perl > /dev/null;
-if [ $? != "0" ]; then
-    echo -e "$RED""Can not proceed without Perl, please install and re-run""NORMAL"
-    exit 1;
-fi
-
 # python
 which python > /dev/null;
 if [ $? != "0" ]; then
     echo -e "$RED""Can not proceed without Python, please install and re-run""NORMAL"
     exit 1;
+else
+    pver=`python --version 2>&1 | cut -d" " -f2`
+    vercomp "2.7.0" $pver 
+    if [[ $? == 2 ]]; then
+	echo -e "$RED""Python v2.7.0 or higher is needed [$pver detected].""NORMAL"
+	exit 1;
+    fi
 fi
+
+ 
 
 #check OS (Unix/Linux or Mac)
 os=`uname`;
@@ -227,6 +264,14 @@ fi
 wasInstalled=0;
 which samtools > /dev/null
 if [ $? = "0" ]; then
+        
+    samver=`samtools 2>&1 | grep Version | cut -d" " -f2`
+    vercomp "0.1.18" $samver 
+    if [[ $? == 2 ]]; then
+	echo -e "$RED""samtools v0.1.18 or higher is needed [$samver detected].""NORMAL"
+	exit 1;
+    fi
+
 	echo -e "$BLUE""Samtools appears to be already installed. ""$NORMAL"
 	wasInstalled=1;
 fi
@@ -292,13 +337,6 @@ if [ $? = "0" ]; then
     echo "SAMTOOLS_PATH = "`dirname $(which samtools)`  >> config-system.txt
 else
     die "SAMTOOLS_PATH not found. Exit." 
-fi
-
-which perl > /dev/null
-if [ $? = "0" ]; then
-    echo "PERL_PATH = "`dirname $(which perl)`  >> config-system.txt
-else
-    die "PERL_PATH not found. Exit." 
 fi
 
 which python > /dev/null

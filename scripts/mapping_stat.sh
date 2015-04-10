@@ -47,7 +47,7 @@ mapping_stat(){
 
     local sample_dir="$1"
     local file="$2"
-    local prefix=$(echo ${sample_dir}/$(basename $file) | sed -e 's/.bwt2glob.sam//')
+    local prefix=$(echo ${sample_dir}/$(basename $file) | sed -e 's/.bwt2glob.bam//')
 
     cmd="${SAMTOOLS_PATH}/samtools view -c ${BOWTIE2_FINAL_OUTPUT_DIR}/${prefix}.bwt2merged.bam"
     tot_reads=`exec_ret $cmd`

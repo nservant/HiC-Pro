@@ -418,7 +418,7 @@ if __name__ == "__main__":
     # Read the SAM/BAM file
     if verbose:
         print "## Opening SAM/BAM file '", mappedReadsFile, "'..."
-    samfile = pysam.Samfile(mappedReadsFile, "r")
+    samfile = pysam.Samfile(mappedReadsFile, "rb")
 
     if samOut:
         handle_sam = open(
@@ -432,7 +432,7 @@ if __name__ == "__main__":
     if verbose:
         print "## Classifying Interactions ..."
 
-    for read in samfile.fetch():
+    for read in samfile.fetch(until_eof=True):
         reads_counter += 1
         cur_handler = None
 

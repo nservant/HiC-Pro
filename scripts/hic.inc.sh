@@ -217,12 +217,12 @@ get_bam_for_pp()
 
 get_global_aln_for_stats()
 {
-    get_hic_files ${BOWTIE2_GLOBAL_OUTPUT_DIR} _${REFERENCE_GENOME}.bwt2glob.sam
+    get_hic_files ${BOWTIE2_GLOBAL_OUTPUT_DIR} _${REFERENCE_GENOME}.bwt2glob.bam
 }
 
 get_local_aln_for_stats()
 {
-    get_hic_files ${BOWTIE2_LOCAL_OUTPUT_DIR} _${REFERENCE_GENOME}.bwt2glob.unmap_bwt2loc.sam
+    get_hic_files ${BOWTIE2_LOCAL_OUTPUT_DIR} _${REFERENCE_GENOME}.bwt2glob.unmap_bwt2loc.bam
 }
 
 get_aln_for_stats()
@@ -240,22 +240,22 @@ get_stat_file()
     local mode=$1
     local file=$2
     local sample_dir=$(get_sample_dir ${file})
-    local prefix=$(echo ${sample_dir}/$(basename $file) | sed -e 's/.bwt2glob.sam//')
+    local prefix=$(echo ${sample_dir}/$(basename $file) | sed -e 's/.bwt2glob.bam//')
 
     echo ${BOWTIE2_FINAL_OUTPUT_DIR}/$prefix.mapstat
 }
 
 get_sam_for_merge()
 {
-    get_hic_files ${BOWTIE2_FINAL_OUTPUT_DIR} _${REFERENCE_GENOME}.bwt2merged.sam   
+    get_hic_files ${BOWTIE2_FINAL_OUTPUT_DIR} _${REFERENCE_GENOME}.bwt2merged.bam   
 }
 
 get_sam_for_combine()
 {
-    get_hic_files ${BOWTIE2_GLOBAL_OUTPUT_DIR} _${REFERENCE_GENOME}.bwt2glob.sam   
+    get_hic_files ${BOWTIE2_GLOBAL_OUTPUT_DIR} _${REFERENCE_GENOME}.bwt2glob.bam   
 }
 
 get_files_for_overlap()
 {
-    get_hic_files ${BOWTIE2_FINAL_OUTPUT_DIR} _${REFERENCE_GENOME}.bwt2pairs.sam | get_R1 | sed -e "s/${PAIR1_EXT}//"
+    get_hic_files ${BOWTIE2_FINAL_OUTPUT_DIR} _${REFERENCE_GENOME}.bwt2pairs.bam | get_R1 | sed -e "s/${PAIR1_EXT}//"
 }

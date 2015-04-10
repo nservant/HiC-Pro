@@ -64,12 +64,12 @@ global_align()
     fi
 
     ## Run bowtie
-    cmd="${BOWTIE2_PATH}/bowtie2 ${BOWTIE2_GLOBAL_OPTIONS} --rg-id BMG --rg SM:${prefix} --${FORMAT}-quals -p ${N_CPU} -x ${BOWTIE2_IDX} -U ${file} -S ${BOWTIE2_GLOBAL_OUTPUT_DIR}/${sample_dir}/${prefix}_${REFERENCE_GENOME}.bwt2glob.sam 2>>${LDIR}/bowtie_${prefix}_global_${REFERENCE_GENOME}.log"
+    cmd="${BOWTIE2_PATH}/bowtie2 ${BOWTIE2_GLOBAL_OPTIONS} --rg-id BMG --rg SM:${prefix} --${FORMAT}-quals -p ${N_CPU} -x ${BOWTIE2_IDX} -U ${file} 2> ${LDIR}/bowtie_${prefix}_global_${REFERENCE_GENOME}.log | ${SAMTOOLS_PATH}/samtools view -F 4 -bS - > ${BOWTIE2_GLOBAL_OUTPUT_DIR}/${sample_dir}/${prefix}_${REFERENCE_GENOME}.bwt2glob.bam"
     exec_cmd $cmd
 
     # Generate BAM files with map reads only
-    cmd="${SAMTOOLS_PATH}/samtools view -F 4 -bS ${BOWTIE2_GLOBAL_OUTPUT_DIR}/${sample_dir}/${prefix}_${REFERENCE_GENOME}.bwt2glob.sam > ${BOWTIE2_GLOBAL_OUTPUT_DIR}/${sample_dir}/${prefix}_${REFERENCE_GENOME}.bwt2glob.bam 2>>${LDIR}/bowtie_${prefix}_global_${REFERENCE_GENOME}.log"
-    exec_cmd $cmd
+    #cmd="${SAMTOOLS_PATH}/samtools view -F 4 -bS ${BOWTIE2_GLOBAL_OUTPUT_DIR}/${sample_dir}/${prefix}_${REFERENCE_GENOME}.bwt2glob.sam > ${BOWTIE2_GLOBAL_OUTPUT_DIR}/${sample_dir}/${prefix}_${REFERENCE_GENOME}.bwt2glob.bam 2>>${LDIR}/bowtie_${prefix}_global_${REFERENCE_GENOME}.log"
+    #exec_cmd $cmd
 }
 
 ## Local Alignment
@@ -87,7 +87,6 @@ local_align()
 	exit -1
     fi
 
-    echo ${file} >> ${LOGFILE}
     mkdir -p ${BOWTIE2_LOCAL_OUTPUT_DIR}/${sample_dir}
     
     ## Logs
@@ -108,17 +107,16 @@ local_align()
     fi
 
     ## Run bowtie
-    cmd="${BOWTIE2_PATH}/bowtie2 ${BOWTIE2_LOCAL_OPTIONS} --rg-id BML --rg SM:${prefix} --${FORMAT}-quals -p ${N_CPU} -x ${BOWTIE2_IDX} -U ${tfile} -S ${BOWTIE2_LOCAL_OUTPUT_DIR}/${sample_dir}/${prefix}_bwt2loc.sam 2>>${LDIR}/bowtie_${prefix}_local.log"
+    cmd="${BOWTIE2_PATH}/bowtie2 ${BOWTIE2_LOCAL_OPTIONS} --rg-id BML --rg SM:${prefix} --${FORMAT}-quals -p ${N_CPU} -x ${BOWTIE2_IDX} -U ${tfile} 2>${LDIR}/bowtie_${prefix}_local.log | samtools view -bS - > ${BOWTIE2_LOCAL_OUTPUT_DIR}/${sample_dir}/${prefix}_bwt2loc.bam"
     exec_cmd "$cmd"
 
     ## Generate BAM files with all reads so that the sum of global + local reads = total reads
-    cmd="${SAMTOOLS_PATH}/samtools view -bS ${BOWTIE2_LOCAL_OUTPUT_DIR}/${sample_dir}/${prefix}_bwt2loc.sam > ${BOWTIE2_LOCAL_OUTPUT_DIR}/${sample_dir}/${prefix}_bwt2loc.bam 2>>${LDIR}/bowtie_${prefix}_local.log"
-
-    exec_cmd "$cmd"
+    #cmd="${SAMTOOLS_PATH}/samtools view -bS ${BOWTIE2_LOCAL_OUTPUT_DIR}/${sample_dir}/${prefix}_bwt2loc.sam > ${BOWTIE2_LOCAL_OUTPUT_DIR}/${sample_dir}/${prefix}_bwt2loc.bam 2>>${LDIR}/bowtie_${prefix}_local.log"
+    #exec_cmd "$cmd"
 }
 
 
-echo "\nBOWTIE_FASTQ_WRAP mode $MODE"
+echo -e "\nBOWTIE_FASTQ_WRAP mode $MODE\n"
 
 if [[ ${MODE} == 'global' ]]; then
     for r in $(get_fastq_for_bowtie_global)
@@ -129,9 +127,6 @@ if [[ ${MODE} == 'global' ]]; then
 	sample_dir=$(get_sample_dir $r)
 	prefix1=$(basename ${R1} | sed -e 's/.fastq\(.gz\)*//')
 	prefix2=$(basename ${R2} | sed -e 's/.fastq\(.gz\)*//')
-	
-	echo $R1
-	echo $R2
 	
 	global_align "$sample_dir" "$R1" "$prefix1" "$UNMAP"&
 	pid1=$!
@@ -148,9 +143,6 @@ else
 	sample_dir=$(get_sample_dir $r)
 	prefix1=$(basename ${R1} | sed -e 's/.fastq\(.gz\)*//')
 	prefix2=$(basename ${R2} | sed -e 's/.fastq\(.gz\)*//')
-
-	echo $R1
-	echo $R2
 	
 	local_align "$sample_dir" "$R1" "$prefix1" "$UNMAP"&
 	pid1=$!

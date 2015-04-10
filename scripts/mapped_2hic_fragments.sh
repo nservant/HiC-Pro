@@ -33,6 +33,7 @@ if [[ ! -e $GENOME_FRAGMENT_FILE ]]; then
     fi
 fi
 
+
 for r in $(get_files_for_overlap)
 do
     sample_dir=$(get_sample_dir ${r})
@@ -43,13 +44,15 @@ do
     LDIR=${LOGS_DIR}/${sample_dir}
     mkdir -p ${LDIR}
 
-    cmd="python ${SCRIPTS}/mapped_2hic_fragments.py ${opts} -f ${GENOME_FRAGMENT_FILE} -r ${r} -o ${datadir}" 
+    cmd="${PYTHON_PATH}/python ${SCRIPTS}/mapped_2hic_fragments.py ${opts} -f ${GENOME_FRAGMENT_FILE} -r ${r} -o ${datadir}"
+    echo $cmd
     exec_cmd $cmd > ${LDIR}/mapped_2hic_fragments.log 2>&1
 
     ## Valid pairs are already sorted
-    outVALID=`basename ${r} | sed -e 's/.sam$/.validPairs/'`
-    outSAM=`basename ${r} | sed -e 's/.sam$/_interaction.sam/'`
-    sortBAM=`basename ${r} | sed -e 's/.sam$/_interaction/'`
+    echo ${r}
+    outVALID=`basename ${r} | sed -e 's/.bam$/.validPairs/'`
+    outSAM=`basename ${r} | sed -e 's/.bam$/_interaction.sam/'`
+    sortBAM=`basename ${r} | sed -e 's/.bam$/_interaction/'`
     
     echo "## Sorting valid interaction file ..." >> ${LDIR}/mapped_2hic_fragments.log 2>&1
     sort -k2,2V -k3,3n -k5,5V -k6,6n -T ${TMP_DIR} -o ${datadir}/${outVALID} ${datadir}/${outVALID} 
@@ -58,6 +61,7 @@ do
     if [ -f ${datadir}/${outSAM} ]
     then 
 	cmd="${SAMTOOLS_PATH}/samtools view -bS ${datadir}/${outSAM} | ${SAMTOOLS_PATH}/samtools sort - ${datadir}/${sortBAM}"
+	echo $cmd
 	exec_cmd $cmd
 	cmd="${SAMTOOLS_PATH}/samtools index ${datadir}/${sortBAM}.bam"
 	exec_cmd $cmd
