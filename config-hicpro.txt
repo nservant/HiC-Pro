@@ -67,7 +67,7 @@ RM_DUP = 1
 
 BIN_SIZE = 20000 40000 150000 500000 1000000
 BIN_STEP = 1
-MATRIX_FORMAT = asis
+MATRIX_FORMAT = upper
 
 #######################################################################
 ## ICE Normalization

@@ -1,7 +1,7 @@
 .. Nicolas Servant
 .. HiC-Pro
-.. v2.3.1
-.. 15-11-02
+.. v2.5.0
+.. 15-04-02
 
 HiC-Pro Quick Start Guide
 *************************
