@@ -53,7 +53,7 @@ readstrimming: $(SOURCES)/cutsite_trimming.cpp
 
 ## Build Python lib
 iced: $(SOURCES)/ice_mod
-	(cp $(SOURCES)/ice_mod/iced/scripts/ice ${SCRIPTS}; cd $(SOURCES)/ice_mod/; python setup.py install --user;)
+	(cp $(SOURCES)/ice_mod/iced/scripts/ice ${SCRIPTS}; cd $(SOURCES)/ice_mod/; ${PYTHON_PATH}/python setup.py install --user;)
 
 
 ######################################

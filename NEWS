@@ -1,4 +1,13 @@
 ***********************************
+CHANGES IN VERSION 2.5.1
+
+BUG FIXES
+
+   o Bug in install process
+
+   o Bug in python PATH
+
+***********************************
 CHANGES IN VERSION 2.5.0
 
 SIGNIFICANT USER-VISIBLE CHANGES

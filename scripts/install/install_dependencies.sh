@@ -102,34 +102,34 @@ done < $conf
 #check for make
 which make > /dev/null;
 if [ $? != "0" ]; then
-	echo -e "$RED""Can not proceed without make, please install and re-run (Mac users see: http://developer.apple.com/technologies/xcode.html)""NORMAL"
+	echo -e "$RED""Can not proceed without make, please install and re-run (Mac users see: http://developer.apple.com/technologies/xcode.html)""$NORMAL"
 	exit 1;
 fi
 
 #check for g++
 which g++ > /dev/null;
 if [ $? != "0" ]; then
-	echo -e "$RED""Can not proceed without g++, please install and re-run""NORMAL"
+	echo -e "$RED""Can not proceed without g++, please install and re-run""$NORMAL"
 	exit 1;
 fi
 
 # check for unzip (bowtie)
 which unzip > /dev/null;
 if [ $? != "0" ]; then
-    echo -e "$RED""Can not proceed without unzip, please install and re-run""NORMAL"
+    echo -e "$RED""Can not proceed without unzip, please install and re-run""$NORMAL"
     exit 1;
 fi
 
 # python
 which python > /dev/null;
 if [ $? != "0" ]; then
-    echo -e "$RED""Can not proceed without Python, please install and re-run""NORMAL"
+    echo -e "$RED""Can not proceed without Python, please install and re-run""$NORMAL"
     exit 1;
 else
     pver=`python --version 2>&1 | cut -d" " -f2`
-    vercomp "2.7.0" $pver 
+    vercomp $pver "2.7.0"
     if [[ $? == 2 ]]; then
-	echo -e "$RED""Python v2.7.0 or higher is needed [$pver detected].""NORMAL"
+	echo -e "$RED""Python v2.7.0 or higher is needed [$pver detected].""$NORMAL"
 	exit 1;
     fi
 fi
@@ -266,7 +266,7 @@ which samtools > /dev/null
 if [ $? = "0" ]; then
         
     samver=`samtools 2>&1 | grep Version | cut -d" " -f2`
-    vercomp "0.1.18" $samver 
+    vercomp $samver "0.1.18"
     if [[ $? == 2 ]]; then
 	echo -e "$RED""samtools v0.1.18 or higher is needed [$samver detected].""NORMAL"
 	exit 1;
