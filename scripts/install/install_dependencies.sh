@@ -56,6 +56,7 @@ die() {
 function usage {
     echo -e "Usage : ./install_all.sh"
     echo -e "-c"" <configuration install file>"
+    echo -e "-o"" <installation folder>"
     echo -e "-h"" <help>"
     exit;
 }
@@ -66,11 +67,12 @@ echo -e "$BLUE""Starting $SOFT installation ...""$NORMAL";
 
 ################### Initialize ###################
 
-set -- $(getopt c: "$@")
+set -- $(getopt c:o:h "$@")
 while [ $# -gt 0 ]
 do
     case "$1" in
 	(-c) conf=$2; shift;;
+	(-o) install_dir=$2; shift;;
 	(-h) usage;;
 	(--) shift; break;;
 	(-*) echo "$0: error - unrecognized option $1" 1>&2; exit 1;;
@@ -191,7 +193,7 @@ if [ $? == "0" ]; then
     echo -e "$BLUE""The required Python libraries appear to be already installed. ""$NORMAL"
     wasInstalled=1;
 else
-    echo -e "$RED""Can not proceed without the required Python libraries, please install them and re-run""NORMAL"
+    echo -e "$RED""Can not proceed without the required Python libraries, please install them and re-run""$NORMAL"
     exit 1;
 fi
 
@@ -209,7 +211,7 @@ if [ $? == "0" ]; then
 	wasInstalled=1;
     fi
 else
-    echo -e "$RED""Can not proceed without R, please install and re-run""NORMAL"
+    echo -e "$RED""Can not proceed without R, please install and re-run""$NORMAL"
     exit 1;
 fi
 
@@ -346,10 +348,10 @@ else
     die "PYTHON_PATH not found. Exit."
 fi
 
-echo "INSTALL_PATH = $CUR_DIR" >> config-system.txt
-echo "SCRIPTS = $CUR_DIR/scripts" >> config-system.txt
-echo "SOURCES = $CUR_DIR/scripts/src" >> config-system.txt
-echo "ANNOT_DIR = $CUR_DIR/annotation" >> config-system.txt
+echo "INSTALL_PATH = ${install_dir}" >> config-system.txt
+echo "SCRIPTS = ${install_dir}/scripts" >> config-system.txt
+echo "SOURCES = ${install_dir}/scripts/src" >> config-system.txt
+echo "ANNOT_DIR = ${install_dir}/annotation" >> config-system.txt
 
 echo ;
 ## End of dependencies check ##
