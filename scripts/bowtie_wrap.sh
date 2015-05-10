@@ -107,7 +107,7 @@ local_align()
     fi
 
     ## Run bowtie
-    cmd="${BOWTIE2_PATH}/bowtie2 ${BOWTIE2_LOCAL_OPTIONS} --rg-id BML --rg SM:${prefix} --${FORMAT}-quals -p ${N_CPU} -x ${BOWTIE2_IDX} -U ${tfile} 2>${LDIR}/bowtie_${prefix}_local.log | samtools view -bS - > ${BOWTIE2_LOCAL_OUTPUT_DIR}/${sample_dir}/${prefix}_bwt2loc.bam"
+    cmd="${BOWTIE2_PATH}/bowtie2 ${BOWTIE2_LOCAL_OPTIONS} --rg-id BML --rg SM:${prefix} --${FORMAT}-quals -p ${N_CPU} -x ${BOWTIE2_IDX} -U ${tfile} 2>${LDIR}/bowtie_${prefix}_local.log | ${SAMTOOLS_PATH}/samtools view -bS - > ${BOWTIE2_LOCAL_OUTPUT_DIR}/${sample_dir}/${prefix}_bwt2loc.bam"
     exec_cmd "$cmd"
 
     ## Generate BAM files with all reads so that the sum of global + local reads = total reads
