@@ -1,7 +1,17 @@
 ***********************************
 CHANGES IN VERSION 2.5.1
 
+SIGNIFICANT USER-VISIBLE CHANGES
+
+   o samtools 0.1.19 or higher is required
+
 BUG FIXES
+
+   o Bug fixed in iced genomic intervals symlink
+
+   o Add missing ${PYTHON_PATH} variable in scripts
+
+   o Add pysam check during installation
 
    o Bug in install process
 
