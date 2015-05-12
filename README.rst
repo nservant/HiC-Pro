@@ -31,7 +31,7 @@ The HiC-Pro pipeline requires the following dependencies :
 * Python with *pysam*, *bx*, *numpy*, and *scipy* libraries
 * R with the *RColorBrewer* and *ggplot2* packages
 * g++ compiler
-* Samtools (>0.1.18)
+* Samtools (>0.1.19)
 
 To install HiC-Pro:
 
