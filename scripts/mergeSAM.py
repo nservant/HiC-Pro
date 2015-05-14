@@ -63,6 +63,11 @@ def is_unique_bowtie2(read):
     
     return ret
 
+## Remove everything after "/" in read's name
+def get_read_name(read):
+    name = read.qname
+    return name.split("/",1)[0]
+    
 
 def sam_flag(read1, read2, hr1, hr2):
 
@@ -208,7 +213,7 @@ if __name__ == "__main__":
             if (reads_counter % 1000000 == 0 and verbose):
                 print "##", reads_counter
                 
-            if r1.qname == r2.qname:
+            if get_read_name(r1) == get_read_name(r2):
                     
                  ## both unmapped
                 if r1.is_unmapped == True and r2.is_unmapped == True:

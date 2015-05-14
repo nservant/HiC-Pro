@@ -5,6 +5,10 @@ SIGNIFICANT USER-VISIBLE CHANGES
 
    o samtools 0.1.19 or higher is required
 
+   o Any character after "\" in read names are now discarded so that myread\1 == myread\2
+
+   o Warning is printed during the restriction fragment assignment is a chromosome is not defined in the annotation file
+
 BUG FIXES
 
    o Bug fixed in iced genomic intervals symlink

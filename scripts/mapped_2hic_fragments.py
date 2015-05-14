@@ -173,13 +173,18 @@ def get_overlapping_restriction_fragment(resFrag, chrom, read):
     """
     # Get 5' end
     pos = get_read_pos(read)
-    # Overlap with the 5' end of the read (zero-based)
-    resfrag = resFrag[chrom].find(pos, pos+1)
-    if len(resfrag) > 1:
-        print "Error : ", len(resfrag),
-        print " restriction fragments found for ", read.qname
+    
+    if chrom in resFrag.keys():
+        # Overlap with the 5' end of the read (zero-based)
+        resfrag = resFrag[chrom].find(pos, pos+1)
+        if len(resfrag) > 1:
+            print "Error : ", len(resfrag),
+            print " restriction fragments found for ", read.qname
 
-    return resfrag[0]
+        return resfrag[0]
+    else:
+        print "Warning - no restriction fragments for chromosome ", chrom
+        return None
 
 
 def is_self_circle(read1, read2):
@@ -414,7 +419,8 @@ if __name__ == "__main__":
 
     # Read the BED file
     resFrag = load_restriction_fragment(fragmentFile, verbose)
-
+    print resFrag.keys()
+    
     # Read the SAM/BAM file
     if verbose:
         print "## Opening SAM/BAM file '", mappedReadsFile, "'..."
@@ -441,62 +447,64 @@ if __name__ == "__main__":
             r1 = read
             if not r1.is_unmapped:
                 r1_chrom = samfile.getrname(r1.tid)
-                r1_resfrag = get_overlapping_restriction_fragment(
-                    resFrag, r1_chrom, r1)
+                r1_resfrag = get_overlapping_restriction_fragment(resFrag, r1_chrom, r1)
 
         # Second mate
         elif read.is_read2:
             r2 = read
             if not r2.is_unmapped:
                 r2_chrom = samfile.getrname(r2.tid)
-                r2_resfrag = get_overlapping_restriction_fragment(
-                    resFrag, r2_chrom, r2)
+                r2_resfrag = get_overlapping_restriction_fragment(resFrag, r2_chrom, r2)
 
-            interactionType = get_interaction_type(
-                r1, r1_chrom, r1_resfrag, r2, r2_chrom, r2_resfrag, verbose)
-            dist = get_PE_fragment_size(
-                r1, r2, r1_resfrag, r2_resfrag, interactionType)
+            if r1_resfrag is not None and r2_resfrag is not None:
+                interactionType = get_interaction_type(r1, r1_chrom, r1_resfrag, r2, r2_chrom, r2_resfrag, verbose)
+                dist = get_PE_fragment_size(r1, r2, r1_resfrag, r2_resfrag, interactionType)
 
-            # Check cut site in local mapping reads
-            # if get_read_tag(r1, "RG") == "BML" or get_read_tag(r2, "RG") == "BML":
-            #     bowloc_counter+=1
-            #     if cutSite and (overlapRestrictionSite(r1, cutSite) or overlapRestrictionSite(r2, cutSite)):
-            #         cutsite_counter+=1
+                # Check cut site in local mapping reads
+                # if get_read_tag(r1, "RG") == "BML" or get_read_tag(r2, "RG") == "BML":
+                #     bowloc_counter+=1
+                #     if cutSite and (overlapRestrictionSite(r1, cutSite) or overlapRestrictionSite(r2, cutSite)):
+                #         cutsite_counter+=1
+                
+                # Check Insert size criteria
+                if (minInsertSize is not None and dist is not None and
+                    dist < int(minInsertSize)) or \
+                    (maxInsertSize is not None and dist is not None and dist > int(maxInsertSize)):
+                    interactionType = "DUMP"
 
-            # Check Insert size criteria
-            if (minInsertSize is not None and dist is not None and
-                dist < int(minInsertSize)) or \
-               (maxInsertSize is not None and dist is not None and dist > int(maxInsertSize)):
-                interactionType = "DUMP"
+                if interactionType == "VI":
+                    valid_counter += 1
+                    cur_handler = handle_valid
+                    validType = get_valid_orientation(r1, r2)
+                    if validType == "RR":
+                        valid_counter_RR += 1
+                    elif validType == "FF":
+                        valid_counter_FF += 1
+                    elif validType == "FR":
+                        valid_counter_FR += 1
+                    elif validType == "RF":
+                        valid_counter_RF += 1
 
-            if interactionType == "VI":
-                valid_counter += 1
-                cur_handler = handle_valid
-                validType = get_valid_orientation(r1, r2)
-                if validType == "RR":
-                    valid_counter_RR += 1
-                elif validType == "FF":
-                    valid_counter_FF += 1
-                elif validType == "FR":
-                    valid_counter_FR += 1
-                elif validType == "RF":
-                    valid_counter_RF += 1
+                elif interactionType == "DE":
+                    de_counter += 1
+                    cur_handler = handle_de if allOutput else None
 
-            elif interactionType == "DE":
-                de_counter += 1
-                cur_handler = handle_de if allOutput else None
+                elif interactionType == "SC":
+                    sc_counter += 1
+                    cur_handler = handle_sc if allOutput else None
 
-            elif interactionType == "SC":
-                sc_counter += 1
-                cur_handler = handle_sc if allOutput else None
-
-            elif interactionType == "SI":
-                single_counter += 1
-                cur_handler = handle_single if allOutput else None
+                elif interactionType == "SI":
+                    single_counter += 1
+                    cur_handler = handle_single if allOutput else None
+                else:
+                    interactionType = "DUMP"
+                    dump_counter += 1
+                    cur_handler = handle_dump if allOutput else None
             else:
                 interactionType = "DUMP"
                 dump_counter += 1
                 cur_handler = handle_dump if allOutput else None
+
 
             if cur_handler is not None:
                 if not r1.is_unmapped and not r2.is_unmapped:
@@ -530,11 +538,12 @@ if __name__ == "__main__":
                         str(get_read_strand(r2)) + "\t" +
                         str(dist) + "\n")
 
-            if samOut:
-                r1.tags = r1.tags + [('CT', str(interactionType))]
-                r2.tags = r2.tags + [('CT', str(interactionType))]
-                handle_sam.write(r1)
-                handle_sam.write(r2)
+                if samOut:
+                    r1.tags = r1.tags + [('CT', str(interactionType))]
+                    r2.tags = r2.tags + [('CT', str(interactionType))]
+                    handle_sam.write(r1)
+                    handle_sam.write(r2)
+                                   
 
             if (reads_counter % 100000 == 0 and verbose):
                 print "##", reads_counter
