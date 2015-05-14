@@ -11,6 +11,8 @@ SIGNIFICANT USER-VISIBLE CHANGES
 
 BUG FIXES
 
+   o Add pyton path in ice_norm.sh
+
    o Bug fixed in iced genomic intervals symlink
 
    o Add missing ${PYTHON_PATH} variable in scripts
