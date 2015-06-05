@@ -40,10 +40,10 @@ def get_args():
         opts, args = getopt.getopt(
             sys.argv[1:],
             "f:r:o:q:smtvh",
-            ["R1file=",
-             "R2file=",
-             "output=", "mapq=", 
-             "report_single", "report_multi", "stat", "verbose", "help"])
+            ["forward=",
+             "reverse=",
+             "output=", "qual=", 
+             "single", "multi", "stat", "verbose", "help"])
     except getopt.GetoptError:
         usage()
         sys.exit(-1)
@@ -206,9 +206,17 @@ if __name__ == "__main__":
         print "## Merging forward and reverse tags ..."
   
     with  pysam.Samfile(R1file, "rb") as hr1,  pysam.Samfile(R2file, "rb") as hr2: 
-        outfile = pysam.AlignmentFile(output, "wb", header=hr1.header)
+        if output == "-":
+            outfile = pysam.AlignmentFile(output, "w", template=hr1)
+        else:
+            outfile = pysam.AlignmentFile(output, "wb", template=hr1)
         for r1, r2 in izip(hr1.fetch(until_eof=True), hr2.fetch(until_eof=True)):
             reads_counter +=1
+
+            #print r1
+            #print r2
+            #print hr1.getrname(r1.tid)
+            #print hr2.getrname(r2.tid)
 
             if (reads_counter % 1000000 == 0 and verbose):
                 print "##", reads_counter
@@ -241,6 +249,11 @@ if __name__ == "__main__":
 
                 tot_pairs_counter += 1          
                 (r1, r2) = sam_flag(r1,r2, hr1, hr2)
+
+                #print hr1.getrname(r1.tid)
+                #print hr2.getrname(r2.tid)
+                #print r1
+                #print r2
                 ## Write output
                 outfile.write(r1)
                 outfile.write(r2)
