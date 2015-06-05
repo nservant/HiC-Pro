@@ -8,7 +8,7 @@
 ## Public License, either Version 2, June 1991 or Version 3, June 2007.
                                                                    
 SOFT="HiC-Pro"
-VERSION="2.5.1"
+VERSION="2.5.2"
 
 function usage {
     echo -e "usage : $SOFT -i INPUT -o OUTPUT -c CONFIG [-p] [-s ANALYSIS_STEP] [-h]"
@@ -72,8 +72,9 @@ fi
 
 ## Set PATHS
 BIN_PATH=`dirname $0`
-SCRIPTS_PATH="$BIN_PATH/../scripts/"
-INSTALL_PATH="$BIN_PATH/../"
+ABS_BIN_PATH=`cd "$BIN_PATH"; pwd`
+SCRIPTS_PATH="$ABS_BIN_PATH/../scripts/"
+INSTALL_PATH="$ABS_BIN_PATH/../"
 CUR_PATH=$PWD
 
 

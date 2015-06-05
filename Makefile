@@ -15,7 +15,7 @@ SOURCES=$(SCRIPTS)/src
 
 all : install
 
-install : checkdep mapbuilder readstrimming iced build
+install : checkdep mapbuilder readstrimming iced cp
 
 
 ######################################
@@ -37,7 +37,7 @@ endif
 ##
 ######################################
 checkdep: config_check
-	./scripts/install/install_dependencies.sh -c $(CONFIG_SYS) -o $(PREFIX)/HiC-Pro_$(VNUM)
+	./scripts/install/install_dependencies.sh -c $(CONFIG_SYS) -o $(realpath $(PREFIX)/HiC-Pro_$(VNUM))
 
 ######################################
 ## Compile
@@ -53,7 +53,7 @@ readstrimming: $(SOURCES)/cutsite_trimming.cpp
 
 ## Build Python lib
 iced: $(SOURCES)/ice_mod
-	(cp $(SOURCES)/ice_mod/iced/scripts/ice ${SCRIPTS}; cd $(SOURCES)/ice_mod/; ${PYTHON_PATH}/python setup.py install --user;)
+	(cp $(SOURCES)/ice_mod/iced/scripts/ice ${SCRIPTS}; cd $(SOURCES)/ice_mod/; python setup.py install --user;)
 
 
 ######################################
@@ -61,6 +61,9 @@ iced: $(SOURCES)/ice_mod
 ##
 ######################################
 
-build:
-	@echo "Install HiC-Pro in $(PREFIX)/HiCPro_$(VNUM)"
+cp:
+ifneq ($(realpath $(MK_PATH)), $(realpath $(PREFIX)/HiC-Pro_$(VNUM)))
 	cp -Ri $(MK_PATH) $(PREFIX)/HiC-Pro_$(VNUM)
+endif
+	@echo "Install HiC-Pro in $(realpath $(PREFIX)/HiCPro_$(VNUM)) ..."
+

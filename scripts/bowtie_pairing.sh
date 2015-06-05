@@ -77,6 +77,5 @@ do
     R1=$r
     R2=$(echo $r | get_R2)
     sample_dir=$(get_sample_dir $r)
-
     merge_pairs $sample_dir $R1 $R2 
 done

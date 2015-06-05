@@ -1,4 +1,15 @@
 ***********************************
+CHANGES IN VERSION 2.5.2
+
+BUG FIXES
+
+   o Bug fixed when HiC-Pro is run with relative path
+
+   o Bug fixed in mergeSAM.py in case of duplicated reference in the SAM header
+
+   o Check PREFIX installation variable during installation process
+
+***********************************
 CHANGES IN VERSION 2.5.1
 
 SIGNIFICANT USER-VISIBLE CHANGES
