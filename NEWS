@@ -1,14 +1,12 @@
 ***********************************
-CHANGES IN VERSION 2.5.2
+CHANGES IN VERSION 3.0.0
 
-BUG FIXES
+NEW FEATURES
 
-   o Bug fixed when HiC-Pro is run with relative path
+   o Allele specific version of HiC-Pro
 
-   o Bug fixed in mergeSAM.py in case of duplicated reference in the SAM header
-
-   o Check PREFIX installation variable during installation process
-
+   o New utility to build the VCF file for allele specific analysis
+ 
 ***********************************
 CHANGES IN VERSION 2.5.1
 

@@ -48,6 +48,7 @@ BOWTIE2_LOCAL_OPTIONS =  --very-sensitive -L 20 --score-min L,-0.6,-0.2 --end-to
 REFERENCE_GENOME = hg19
 GENOME_FRAGMENT = HindIII_resfrag_hg19.bed
 GENOME_SIZE = chrom_hg19.sizes
+ALLELE_SPECIFIC_SNP = /bioinfo/users/nservant/phd/projects/modhep/rna_monoallelic/home_pip/mgp.v2.snps.annot.reformat_CAST_FVB_FI.vcf
 
 #######################################################################
 ## Hi-C processing

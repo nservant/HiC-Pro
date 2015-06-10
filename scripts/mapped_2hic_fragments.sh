@@ -23,6 +23,7 @@ if [[ "${GET_ALL_INTERACTION_CLASSES}" -eq "1" ]]; then opts=$opts" -a"; fi
 if [[ "${GET_PROCESS_SAM}" -eq "1" ]]; then opts=$opts" -S"; fi
 if [[ "${MIN_INSERT_SIZE}" -ge "0" && "${MIN_INSERT_SIZE}" -ne "" ]]; then opts=$opts" -s ${MIN_INSERT_SIZE}"; fi
 if [[ "${MAX_INSERT_SIZE}" -ge "0" && "${MIN_INSERT_SIZE}" -ne "" ]]; then opts=$opts" -l ${MAX_INSERT_SIZE}"; fi
+if [[ ! -z ${ALLELE_SPECIFIC_SNP} ]]; then opts=$opts" -g XA"; fi
 
 GENOME_FRAGMENT_FILE=`abspath $GENOME_FRAGMENT`
 if [[ ! -e $GENOME_FRAGMENT_FILE ]]; then
@@ -34,7 +35,7 @@ if [[ ! -e $GENOME_FRAGMENT_FILE ]]; then
 fi
 
 
-for r in $(get_files_for_overlap)
+for r in $(get_paired_bam)
 do
     sample_dir=$(get_sample_dir ${r})
     datadir=${MAPC_OUTPUT}/data/${sample_dir}

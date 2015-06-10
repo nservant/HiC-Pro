@@ -53,22 +53,31 @@ merge_pairs()
     LDIR=${LOGS_DIR}/${sample_dir}
     mkdir -p ${LDIR}
 
-    ## Index BAM
-    #cmd="${SAMTOOLS_PATH}/samtools index ${BOWTIE2_FINAL_OUTPUT_DIR}/${prefix_r1}.bwt2merged.bam"
-    #exec_cmd $cmd  
-    #cmd="${SAMTOOLS_PATH}/samtools index ${BOWTIE2_FINAL_OUTPUT_DIR}/${prefix_r2}.bwt2merged.bam"
-    #exec_cmd $cmd  
-
     cmd="${PYTHON_PATH}/python ${SCRIPTS}/mergeSAM.py ${OPTS} -f ${BOWTIE2_FINAL_OUTPUT_DIR}/${prefix_r1}.bwt2merged.bam -r ${BOWTIE2_FINAL_OUTPUT_DIR}/${prefix_r2}.bwt2merged.bam -o ${BOWTIE2_FINAL_OUTPUT_DIR}/${prefix_out}.bwt2pairs.bam > ${LDIR}/mergeSAM.log"
     exec_cmd $cmd
+}
 
-    ## Generate BAM file
-    ##cmd="${SAMTOOLS_PATH}/samtools view -bS ${BOWTIE2_FINAL_OUTPUT_DIR}/${prefix_out}.bwt2pairs.sam > ${BOWTIE2_FINAL_OUTPUT_DIR}/${prefix_out}.bwt2pairs.bam"
-    ##exec_cmd $cmd
+##
+## Tag reads according to their SNP information
+##
+tag_allele_spe()
+{
+    local bam_paired="$1"
+    local vcf_file="$2"
+    local asout=$(echo ${sample_dir}/$(basename $r) | sed -e 's/.bwt2pairs.bam/.bwt2pairs_allspe.bam/')
 
-    ## Generate index file
-    ## cmd="${SAMTOOLS_PATH}/samtools index ${BOWTIE2_FINAL_OUTPUT_DIR}/${prefix_out}.bwt2pairs.bam"
-    ## exec_cmd $cmd
+    local sample_dir=$(get_sample_dir ${r})
+    LDIR=${LOGS_DIR}/${sample_dir}
+
+    if [ -e ${vcf_file} ]; then
+	cmd="${PYTHON_PATH}/python ${SCRIPTS}/markAllelicStatus.py -s ${vcf_file} -v -r -i ${bam_paired} -o ${BOWTIE2_FINAL_OUTPUT_DIR}/${asout} 2> ${LDIR}/markAlleleSpecific.log"
+	echo $cmd
+	exec_cmd $cmd
+
+	cmd="mv ${BOWTIE2_FINAL_OUTPUT_DIR}/${asout} $bam_paired"
+	exec_cmd $cmd
+	
+    fi
 }
 
 ## Combine R1/R2 tags in a single BAM file
@@ -79,3 +88,11 @@ do
     sample_dir=$(get_sample_dir $r)
     merge_pairs $sample_dir $R1 $R2 
 done
+
+## Add allele specific tag if specified
+if [[ ${ALLELE_SPECIFIC_SNP} != "" ]]; then
+    for r in $(get_paired_bam)
+    do
+	tag_allele_spe $r ${ALLELE_SPECIFIC_SNP}
+    done
+fi

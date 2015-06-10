@@ -27,6 +27,7 @@ getHiCMat <- function(x){
   
   invalid.lab <- c("Self_Cycle_pairs", "Dangling_end_pairs", "Single-end_pairs", "Dumped_pairs")
   valid.lab <- c("Valid_interaction_pairs_FF", "Valid_interaction_pairs_RR", "Valid_interaction_pairs_RF", "Valid_interaction_pairs_FR")
+  x <- x[c("Valid_interaction_pairs", valid.lab, invalid.lab)]
   
   ## Add number of invalid pairs
   n.invalid_pairs <-sum(x[invalid.lab])
@@ -42,7 +43,6 @@ getHiCMat <- function(x){
   p <- rep(1, length(x))
   p[names(x)%in%valid.lab] <- 2
   p[names(x)%in%invalid.lab] <- 3
-
 
   mmat <- data.frame(cbind(lab=names(x), p, count=x, perc=x.perc), stringsAsFactors=FALSE)
 

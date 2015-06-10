@@ -28,7 +28,8 @@ def usage():
     print "[-o/--outputDir] <Output directory. Default is current directory>"
     print "[-s/--shortestInsertSize] <Shortest insert size of mapped reads to consider>"
     print "[-l/--longestInsertSize] <Longest insert size of mapped reads to consider>"
-    print "[-a/--all] <Write all additional output files, with information about the discarded reads>"
+    print "[-g/--gtag] <Genotype tag. If specified, this tag will be reported in the valid pairs output for allele specific classification>"
+    print "[-a/--all] <Write all additional output files, with information about the discarded reads (self-circle, dangling end, etc.)>"
     print "[-S/--sam] <Output an additional SAM file with flag 'CT' for pairs classification>"
     print "[-v/--verbose] <Verbose>"
     print "[-h/--help] <Help>"
@@ -40,10 +41,10 @@ def get_args():
     try:
         opts, args = getopt.getopt(
             sys.argv[1:],
-            "f:r:o:c:s:l:Svah",
+            "f:r:o:c:s:l:g:Svah",
             ["fragmentFile=",
              "mappedReadsFile=",
-             "outputDir=", "cutSite=", "minInsertSize=",
+             "outputDir=", "cutSite=", "minInsertSize=", "gtag",
              "maxInsertSize", "samOut", "verbose", "all", "help"])
     except getopt.GetoptError:
         usage()
@@ -178,12 +179,15 @@ def get_overlapping_restriction_fragment(resFrag, chrom, read):
         # Overlap with the 5' end of the read (zero-based)
         resfrag = resFrag[chrom].find(pos, pos+1)
         if len(resfrag) > 1:
-            print "Error : ", len(resfrag),
-            print " restriction fragments found for ", read.qname
-
-        return resfrag[0]
+            print "Warning : ", len(resfrag), " restriction fragments found for ", read.qname, "- skipped"
+            return None
+        elif len(resfrag) == 0:
+            print "Warning - no restriction fragments for ", read.qname ," at ", chrom, ":", pos
+            return None
+        else:
+            return resfrag[0]
     else:
-        print "Warning - no restriction fragments for chromosome ", chrom
+        print "Warning - no restriction fragments for ", read.qname," at ", chrom, ":", pos
         return None
 
 
@@ -338,7 +342,7 @@ def get_interaction_type(read1, read1_chrom, resfrag1, read2,
 def get_read_tag(read, tag):
     for t in read.tags:
         if t[0] == tag:
-            return tag[1]
+            return t[1]
     return None
 
 
@@ -353,6 +357,7 @@ if __name__ == "__main__":
     minInsertSize = None
     maxInsertSize = None
     outputDir = "."
+    gtag = None
 
     if len(opts) == 0:
         usage()
@@ -372,9 +377,11 @@ if __name__ == "__main__":
             minInsertSize = arg
         elif opt in ("-l", "--longestInsertSize"):
             maxInsertSize = arg
+        elif opt in ("-g", "--gtag"):
+            gtag = arg
         elif opt in ("-a", "--all"):
             allOutput = True
-        elif opt in ("-S", "--samOut"):
+        elif opt in ("-S", "--sam"):
             samOut = True
         elif opt in ("-v", "--verbose"):
             verbose = True
@@ -403,6 +410,18 @@ if __name__ == "__main__":
     valid_counter_RF = 0
     single_counter = 0
     dump_counter = 0
+
+    ## AS counter
+    G1G1_ascounter = 0
+    G2G2_ascounter = 0
+    G1U_ascounter = 0
+    UG1_ascounter = 0
+    G2U_ascounter = 0
+    UG2_ascounter = 0
+    G1G2_ascounter = 0
+    G2G1_ascounter = 0
+    UU_ascounter = 0
+    CF_ascounter = 0
 
     baseReadsFile = os.path.basename(mappedReadsFile)
     baseReadsFile = re.sub(r'.bam|.sam', '', baseReadsFile)
@@ -441,6 +460,7 @@ if __name__ == "__main__":
     for read in samfile.fetch(until_eof=True):
         reads_counter += 1
         cur_handler = None
+        htag = ""
 
         # First mate
         if read.is_read1:
@@ -485,6 +505,33 @@ if __name__ == "__main__":
                     elif validType == "RF":
                         valid_counter_RF += 1
 
+                    ## Split valid pairs based on XA tag
+                    if gtag is not None:
+                        r1as = get_read_tag(r1, gtag)
+                        r2as = get_read_tag(r2, gtag)
+                        htag = str(r1as)+"-"+str(r2as)
+                        
+                        if r1as == 1 and r2as == 1:
+                            G1G1_ascounter += 1
+                        elif r1as == 2 and r2as == 2:
+                            G2G2_ascounter += 1
+                        elif r1as == 1 and r2as == 0:
+                            G1U_ascounter += 1
+                        elif r1as == 0 and r2as == 1:
+                            UG1_ascounter += 1
+                        elif r1as == 2 and r2as == 0:
+                            G2U_ascounter += 1
+                        elif r1as == 0 and r2as == 2:
+                            UG2_ascounter += 1
+                        elif r1as == 1 and r2as == 2:
+                            G1G2_ascounter += 1
+                        elif r1as == 2 and r2as == 1:
+                            G2G1_ascounter += 1
+                        elif r1as == 3 or r2as == 3:
+                            CF_ascounter += 1
+                        else:
+                            UU_ascounter += 1
+
                 elif interactionType == "DE":
                     de_counter += 1
                     cur_handler = handle_de if allOutput else None
@@ -516,7 +563,7 @@ if __name__ == "__main__":
                         r2_chrom + "\t" +
                         str(get_read_pos(r2)) + "\t" +
                         str(get_read_strand(r2)) + "\t" +
-                        str(dist) + "\n")
+                        str(dist) + "\t" + str(htag) + "\n")
                 elif r2.is_unmapped:
                     cur_handler.write(
                         r1.qname + "\t" +
@@ -572,7 +619,21 @@ if __name__ == "__main__":
     handle_stat.write("Self_Cycle_pairs\t" + str(sc_counter) + "\n")
     handle_stat.write("Single-end_pairs\t" + str(single_counter) + "\n")
     handle_stat.write("Dumped_pairs\t" + str(dump_counter) + "\n")
+
+    ## Write AS report
+    if gtag is not None:
+        handle_stat.write("## ======================================\n")
+        handle_stat.write("## Allele specific information\n")
+        handle_stat.write("Valid_pairs_from_ref_genome_(1-1)\t" + str(G1G1_ascounter) + "\n")
+        handle_stat.write("Valid_pairs_from_ref_genome_with_one_unassigned_mate_(0-1/1-0)\t" + str(UG1_ascounter+G1U_ascounter) + "\n")
+        handle_stat.write("Valid_pairs_from_alt_genome_(2-2)\t" + str(G2G2_ascounter) + "\n")
+        handle_stat.write("Valid_pairs_from_alt_genome_with_one_unassigned_mate_(0-2/2-0)\t" + str(UG2_ascounter+G2U_ascounter) + "\n")
+        handle_stat.write("Valid_pairs_from_alt_and_ref_genome_(1-2/2-1)\t" + str(G1G2_ascounter+G2G1_ascounter) + "\n")
+        handle_stat.write("Valid_pairs_with_both_unassigned_mated_(0-0)\t" + str(UU_ascounter) + "\n")
+        handle_stat.write("Valid_pairs_with_at_least_one_conflicting_mate_(3-)\t" + str(CF_ascounter) + "\n")
+
     handle_stat.close()
 
     if samOut:
         samfile.close()
+
