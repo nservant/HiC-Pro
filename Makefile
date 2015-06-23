@@ -37,7 +37,7 @@ endif
 ##
 ######################################
 checkdep: config_check
-	./scripts/install/install_dependencies.sh -c $(CONFIG_SYS) -o $(realpath $(PREFIX)/HiC-Pro_$(VNUM))
+	./scripts/install/install_dependencies.sh -c $(CONFIG_SYS) -o $(realpath $(PREFIX))/HiC-Pro_$(VNUM)
 
 ######################################
 ## Compile
@@ -62,8 +62,8 @@ iced: $(SOURCES)/ice_mod
 ######################################
 
 cp:
-ifneq ($(realpath $(MK_PATH)), $(realpath $(PREFIX)/HiC-Pro_$(VNUM)))
+ifneq ($(realpath $(MK_PATH)), $(realpath $(PREFIX))/HiC-Pro_$(VNUM))
 	cp -Ri $(MK_PATH) $(PREFIX)/HiC-Pro_$(VNUM)
 endif
-	@echo "Install HiC-Pro in $(realpath $(PREFIX)/HiCPro_$(VNUM)) ..."
+	@echo "Install HiC-Pro in $(realpath $(PREFIX))/HiCPro_$(VNUM) ..."
 
