@@ -99,7 +99,7 @@ plotPairStat <- function(mat, xlab="", legend=TRUE){
         xlab(xlab) + ylab("Reads Count") +
             scale_x_discrete(breaks=c("1", "2"), labels=c("All Pairs","Filtered Pairs"))+
               geom_text(aes(x=p, y=as.numeric(pos), label=paste(perc,"%")),fontface="bold", size=2) +
-                ggtitle("Statistics after Filtering on Reads Pairing") + theme(plot.title = element_text(lineheight=.8, face="bold", size=6))
+                ggtitle("Statistics after reads pairing") + theme(plot.title = element_text(lineheight=.8, face="bold", size=6))
 
   if (legend){
     scol <- mat$selcol
@@ -131,6 +131,6 @@ perc_per_sample<- rowMeans(do.call(cbind,lapply(stats_per_fastq, "[", 2)))
 mat <- getPairMat(stats_per_sample, perc_per_sample, rmMulti=rmMulti, rmSingle=rmSingle)
 p1 <- plotPairStat(mat, xlab=sampleName)
 
-pdf(file.path(picDir, paste0("plotMappingFiltering_",sampleName,".pdf")), width=5, height=5)
+pdf(file.path(picDir, paste0("plotMappingPairing_",sampleName,".pdf")), width=5, height=5)
 p1
 dev.off()

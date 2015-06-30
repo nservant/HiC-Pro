@@ -11,14 +11,15 @@
 ##
 
 dir=$(dirname $0)
-
+plot_type="all"
 
 ################### Initialize ###################
-#set -- $(getopt c:i:g:b:s:h "$@")
+set -- $(getopt c:p:h "$@")
 while [ $# -gt 0 ]
 do
     case "$1" in
 	(-c) conf_file=$2; shift;;
+	(-p) plot_type=$2; shift;;
 	(-h) usage;;
 	(--) shift; break;;
 	(-*) echo "$0: error - unrecognized option $1" 1>&2; exit 1;;
@@ -29,21 +30,27 @@ done
 
 ################### Read the config file ###################
 
-#read_config $ncrna_conf
 CONF=$conf_file . $dir/hic.inc.sh
 
 ################### Define Variables ###################
 
 DATA_DIR=${MAPC_OUTPUT}/data/
+if [[ ${plot_type} != "all" && ${plot_type} != "mapping" && ${plot_type} != "pairing" && ${plot_type} != "filtering"  && ${plot_type} != "contacts" ]]
+then
+    die "Error: Unknown plots type. Should be all, mapping, pairing or filtering"
+fi
+
+################### Make plots ###################
 
 
-################### Combine Bowtie mapping ###################
 
-for RES_FILE_NAME in ${DATA_DIR}/*
+for RES_FILE_NAME in ${BOWTIE2_FINAL_OUTPUT_DIR}/*
 do
     RES_FILE_NAME=$(basename $RES_FILE_NAME)
     PIC_DIR=${MAPC_OUTPUT}/pic/${RES_FILE_NAME}
     DATA_DIR=${MAPC_OUTPUT}/data/${RES_FILE_NAME}
+    MAPPING_DIR=${BOWTIE2_FINAL_OUTPUT_DIR}/${RES_FILE_NAME}
+
     ## Logs
     LDIR=${LOGS_DIR}/${RES_FILE_NAME}
     mkdir -p ${LDIR}
@@ -52,18 +59,32 @@ do
     if [ ! -d ${PIC_DIR} ]; then mkdir -p ${PIC_DIR}; fi
 
     ## make plots
-    echo "Plot mapping results ..."
-    cmd="${R_PATH}/R --no-save CMD BATCH \"--args picDir='${PIC_DIR}' bwtDir='${BOWTIE2_FINAL_OUTPUT_DIR}/${RES_FILE_NAME}' sampleName='${RES_FILE_NAME}' r1tag='${PAIR1_EXT}' r2tag='${PAIR2_EXT}'\" ${SCRIPTS}/plot_mapping_portion.R ${LDIR}/plot_mapping_portion.Rout"
-    echo $cmd
-    eval $cmd
-    
-    echo "Plot pairing results ..."
-    cmd="${R_PATH}/R --no-save CMD BATCH \"--args picDir='${PIC_DIR}' bwtDir='${BOWTIE2_FINAL_OUTPUT_DIR}/${RES_FILE_NAME}' sampleName='${RES_FILE_NAME}' rmMulti='${RM_MULTI}' rmSingle='${RM_SINGLETON}'\" ${SCRIPTS}/plot_pairing_portion.R ${LDIR}/plot_pairing_portion.Rout"
-    echo $cmd
-    eval $cmd
-    
-    echo "Plot Hi-C processing ..."
-    cmd="${R_PATH}/R --no-save CMD BATCH \"--args picDir='${PIC_DIR}' hicDir='${DATA_DIR}' sampleName='${RES_FILE_NAME}'\" ${SCRIPTS}/plot_hic_fragment.R ${LDIR}/plot_hic_fragment.Rout"
-    echo $cmd
-    eval $cmd
+    if [[ ${plot_type} == "all" || ${plot_type} == "mapping" ]]
+    then
+	echo "Plot mapping results ..."
+	cmd="${R_PATH}/R --no-save CMD BATCH \"--args picDir='${PIC_DIR}' bwtDir='${MAPPING_DIR}' sampleName='${RES_FILE_NAME}' r1tag='${PAIR1_EXT}' r2tag='${PAIR2_EXT}'\" ${SCRIPTS}/plot_mapping_portion.R ${LDIR}/plot_mapping_portion.Rout"
+	exec_cmd $cmd
+    fi
+
+    if [[ ${plot_type} == "all" || ${plot_type} == "pairing" ]]
+    then
+	echo "Plot pairing results ..."
+	cmd="${R_PATH}/R --no-save CMD BATCH \"--args picDir='${PIC_DIR}' bwtDir='${MAPPING_DIR}' sampleName='${RES_FILE_NAME}' rmMulti='${RM_MULTI}' rmSingle='${RM_SINGLETON}'\" ${SCRIPTS}/plot_pairing_portion.R ${LDIR}/plot_pairing_portion.Rout"
+	exec_cmd $cmd
+    fi
+
+    if [[ ${plot_type} == "all" || ${plot_type} == "filtering" ]]
+    then
+	echo "Plot Hi-C processing ..."
+	cmd="${R_PATH}/R --no-save CMD BATCH \"--args picDir='${PIC_DIR}' hicDir='${DATA_DIR}' sampleName='${RES_FILE_NAME}'\" ${SCRIPTS}/plot_hic_fragment.R ${LDIR}/plot_hic_fragment.Rout"
+	exec_cmd $cmd
+    fi
+
+    if [[ ${plot_type} == "all" || ${plot_type} == "contacts" ]]
+    then
+	echo "Plot Hi-C processing ..."
+	cmd="${R_PATH}/R --no-save CMD BATCH \"--args picDir='${PIC_DIR}' hicDir='${DATA_DIR}' sampleName='${RES_FILE_NAME}'\" ${SCRIPTS}/plot_hic_contacts.R ${LDIR}/plot_hic_contacts.Rout"
+	exec_cmd $cmd
+    fi
+
 done

@@ -11,18 +11,17 @@ slash := |
 tick := -
 undsc := _
 
-all : init mapping proc_hic build_contact_maps rmsam
+all : init mapping proc_hic build_contact_maps
 
 all_qsub : init mapping proc_hic
 
 init : configure 
 
-mapping: bowtie_global bowtie_local bowtie_combine mapping_stat
+mapping: bowtie_global bowtie_local bowtie_combine mapping_stat mapping_clean
 
 proc_hic : bowtie_pairing mapped_2hic_fragments
 
-## Per sample
-build_contact_maps: merge_valid_interactions plots build_raw_maps ice_norm 
+build_contact_maps: merge_valid_interactions build_raw_maps ice_norm 
 
 ######################################
 ## System
@@ -117,11 +116,12 @@ mapping_stat:  config_check
 	@echo "Bowtie2 mapping statistics for R1 and R2 tags ..." 
 	$(SCRIPTS)/mapping_stat.sh -c $(CONFIG_FILE) >> $(LOGFILE)
 
-plots:
+mapping_clean: config_check
 	@echo "--------------------------------------------" 
 	@date 
-	@echo "Make plots per sample ..."
-	$(SCRIPTS)/make_plots.sh -c $(CONFIG_FILE) >> $(LOGFILE)
+	@echo "Cleaning mapping files ..."
+	rm -rf $(BOWTIE2_OUTPUT_DIR)/bwt2_global
+	rm -rf $(BOWTIE2_OUTPUT_DIR)/bwt2_local
 
 
 ######################################
@@ -155,6 +155,13 @@ build_raw_maps:  config_check
 	@date 
 	@echo "Generate binned matrix files ..." 
 	$(SCRIPTS)/build_raw_maps.sh -c $(CONFIG_FILE)
+
+plots:
+	@echo "--------------------------------------------" 
+	@date 
+	@echo "Make plots per sample ..."
+	$(SCRIPTS)/make_plots.sh -c $(CONFIG_FILE) >> $(LOGFILE)
+
 
 ######################################
 ## Normalization

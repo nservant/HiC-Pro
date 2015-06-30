@@ -1,6 +1,16 @@
 ***********************************
 CHANGES IN VERSION 2.5.2
 
+NEW FEATURES
+
+   o New quality control plots, i.e. duplicates level, short/long range interactions, fragment size
+
+SIGNIFICANT USER-VISIBLE CHANGES
+
+   o Addition check when running the pipeline
+
+   o Quality control plots are now run after each step instead of once at the end of the pipeline
+
 BUG FIXES
 
    o Bug fixed when HiC-Pro is run with relative path

@@ -79,3 +79,6 @@ do
 
     wait
 done
+
+## Make plots
+${SCRIPTS}/make_plots.sh -c ${conf_file} -p "mapping" >> ${LOGFILE}

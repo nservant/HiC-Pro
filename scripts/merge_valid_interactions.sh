@@ -60,6 +60,14 @@ do
 	    allcount_rmdup=`cat ${DATA_DIR}/${RES_FILE_NAME}/${RES_FILE_NAME}_allValidPairs | wc -l`
 	    nbdup=$(( allcount-allcount_rmdup ))
 	    echo -e $RES_FILE_NAME"\t"$nbdup >> ${LDIR}/merge_valid_interactions.log
+
+	    ## merge stat file
+	    echo -e "valid_interaction\t"$allcount >> ${DATA_DIR}/${RES_FILE_NAME}/${RES_FILE_NAME}_allValidPairs.mergestat
+	    echo -e "valid_interaction_rmdup\t"$allcount_rmdup >> ${DATA_DIR}/${RES_FILE_NAME}/${RES_FILE_NAME}_allValidPairs.mergestat
+	    awk '$2 == $5{cis=cis+1; if ($6-$3<=20000){sr=sr+1}else{lr=lr+1}} $2!=$5{trans=trans+1}END{print "trans_interaction\t"trans"\ncis_interaction\t"cis"\ncis_shortRange\t"sr"\ncis_longRange\t"lr}' ${DATA_DIR}/${RES_FILE_NAME}/${RES_FILE_NAME}_allValidPairs >> ${DATA_DIR}/${RES_FILE_NAME}/${RES_FILE_NAME}_allValidPairs.mergestat
+
+	    ## make plots
+	    ${SCRIPTS}/make_plots.sh -c ${conf_file} -p "contacts" >> ${LOGFILE}
 	fi
     fi
     wait
