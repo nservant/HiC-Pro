@@ -81,6 +81,16 @@ do
     shift
 done
 
+if [[ -z $install_dir]]
+then
+    die "Error - Installation dir not defined (-o)"
+fi
+
+if [[ ! -e $conf ]]
+then
+    die "Error - configuration file not found"
+fi
+
 ################### Read the config file ###################
 
 while read curline_read; do
