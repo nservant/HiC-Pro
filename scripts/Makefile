@@ -17,7 +17,7 @@ all_qsub : init mapping proc_hic
 
 init : configure 
 
-mapping: bowtie_global bowtie_local bowtie_combine mapping_stat mapping_clean
+mapping: bowtie_global bowtie_local bowtie_combine mapping_stat
 
 proc_hic : bowtie_pairing mapped_2hic_fragments merge_valid_interactions
 
@@ -44,11 +44,6 @@ ifdef MAKE_OPTS
 	@$(SCRIPTS)/make_torque_script.sh -c $(CONFIG_FILE) -s $(MAKE_OPTS)
 else
 	@$(SCRIPTS)/make_torque_script.sh -c $(CONFIG_FILE)
-endif
-
-rmsam: config_check 
-ifdef BOWTIE2_OUTPUT_DIR
-	@/bin/rm -f $(BOWTIE2_OUTPUT_DIR)/*/*/*.sam
 endif
 
 clean: 
@@ -117,13 +112,6 @@ mapping_stat:  config_check
 	@date 
 	@echo "Bowtie2 mapping statistics for R1 and R2 tags ..." 
 	$(SCRIPTS)/mapping_stat.sh -c $(CONFIG_FILE) >> $(LOGFILE)
-
-mapping_clean: config_check
-	@echo "--------------------------------------------" 
-	@date 
-	@echo "Cleaning mapping files ..."
-	rm -rf $(BOWTIE2_OUTPUT_DIR)/bwt2_global
-	rm -rf $(BOWTIE2_OUTPUT_DIR)/bwt2_local
 
 
 ######################################
