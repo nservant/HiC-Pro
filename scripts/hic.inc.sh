@@ -78,7 +78,11 @@ fi
 ## Subroutine for scripts
 ###########################
 
-die() { echo "Exit: $@" 1>&2 ; exit 1; }
+die() 
+{ 
+    echo "Exit: $@" 1>&2 
+    exit 1
+}
 
 exec_cmd()
 {
@@ -245,9 +249,22 @@ get_stat_file()
     echo ${BOWTIE2_FINAL_OUTPUT_DIR}/$prefix.mapstat
 }
 
+
+get_bam_from_raw_dir()
+{
+    get_hic_files $RAW_DIR .bam | grep "$PAIR1_EXT"
+}
+
 get_sam_for_merge()
 {
-    get_hic_files ${BOWTIE2_FINAL_OUTPUT_DIR} _${REFERENCE_GENOME}.bwt2merged.bam   
+    ## Look for BAM in input directory
+    bam=$(get_bam_from_raw_dir)
+    if [[ -z $bam ]]
+    then
+	## If not found, search in bowtie2 output folder
+	bam=$(get_hic_files ${BOWTIE2_FINAL_OUTPUT_DIR} _${REFERENCE_GENOME}.bwt2merged.bam)
+    fi
+    echo $bam
 }
 
 get_sam_for_combine()

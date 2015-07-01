@@ -7,7 +7,11 @@ NEW FEATURES
 
 SIGNIFICANT USER-VISIBLE CHANGES
 
-   o Addition check when running the pipeline
+   o HiC-Pro can now be run from BAM aligned files
+
+   o Stepwise analysis can now be run in addition to the parallel mode
+
+   o Additional checks when running the pipeline
 
    o Quality control plots are now run after each step instead of once at the end of the pipeline
 

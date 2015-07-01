@@ -19,9 +19,9 @@ init : configure
 
 mapping: bowtie_global bowtie_local bowtie_combine mapping_stat mapping_clean
 
-proc_hic : bowtie_pairing mapped_2hic_fragments
+proc_hic : bowtie_pairing mapped_2hic_fragments merge_valid_interactions
 
-build_contact_maps: merge_valid_interactions build_raw_maps ice_norm 
+build_contact_maps: build_raw_maps ice_norm 
 
 ######################################
 ## System
@@ -39,10 +39,12 @@ else
 include $(CONFIG_SYS)
 endif
 
-
-
 make_torque_script: config_check init
+ifdef MAKE_OPTS
+	@$(SCRIPTS)/make_torque_script.sh -c $(CONFIG_FILE) -s $(MAKE_OPTS)
+else
 	@$(SCRIPTS)/make_torque_script.sh -c $(CONFIG_FILE)
+endif
 
 rmsam: config_check 
 ifdef BOWTIE2_OUTPUT_DIR
