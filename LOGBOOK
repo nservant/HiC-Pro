@@ -13,6 +13,12 @@
 ## LOGBOOK
 ##
 ################################################################################
+##--------------------
+##30-06-03
+##--------------------
+
+   o Add check when running the pipeline
+   o New quality controls plots for duplicates, short range versus long range interactions, and fragment size
 
 ##--------------------
 ##03-04-15

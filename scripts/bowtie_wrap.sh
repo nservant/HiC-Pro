@@ -1,11 +1,13 @@
 #!/bin/bash
-## Nicolas Servant 
-## Eric Viara updated 2014-04-28
-##
+## HiC-Pro
+## Copyleft 2015 Institut Curie                               
+## Author(s): Nicolas Servant, Eric Viara
+## Contact: nicolas.servant@curie.fr
+## This software is distributed without any guarantee under the terms of the GNU General
+## Public License, either Version 2, June 1991 or Version 3, June 2007.
 
 ## Init
 dir=$(dirname $0)
-##. $dir/hic.inc.sh
 MODE='global'
 
 ## Get args
@@ -25,9 +27,7 @@ do
 done
 
 ## Read configuration files
-##read_config $CONF
 CONF=$conf_file . $dir/hic.inc.sh
-
 
 ## Bowtie2 wrapper
 ## Global Alignment
@@ -66,13 +66,9 @@ global_align()
     ## Run bowtie
     cmd="${BOWTIE2_PATH}/bowtie2 ${BOWTIE2_GLOBAL_OPTIONS} --rg-id BMG --rg SM:${prefix} --${FORMAT}-quals -p ${N_CPU} -x ${BOWTIE2_IDX} -U ${file} 2> ${LDIR}/bowtie_${prefix}_global_${REFERENCE_GENOME}.log | ${SAMTOOLS_PATH}/samtools view -F 4 -bS - > ${BOWTIE2_GLOBAL_OUTPUT_DIR}/${sample_dir}/${prefix}_${REFERENCE_GENOME}.bwt2glob.bam"
     exec_cmd $cmd
-
-    # Generate BAM files with map reads only
-    #cmd="${SAMTOOLS_PATH}/samtools view -F 4 -bS ${BOWTIE2_GLOBAL_OUTPUT_DIR}/${sample_dir}/${prefix}_${REFERENCE_GENOME}.bwt2glob.sam > ${BOWTIE2_GLOBAL_OUTPUT_DIR}/${sample_dir}/${prefix}_${REFERENCE_GENOME}.bwt2glob.bam 2>>${LDIR}/bowtie_${prefix}_global_${REFERENCE_GENOME}.log"
-    #exec_cmd $cmd
 }
 
-## Local Alignment
+## Trimmed reads Alignment
 local_align()
 {
     local sample_dir="$1"
@@ -109,10 +105,6 @@ local_align()
     ## Run bowtie
     cmd="${BOWTIE2_PATH}/bowtie2 ${BOWTIE2_LOCAL_OPTIONS} --rg-id BML --rg SM:${prefix} --${FORMAT}-quals -p ${N_CPU} -x ${BOWTIE2_IDX} -U ${tfile} 2>${LDIR}/bowtie_${prefix}_local.log | ${SAMTOOLS_PATH}/samtools view -bS - > ${BOWTIE2_LOCAL_OUTPUT_DIR}/${sample_dir}/${prefix}_bwt2loc.bam"
     exec_cmd "$cmd"
-
-    ## Generate BAM files with all reads so that the sum of global + local reads = total reads
-    #cmd="${SAMTOOLS_PATH}/samtools view -bS ${BOWTIE2_LOCAL_OUTPUT_DIR}/${sample_dir}/${prefix}_bwt2loc.sam > ${BOWTIE2_LOCAL_OUTPUT_DIR}/${sample_dir}/${prefix}_bwt2loc.bam 2>>${LDIR}/bowtie_${prefix}_local.log"
-    #exec_cmd "$cmd"
 }
 
 
@@ -135,7 +127,7 @@ if [[ ${MODE} == 'global' ]]; then
 
 	wait $pid1 $pid2 || die "Error in Bowtie alignment"
     done
-else
+elif [[ ${MODE} == 'local' ]]; then
     for r in $(get_fastq_for_bowtie_local)
     do
 	R1=$r
@@ -151,4 +143,6 @@ else
 
 	wait $pid1 $pid2 || die "Error in Bowtie alignment"
     done
+else
+    die "Error: Unknown mapping mode !"
 fi

@@ -52,23 +52,12 @@ merge_pairs()
     ## Logs
     LDIR=${LOGS_DIR}/${sample_dir}
     mkdir -p ${LDIR}
+    mkdir -p ${BOWTIE2_FINAL_OUTPUT_DIR}/${sample_dir}
 
-    ## Index BAM
-    #cmd="${SAMTOOLS_PATH}/samtools index ${BOWTIE2_FINAL_OUTPUT_DIR}/${prefix_r1}.bwt2merged.bam"
-    #exec_cmd $cmd  
-    #cmd="${SAMTOOLS_PATH}/samtools index ${BOWTIE2_FINAL_OUTPUT_DIR}/${prefix_r2}.bwt2merged.bam"
-    #exec_cmd $cmd  
-
-    cmd="${PYTHON_PATH}/python ${SCRIPTS}/mergeSAM.py ${OPTS} -f ${BOWTIE2_FINAL_OUTPUT_DIR}/${prefix_r1}.bwt2merged.bam -r ${BOWTIE2_FINAL_OUTPUT_DIR}/${prefix_r2}.bwt2merged.bam -o ${BOWTIE2_FINAL_OUTPUT_DIR}/${prefix_out}.bwt2pairs.bam > ${LDIR}/mergeSAM.log"
+    #cmd="${PYTHON_PATH}/python ${SCRIPTS}/mergeSAM.py ${OPTS} -f ${BOWTIE2_FINAL_OUTPUT_DIR}/${prefix_r1}.bwt2merged.bam -r ${BOWTIE2_FINAL_OUTPUT_DIR}/${prefix_r2}.bwt2merged.bam -o ${BOWTIE2_FINAL_OUTPUT_DIR}/${prefix_out}.bwt2pairs.bam > ${LDIR}/mergeSAM.log"
+    cmd="${PYTHON_PATH}/python ${SCRIPTS}/mergeSAM.py ${OPTS} -f ${file_r1} -r ${file_r2} -o ${BOWTIE2_FINAL_OUTPUT_DIR}/${prefix_out}.bwt2pairs.bam > ${LDIR}/mergeSAM.log"
+    
     exec_cmd $cmd
-
-    ## Generate BAM file
-    ##cmd="${SAMTOOLS_PATH}/samtools view -bS ${BOWTIE2_FINAL_OUTPUT_DIR}/${prefix_out}.bwt2pairs.sam > ${BOWTIE2_FINAL_OUTPUT_DIR}/${prefix_out}.bwt2pairs.bam"
-    ##exec_cmd $cmd
-
-    ## Generate index file
-    ## cmd="${SAMTOOLS_PATH}/samtools index ${BOWTIE2_FINAL_OUTPUT_DIR}/${prefix_out}.bwt2pairs.bam"
-    ## exec_cmd $cmd
 }
 
 ## Combine R1/R2 tags in a single BAM file
@@ -79,3 +68,7 @@ do
     sample_dir=$(get_sample_dir $r)
     merge_pairs $sample_dir $R1 $R2 
 done
+
+## Make plots
+${SCRIPTS}/make_plots.sh -c ${conf_file} -p "pairing" >> ${LOGFILE}
+

@@ -27,7 +27,7 @@ done
 CONF=$conf_file . $dir/hic.inc.sh
 
 ##
-## Combine Global and Local Bowtie2 mapping
+## Combine both Bowtie2 mapping
 ##
 mapping_combine()
 {
@@ -41,28 +41,18 @@ mapping_combine()
 
     ## Merge local and global alignment
     cmd="${SAMTOOLS_PATH}/samtools merge -@ ${N_CPU} -n -f ${BOWTIE2_FINAL_OUTPUT_DIR}/${prefix}.bwt2merged.bam ${BOWTIE2_GLOBAL_OUTPUT_DIR}/${prefix}.bwt2glob.bam ${BOWTIE2_LOCAL_OUTPUT_DIR}/${prefix}.bwt2glob.unmap_bwt2loc.bam "
-    echo $cmd
+    #echo $cmd
     exec_cmd $cmd
 
     ## Sort merge file. In theory, should be perform by "merge -n", but do not work in some cases ... depending on read name ?
     cmd="${SAMTOOLS_PATH}/samtools sort -@ ${N_CPU} -n ${BOWTIE2_FINAL_OUTPUT_DIR}/${prefix}.bwt2merged.bam ${BOWTIE2_FINAL_OUTPUT_DIR}/${prefix}.bwt2merged.sorted"
-    echo $cmd
+    #echo $cmd
     exec_cmd $cmd
     
     cmd="mv ${BOWTIE2_FINAL_OUTPUT_DIR}/${prefix}.bwt2merged.sorted.bam ${BOWTIE2_FINAL_OUTPUT_DIR}/${prefix}.bwt2merged.bam"
-    echo $cmd
+    #echo $cmd
     exec_cmd $cmd
-
-    ## Generate SAM files with header
-    ##cmd="${SAMTOOLS_PATH}/samtools view -@ ${N_CPU} -h ${BOWTIE2_FINAL_OUTPUT_DIR}/${prefix}.bwt2merged.bam > ${BOWTIE2_FINAL_OUTPUT_DIR}/${prefix}.bwt2merged.sam"
-    ##exec_cmd $cmd 
-
-    ## Genrate BAM index
-    ## cmd="${SAMTOOLS_PATH}/samtools index ${BOWTIE2_FINAL_OUTPUT_DIR}/${prefix}.bwt2merged.bam"
-    ## echo $cmd
-    ## exec_cmd $cmd 
 }
-
 
 ## Combine local and global alignments
 for r in $(get_sam_for_combine)

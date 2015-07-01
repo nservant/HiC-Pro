@@ -120,7 +120,7 @@ ploMapStat <- function(mat, sampleName="", tag="", legend=TRUE){
                 ggtitle(tit) + theme(plot.title = element_text(lineheight=.8, face="bold", size=6))
 
   if (legend){
-    gp = gp + scale_fill_manual(values=c(sel.colours[2:4], "darkgray"), labels = c("Global mapping (%)",  "Local Mapping (%)", "Aligned reads (%)", "Not aligned (%)")) + guides(fill=guide_legend(title="")) + theme(plot.margin=unit(x=c(1,0,0,0), units="cm"), legend.position="bottom", legend.margin=unit(.5,"cm"), legend.text=element_text(size=4))
+    gp = gp + scale_fill_manual(values=c(sel.colours[2:4], "darkgray"), labels = c("Full reads mapping (%)",  "Trimmed reads Mapping (%)", "Aligned reads (%)", "Not aligned (%)")) + guides(fill=guide_legend(title="")) + theme(plot.margin=unit(x=c(1,0,0,0), units="cm"), legend.position="bottom", legend.margin=unit(.5,"cm"), legend.text=element_text(size=4))
   }else{
     gp = gp + scale_fill_manual(values=c(sel.colours[2:4], "darkgray")) + theme(plot.margin=unit(c(1,0,1.9,0),"cm"))+ guides(fill=FALSE)
   }

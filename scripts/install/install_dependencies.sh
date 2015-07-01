@@ -81,15 +81,15 @@ do
     shift
 done
 
-if [[ -z $install_dir]]
-then
-    die "Error - Installation dir not defined (-o)"
+if [[ -z $install_dir ]] 
+then 
+    die "Error : Installation directory not defined (-o)"
+fi
+if [[ ! -e $conf ]]
+then 
+    die "Error : Configuration file not found"
 fi
 
-if [[ ! -e $conf ]]
-then
-    die "Error - configuration file not found"
-fi
 
 ################### Read the config file ###################
 

@@ -12,6 +12,7 @@ VERSION="2.5.2"
 
 function usage {
     echo -e "usage : $SOFT -i INPUT -o OUTPUT -c CONFIG [-p] [-s ANALYSIS_STEP] [-h]"
+    echo -e "$0 --help for detailed usage"
 }
 
 function help {
@@ -130,7 +131,6 @@ if [ -d $OUTPUT ]; then
     read ans
     if [ XX${ans} = XXy ]; then
 	/bin/rm -rf $OUTPUT
-	##make --file $SCRIPTS_PATH/Makefile CONFIG_FILE=$CONF CONFIG_SYS=$INSTALL_PATH"/config-system.txt" clean 2>&1
     fi
 fi
 mkdir -p $OUTPUT
@@ -146,11 +146,54 @@ fi
 
 cd $OUTPUT
 
+#####################
+## Check step option
+#####################
+MAKE_OPTS=$(echo $MAKE_OPTS | sed -e 's/^ //')
+AVAILABLE_STEP_ARRAY=("mapping" "proc_hic" "build_raw_maps" "ice_norm")
+NEED_BAM_STEP_ARRAY=("proc_hic" "build_raw_maps" "ice_norm")
+NEED_FASTQ_STEP_ARRAY=("mapping")
+
+if [[ $MAKE_OPTS != "" ]]; then
+    NEED_FASTQ=0
+    NEED_BAM=1
+
+    for s in $MAKE_OPTS
+    do
+	check_s=0
+	for i in ${AVAILABLE_STEP_ARRAY[@]}; do
+	    if [[ "$i" == "$s" ]]; then check_s=1; fi
+	done
+	if [[ $check_s == 0 ]]; then die "Unknown step option (\"-s $s\"). Use $0 --help for usage information."; fi
+	
+	for i in ${NEED_FASTQ_STEP_ARRAY[@]}; do
+	    if [[ "$i" == "$s" ]]; then NEED_FASTQ=1; fi
+	done
+    done
+else
+    NEED_FASTQ=1
+    NEED_BAM=0
+fi
+
+
+#####################
+## Check data structure
+#####################
+
 ## Check rawdata structure
-nbin=`find -L $INPUT -mindepth 2 -maxdepth 2 -name "*.fastq" -o -name "*.fastq.gz" | wc -l`
-if [ $nbin == 0 ]; then
-    echo "Error: Directory Hierarchy of rawdata '$RAW_DIR' is not correct. No fastq(gz) files detected"
-    exit
+if [[ $NEED_FASTQ == 1 ]]; then
+    nbin=$(find -L $INPUT -mindepth 2 -maxdepth 2 -name "*.fastq" -o -name "*.fastq.gz" | wc -l)
+    if [ $nbin == 0 ]; then
+	die "Error: Directory Hierarchy of rawdata '$INPUT' is not correct. No '.fastq(.gz)' files detected"
+    fi
+elif [[ $NEED_BAM == 1 ]]; then
+    nbin=$(find -L $INPUT -mindepth 2 -maxdepth 2 -name "*.bam" | wc -l)
+    nbin_r1=$(find -L $INPUT -mindepth 2 -maxdepth 2 -name "*.bam" -and -name "*${PAIR1_EXT}* | wc -l")
+    nbin_r2=$(find -L $INPUT -mindepth 2 -maxdepth 2 -name "*.bam" -and -name "*${PAIR2_EXT}* | wc -l")
+
+    if [[ $nbin == 0 || $nbin_r1 != $nbin_r2 ]]; then
+	die "Error: Directory Hierarchy of rawdata '$INPUT' is not correct. No paired '.bam' files with ${PAIR1_EXT}/${PAIR2_EXT} extension detected"
+    fi
 fi
 
 ###################
@@ -158,10 +201,17 @@ fi
 ###################
 echo
 if [ $PBS == 0 ]; then
-    echo "Run HiC-Pro"
+    echo "Run HiC-Pro "${VERSION}
     make --file $SCRIPTS_PATH/Makefile CONFIG_FILE=$CONF CONFIG_SYS=$INSTALL_PATH"/config-system.txt" init 2>&1
     make --file $SCRIPTS_PATH/Makefile CONFIG_FILE=$CONF CONFIG_SYS=$INSTALL_PATH"/config-system.txt" $MAKE_OPTS 2>&1
 else
-    make --file $SCRIPTS_PATH/Makefile CONFIG_FILE=$CONF CONFIG_SYS=$INSTALL_PATH"/config-system.txt" make_torque_script 2>&1
+    echo "Run HiC-Pro "${VERSION}" parallel mode"
+    if [[ $MAKE_OPTS != "" ]] 
+    then	
+	MAKE_OPTS=$(echo $MAKE_OPTS | sed -e 's/ /,/g')
+	make --file $SCRIPTS_PATH/Makefile CONFIG_FILE=$CONF CONFIG_SYS=${INSTALL_PATH}/config-system.txt MAKE_OPTS=$MAKE_OPTS make_torque_script 2>&1
+    else
+    	make --file $SCRIPTS_PATH/Makefile CONFIG_FILE=$CONF CONFIG_SYS=${INSTALL_PATH}/config-system.txt make_torque_script 2>&1
+    fi
 fi
 
