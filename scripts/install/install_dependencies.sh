@@ -366,7 +366,7 @@ echo "SOURCES = ${install_dir}/scripts/src" >> config-system.txt
 echo "ANNOT_DIR = ${install_dir}/annotation" >> config-system.txt
 
 ## check rights in PREFIX folder
-if [[ -z $PREFIX ]]; then PREFIX=/local/bin; fi
+if [[ -z $PREFIX ]]; then PREFIX=/usr/bin; fi
 if [ ! -w $PREFIX ]; then
     die "Cannot install HiCPro in $PREFIX directory. Maybe missing super-user (root) permissions to write there. Please specify another directory in the config-install.txt file (PREFIX=)";
 fi 

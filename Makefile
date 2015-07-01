@@ -15,7 +15,7 @@ SOURCES=$(SCRIPTS)/src
 
 all : install
 
-install : checkdep mapbuilder readstrimming iced cp
+install : checkdep mapbuilder readstrimming iced cp checkinstall
 
 
 ######################################
@@ -66,5 +66,5 @@ cp:
 ifneq ($(realpath $(MK_PATH)), $(realpath $(PREFIX))/HiC-Pro_$(VNUM))
 	cp -Ri $(MK_PATH) $(PREFIX)/HiC-Pro_$(VNUM)
 endif
-	@echo "Install HiC-Pro in $(realpath $(PREFIX))/HiCPro_$(VNUM) ..."
+	@echo "Install HiC-Pro in $(realpath $(PREFIX))/HiC-Pro_$(VNUM) ... done !"
 
