@@ -13,8 +13,6 @@ SIGNIFICANT USER-VISIBLE CHANGES
 
    o Additional checks when running the pipeline
 
-   o Quality control plots are now run after each step instead of once at the end of the pipeline
-
 BUG FIXES
 
    o Bug fixed when HiC-Pro is run with relative path

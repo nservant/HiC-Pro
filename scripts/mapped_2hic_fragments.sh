@@ -33,7 +33,6 @@ if [[ ! -e $GENOME_FRAGMENT_FILE ]]; then
     fi
 fi
 
-
 for r in $(get_files_for_overlap)
 do
     sample_dir=$(get_sample_dir ${r})
@@ -54,18 +53,9 @@ do
     
     echo "## Sorting valid interaction file ..." >> ${LDIR}/mapped_2hic_fragments.log 2>&1
     sort -k2,2V -k3,3n -k5,5V -k6,6n -T ${TMP_DIR} -o ${datadir}/${outVALID} ${datadir}/${outVALID} 
-
-    # echo "## Creating BAM and index files ..." >> ${LDIR}/mapped_2hic_fragments.log 2>&1
-    # if [ -f ${datadir}/${outSAM} ]
-    # then 
-    # 	cmd="${SAMTOOLS_PATH}/samtools view -bS ${datadir}/${outSAM} | ${SAMTOOLS_PATH}/samtools sort - ${datadir}/${sortBAM}"
-    # 	exec_cmd $cmd
-    # 	cmd="${SAMTOOLS_PATH}/samtools index ${datadir}/${sortBAM}.bam"
-    # 	exec_cmd $cmd
-    # fi
 done
 
 ## Make plots
-${SCRIPTS}/make_plots.sh -c ${conf_file} -p "filtering" >> ${LOGFILE}
+#${SCRIPTS}/make_plots.sh -c ${conf_file} -p "filtering" >> ${LOGFILE}
 
 

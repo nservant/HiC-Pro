@@ -53,10 +53,12 @@ fi
 if [[ $MAKE_OPTS == "" || $MAKE_OPTS == *"mapping"* || $MAKE_OPTS == *"proc_hic"* ]]
 then
     make_target="all_qsub"
+    ## Remove per sample steps
     if [[ $MAKE_OPTS != "" ]]; then 
 	make_target=$(echo $MAKE_OPTS | sed -e 's/,/ /g'); 
-	make_target=$(echo $make_target | sed -e 's/build_raw_maps//g');
+	make_target=$(echo $make_target | sed -e 's/build_contact_maps//g');
 	make_target=$(echo $make_target | sed -e 's/ice_norm//g');
+        make_target=$(echo $make_target | sed -e 's/quality_checks//g');
     fi
  
     ## step 1 - parallel
@@ -87,10 +89,11 @@ EOF
 fi    
 
 
-## Not Paralelle Implementation
-if [[ $MAKE_OPTS == "" || $MAKE_OPTS == *"build_raw_maps"* || $MAKE_OPTS == *"ice_norm"* ]]
+## Per sample Implementation
+if [[ $MAKE_OPTS == "" || $MAKE_OPTS == *"build_contact_maps"* || $MAKE_OPTS == *"ice_norm"* || $MAKE_OPTS == *"quality_checks"* ]]
 then
-    make_target="build_contact_maps"
+    make_target="all_persample"
+    ## Remove parallele mode
     if [[ $MAKE_OPTS != "" ]]; 
     then 
 	make_target=$(echo $MAKE_OPTS | sed -e 's/,/ /g'); 

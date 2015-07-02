@@ -21,14 +21,15 @@ function help {
     echo "---------------"
     echo "OPTIONS"
     echo
-    echo "   -i|--input INPUT : input data folder; Must contains a folder per samples with fastq files"
+    echo "   -i|--input INPUT : input data folder; Must contains a folder per sample with fastq (or bam) files"
     echo "   -o|--output OUTPUT : output folder"
     echo "   -c|--conf CONFIG : configuration file for Hi-C processing"
     echo "   [-p|--parallel] : if specified run $SOFT in PBS/Torque mode"
     echo "   [-s|--step ANALYSIS_STEP] : run only a subset of the $SOFT workflow; if not specified the complete workflow is run"
     echo "      mapping: perform reads alignment"
     echo "      proc_hic: perform Hi-C filtering"
-    echo "      build_raw_maps: build raw contact maps"
+    echo "      quality_checks: run Hi-C quality control plots"
+    echo "      build_contact_maps: build raw inter/intrachromosomal contact maps"
     echo "      ice_norm : run ICE normalization on contact maps"
     echo "   [-h|--help HELP]: help"
     exit;
@@ -150,8 +151,8 @@ cd $OUTPUT
 ## Check step option
 #####################
 MAKE_OPTS=$(echo $MAKE_OPTS | sed -e 's/^ //')
-AVAILABLE_STEP_ARRAY=("mapping" "proc_hic" "build_raw_maps" "ice_norm")
-NEED_BAM_STEP_ARRAY=("proc_hic" "build_raw_maps" "ice_norm")
+AVAILABLE_STEP_ARRAY=("mapping" "proc_hic" "quality_checks" "build_contact_maps" "ice_norm")
+NEED_BAM_STEP_ARRAY=("proc_hic" "build_contact_maps" "ice_norm")
 NEED_FASTQ_STEP_ARRAY=("mapping")
 
 if [[ $MAKE_OPTS != "" ]]; then
@@ -192,7 +193,7 @@ elif [[ $NEED_BAM == 1 ]]; then
     nbin_r2=$(find -L $INPUT -mindepth 2 -maxdepth 2 -name "*.bam" -and -name "*${PAIR2_EXT}* | wc -l")
 
     if [[ $nbin == 0 || $nbin_r1 != $nbin_r2 ]]; then
-	die "Error: Directory Hierarchy of rawdata '$INPUT' is not correct. No paired '.bam' files with ${PAIR1_EXT}/${PAIR2_EXT} extension detected"
+	die "Error: Directory Hierarchy of rawdata '$INPUT' is not correct. Paired '.bam' files with ${PAIR1_EXT}/${PAIR2_EXT} are required for '$MAKE_OPTS' step(s)"
     fi
 fi
 

@@ -41,7 +41,6 @@ nbf=$(find -L ${DATA_DIR} -mindepth 1 | wc -l)
 if [[ $nbf == 0 ]]; then die "Error : empty ${DATA_DIR} folder."; fi
 
 ################### Combine Bowtie mapping ###################
-
 for RES_FILE_NAME in ${DATA_DIR}/*
 do
     RES_FILE_NAME=$(basename $RES_FILE_NAME)
@@ -49,8 +48,7 @@ do
     LDIR=${LOGS_DIR}/${RES_FILE_NAME}
     mkdir -p ${LDIR}
 
-    echo "## Merge valid interactions for ${RES_FILE_NAME}..." > ${LDIR}/merge_valid_interactions.log
-    
+    echo "## Merge valid interactions for ${RES_FILE_NAME}..." > ${LDIR}/merge_valid_interactions.log    
   
     if [ -d ${DATA_DIR}/${RES_FILE_NAME} ]; then
 
@@ -79,4 +77,4 @@ do
 done
 
 ## make plots
-${SCRIPTS}/make_plots.sh -c ${conf_file} -p "contacts" >> ${LOGFILE}
+## ${SCRIPTS}/make_plots.sh -c ${conf_file} -p "contacts" >> ${LOGFILE}

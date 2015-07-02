@@ -11,17 +11,24 @@ slash := |
 tick := -
 undsc := _
 
-all : init mapping proc_hic build_contact_maps
+all : init mapping proc_hic merge_valid_interactions hic_qc build_raw_maps ice_norm
 
+## paralell
 all_qsub : init mapping proc_hic
 
 init : configure 
 
 mapping: bowtie_global bowtie_local bowtie_combine mapping_stat
 
-proc_hic : bowtie_pairing mapped_2hic_fragments merge_valid_interactions
+proc_hic : bowtie_pairing mapped_2hic_fragments 
 
-build_contact_maps: build_raw_maps ice_norm 
+## per sample - no parallelisation
+all_persample : build_contact_maps hic_qc ice_norm
+
+quality_checks : hic_qc
+
+build_contact_maps: merge_valid_interactions build_raw_maps
+
 
 ######################################
 ## System
@@ -55,8 +62,6 @@ endif
 debug: config_check
 	@echo "RAW_DIR="$(RAW_DIR)
 	@echo "FASTQ_FILE="$(READSFILE_FQ)
-	@echo "RES_FILE="$(RES_FILE_NAME)
-	@echo "RES_FILE_OBJ="$(RES_FILE_NAME_OBJ)
 
 ######################################
 ## Configure outputs
@@ -113,6 +118,13 @@ mapping_stat:  config_check
 	@echo "Bowtie2 mapping statistics for R1 and R2 tags ..." 
 	$(SCRIPTS)/mapping_stat.sh -c $(CONFIG_FILE) >> $(LOGFILE)
 
+mapping_clean: config_check
+	@echo "--------------------------------------------" 
+	@date 
+	@echo "Cleaning mapping files ..."
+	rm -rf $(BOWTIE2_OUTPUT_DIR)/bwt2_global
+	rm -rf $(BOWTIE2_OUTPUT_DIR)/bwt2_local
+
 
 ######################################
 ## Hi-C processing 
@@ -146,11 +158,11 @@ build_raw_maps:  config_check
 	@echo "Generate binned matrix files ..." 
 	$(SCRIPTS)/build_raw_maps.sh -c $(CONFIG_FILE)
 
-plots:
+hic_qc:
 	@echo "--------------------------------------------" 
 	@date 
-	@echo "Make plots per sample ..."
-	$(SCRIPTS)/make_plots.sh -c $(CONFIG_FILE) >> $(LOGFILE)
+	@echo "Run quality checks for all samples ..."
+	$(SCRIPTS)/make_plots.sh -c $(CONFIG_FILE) -p "all" >> $(LOGFILE)
 
 
 ######################################

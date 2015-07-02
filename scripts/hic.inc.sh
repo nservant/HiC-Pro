@@ -43,7 +43,6 @@ read_config()
 
     eval "$(join $tmpfile1 $tmpfile2 | awk -F' =' '{printf("%s=\"%s\"; export %s;\n", $1, $2, $1)}')"
 
-    
     ## Define BOWTIE outputs
     BOWTIE2_IDX=${BOWTIE2_IDX_PATH}/${REFERENCE_GENOME}; export BOWTIE2_IDX
     BOWTIE2_GLOBAL_OUTPUT_DIR=$BOWTIE2_OUTPUT_DIR/bwt2_global; export BOWTIE2_GLOBAL_OUTPUT_DIR
@@ -144,6 +143,21 @@ filter_pairs()
 	get_R1 | sort -u
 }
 
+get_data_type()
+{
+    nbinfq=$(find -L $RAW_DIR -mindepth 2 -maxdepth 2 -name "*.fastq" -o -name "*.fastq.gz" | wc -l)
+    nbinbam=$(find -L $RAW_DIR -mindepth 2 -maxdepth 2 -name "*.bam" -o -name "*.sam" | wc -l)
+    
+    if [[ $nbinfq > 0 && $nbinbam == 0 ]]; then
+        INPUT_DATA_TYPE="fastq"
+    elif [[ $nbinfq == 0 && $nbinbam > 0 ]]; then
+        INPUT_DATA_TYPE="bam"
+    else
+       die "Error in input type. Fastq files OR bam files are expected."
+    fi
+    echo $INPUT_DATA_TYPE
+}
+
 #
 # function called by get_hic_files, using "local" variables of get_hic_files
 #
@@ -174,7 +188,8 @@ get_hic_files()
     local ext=$2
     if [ ! -z "$FASTQFILE" ]; then
 	if [ ! -z "$PBS_ARRAYID" ]; then
-	    cat $FASTQFILE | filter_rawdir | filter_pairs | awk "NR == $PBS_ARRAYID {printf(\"%s/%s${ext}\n\", \"$idir\", gensub(\".fastq(.gz)*\", \"\", \$1));}"
+	    local input_data_type=$(get_data_type)
+	    cat $FASTQFILE | filter_rawdir | filter_pairs | awk "NR == $PBS_ARRAYID {printf(\"%s/%s${ext}\n\", \"$idir\", gensub(\".${input_data_type}(.gz)*\", \"\", \$1));}"
 	    return
 	fi
 	local list=
@@ -257,12 +272,13 @@ get_bam_from_raw_dir()
 
 get_sam_for_merge()
 {
-    ## Look for BAM in input directory
-    bam=$(get_bam_from_raw_dir)
-    if [[ -z $bam ]]
+    local input_data_type=$(get_data_type)
+    if [[ $input_data_type == "fastq" ]]
     then
-	## If not found, search in bowtie2 output folder
 	bam=$(get_hic_files ${BOWTIE2_FINAL_OUTPUT_DIR} _${REFERENCE_GENOME}.bwt2merged.bam)
+    elif [[ $input_data_type == "bam" ]]
+    then
+	bam=$(get_bam_from_raw_dir)
     fi
     echo $bam
 }
@@ -274,5 +290,5 @@ get_sam_for_combine()
 
 get_files_for_overlap()
 {
-    get_hic_files ${BOWTIE2_FINAL_OUTPUT_DIR} _${REFERENCE_GENOME}.bwt2pairs.bam | get_R1 | sed -e "s/${PAIR1_EXT}//"
+    get_hic_files ${BOWTIE2_FINAL_OUTPUT_DIR} _${REFERENCE_GENOME}.bwt2pairs.bam | get_R1 | sed -e "s/${PAIR1_EXT}//" -e "s/_${REFERENCE_GENOME}.bwt2merged//"
 }

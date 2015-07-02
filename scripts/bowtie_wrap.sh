@@ -107,7 +107,6 @@ local_align()
     exec_cmd "$cmd"
 }
 
-
 echo -e "\nBOWTIE_FASTQ_WRAP mode $MODE\n"
 
 if [[ ${MODE} == 'global' ]]; then
