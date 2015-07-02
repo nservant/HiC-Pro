@@ -15,7 +15,7 @@ SOURCES=$(SCRIPTS)/src
 
 all : install
 
-install : checkdep mapbuilder readstrimming iced cp checkinstall
+install : checkdep mapbuilder readstrimming iced cp
 
 
 ######################################
