@@ -114,14 +114,12 @@ done
 #     esac
 #     shift
 # done
-echo $INPUT
-echo $OUTPUT
-echo $CONF
+
 if [[ -z $INPUT || -z $OUTPUT || -z $CONF ]]; then
     usage
     exit
 fi
-exit
+
 ## Set PATHS
 BIN_PATH=`dirname $0`
 ABS_BIN_PATH=`cd "$BIN_PATH"; pwd`
