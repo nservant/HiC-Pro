@@ -11,13 +11,14 @@ SOFT="HiC-Pro"
 VERSION="2.5.2"
 
 function usage {
-    echo -e "usage : $SOFT -i INPUT -o OUTPUT -c CONFIG [-p] [-s ANALYSIS_STEP] [-h]"
-    echo -e "$0 --help for detailed usage"
+    echo -e "usage : $SOFT -i INPUT -o OUTPUT -c CONFIG [-s ANALYSIS_STEP] [-p] [-h] [-v]"
+    echo -e "$0 -h for detailed usage"
 }
 
 function help {
     usage;
-    echo "$SOFT v$VERSION"
+    echo 
+    echo "$SOFT $VERSION"
     echo "---------------"
     echo "OPTIONS"
     echo
@@ -31,16 +32,23 @@ function help {
     echo "      quality_checks: run Hi-C quality control plots"
     echo "      build_contact_maps: build raw inter/intrachromosomal contact maps"
     echo "      ice_norm : run ICE normalization on contact maps"
-    echo "   [-h|--help HELP]: help"
+    echo "   [-h|--help]: help"
+    echo "   [-v|--version]: version"
     exit;
 }
 
 function version {
     echo -e "$SOFT version $VERSION"
-    exit;
+    exit
 }
 
-if [ $# == 0 ]
+function opts_error {
+    echo -e "Error : invalid parameters !" >&2
+    echo -e "Use $SOFT -h for help"
+    exit
+}
+
+if [ $# -lt 1 ]
 then
     usage
     exit
@@ -48,30 +56,72 @@ fi
 
 PBS=0
 MAKE_OPTS=""
-
-set -- $(getopt -u -o c:s:i:o:pvh -l conf:,step:,input:,output:,parallel,version,help -- "$@")
-while [ $# -gt 0 ]
-do
-    case "$1" in
-	-i|--input) INPUT=$2; shift;;
-	-o|--output) OUTPUT=$2; shift;;
-	-c|--conf) CONF=$2; shift;;
-	-s|--step) MAKE_OPTS="$MAKE_OPTS $2"; shift;;
-	-p|--parallel) PBS=1;;
-	-v|--version) version;;
-	-h|--help) help;;
-	--) shift; break;;
-	-*) echo "$0: error - unrecognized option $1" 1>&2; exit 1;;
-	*)  break;;
-    esac
-    shift
+INPUT=""
+OUTPUT=""
+CONF=""
+# Transform long options to short ones
+for arg in "$@"; do
+  shift
+  case "$arg" in
+      "--input") set -- "$@" "-i" ;;
+      "--output") set -- "$@" "-o" ;;
+      "--conf")   set -- "$@" "-c" ;;
+      "--step")   set -- "$@" "-s" ;;
+      "--parallel")   set -- "$@" "-p" ;;
+      "--help")   set -- "$@" "-h" ;;
+      "--version")   set -- "$@" "-v" ;;
+      *)        set -- "$@" "$arg"
+  esac
 done
 
+while getopts ":i:o:c:s:pvh" OPT
+do
+    case $OPT in
+	i) INPUT=$OPTARG;;
+	o) OUTPUT=$OPTARG;;
+	c) CONF=$OPTARG;;
+	s) MAKE_OPTS="$MAKE_OPTS $OPTARG";;
+	p) PBS=1 ;;
+	v) version ;;
+	h) help ;;
+	\?)
+	     echo "Invalid option: -$OPTARG" >&2
+	     usage
+	     exit 1
+	     ;;
+	 :)
+	     echo "Option -$OPTARG requires an argument." >&2
+	     usage
+	     exit 1
+	     ;;
+    esac
+done
+
+# set -- $(getopt -u -o c:s:i:o:pvh -l conf:,step:,input:,output:,parallel,version,help -- "$@")
+# while [ $# -gt 0 ]
+# do
+#     case "$1" in
+# 	-i|--input) INPUT=$2; shift;;
+# 	-o|--output) OUTPUT=$2; shift;;
+# 	-c|--conf) CONF=$2; shift;;
+# 	-s|--step) MAKE_OPTS="$MAKE_OPTS $2"; shift;;
+# 	-p|--parallel) PBS=1;;
+# 	-v|--version) version;;
+# 	-h|--help) help;;
+# 	--) shift; break;;
+# 	-*) echo "$0: error - unrecognized option $1" 1>&2; exit 1;;
+# 	*)  break;;
+#     esac
+#     shift
+# done
+echo $INPUT
+echo $OUTPUT
+echo $CONF
 if [[ -z $INPUT || -z $OUTPUT || -z $CONF ]]; then
     usage
     exit
 fi
-
+exit
 ## Set PATHS
 BIN_PATH=`dirname $0`
 ABS_BIN_PATH=`cd "$BIN_PATH"; pwd`
