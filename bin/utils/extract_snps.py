@@ -16,6 +16,7 @@ import getopt
 import sys
 import os
 import pysam
+import re
 
 def usage():
     """Usage function"""
@@ -23,7 +24,7 @@ def usage():
     print "-i/--vcf <input VCF file information>"
     print "-a/--alt <sample name for alternative allele>"
     print "[-r/--ref] <sample name for reference allele. Default is the same as in the initial file>"
-    print "[-f/--filt] <Filtering level. 0 - no filtering. 1 - based on FI information. 2 - based on FILTER information. Default is 1>"
+    print "[-f/--filt] <Filtering level. 0 - no filtering. 1 - based on FI information. 2 - based on FILTER information. Default is 2>"
     print "[-v/--verbose] <Verbose>"
     print "[-h/--help] <Help>"
     return
@@ -45,16 +46,18 @@ def get_args():
     return opts
 
 ## 0/0, 1/1, A, T, 1
-## 1/1, 2/2, A, T,C, 1
+## 1/1, 2/2, A, T, C, 1
 def get_filter_snp_gt(gref, galt, ref, alt):
 
-    ref_geno = gref.split('/')
-    alt_geno = galt.split('/')
-    
+    ref_geno = re.split('/|\|', gref)
+    alt_geno = re.split('/|\|', galt)
+        
     ## '.' are not considered                                                                                                                                    
     if len(alt_geno) != 2 or len(ref_geno) != 2:
         return -1
-    ## heterogygous - return None
+    elif ref_geno[0] == "." or ref_geno[1] == "." or alt_geno[0] == "." or alt_geno[1] == ".":
+        return -1
+    ## heterogygous
     elif ref_geno[0] != ref_geno[1] or alt_geno[0] != alt_geno[1]:
         return -2
     else:
@@ -81,7 +84,7 @@ if __name__ == "__main__":
     vcfFile = None
     refSample = None
     altSample = None
-    filt_qual=1
+    filt_qual=2
     verbose = False
        
     if len(opts) == 0:
@@ -131,7 +134,6 @@ if __name__ == "__main__":
 
     for line in vcf_handle:
         line = line.rstrip()
-    
         ## for now we don't care about the header 
         if line.startswith('##'):
             if refSample is not None and line.startswith("##reference="):
@@ -152,7 +154,7 @@ if __name__ == "__main__":
             continue
         else:
             if altidx == -1 :
-                print "Error : ALT name not found"
+                print   >> sys.stderr, "Error : ALT name not found"
                 sys.exit(-1)
 
             fields = line.split('\t',9)
@@ -164,10 +166,10 @@ if __name__ == "__main__":
                 if var_counter == 1:
                     f = fields[8].split(':')
                     if f[0] != "GT":
-                        print "Error : GT is expected to be at first index"
+                        print   >> sys.stderr, "Error : GT is expected to be at first index"
                         sys.exit(-1)
                     if filt_qual == 1 and f[len(f)-1] != "FI":
-                        print "Error : FI is expected to be at the last index"
+                        print   >> sys.stderr, "Error : FI is expected to be at the last index"
                         sys.exit(-1)
             
                 genotypes  = fields[9].split('\t')
@@ -183,6 +185,10 @@ if __name__ == "__main__":
 
                 ## Filter on FI field
                 if filt_qual != 1 or (filt_qual == 1 and reffi == str(1) and altfi == str(1)):
+                    #print "---------"
+                    #print refg
+                    #print altg
+                    #print fields
                     geno = get_filter_snp_gt(refg[0], altg[0], fields[3], fields[4])
                     if geno == -1:
                         undefined_counter += 1 
