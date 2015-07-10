@@ -6,7 +6,7 @@
 HiC-Pro Quick Start Guide
 *************************
 
-.. This page is just a quick start guide, please read the full `manual <doc/MANUAL.rst>`_ for more information !
+This page is just a quick start guide, please read the full `manual <doc/MANUAL.rst>`_ for more information !
 
 See NEWS for information about changes in this and previous versions
 
@@ -62,7 +62,7 @@ How to use it ?
 
 0. First have a look at the help message !
 
-  .. code-block:: guess
+.. code-block:: guess
 
   HiC-Pro --help
   usage : HiC-Pro -i INPUT -o OUTPUT -c CONFIG [-s ANALYSIS_STEP] [-p] [-h] [-v]
@@ -92,14 +92,14 @@ How to use it ?
 
   * Without PBS-Torque
 
-  .. code-block:: guess
+.. code-block:: guess
 
     MY_INSTALL_PATH/bin/HiC-Pro -i FULL_PATH_TO_RAW_DATA -o FULL_PATH_TO_OUTPUTS -c MY_LOCAL_CONFIG_FILE
 
   
   * With PBS-Torque
 
-  .. code-block:: guess
+.. code-block:: guess
 
    MY_INSTALL_PATH/bin/HiC-Pro -i FULL_PATH_TO_RAW_DATA -o FULL_PATH_TO_OUTPUTS -c MY_LOCAL_CONFIG_FILE -p
 
