@@ -8,7 +8,7 @@ A log file is generated when you run HiC-Pro. Its name is specified in the confi
 
 **How can I split my .fastq files into smaller files ?**
 
-See the :doc:`HiC-Pro Utilities <UTILS>`_ which is baed on the split unix command.
+See the `HiC-Pro Utilities <UTILS.rst>`_ which is baed on the split unix command.
 For more information, see :code:`man split`
 
 **How can I generate my annotation files ?**
@@ -60,9 +60,9 @@ Here is the way to generate such file using the `HiTC <http://bioconductor.org/p
 **Why HiC-Pro need to be run in two steps in parallel mode ?**
 
 Th HiC-Pro pipeline is divided into two main steps. The first part of the pipeline is 'fastq' based, meaning that the same anlaysis will be performed for all fastq files.
-This part can be easily paralelized per fastq, with at the end, a list of valid interactions per fastq file.
+This part can be easily parallelized per fastq, with at the end, a list of valid interactions per fastq file.
 The second step of the pipeline is 'sample' based. All lists of valid interactions from the same sample are merged in order to build and normalize the maps.
-At that time, this second step is not time consuming, and we do not parallize it although a per sample parallelization migth be a good idea.
+At that time, this second step is not time consuming, and we do not parallelize it although a per sample parallelization migth be a good idea.
 So, because these two steps as either 'fastq' based or 'sample' based, we need to separate them during the parallele processing.
 
 **Does HiC-Pro support other mapper ?**
