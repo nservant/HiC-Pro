@@ -184,31 +184,26 @@ How to use it ?
 ------------                                                                                                                                                              
 
 2. Put all fastq files in a rawdata folder. Each fastq file has to be put in a folder per sample.
+2. Put all fastq files in a rawdata folder. Each fastq file has to be put in a folder per sample.
 
 3. Run HiC-Pro
-
-   1. Run the complete workflow
    
-	* Without PBS-Torque
+* Run the complete workflow in a single command line
 
+.. code-block::
 
-.. code-block:: guess
-
-    	MY_INSTALL_PATH/bin/HiC-Pro -i FULL_PATH_TO_RAW_DATA -o FULL_PATH_TO_OUTPUTS -c MY_LOCAL_CONFIG_FILE
-
-
+   MY_INSTALL_PATH/bin/HiC-Pro -i FULL_PATH_TO_RAW_DATA -o FULL_PATH_TO_OUTPUTS -c MY_LOCAL_CONFIG_FILE
   
-	* With PBS-Torque
+* Run the complete workflow with PBS-Torque
 
-.. code-block:: guess
+.. code-block:: 
 
    	MY_INSTALL_PATH/bin/HiC-Pro -i FULL_PATH_TO_RAW_DATA -o FULL_PATH_TO_OUTPUTS -c MY_LOCAL_CONFIG_FILE -p
 
 
+You will get the following message in the output directory:
 
-	You will get the following message :
-
-.. code-block:: guess
+.. code-block:: 
 
   	Please run HiC-Pro in two steps :
   	1- The following command will launch the parallel workflow through 12 torque jobs:
@@ -217,27 +212,27 @@ How to use it ?
   	qsub HiCPro_step2.sh
 
 
-	Execute the displayed command:
+Execute the displayed command:
 
-.. code-block:: guess
+.. code-block:: 
 
   	qsub HiCPro_step1.sh
 
 
-	Then wait for the torque mails... :)
-	Once executed succesfully (may take several hours), then type:
+Then wait for the torque mails... :)
+Once executed succesfully (may take several hours), then type:
 
-.. code-block:: guess
+.. code-block:: 
 
   	qsub HiCPro_step2.sh
 
 
-   2. Run HiC-Pro in sequential mode
+* Run HiC-Pro in sequential mode
 
-   HiC-Pro can be run in a step-by-step mode.
-   Available steps are described in the help command
+HiC-Pro can be run in a step-by-step mode.
+Available steps are described in the help command
 
-.. code-block:: guess
+.. code-block::
 
   HiC-Pro --help
   usage : HiC-Pro -i INPUT -o OUTPUT -c CONFIG [-s ANALYSIS_STEP] [-p] [-h] [-v]
@@ -261,15 +256,15 @@ How to use it ?
    [-v|--version]: version
 
 
-   As an exemple, if you want to only want to align the sequencing reads, use :
+As an exemple, if you want to only want to align the sequencing reads, use :
 
-.. code-block:: guess
+.. code-block::
 
     	MY_INSTALL_PATH/bin/HiC-Pro -i FULL_PATH_TO_RAW_DATA -o FULL_PATH_TO_OUTPUTS -c MY_LOCAL_CONFIG_FILE -s mapping -s quality_checks
 
 Note that HiC-Pro can be run from aleardy aligned data. In this case, the raw data path (-i) should point into the BAM files.
 See te `user"s cases<USER_CASES.rst>`_ for more information
-  
+
 
 How does HiC-Pro work ?
 =======================
