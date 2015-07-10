@@ -12,7 +12,7 @@ VERSION="2.5.2"
 
 function usage {
     echo -e "usage : $SOFT -i INPUT -o OUTPUT -c CONFIG [-s ANALYSIS_STEP] [-p] [-h] [-v]"
-    echo -e "$0 -h for detailed usage"
+    echo -e "Use option -h|--help for more information"
 }
 
 function help {

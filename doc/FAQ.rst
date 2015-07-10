@@ -2,16 +2,16 @@ FAQ
 ===
 
 
-**1- HiC-Pro failed. How to find what's going wrong ?**
+**HiC-Pro failed. How to find what's going wrong ?**
 
 A log file is generated when you run HiC-Pro. Its name is specified in the configuration file. In addition, some parts of the pipeline generate specific logs which are available in the *log* folder
 
-**2- How can I split my .fastq files into smaller files ?**
+**How can I split my .fastq files into smaller files ?**
 
 See the :doc:`HiC-Pro Utilities <UTILS>` which is baed on the split unix command.
 For more information, see :code:`man split`
 
-**3- How can I generate my annotation files ?**
+**How can I generate my annotation files ?**
 
 HiC-Pro requires two annotation files.
 
@@ -57,3 +57,6 @@ Here is the way to generate such file using the `HiTC <http://bioconductor.org/p
    export(allRF, format="bed", con="HindIII_resfrag_hg19.bed")
 
 
+**Why HiC-Pro need to be run in two steps in parallel mode ?**
+
+**Does HiC-Pro support other mapper ?**

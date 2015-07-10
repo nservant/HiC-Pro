@@ -21,7 +21,7 @@ How to install it ?
 
 The HiC-Pro pipeline requires the following dependencies :
 
-* The `bowtie2 <http://bowtie-bio.sourceforge.net/bowtie2/index.shtml>`_ mapper (or any other mapper)
+* The `bowtie2 <http://bowtie-bio.sourceforge.net/bowtie2/index.shtml>`_ mapper
 * Python (>2.7) with *pysam*, *bx*, *numpy*, and *scipy* libraries
 * R with the *RColorBrewer* and *ggplot2* packages
 * g++ compiler
@@ -31,8 +31,8 @@ To install HiC-Pro:
 
 .. code-block:: guess
 
-  tar -zxvf HiC-Pro.2.3.1.tar.gz
-  cd HiC-Pro_2.3.1
+  tar -zxvf HiC-Pro-master.tar.gz
+  cd HiC-Pro-master
   make CONFIG_SYS=config-install.txt install
 
 Note that if some of these dependencies are not installed (i.e. not detected in the $PATH), HiC-Pro will try to install them.
@@ -45,11 +45,11 @@ You can also edit the *config-install.txt* file and manually defined the paths t
 +---------------+------------------------------------------------------------+
 | BOWTIE2_PATH  | Full path the bowtie2 installation directory               |
 +---------------+------------------------------------------------------------+
-| SAMTOOLS_PATH | Full path to the samtools installation directory (>0.1.18) |
+| SAMTOOLS_PATH | Full path to the samtools installation directory (>0.1.19) |
 +---------------+------------------------------------------------------------+
 | R_PATH        | Full path to the R installation directory                  |
 +---------------+------------------------------------------------------------+
-| PYTHON_PATH   | Full path to the python installation directory             |
+| PYTHON_PATH   | Full path to the python installation directory (>2.7)      |
 +---------------+------------------------------------------------------------+
 
 
@@ -160,7 +160,7 @@ How to use it ?
 +-----------------------------+-------------------------------------------------------------------------------------------------------------------------+
 | GET_ALL_INTERACTION_CLASSES | Create output files with all classes of 3C products. *Default: 1*                                                       |
 +-----------------------------+-------------------------------------------------------------------------------------------------------------------------+
-| GET_PROCESS_BAM             | Create a BAM file with all aligned reads flagged according to their classifaction and mapping category. *Default: 1*    |
+| GET_PROCESS_BAM             | Create a BAM file with all aligned reads flagged according to their classifaction and mapping category. *Default: 0*    |
 +-----------------------------+-------------------------------------------------------------------------------------------------------------------------+
 | RM_SINGLETON                | Remove singleton reads. *Default: 1*                                                                                    |
 +-----------------------------+-------------------------------------------------------------------------------------------------------------------------+
@@ -187,45 +187,80 @@ How to use it ?
 
 3. Run HiC-Pro
 
-  * Without PBS-Torque
+   1. Run the complete workflow
+   
+	* Without PBS-Torque
 
-  .. code-block:: guess
+  	.. code-block:: guess
 
-    MY_INSTALL_PATH/bin/HiC-Pro -i FULL_PATH_TO_RAW_DATA -o FULL_PATH_TO_OUTPUTS -c MY_LOCAL_CONFIG_FILE
+    	MY_INSTALL_PATH/bin/HiC-Pro -i FULL_PATH_TO_RAW_DATA -o FULL_PATH_TO_OUTPUTS -c MY_LOCAL_CONFIG_FILE
   
-  * With PBS-Torque
+	* With PBS-Torque
+
+  	.. code-block:: guess
+
+   	MY_INSTALL_PATH/bin/HiC-Pro -i FULL_PATH_TO_RAW_DATA -o FULL_PATH_TO_OUTPUTS -c MY_LOCAL_CONFIG_FILE -p
+
+	You will get the following message :
+
+	.. code-block:: guess
+
+  	Please run HiC-Pro in two steps :
+  	1- The following command will launch the parallel workflow through 12 torque jobs:
+  	qsub HiCPro_step1.sh
+  	2- The second command will merge all outputs to generate the contact maps:
+  	qsub HiCPro_step2.sh
+
+	Execute the displayed command:
+
+	.. code-block:: guess
+
+  	qsub HiCPro_step1.sh
+
+	Then wait for the torque mails... :)
+	Once executed succesfully (may take several hours), then type:
+
+	.. code-block:: guess
+
+  	qsub HiCPro_step2.sh
+
+   2. Run HiC-Pro in sequential mode
+
+   HiC-Pro can be run in a step-by-step mode.
+   Available steps are described in the help command
 
   .. code-block:: guess
 
-   MY_INSTALL_PATH/bin/HiC-Pro -i FULL_PATH_TO_RAW_DATA -o FULL_PATH_TO_OUTPUTS -c MY_LOCAL_CONFIG_FILE -p
+  HiC-Pro --help
+  usage : HiC-Pro -i INPUT -o OUTPUT -c CONFIG [-s ANALYSIS_STEP] [-p] [-h] [-v]
+  Use option -h|--help for more information
+
+  HiC-Pro 2.5.2
+  ---------------
+  OPTIONS
+
+   -i|--input INPUT : input data folder; Must contains a folder per sample with fastq (or bam) files
+   -o|--output OUTPUT : output folder
+   -c|--conf CONFIG : configuration file for Hi-C processing
+   [-p|--parallel] : if specified run HiC-Pro in PBS/Torque mode
+   [-s|--step ANALYSIS_STEP] : run only a subset of the HiC-Pro workflow; if not specified the complete workflow is run
+      mapping: perform reads alignment
+      proc_hic: perform Hi-C filtering
+      quality_checks: run Hi-C quality control plots
+      build_contact_maps: build raw inter/intrachromosomal contact maps
+      ice_norm : run ICE normalization on contact maps
+   [-h|--help]: help
+   [-v|--version]: version
 
 
-
-You will get the following message :
-
+   As an exemple, if you want to only want to align the sequencing reads, use :
 .. code-block:: guess
 
-  Please run HiC-Pro in two steps :
-  1- The following command will launch the parallel workflow through 12 torque jobs:
-  qsub HiCPro_step1.sh
-  2- The second command will merge all outputs to generate the contact maps:
-  qsub HiCPro_step2.sh
+    	MY_INSTALL_PATH/bin/HiC-Pro -i FULL_PATH_TO_RAW_DATA -o FULL_PATH_TO_OUTPUTS -c MY_LOCAL_CONFIG_FILE -s mapping -s quality_checks
 
-
-Execute the displayed command:
-
-.. code-block:: guess
-
-  qsub HiCPro_step1.sh
-
-
-Then wait for the torque mails... :)
-Once executed succesfully (may take several hours), then type:
-
-.. code-block:: guess
-
-  qsub HiCPro_step2.sh
-
+Note that HiC-Pro can be run from aleardy aligned data. In this case, the raw data path (-i) should point into the BAM files.
+See te `user"s cases<USER_CASES.rst>`_ for more information
+  
 
 How does HiC-Pro work ?
 =======================
@@ -245,13 +280,19 @@ The next step is to separate the invalid ligation products from the valid pairs.
 Only valid pairs involving two different restriction fragments are used to build the contact maps. Duplicated valid pairs associated to PCR artefacts are discarded.
 The fragment assignment can be visualized through a BAM files of aliged pairs where each pair is flagged according to its classification.
 
-3. Map builder
+3. Quality Controls
+
+HiC-Pro performs a couple of quality controls for most of the analysis steps. The alignment statistics are the first quality controls. Aligned reads in the first (end-to-end) step, and alignment after trimming are reported. Note that in pratice, we ususally observed around 10-20% of trimmed reads. An abnormal level of trimmed reads can reflect a ligation issue.
+Once the reads are aligned on the genome, HiC-pro checks the number of singleton, multiple hits or duplicates. The fraction of valid pairs are presented for each type of ligation products. Invalid pairs such as dangling and or self-circle are also represented. A high level of dangling ends, or an imbalance in valid pairs ligation type can be due to a ligation, fill-in or digestion issue.
+Finally HiC-Pro also calculated the distribution of fragment size on a subset of valid pairs. Additional statistics will report the fraction of intra/inter-chromosomal contacts, as well as the proportion of short range (<20kb) versus long range (>20kb) contacts.
+
+4. Map builder
 
 Intra et inter-chromosomal contact maps are build for all specified resolutions. The genome is splitted into bins of equal size. Each valid interaction is associated with the genomic bins to generate the raw maps.
 
-4. ICE normalization
+5. ICE normalization
 
-Hi-C data can contain several sources of biases which has to be corrected. HiC-Pro proposes a fast implementation of the original ICE normalization algorithm (imakaev et al), making the assumption of equal visibility of each fragment. 
+Hi-C data can contain several sources of biases which has to be corrected. HiC-Pro proposes a fast implementation of the original ICE normalization algorithm (Imakaev et al. 2012), making the assumption of equal visibility of each fragment. The ICE normalization can be used as a standalone python package and is available `<https://github.com/hiclib/>`_
 
 
 Data format
@@ -260,7 +301,7 @@ Data format
 A contact map is defined by :
 
 * A list of genomic intervals related to the specified resolution (BED format).
-* A matrix, stored as standard triplet sparse format (i.e. list format). Based on the observation that a contact map is symmetric and usually sparse, only non-zero values are stored for half of the matrix. The user can specified if the *'upper'*, *'lower'* or *'complete'* matrix has to be stored. The *'asis'* option allows to store the contacts as they are observed from the valid pairs.
+* A matrix, stored as standard triplet sparse format (i.e. list format). Based on the observation that a contact map is symmetric and usually sparse, only non-zero values are stored for half of the matrix. The user can specified if the *'upper'*, *'lower'* or *'complete'* matrix has to be stored. The *'asis'* option allows to store the contacts as they are observed from the valid pairs files.
 
 ::
 
