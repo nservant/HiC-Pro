@@ -6,7 +6,7 @@
 HiC-Pro Quick Start Guide
 *************************
 
-**This page is just a quick start guide, please read the full `manual <doc/MANUAL.rst>`_ for more information !**
+This page is just a quick start guide, please read the full `manual <doc/MANUAL.rst>`_ for more information !
 
 See NEWS for information about changes in this and previous versions
 
