@@ -59,4 +59,14 @@ Here is the way to generate such file using the `HiTC <http://bioconductor.org/p
 
 **Why HiC-Pro need to be run in two steps in parallel mode ?**
 
+Th HiC-Pro pipeline is divided into two main steps. The first part of the pipeline is 'fastq' based, meaning that the same anlaysis will be performed for all fastq files.
+This part can be easily paralelized per fastq, with at the end, a list of valid interactions per fastq file.
+The second step of the pipeline is 'sample' based. All lists of valid interactions from the same sample are merged in order to build and normalize the maps.
+At that time, this second step is not time consuming, and we do not parallize it although a per sample parallelization migth be a good idea.
+So, because these two steps as either 'fastq' based or 'sample' based, we need to separate them during the parallele processing.
+
 **Does HiC-Pro support other mapper ?**
+
+No. HiC-Pro is only based on the bowtie2 mapper.
+However, note that HiC-Pro can be run from aligned data. In this case, the input path (-i) must be a BAM folder, and the analysis has to be run step-by-step.
+

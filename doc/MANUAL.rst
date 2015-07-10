@@ -58,7 +58,7 @@ Annotation Files
 
 In order to process the raw data, HiC-Pro requires three annotation files :
 
-1. A BED file of the restriction fragments after digestion. This file depends both of the restriction enzyme and the reference genome. See the `FAQ <../html/FAQ.html>`_ for details about how to generate this file. A few annotation files are provided with the HiC-Pro sources.
+1. **A BED file** of the restriction fragments after digestion. This file depends both of the restriction enzyme and the reference genome. See the `FAQ <../html/FAQ.html>`_ for details about how to generate this file. A few annotation files are provided with the HiC-Pro sources.
 
 ::
 
@@ -74,7 +74,7 @@ In order to process the raw data, HiC-Pro requires three annotation files :
    chr1   38791   39255   HIC_chr1_10   0   +
    (...)
 
-2. A table file of chromosomes' size.
+2. **A table file** of chromosomes' size.
 
 ::
 
@@ -90,7 +90,7 @@ In order to process the raw data, HiC-Pro requires three annotation files :
    chr10   135534747
    (...)
 
-3. The bowtie2 indexes. See `the bowtie2 manual page <http://bowtie-bio.sourceforge.net/bowtie2/index.shtml>`_ for details about how to create such indexes.
+3. **The bowtie2 indexes**. See `the bowtie2 manual page <http://bowtie-bio.sourceforge.net/bowtie2/index.shtml>`_ for details about how to create such indexes.
 
 How to use it ?
 ===============
@@ -184,17 +184,16 @@ How to use it ?
 ------------                                                                                                                                                              
 
 2. Put all fastq files in a rawdata folder. Each fastq file has to be put in a folder per sample.
-2. Put all fastq files in a rawdata folder. Each fastq file has to be put in a folder per sample.
 
 3. Run HiC-Pro
    
-* Run the complete workflow in a single command line
+* **Run the complete workflow in a single command line**
 
 .. code-block::
 
    MY_INSTALL_PATH/bin/HiC-Pro -i FULL_PATH_TO_RAW_DATA -o FULL_PATH_TO_OUTPUTS -c MY_LOCAL_CONFIG_FILE
   
-* Run the complete workflow with PBS-Torque
+* **Run the complete workflow with PBS-Torque**
 
 .. code-block:: 
 
@@ -227,7 +226,7 @@ Once executed succesfully (may take several hours), then type:
   	qsub HiCPro_step2.sh
 
 
-* Run HiC-Pro in sequential mode
+* **Run HiC-Pro in sequential mode**
 
 HiC-Pro can be run in a step-by-step mode.
 Available steps are described in the help command
@@ -273,28 +272,28 @@ How does HiC-Pro work ?
    :scale: 80%
 
 
-1. Reads Mapping
+1. **Reads Mapping**
 
 Each mate is independantly aligned on the reference genome. The mapping is performed in two steps. First, the reads are aligned using an end-to-end aligner. Second, reads spanning the ligation junction are trimmmed from their 3' end, and aligned on the genome. Aligned reads for both fragment mates are then paired in a single paired-end BAM file. Singletons and multi-hits can be discarded according the confirguration parameters.
 
-2. Fragment assignment and filtering
+2. **Fragment assignment and filtering**
 
 Each aligned reads can be assigned to one restriction fragment according to the reference genome and the restriction enzyme.
 The next step is to separate the invalid ligation products from the valid pairs. Dangling end and self circles pairs are therefore excluded.
 Only valid pairs involving two different restriction fragments are used to build the contact maps. Duplicated valid pairs associated to PCR artefacts are discarded.
 The fragment assignment can be visualized through a BAM files of aliged pairs where each pair is flagged according to its classification.
 
-3. Quality Controls
+3. **Quality Controls**
 
 HiC-Pro performs a couple of quality controls for most of the analysis steps. The alignment statistics are the first quality controls. Aligned reads in the first (end-to-end) step, and alignment after trimming are reported. Note that in pratice, we ususally observed around 10-20% of trimmed reads. An abnormal level of trimmed reads can reflect a ligation issue.
 Once the reads are aligned on the genome, HiC-pro checks the number of singleton, multiple hits or duplicates. The fraction of valid pairs are presented for each type of ligation products. Invalid pairs such as dangling and or self-circle are also represented. A high level of dangling ends, or an imbalance in valid pairs ligation type can be due to a ligation, fill-in or digestion issue.
 Finally HiC-Pro also calculated the distribution of fragment size on a subset of valid pairs. Additional statistics will report the fraction of intra/inter-chromosomal contacts, as well as the proportion of short range (<20kb) versus long range (>20kb) contacts.
 
-4. Map builder
+4. **Map builder**
 
 Intra et inter-chromosomal contact maps are build for all specified resolutions. The genome is splitted into bins of equal size. Each valid interaction is associated with the genomic bins to generate the raw maps.
 
-5. ICE normalization
+5. **ICE normalization**
 
 Hi-C data can contain several sources of biases which has to be corrected. HiC-Pro proposes a fast implementation of the original ICE normalization algorithm (Imakaev et al. 2012), making the assumption of equal visibility of each fragment. The ICE normalization can be used as a standalone python package and is available `<https://github.com/hiclib/>`_
 
