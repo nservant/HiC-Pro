@@ -191,19 +191,19 @@ How to use it ?
    
 	* Without PBS-Torque
 
-  	.. code-block:: guess
+.. code-block:: guess
 
     	MY_INSTALL_PATH/bin/HiC-Pro -i FULL_PATH_TO_RAW_DATA -o FULL_PATH_TO_OUTPUTS -c MY_LOCAL_CONFIG_FILE
   
 	* With PBS-Torque
 
-  	.. code-block:: guess
+.. code-block:: guess
 
    	MY_INSTALL_PATH/bin/HiC-Pro -i FULL_PATH_TO_RAW_DATA -o FULL_PATH_TO_OUTPUTS -c MY_LOCAL_CONFIG_FILE -p
 
 	You will get the following message :
 
-	.. code-block:: guess
+.. code-block:: guess
 
   	Please run HiC-Pro in two steps :
   	1- The following command will launch the parallel workflow through 12 torque jobs:
@@ -213,14 +213,14 @@ How to use it ?
 
 	Execute the displayed command:
 
-	.. code-block:: guess
+.. code-block:: guess
 
   	qsub HiCPro_step1.sh
 
 	Then wait for the torque mails... :)
 	Once executed succesfully (may take several hours), then type:
 
-	.. code-block:: guess
+.. code-block:: guess
 
   	qsub HiCPro_step2.sh
 
@@ -229,7 +229,7 @@ How to use it ?
    HiC-Pro can be run in a step-by-step mode.
    Available steps are described in the help command
 
-  .. code-block:: guess
+.. code-block:: guess
 
   HiC-Pro --help
   usage : HiC-Pro -i INPUT -o OUTPUT -c CONFIG [-s ANALYSIS_STEP] [-p] [-h] [-v]
@@ -254,6 +254,7 @@ How to use it ?
 
 
    As an exemple, if you want to only want to align the sequencing reads, use :
+
 .. code-block:: guess
 
     	MY_INSTALL_PATH/bin/HiC-Pro -i FULL_PATH_TO_RAW_DATA -o FULL_PATH_TO_OUTPUTS -c MY_LOCAL_CONFIG_FILE -s mapping -s quality_checks
