@@ -194,12 +194,14 @@ How to use it ?
 .. code-block:: guess
 
     	MY_INSTALL_PATH/bin/HiC-Pro -i FULL_PATH_TO_RAW_DATA -o FULL_PATH_TO_OUTPUTS -c MY_LOCAL_CONFIG_FILE
+
   
 	* With PBS-Torque
 
 .. code-block:: guess
 
    	MY_INSTALL_PATH/bin/HiC-Pro -i FULL_PATH_TO_RAW_DATA -o FULL_PATH_TO_OUTPUTS -c MY_LOCAL_CONFIG_FILE -p
+
 
 	You will get the following message :
 
@@ -211,11 +213,13 @@ How to use it ?
   	2- The second command will merge all outputs to generate the contact maps:
   	qsub HiCPro_step2.sh
 
+
 	Execute the displayed command:
 
 .. code-block:: guess
 
   	qsub HiCPro_step1.sh
+
 
 	Then wait for the torque mails... :)
 	Once executed succesfully (may take several hours), then type:
@@ -223,6 +227,7 @@ How to use it ?
 .. code-block:: guess
 
   	qsub HiCPro_step2.sh
+
 
    2. Run HiC-Pro in sequential mode
 
