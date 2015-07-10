@@ -58,7 +58,7 @@ Annotation Files
 
 In order to process the raw data, HiC-Pro requires three annotation files :
 
-1. **A BED file** of the restriction fragments after digestion. This file depends both of the restriction enzyme and the reference genome. See the `FAQ <../html/FAQ.html>`_ for details about how to generate this file. A few annotation files are provided with the HiC-Pro sources.
+1. **A BED file** of the restriction fragments after digestion. This file depends both of the restriction enzyme and the reference genome. See the `FAQ <doc/FAQ.rst>`_ for details about how to generate this file. A few annotation files are provided with the HiC-Pro sources.
 
 ::
 
