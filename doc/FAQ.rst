@@ -8,7 +8,7 @@ A log file is generated when you run HiC-Pro. Its name is specified in the confi
 
 **How can I split my .fastq files into smaller files ?**
 
-See the :doc:`HiC-Pro Utilities <UTILS>` which is baed on the split unix command.
+See the :doc:`HiC-Pro Utilities <UTILS>`_ which is baed on the split unix command.
 For more information, see :code:`man split`
 
 **How can I generate my annotation files ?**

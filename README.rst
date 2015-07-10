@@ -6,7 +6,7 @@
 HiC-Pro Quick Start Guide
 *************************
 
-This page is just a quick start guide, please read the full `manual <doc/MANUAL.rst>`_ for more information !
+.. This page is just a quick start guide, please read the full `manual <doc/MANUAL.rst>`_ for more information !
 
 See NEWS for information about changes in this and previous versions
 
@@ -89,11 +89,13 @@ How to use it ?
 2. Put all fastq files in a rawdata folder. Each fastq file has to be put in a folder per sample.
 3. Run HiC-Pro
 
+
   * Without PBS-Torque
 
   .. code-block:: guess
 
     MY_INSTALL_PATH/bin/HiC-Pro -i FULL_PATH_TO_RAW_DATA -o FULL_PATH_TO_OUTPUTS -c MY_LOCAL_CONFIG_FILE
+
   
   * With PBS-Torque
 
