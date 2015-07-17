@@ -54,6 +54,7 @@ merge_pairs()
     mkdir -p ${LDIR}
     mkdir -p ${BOWTIE2_FINAL_OUTPUT_DIR}/${sample_dir}
 
+<<<<<<< HEAD
     #cmd="${PYTHON_PATH}/python ${SCRIPTS}/mergeSAM.py ${OPTS} -f ${BOWTIE2_FINAL_OUTPUT_DIR}/${prefix_r1}.bwt2merged.bam -r ${BOWTIE2_FINAL_OUTPUT_DIR}/${prefix_r2}.bwt2merged.bam -o ${BOWTIE2_FINAL_OUTPUT_DIR}/${prefix_out}.bwt2pairs.bam > ${LDIR}/mergeSAM.log"
     cmd="${PYTHON_PATH}/python ${SCRIPTS}/mergeSAM.py ${OPTS} -f ${file_r1} -r ${file_r2} -o ${BOWTIE2_FINAL_OUTPUT_DIR}/${prefix_out}.bwt2pairs.bam > ${LDIR}/mergeSAM.log"
     
@@ -65,6 +66,34 @@ merge_pairs()
 }
 
 
+=======
+    cmd="${PYTHON_PATH}/python ${SCRIPTS}/mergeSAM.py ${OPTS} -f ${BOWTIE2_FINAL_OUTPUT_DIR}/${prefix_r1}.bwt2merged.bam -r ${BOWTIE2_FINAL_OUTPUT_DIR}/${prefix_r2}.bwt2merged.bam -o ${BOWTIE2_FINAL_OUTPUT_DIR}/${prefix_out}.bwt2pairs.bam > ${LDIR}/mergeSAM.log"
+    exec_cmd $cmd
+}
+
+##
+## Tag reads according to their SNP information
+##
+tag_allele_spe()
+{
+    local bam_paired="$1"
+    local vcf_file="$2"
+    local asout=$(echo ${sample_dir}/$(basename $r) | sed -e 's/.bwt2pairs.bam/.bwt2pairs_allspe.bam/')
+
+    local sample_dir=$(get_sample_dir ${r})
+    LDIR=${LOGS_DIR}/${sample_dir}
+
+    if [ -e ${vcf_file} ]; then
+	cmd="${PYTHON_PATH}/python ${SCRIPTS}/markAllelicStatus.py -s ${vcf_file} -v -r -i ${bam_paired} -o ${BOWTIE2_FINAL_OUTPUT_DIR}/${asout} 2> ${LDIR}/markAlleleSpecific.log"
+	echo $cmd
+	exec_cmd $cmd
+
+	cmd="mv ${BOWTIE2_FINAL_OUTPUT_DIR}/${asout} $bam_paired"
+	exec_cmd $cmd
+    else
+	die "Error - VCF file not found"
+    fi
+}
 
 ## Combine R1/R2 tags in a single BAM file
 for r in $(get_sam_for_merge)
@@ -75,6 +104,10 @@ do
     merge_pairs $sample_dir $R1 $R2 
 done
 
-## Make plots
-#${SCRIPTS}/make_plots.sh -c ${conf_file} -p "pairing" >> ${LOGFILE}
-
+## Add allele specific tag if specified
+if [[ ${ALLELE_SPECIFIC_SNP} != "" ]]; then
+    for r in $(get_paired_bam)
+    do
+	tag_allele_spe $r ${ALLELE_SPECIFIC_SNP}
+    done
+fi

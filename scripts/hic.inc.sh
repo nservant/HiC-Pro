@@ -288,7 +288,7 @@ get_sam_for_combine()
     get_hic_files ${BOWTIE2_GLOBAL_OUTPUT_DIR} _${REFERENCE_GENOME}.bwt2glob.bam   
 }
 
-get_files_for_overlap()
+get_paired_bam()
 {
     get_hic_files ${BOWTIE2_FINAL_OUTPUT_DIR} _${REFERENCE_GENOME}.bwt2pairs.bam | get_R1 | sed -e "s/${PAIR1_EXT}//" -e "s/_${REFERENCE_GENOME}.bwt2merged//"
 }

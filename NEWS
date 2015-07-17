@@ -1,4 +1,13 @@
 ***********************************
+CHANGES IN VERSION 3.0.0
+
+NEW FEATURES
+
+   o Allele specific version of HiC-Pro
+
+   o New utility to build the VCF file for allele specific analysis
+
+***********************************
 CHANGES IN VERSION 2.5.2
 
 NEW FEATURES
@@ -12,6 +21,8 @@ SIGNIFICANT USER-VISIBLE CHANGES
    o Stepwise analysis can now be run in addition to the parallel mode
 
    o Additional checks when running the pipeline
+
+   o Quality control plots are now run after each step instead of once at the end of the pipeline
 
 BUG FIXES
 

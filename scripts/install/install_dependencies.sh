@@ -105,8 +105,6 @@ while read curline_read; do
 		echo "export $val in PATH"
 		export PATH=$val:$PATH
 	    fi
-	else
-	    export $var=$val
 	fi
     fi
 done < $conf
@@ -196,7 +194,7 @@ if [ ! -w $PREFIX_BIN ]; then
 fi 
 
 ################  Python  ###################
-echo "Checking dependencies ... "
+echo  "Checking dependencies ... "
 
 wasInstalled=0;
 echo "Checking Python libraries ..."

@@ -15,7 +15,7 @@ SOURCES=$(SCRIPTS)/src
 
 all : install
 
-install : checkdep mapbuilder readstrimming iced cp
+install : checkdep mapbuilder readstrimming iced build
 
 
 ######################################
@@ -40,6 +40,7 @@ endif
 checkdep: config_check
 	./scripts/install/install_dependencies.sh -c $(CONFIG_SYS) -o  $(realpath $(PREFIX))/HiC-Pro_$(VNUM)
 
+
 ######################################
 ## Compile
 ##
@@ -54,7 +55,7 @@ readstrimming: $(SOURCES)/cutsite_trimming.cpp
 
 ## Build Python lib
 iced: $(SOURCES)/ice_mod
-	(cp $(SOURCES)/ice_mod/iced/scripts/ice ${SCRIPTS}; cd $(SOURCES)/ice_mod/; python setup.py install --user;)
+	(cp $(SOURCES)/ice_mod/iced/scripts/ice ${SCRIPTS}; cd $(SOURCES)/ice_mod/; ${PYTHON_PATH}/python setup.py install --user;)
 
 
 ######################################

@@ -7,6 +7,11 @@
 ##
 ################################################################################
 
+   o Add a plot for allele specific status
+
+   o Remove more tmp files as all intermediate mapping results
+
+   o Update doc
 
 ################################################################################
 ##
@@ -19,6 +24,30 @@
 
    o Add check when running the pipeline
    o New quality controls plots for duplicates, short range versus long range interactions, and fragment size
+
+##--------------------
+##05-06-15
+##--------------------
+
+   o First version of allele specific HiC-Pro ready !!!
+ 
+   o Update of the mapped_2hic_fragments.py script in order to add the haplotype tag in the list of valid interaction
+
+##--------------------
+##01-06-15
+##--------------------
+
+   o First version of markAllelicStatus.py with read a BAM file, and add a tag according to the parental genome. The idea in to use the MD tag, get the N position within the reads and then on the genome.
+
+   o Once the data are mapped. Add a step to reconstruct the haplotype at 'N' position and therefore to assign a read to a parental genome.
+
+##--------------------
+##27-05-15
+##--------------------
+
+   o First version of extract_snps.py scripts 
+
+   o First part of allele specific pipeline - be able to extract the haplotype from the SANGER database. The mapping has to be done on masked genome.
 
 ##--------------------
 ##03-04-15
