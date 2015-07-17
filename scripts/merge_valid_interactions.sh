@@ -72,9 +72,14 @@ do
 	    echo -e "valid_interaction_rmdup\t"$allcount_rmdup >> ${DATA_DIR}/${RES_FILE_NAME}/${RES_FILE_NAME}_allValidPairs.mergestat
 	    awk '$2 == $5{cis=cis+1; if ($6-$3<=20000){sr=sr+1}else{lr=lr+1}} $2!=$5{trans=trans+1}END{print "trans_interaction\t"trans"\ncis_interaction\t"cis"\ncis_shortRange\t"sr"\ncis_longRange\t"lr}' ${DATA_DIR}/${RES_FILE_NAME}/${RES_FILE_NAME}_allValidPairs >> ${DATA_DIR}/${RES_FILE_NAME}/${RES_FILE_NAME}_allValidPairs.mergestat
 	fi
-     fi
+
+	## Split valid interaction per haplotype
+	if [[ ! -z ${ALLELE_SPECIFIC_SNP} ]]; then
+	    echo "## Split valid interaction for allele specific maps ..." >> ${LDIR}/merge_valid_interactions.log
+	    ${SCRIPTS}/split_valid_interactions.py -i ${DATA_DIR}/${RES_FILE_NAME}/${RES_FILE_NAME}_allValidPairs -v >> ${LDIR}/merge_valid_interactions.log
+	fi
+
+    fi
     wait
 done
 
-## make plots
-## ${SCRIPTS}/make_plots.sh -c ${conf_file} -p "contacts" >> ${LOGFILE}
