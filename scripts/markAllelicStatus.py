@@ -53,21 +53,29 @@ def get_args():
 
 def get_snp_gt(gt, ref, alt):          
     gtsnp = []
-    gtsnp.append(ref)
-    snp_geno = gt.split('/')
+    
+    ## gtsnp.append(ref)
+    snp_geno = re.split('/|\|', gt)
     ## '.' are not considered
     if len(snp_geno) != 2:
-        gtsnp.append(None)
-    ## heterogygous - return None
-    elif snp_geno[0] == snp_geno[1]:
-        if int(snp_geno[0]) == 0:
-            gtsnp.append(ref)
-        elif int(snp_geno[0]) == 1:
-            gtsnp.append(alt)
-        else:
-            gtsnp.append(None)
+        return [None,None]
+    
+    ## First Allele
+    if int(snp_geno[0]) == 0:
+        gtsnp.append(ref)
+    elif int(snp_geno[0]) == 1:
+        gtsnp.append(alt)
     else:
         gtsnp.append(None)
+    
+    ## Second Allele
+    if int(snp_geno[1]) == 0:
+        gtsnp.append(ref)
+    elif int(snp_geno[1]) == 1:
+        gtsnp.append(alt)
+    else:
+        gtsnp.append(None)
+
     return gtsnp
     
 
@@ -120,8 +128,6 @@ def load_vcf( in_file, filter_qual=False, verbose=False, debug=False ):
 
             genotypes  = fields[9].split('\t') if fields[9] else []
             geno = get_snp_gt(genotypes[0].split(':')[0], ref, alt)      
-            #print line
-            #print geno
             if filter_qual == False or (filter_qual == True and qfilter=="PASS"):
                 if debug:
                     print >> sys.stderr, str(chrom) + " - " + str(start) + " - "+ str(qfilter) +" -REF= " + str(ref) + " -ALT= " + str(alt) + " - G1=" + str(geno[0]) + " - G2=" + str(geno[1])
@@ -332,9 +338,6 @@ if __name__ == "__main__":
     g2_counter = 0
     cf_counter = 0
     N_counter = 0
-
-    #baseReadsFile = os.path.basename(mappedReadsFile)
-    #baseReadsFile = re.sub(r'.bam|.sam', '', baseReadsFile)
 
     # Read the SNP file
     snps = load_vcf(snpFile, filter_qual=False, verbose=verbose, debug=False)

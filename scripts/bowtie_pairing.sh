@@ -76,7 +76,8 @@ tag_allele_spe()
 
 	cmd="mv ${BOWTIE2_FINAL_OUTPUT_DIR}/${asout} $bam_paired"
 	exec_cmd $cmd
-	
+    else
+	die "Error - VCF file not found"
     fi
 }
 

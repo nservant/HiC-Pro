@@ -7,6 +7,7 @@
 """
 Script to extract informative SNPs from a multisamples VCF
 If no --ref is specified, use the REF allele as is. Otherwise, replace the REF allele by the specified one.
+Phased data are not considered
 
 Example :
 ./extract_snps.py -i mgp.v2.snps.annot.reformat.vcf -r CASTEiJ -a FVB_NJ -q -v > mgp.v2.snps.annot.reformat_CAST_FVB_PASS.vcf
@@ -19,6 +20,8 @@ import pysam
 import re
 
 def usage():
+    print "This script was designed to extract informative SNPs information from two parental genotypes, and return the F1 genotype."
+
     """Usage function"""
     print "Usage : python extract_snps.py"
     print "-i/--vcf <input VCF file information>"
@@ -49,6 +52,11 @@ def get_args():
 ## 1/1, 2/2, A, T, C, 1
 def get_filter_snp_gt(gref, galt, ref, alt):
 
+    #print gref
+    #print galt
+    #print ref
+    #print alt
+
     ref_geno = re.split('/|\|', gref)
     alt_geno = re.split('/|\|', galt)
         
@@ -57,10 +65,11 @@ def get_filter_snp_gt(gref, galt, ref, alt):
         return -1
     elif ref_geno[0] == "." or ref_geno[1] == "." or alt_geno[0] == "." or alt_geno[1] == ".":
         return -1
-    ## heterogygous
+    ## remove heterogygous
     elif ref_geno[0] != ref_geno[1] or alt_geno[0] != alt_geno[1]:
         return -2
     else:
+        ## Keep homozyguous SNPs
         ref_snp = ref_geno[0]
         alt_snp = alt_geno[0]
 
@@ -149,8 +158,25 @@ if __name__ == "__main__":
                     refidx = i
                 elif samples[i] == altSample:
                     altidx = i
+                    
+            ## Check input parameters
+            if refSample != None and refidx == -1:
+                print   >> sys.stderr, "Error : REF sample not found"
+                sys.exit(-1)
+                
+            if refSample != None and altSample == None:
+                print   >> sys.stderr, "Error : Cannot change the REF allele without changing the ALT allele"
+                sys.exit(-1)
+                    
+            if altSample != None and altidx == -1:
+                print   >> sys.stderr, "Error : ALT sample not found"
+                sys.exit(-1)
 
-            print str(' '.join(header[0:9])) + " " + altSample
+            
+            if refidx != -1:
+                print str(' '.join(header[0:9])) + " " + refSample + "-" + altSample + "-F1"
+            else:
+                print str(' '.join(header[0:9])) + " " + "REF-" + altSample + "-F1"
             continue
         else:
             if altidx == -1 :
@@ -159,6 +185,12 @@ if __name__ == "__main__":
 
             fields = line.split('\t',9)
             var_counter+=1
+            
+            ## check chromosomes name
+            if re.compile('^chr').match(fields[0]):
+                chrom=fields[0]
+            else:
+                chrom="chr"+str(fields[0])
 
             ## Filter on PASS
             if filt_qual != 2 or (filt_qual == 2 and fields[6]=="PASS"):
@@ -198,8 +230,10 @@ if __name__ == "__main__":
                         nonspe_counter += 1
                     else:
                         snp_counter += 1
-                        altg[0]="1/1"
-                        print fields[0] + "\t" + fields[1] + "\t" + fields[2] + "\t" + geno[0] + "\t" + geno[1] + "\t" + fields[5] + "\t" + fields[6] + "\t" + fields[7] + "\t" + fields[8] + "\t" + ":".join(altg) 
+                        #altg[0]="1/1"
+                        #print chrom + "\t" + fields[1] + "\t" + fields[2] + "\t" + geno[0] + "\t" + geno[1] + "\t" + fields[5] + "\t" + fields[6] + "\t" + fields[7] + "\t" + fields[8] + "\t" + ":".join(altg)
+                        print chrom + "\t" + fields[1] + "\t" + fields[2] + "\t" + geno[0] + "\t" + geno[1] + "\t" + fields[5] + "\t" + fields[6] + "\t" + fields[7] + "\t" + "GT" + "\t" + "0/1"
+
                 else:
                     badqual_counter+=1
             else:
