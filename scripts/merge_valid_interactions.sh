@@ -75,10 +75,9 @@ do
 
 	## Split valid interaction per haplotype
 	if [[ ! -z ${ALLELE_SPECIFIC_SNP} ]]; then
-	    echo "## Split valid interaction for allele specific maps ..." >> ${LDIR}/merge_valid_interactions.log
+	    echo "## Split valid interactions for allele specific maps ..." >> ${LDIR}/merge_valid_interactions.log
 	    ${SCRIPTS}/split_valid_interactions.py -i ${DATA_DIR}/${RES_FILE_NAME}/${RES_FILE_NAME}_allValidPairs -v >> ${LDIR}/merge_valid_interactions.log
 	fi
-
     fi
     wait
 done

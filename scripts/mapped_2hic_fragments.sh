@@ -35,8 +35,8 @@ if [[ ! -e $GENOME_FRAGMENT_FILE ]]; then
 fi
 
 
-for r in $(get_files_for_overlap)
-#for r in $(get_paired_bam)
+#for r in $(get_files_for_overlap)
+for r in $(get_paired_bam)
 do
     sample_dir=$(get_sample_dir ${r})
     datadir=${MAPC_OUTPUT}/data/${sample_dir}

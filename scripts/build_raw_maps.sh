@@ -59,12 +59,17 @@ do
 	for bsize in ${BIN_SIZE}
 	do
 	    mkdir -p ${MATRIX_DIR}/${bsize}
-	    cat ${DATA_DIR}/${RES_FILE_NAME}/${RES_FILE_NAME}_allValidPairs | ${SCRIPTS}/build_matrix --matrix-format ${MATRIX_FORMAT} --binsize ${bsize} --chrsizes $ANNOT_DIR/$GENOME_SIZE --ifile /dev/stdin --oprefix ${MATRIX_DIR}/${bsize}/${RES_FILE_NAME}_${bsize} 2> ${LDIR}/build_raw_maps.log
 
 	    ## Build haplotype contact maps if specified
 	    if [[ ! -z ${ALLELE_SPECIFIC_SNP} ]]; then
-		awk -F"\t" '$9~/1-0|0-1|1-1/{print}' ${DATA_DIR}/${RES_FILE_NAME}/${RES_FILE_NAME}_allValidPairs | ${SCRIPTS}/build_matrix --matrix-format ${MATRIX_FORMAT} --binsize ${bsize} --chrsizes $ANNOT_DIR/$GENOME_SIZE --ifile /dev/stdin --oprefix ${MATRIX_DIR}/${bsize}/${RES_FILE_NAME}_${bsize}_G1 2> ${LDIR}/build_raw_maps_G1.log
-		awk -F"\t" '$9~/2-0|0-2|2-2/{print}' ${DATA_DIR}/${RES_FILE_NAME}/${RES_FILE_NAME}_allValidPairs | ${SCRIPTS}/build_matrix --matrix-format ${MATRIX_FORMAT} --binsize ${bsize} --chrsizes $ANNOT_DIR/$GENOME_SIZE --ifile /dev/stdin --oprefix ${MATRIX_DIR}/${bsize}/${RES_FILE_NAME}_${bsize}_G2 2> ${LDIR}/build_raw_maps_G2.log
+		#awk -F"\t" '$9~/1-0|0-1|1-1/{print}' ${DATA_DIR}/${RES_FILE_NAME}/${RES_FILE_NAME}_allValidPairs | ${SCRIPTS}/build_matrix --matrix-format ${MATRIX_FORMAT} --binsize ${bsize} --chrsizes $ANNOT_DIR/$GENOME_SIZE --ifile /dev/stdin --oprefix ${MATRIX_DIR}/${bsize}/${RES_FILE_NAME}_${bsize}_G1 2> ${LDIR}/build_raw_maps_G1.log
+		#awk -F"\t" '$9~/2-0|0-2|2-2/{print}' ${DATA_DIR}/${RES_FILE_NAME}/${RES_FILE_NAME}_allValidPairs | ${SCRIPTS}/build_matrix --matrix-format ${MATRIX_FORMAT} --binsize ${bsize} --chrsizes $ANNOT_DIR/$GENOME_SIZE --ifile /dev/stdin --oprefix ${MATRIX_DIR}/${bsize}/${RES_FILE_NAME}_${bsize}_G2 2> ${LDIR}/build_raw_maps_G2.log
+	    	cat ${DATA_DIR}/${RES_FILE_NAME}/${RES_FILE_NAME}_allValidPairs_G1 | ${SCRIPTS}/build_matrix --matrix-format ${MATRIX_FORMAT} --binsize ${bsize} --chrsizes $ANNOT_DIR/$GENOME_SIZE --ifile /dev/stdin --oprefix ${MATRIX_DIR}/${bsize}/${RES_FILE_NAME}_${bsize}_G1 2> ${LDIR}/build_raw_maps_G1.log
+		cat ${DATA_DIR}/${RES_FILE_NAME}/${RES_FILE_NAME}_allValidPairs_G2 | ${SCRIPTS}/build_matrix --matrix-format ${MATRIX_FORMAT} --binsize ${bsize} --chrsizes $ANNOT_DIR/$GENOME_SIZE --ifile /dev/stdin --oprefix ${MATRIX_DIR}/${bsize}/${RES_FILE_NAME}_${bsize}_G2 2> ${LDIR}/build_raw_maps_G2.log
+
+	    else
+		## Build normal diploid maps
+		cat ${DATA_DIR}/${RES_FILE_NAME}/${RES_FILE_NAME}_allValidPairs | ${SCRIPTS}/build_matrix --matrix-format ${MATRIX_FORMAT} --binsize ${bsize} --chrsizes $ANNOT_DIR/$GENOME_SIZE --ifile /dev/stdin --oprefix ${MATRIX_DIR}/${bsize}/${RES_FILE_NAME}_${bsize} 2> ${LDIR}/build_raw_maps.log
 	    fi
 	done
     fi

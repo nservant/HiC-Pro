@@ -105,6 +105,8 @@ while read curline_read; do
 		echo "export $val in PATH"
 		export PATH=$val:$PATH
 	    fi
+	else
+	    export $var=$val
 	fi
     fi
 done < $conf
@@ -194,7 +196,7 @@ if [ ! -w $PREFIX_BIN ]; then
 fi 
 
 ################  Python  ###################
-echo  "Checking dependencies ... "
+echo "Checking dependencies ... "
 
 wasInstalled=0;
 echo "Checking Python libraries ..."
@@ -364,7 +366,7 @@ echo "SOURCES = ${install_dir}/scripts/src" >> config-system.txt
 echo "ANNOT_DIR = ${install_dir}/annotation" >> config-system.txt
 
 ## check rights in PREFIX folder
-if [[ -z $PREFIX ]]; then PREFIX=/usr/bin; fi
+if [[ -z $PREFIX ]]; then PREFIX=/local/bin; fi
 if [ ! -w $PREFIX ]; then
     die "Cannot install HiCPro in $PREFIX directory. Maybe missing super-user (root) permissions to write there. Please specify another directory in the config-install.txt file (PREFIX=)";
 fi 

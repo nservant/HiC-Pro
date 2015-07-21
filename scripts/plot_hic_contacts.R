@@ -115,6 +115,8 @@ stopifnot(length(mergestat)>0)
 
 ## Get statistics summary
 stats_per_sample<- read.csv(mergestat, sep="\t", as.is=TRUE, comment.char="#", header=FALSE, row.names=1)
+print(stats_per_sample)
+
 mat <- getContactsStatMat(stats_per_sample)
 p1 <- plotDedup(mat, sampleName)
 
@@ -125,7 +127,7 @@ dev.off()
 
 ## Histogram of distance
 allvalidpairs <- list.files(path=hicDir, pattern=paste0("^[[:print:]]*.validPairs$"), full.names=TRUE)
-stats_per_validpairs<- lapply(allvalidpairs, read.csv, sep="\t", as.is=TRUE, comment.char="#", header=FALSE, row.names=1, nrow=100000)
+stats_per_validpairs<- lapply(allvalidpairs, read.csv, sep="\t", as.is=TRUE, header=FALSE, row.names=1, nrow=100000)
 lv <- sapply(stats_per_validpairs, "[", 7)
 allhist <- lapply(lv, hist, breaks=c(seq.int(from=0, to=1500, by=10), Inf), plot=FALSE)
 

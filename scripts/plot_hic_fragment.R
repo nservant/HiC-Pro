@@ -116,6 +116,7 @@ stopifnot(length(allrsstat)>0)
 ## Get statistics summary
 stats_per_fastq<- lapply(allrsstat, read.csv, sep="\t", as.is=TRUE, comment.char="#", header=FALSE, row.names=1)
 stats_per_sample<- rowSums(do.call(cbind,stats_per_fastq))
+print (stats_per_sample)
 
 ## Make plots
 mat <- getHiCMat(stats_per_sample)

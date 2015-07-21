@@ -126,6 +126,7 @@ stats_per_fastq<- lapply(allpairstat, read.csv, sep="\t", as.is=TRUE, header=FAL
 stats_per_sample<- rowSums(do.call(cbind,lapply(stats_per_fastq, "[", 1)))
 perc_per_sample<- rowMeans(do.call(cbind,lapply(stats_per_fastq, "[", 2)))
 
+print(stats_per_sample)
 
 ## Make plots
 mat <- getPairMat(stats_per_sample, perc_per_sample, rmMulti=rmMulti, rmSingle=rmSingle)

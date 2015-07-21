@@ -59,10 +59,10 @@ mapping_stat(){
     lmap_reads=`exec_ret $cmd`
     
     echo "## $prefix.mapstat"
-    echo "$tot_reads total"
-    echo "$map_reads mapped"
-    echo "$gmap_reads global"
-    echo "$lmap_reads local"
+    echo -e "total\t$tot_reads"
+    echo -e "mapped\t$map_reads"
+    echo -e "global\t$gmap_reads"
+    echo -e "local\t$lmap_reads"
 }
 
 for r in $(get_aln_for_stats ${mode})

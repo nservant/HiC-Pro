@@ -142,10 +142,13 @@ print(allmapstat_r1)
 print(allmapstat_r2)
 
 ## Get statistics summary
-stats_per_fastq_r1<- sapply(allmapstat_r1, read.csv, sep=" ", row.names=2, as.is=TRUE, comment.char="#", header=FALSE)
+stats_per_fastq_r1<- sapply(allmapstat_r1, read.csv, sep="\t", row.names=1, as.is=TRUE, comment.char="#", header=FALSE)
 stats_per_sample_r1<- colSums(do.call(rbind, stats_per_fastq_r1))
-stats_per_fastq_r2<- sapply(allmapstat_r2, read.csv, sep=" ", row.names=2, as.is=TRUE, comment.char="#", header=FALSE)
+stats_per_fastq_r2<- sapply(allmapstat_r2, read.csv, sep="\t", row.names=1, as.is=TRUE, comment.char="#", header=FALSE)
 stats_per_sample_r2<- colSums(do.call(rbind, stats_per_fastq_r2))
+
+print(stats_per_sample_r1)
+print(stats_per_sample_r2)
 
 ## Make plots
 mat_r1 <- getMapMat(stats_per_sample_r1[1], stats_per_sample_r1[2], stats_per_sample_r1[3], stats_per_sample_r1[4])
