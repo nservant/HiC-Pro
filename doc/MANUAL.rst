@@ -99,7 +99,6 @@ Setting the configuration file
 
 ------------                                                                                                                                                              
 
-
 Run HiC-Pro in sequential mode
 ==============================
 
@@ -189,8 +188,12 @@ Intra et inter-chromosomal contact maps are build for all specified resolutions.
 Hi-C data can contain several sources of biases which has to be corrected. HiC-Pro proposes a fast implementation of the original ICE normalization algorithm (Imakaev et al. 2012), making the assumption of equal visibility of each fragment. The ICE normalization can be used as a standalone python package and is available `<https://github.com/hiclib/>`_
 
 
-Output Description
-==================
+Browsing the results
+====================
+
+* *bowtie_results*
+
+* *hic_results*
 
 A contact map is defined by :
 
