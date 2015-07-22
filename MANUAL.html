@@ -74,31 +74,30 @@
 </ol>
 <table border="1" class="docutils">
 <colgroup>
-<col width="27%" />
-<col width="0%" />
-<col width="73%" />
+<col width="29%" />
+<col width="71%" />
 </colgroup>
 <thead valign="bottom">
-<tr class="row-odd"><th class="head" colspan="3">SET UP SYSTEM AND PBS/TORQUE MODE</th>
+<tr class="row-odd"><th class="head" colspan="2">SET UP SYSTEM AND PBS/TORQUE MODE</th>
 </tr>
 </thead>
 <tbody valign="top">
-<tr class="row-even"><td colspan="2">N_CPU</td>
+<tr class="row-even"><td>N_CPU</td>
 <td>Number of CPU allows fper job</td>
 </tr>
-<tr class="row-odd"><td colspan="2">LOGFILE</td>
+<tr class="row-odd"><td>LOGFILE</td>
 <td>Name of the main log file</td>
 </tr>
-<tr class="row-even"><td colspan="2">[PBS_SUFFIX]</td>
+<tr class="row-even"><td>[PBS_SUFFIX]</td>
 <td>Name of PBS/Torque job on the custer</td>
 </tr>
-<tr class="row-odd"><td colspan="2">[PBS_MEM]</td>
+<tr class="row-odd"><td>[PBS_MEM]</td>
 <td>Memory (RAM) required per job</td>
 </tr>
-<tr class="row-even"><td colspan="2">[PBS_WALLTIME]</td>
+<tr class="row-even"><td>[PBS_WALLTIME]</td>
 <td>WallTime allows per job</td>
 </tr>
-<tr class="row-odd"><td colspan="2">[PBS_MAIL]</td>
+<tr class="row-odd"><td>[PBS_MAIL]</td>
 <td>User mail for PBS/Torque report</td>
 </tr>
 </tbody>
@@ -144,6 +143,31 @@
 </tbody>
 </table>
 <hr class="docutils" />
+<table border="1" class="docutils">
+<colgroup>
+<col width="14%" />
+<col width="86%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">ANNOTATION FILES</th>
+<th class="head">&nbsp;</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>REFERENCE_GENOME</td>
+<td>Reference genome prefix used for genome indexes. <em>Default: hg19</em></td>
+</tr>
+<tr class="row-odd"><td>GENOME_FRAGMENT</td>
+<td>BED file with restriction fragments. Loaded from the ANNOTATION folder in the HiC-Pro installation directory. <em>Default: HindIII_resfrag_hg19.bed</em></td>
+</tr>
+<tr class="row-even"><td>GENOME_SIZE</td>
+<td>Chromsome size file. Loaded from the ANNOTATION folder in the HiC-Pro installation directory. <em>Default: chrom_hg19.sizes</em></td>
+</tr>
+<tr class="row-odd"><td>[ALLELE_SPECIFIC_SNP]</td>
+<td>VCF file to SNPs which can be used to distinguish parental origin. See the <a class="reference external" href="AS.rst">allele specific section</a> for more details</td>
+</tr>
+</tbody>
+</table>
 <hr class="docutils" />
 <table border="1" class="docutils">
 <colgroup>
