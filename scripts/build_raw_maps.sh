@@ -45,7 +45,7 @@ if [[ ! -e $GENOME_SIZE_FILE ]]; then
     fi
 fi
 
-################### Combine Bowtie mapping ###################
+################### Create Matrix files ###################
 
 for RES_FILE_NAME in ${DATA_DIR}/*
 do

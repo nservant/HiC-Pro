@@ -145,15 +145,21 @@ filter_pairs()
 
 get_data_type()
 {
-    nbinfq=$(find -L $RAW_DIR -mindepth 2 -maxdepth 2 -name "*.fastq" -o -name "*.fastq.gz" | wc -l)
-    nbinbam=$(find -L $RAW_DIR -mindepth 2 -maxdepth 2 -name "*.bam" -o -name "*.sam" | wc -l)
-    
-    if [[ $nbinfq > 0 && $nbinbam == 0 ]]; then
+    nb_fq=$(find -L $RAW_DIR -mindepth 2 -maxdepth 2 -name "*.fastq" -o -name "*.fastq.gz" | wc -l)
+    nb_bam=$(find -L $RAW_DIR -mindepth 2 -maxdepth 2 -name "*.bam" -o -name "*.sam" | wc -l)
+    nb_inter=$(find -L $RAW_DIR -mindepth 2 -maxdepth 2 -name "*.validPairs" | wc -l)
+    nb_mat=$(find -L $RAW_DIR -mindepth 2 -maxdepth 4 -name "*.matrix" | wc -l)
+
+    if [[ $nb_fq > 0 ]]; then
         INPUT_DATA_TYPE="fastq"
-    elif [[ $nbinfq == 0 && $nbinbam > 0 ]]; then
+     elif [[ $nb_inter > 0 ]]; then
+        INPUT_DATA_TYPE="valid"
+    elif [[ $nb_mat > 0 ]]; then
+        INPUT_DATA_TYPE="mat"
+   elif [[ $nb_bam > 0 ]]; then
         INPUT_DATA_TYPE="bam"
     else
-       die "Error in input type. Fastq files OR bam files are expected."
+       die "Error in input type.'.fastq|.bam|.validPairs|.matrix' files are expected."
     fi
     echo $INPUT_DATA_TYPE
 }

@@ -11,7 +11,7 @@ slash := |
 tick := -
 undsc := _
 
-all : init mapping proc_hic merge_valid_interactions hic_qc build_raw_maps ice_norm
+all : init mapping proc_hic merge_persample hic_qc build_raw_maps ice_norm
 
 ## paralell
 all_qsub : init mapping proc_hic
@@ -72,8 +72,6 @@ debug: config_check
 
 ## Create output folders
 configure:  config_check
-	@mkdir -p $(BOWTIE2_OUTPUT_DIR)
-	@mkdir -p $(MAPC_OUTPUT)
 	@mkdir -p $(TMP_DIR)
 	@mkdir -p $(LOGS_DIR)
 
@@ -154,11 +152,11 @@ merge_valid_interactions:  config_check
 	@echo "Merge multiple files from the same sample ..." 
 	$(SCRIPTS)/merge_valid_interactions.sh -c $(CONFIG_FILE) >> $(LOGFILE)
 
-merge_persample: config_check
+merge_allstat: config_check
 	@echo "--------------------------------------------" 
 	@date 
 	@echo "Merge stat files per sample ..." 
-        $(SCRIPTS)/merge_stats.sh -c $(CONFIG_FILE) >> $(LOGFILE)
+	$(SCRIPTS)/merge_stats.sh -c $(CONFIG_FILE) >> $(LOGFILE)
 
 
 build_raw_maps:  config_check
@@ -184,5 +182,5 @@ ice_norm:
 	@echo "--------------------------------------------" 
 	@date 
 	@echo "Run ICE Normalization ..." 
-	$(SCRIPTS)/ice_norm.sh -c $(CONFIG_FILE) >> $(LOGFILE) # 2> $(LOGS_DIR)/normICE.log
+	$(SCRIPTS)/ice_norm.sh -c $(CONFIG_FILE) >> $(LOGFILE) 
 

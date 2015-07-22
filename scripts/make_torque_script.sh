@@ -84,7 +84,7 @@ EOF
     chmod +x ${torque_script}
 
     ## User message
-    echo "1- The following command will launch the parallel workflow through $count torque jobs:"
+    echo "The following command will launch the parallel workflow through $count torque jobs:"
     echo qsub ${torque_script}
 fi    
 
@@ -119,7 +119,7 @@ EOF
     chmod +x ${torque_script_s2}
 
     ## User message
-    echo "2- The following command will merge all processed data to generate the contact maps:"
+    echo "The following command will merge the processed data and run the remaining steps per sample:"
     echo qsub ${torque_script_s2}
 fi
 
