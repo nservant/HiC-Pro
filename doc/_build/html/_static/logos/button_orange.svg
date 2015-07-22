@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   width="12.396684"
+   height="12.396684"
+   id="svg3074"
+   version="1.1"
+   inkscape:version="0.48.4 r9939"
+   sodipodi:docname="button_orange.svg"
+   inkscape:export-filename="/home/nelle/Projects/2012non-metric/src/paris/doc/_static/logos/button_orange.png"
+   inkscape:export-xdpi="72.544014"
+   inkscape:export-ydpi="72.544014">
+  <defs
+     id="defs3076">
+    <filter
+       inkscape:collect="always"
+       id="filter3762"
+       x="-0.17489879"
+       width="1.3497976"
+       y="-0.17489879"
+       height="1.3497976">
+      <feGaussianBlur
+         inkscape:collect="always"
+         stdDeviation="0.53370408"
+         id="feGaussianBlur3764" />
+    </filter>
+  </defs>
+  <sodipodi:namedview
+     id="base"
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1.0"
+     inkscape:pageopacity="0.0"
+     inkscape:pageshadow="2"
+     inkscape:zoom="22.4"
+     inkscape:cx="0.69093403"
+     inkscape:cy="7.6852498"
+     inkscape:document-units="px"
+     inkscape:current-layer="layer1"
+     showgrid="false"
+     fit-margin-top="0"
+     fit-margin-left="0"
+     fit-margin-right="0"
+     fit-margin-bottom="0"
+     inkscape:window-width="1315"
+     inkscape:window-height="744"
+     inkscape:window-x="51"
+     inkscape:window-y="24"
+     inkscape:window-maximized="1" />
+  <metadata
+     id="metadata3079">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+        <dc:title></dc:title>
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+  <g
+     inkscape:label="Layer 1"
+     inkscape:groupmode="layer"
+     id="layer1"
+     transform="translate(-238.26214,-311.92077)">
+    <path
+       sodipodi:type="arc"
+       style="fill:#333333;fill-opacity:1;stroke:#33333f;stroke-width:0.2;stroke-miterlimit:4;stroke-opacity:0.94117647;stroke-dasharray:none;filter:url(#filter3762)"
+       id="path2990-4"
+       sodipodi:cx="241.30019"
+       sodipodi:cy="30.297409"
+       sodipodi:rx="3.661803"
+       sodipodi:ry="3.661803"
+       d="m 244.96199,30.297409 c 0,2.022358 -1.63945,3.661803 -3.6618,3.661803 -2.02236,0 -3.66181,-1.639445 -3.66181,-3.661803 0,-2.022358 1.63945,-3.661803 3.66181,-3.661803 2.02235,0 3.6618,1.639445 3.6618,3.661803 z"
+       transform="matrix(1.2530849,0,0,1.2530849,-57.625037,280.43802)"
+       inkscape:export-xdpi="71.160744"
+       inkscape:export-ydpi="71.160744" />
+    <path
+       sodipodi:type="arc"
+       style="fill:#ff3d00;fill-opacity:1;stroke:none"
+       id="path2990"
+       sodipodi:cx="241.30019"
+       sodipodi:cy="30.297409"
+       sodipodi:rx="3.661803"
+       sodipodi:ry="3.661803"
+       d="m 244.96199,30.297409 c 0,2.022358 -1.63945,3.661803 -3.6618,3.661803 -2.02236,0 -3.66181,-1.639445 -3.66181,-3.661803 0,-2.022358 1.63945,-3.661803 3.66181,-3.661803 2.02235,0 3.6618,1.639445 3.6618,3.661803 z"
+       transform="matrix(1.2530849,0,0,1.2530849,-58.117105,279.93441)"
+       inkscape:export-filename="/home/nelle/Projects/2012non-metric/src/paris/doc/_static/logos/button_orange.png"
+       inkscape:export-xdpi="72"
+       inkscape:export-ydpi="72" />
+  </g>
+</svg>

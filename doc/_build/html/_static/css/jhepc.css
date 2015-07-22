@@ -1,0 +1,244 @@
+body {
+  font-family: 'PT Sans', serif;
+  font-size: 16px;
+  line-height: 1.5em;
+}
+
+p {
+  padding-right: 6em;
+}
+
+a {
+  color: #A62800;
+}
+
+a:hover{
+  color: #FF3D00;
+  text-decoration: none;
+}
+
+div.navbar {
+  position: fixed;
+  width: 100%;
+  top: 0;
+  background-color: rgb(240, 240, 240);
+  border-bottom: 1px solid;
+  border-bottom-color: rgb(189, 189, 189);
+  height: 65px;
+  z-index: 50;
+  border-top-left-radius: 0px;
+  border-bottom-left-radius: 0px;
+  border-top-right-radius: 0px;
+  border-bottom-right-radius: 0px;
+}
+
+.navbar-nav>li>a, .navbar-nav>.active>a, .navbar-nav>.active>a:hover,
+ .navbar-nav>.active>a.active {
+  background: transparent;
+  text-transform: uppercase;
+  font-weight: bold;
+  height: 65px;
+  vertical-align: middle;
+  padding: 20px 30px;
+}
+
+.navbar-nav>li>a>img {
+  visibility: hidden;
+  padding-left: 8px;
+  padding-bottom: 3px;
+}
+
+.navbar-nav>li>a:hover>img{
+  visibility: visible;
+}
+
+
+div.navbar ul {
+  float: right;
+}
+
+div.navbar .navbar-brand {
+  max-width: 400px;
+  vertical-align: middle;
+  padding: 20px;
+}
+
+div.navbar .navbar-brand {
+  padding-top: 7px;
+}
+
+body {
+  background-color: rgb(255, 255, 255);
+}
+
+div.container{
+  min-height: 75%;
+  width: 100%;
+  max-width: none;
+  margin: 0;
+  border-bottom: 1px solid rgb(189, 189, 189);
+}
+
+div.container, footer {
+  max-width: 1450px;
+  margin: auto;
+  padding: 5em 14em 5em 14em;
+}
+
+div.container div#gallery {
+  margin-left: -8em;
+  margin-right: -2em;
+}
+
+div.container div#gallery h1 {
+  margin-left: 3em;
+  margin-right: 2em;
+}
+
+#carousel-container {
+  width: 100%;
+  margin: 0;
+  padding: 0;
+}
+
+h1 a.headerlink, h2 a.headerlink, h3 a.headerlink  {
+  display: none;
+  font-weight: normal;
+}
+
+h1 {
+  padding-top: 50px;
+  padding-bottom: 30px;
+  font-family: 'PT Sans Narrow', serif;
+  text-transform: uppercase;
+  font-size: 2.0em;
+  text-align: center;
+  font-weight: bold;
+}
+
+h2 {
+  font-family: 'PT Sans', serif;
+  font-size: 1.3em;
+  font-weight: bold;
+  text-transform: uppercase;
+
+}
+
+.carousel-inner {
+  border-bottom: 1px solid rgb(189, 189, 189);
+}
+
+.carousel-inner .item {
+  margin: 0;
+  width: 100%;
+  top: 65px;
+  height: 500px;
+}
+
+.carousel-inner .item .carousel-text {
+  height: 500px;
+  position: absolute;
+  top: 65px;
+  right: 0px;
+  width: 35%;
+  padding-left: 0em;
+  display: inline-block;
+  text-align: right;
+  padding-right: 18em;
+}
+
+.carousel-inner .item .carousel-text h2 {
+  font-size: 60px;
+}
+
+.carousel-inner .item .carousel-text h3 {
+  font-size: 35px;
+}
+
+
+.carousel-inner .item .carousel-image {
+  height: 500px;
+  width: 60%;
+  padding: 0 0px;
+  display: inline-block;
+  text-align: right;
+}
+
+.carousel-inner .item .carousel-image img {
+  padding: 50px 0px;
+  max-width: 80%;
+}
+
+.black {
+  background-color: black;
+  color: rgb(245, 245, 245);
+}
+
+.white {
+  background-color: white;
+  color: #333333;
+}
+
+.dark-grey {
+  background-color: #222;
+  color: rgb(245, 245, 245);
+}
+
+.section img {
+  display: block;
+  margin: auto;
+  -webkit-border-radius: 10px; /* Saf3-4, iOS 1-3.2, Android <1.6 */
+  -moz-border-radius: 10px; /* FF1-3.6 */
+  border-radius: 10px; /* Opera 10.5, IE9, Saf5, Chrome, FF4, iOS 4, Android 2.1+ */
+  border: 2px solid #fff;
+  max-width: 75%;
+  max-height: 60%;
+  margin-bottom: 40px;
+}
+
+.highlight {
+  background-color: transparent;
+}
+
+pre {
+  width: 70%;
+  font-family: monospace,serif;
+  background-color: white;
+  padding: 20px;
+}
+
+div.admonition {
+  margin-bottom: 10px;
+  margin-top: 10px;
+  padding: 7px;
+  border-radius: 4px;
+  -moz-border-radius: 4px;
+}
+
+div.note {
+  background-color: #EEE;
+  border: 1px solid #CCC;
+}
+
+pre {
+  padding: 10px;
+  background-color: #F8F8F8;
+  color: #222;
+  line-height: 1.2em;
+  border: 1px solid #DDD;
+  margin: 1.5em 0 1.5em 0;
+}
+
+p.admonition-title {
+  margin: 0px 10px 5px 0px;
+  font-weight: bold;
+  display: inline;
+}
+
+.first {
+  margin-top: 0 !important;
+}
+
+.highlight a {
+  text-decoration: underline;
+}
