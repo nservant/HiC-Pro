@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+  
+    <title>HiC-Pro: An optimized and flexible pipeline for Hi-C processing. &mdash; HiC-Pro 2.3.1 documentation</title>
+  <!-- htmltitle is before nature.css - we use this hack to load bootstrap first -->
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="stylesheet"
+        href="_static/css/bootstrap.min.css"
+	media="screen" />
+    <script src="_static/js/jquery.js"
+          type="text/javascript"></script>
+  <script src="_static/js/bootstrap.min.js"
+          type="text/javascript"></script>
+
+
+    
+    <link rel="stylesheet" href="_static/basic.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     '2.3.1',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <link rel="top" title="HiC-Pro 2.3.1 documentation" href="index.html" />
+    <link rel="prev" title="User cases" href="USER_CASES.html" />
+<meta charset='utf-8'>
+<meta http-equiv='X-UA-Compatible' content='IE=edge,chrome=1'>
+<meta name='viewport'
+      content='width=device-width, initial-scale=1.0, maximum-scale=1'>
+<meta name="apple-mobile-web-app-capable" content="yes">
+<link rel="stylesheet"
+        href="_static/css/jhepc.css"
+         media="screen" />
+  <link href='http://fonts.googleapis.com/css?family=PT+Serif'
+        rel='stylesheet' type='text/css'>
+  <link href='http://fonts.googleapis.com/css?family=PT+Sans'
+        rel='stylesheet' type='text/css'>
+  <link href='http://fonts.googleapis.com/css?family=PT+Sans+Narrow'
+        rel='stylesheet' type='text/css'>
+
+
+
+  </head>
+  <body><div class="navbar">
+    <a class="navbar-brand" href="index.html">
+      
+    </a>
+    <ul class="nav navbar-nav">
+
+    </ul>
+  </div>
+    <div class="container">
+  
+  <div class="section" id="faq">
+<h1>FAQ<a class="headerlink" href="#faq" title="Permalink to this headline">¶</a></h1>
+<p><strong>HiC-Pro failed. How to find what&#8217;s going wrong ?</strong></p>
+<p>A log file is generated when you run HiC-Pro. Its name is specified in the configuration file. In addition, some parts of the pipeline generate specific logs which are available in the <em>log</em> folder</p>
+<p><strong>How can I split my .fastq files into smaller files ?</strong></p>
+<p>See the <a class="reference external" href="UTILS.rst">HiC-Pro Utilities</a> which is baed on the split unix command.
+For more information, see <tt class="code docutils literal"><span class="pre">man</span> <span class="pre">split</span></tt></p>
+<p><strong>How can I generate my annotation files ?</strong></p>
+<p>HiC-Pro requires two annotation files.</p>
+<ul>
+<li><p class="first">The chromosomes size are usually available through annotation website, such as the UCSC Genome Browser:</p>
+<blockquote>
+<div><ul class="simple">
+<li><a class="reference external" href="http://genome-euro.ucsc.edu/cgi-bin/hgTracks?hgsid=13085504&amp;chromInfoPage=">hg19</a></li>
+<li><a class="reference external" href="http://genome.ucsc.edu/cgi-bin/hgTracks?db=mm9&amp;chromInfoPage=">mm9</a></li>
+<li>...</li>
+</ul>
+</div></blockquote>
+</li>
+</ul>
+<p>Another way to generate this file is, for instance, to use the R environment.</p>
+<div class="highlight-guess"><div class="highlight"><pre><span class="c1">###</span>
+<span class="c1">## How to generate chromosome size files ?</span>
+<span class="c1">###</span>
+require<span class="p">(</span>BSgenome.Hsapiens.UCSC.hg19<span class="p">)</span>
+
+human_chr <span class="o">&lt;-</span> seqlevels<span class="p">(</span>BSgenome.Hsapiens.UCSC.hg19<span class="p">)[</span><span class="m">1</span><span class="o">:</span><span class="m">25</span><span class="p">]</span>
+chrom.size <span class="o">&lt;-</span> seqlengths<span class="p">(</span>BSgenome.Hsapiens.UCSC.hg19<span class="p">)[</span>human_chr<span class="p">]</span>
+write.table<span class="p">(</span>chrom_size<span class="p">,</span> file<span class="o">=</span><span class="s">&quot;chrom_hg19.sizes&quot;</span><span class="p">,</span> quote<span class="o">=</span><span class="kc">FALSE</span><span class="p">,</span> col.names<span class="o">=</span><span class="kc">FALSE</span><span class="p">,</span> sep<span class="o">=</span><span class="s">&quot;\t&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+<ul class="simple">
+<li>The restriction fragments file has to be generated according to the reference genome, and the restriction enzyme(s) used to generate the Hi-C data.</li>
+</ul>
+<p>Here is the way to generate such file using the <a class="reference external" href="http://bioconductor.org/packages/release/bioc/html/HiTC.html">HiTC</a> BioConductor package.</p>
+<div class="highlight-guess"><div class="highlight"><pre><span class="c1">###</span>
+<span class="c1">## How to generate restriction fragment files ?</span>
+<span class="c1">###</span>
+
+require<span class="p">(</span>HiTC<span class="p">)</span>
+require<span class="p">(</span>rtracklayer<span class="p">)</span>
+require<span class="p">(</span>BSgenome.Hsapiens.UCSC.hg19<span class="p">)</span>
+
+human_chr <span class="o">&lt;-</span> seqlevels<span class="p">(</span>BSgenome.Hsapiens.UCSC.hg19<span class="p">)[</span><span class="m">1</span><span class="o">:</span><span class="m">25</span><span class="p">]</span>
+resFrag <span class="o">&lt;-</span> getRestrictionFragmentsPerChromosome<span class="p">(</span>resSite<span class="o">=</span><span class="s">&quot;AAGCTT&quot;</span><span class="p">,</span> chromosomes<span class="o">=</span>human_chr<span class="p">,</span> overhangs5<span class="o">=</span><span class="m">1</span><span class="p">,</span> genomePack<span class="o">=</span><span class="s">&quot;BSgenome.Hsapiens.UCSC.hg19&quot;</span><span class="p">)</span>
+allRF <span class="o">&lt;-</span> do.call<span class="p">(</span><span class="s">&quot;c&quot;</span><span class="p">,</span>resFrag<span class="p">)</span>
+names<span class="p">(</span>allRF<span class="p">)</span> <span class="o">&lt;-</span> unlist<span class="p">(</span>sapply<span class="p">(</span>resFrag<span class="p">,</span> <span class="kr">function</span><span class="p">(</span>x<span class="p">){</span>paste0<span class="p">(</span><span class="s">&quot;HIC_&quot;</span><span class="p">,</span> seqlevels<span class="p">(</span>x<span class="p">),</span> <span class="s">&quot;_&quot;</span><span class="p">,</span> <span class="m">1</span><span class="o">:</span>length<span class="p">(</span>x<span class="p">))}))</span>
+export<span class="p">(</span>allRF<span class="p">,</span> format<span class="o">=</span><span class="s">&quot;bed&quot;</span><span class="p">,</span> con<span class="o">=</span><span class="s">&quot;HindIII_resfrag_hg19.bed&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p><strong>Why HiC-Pro need to be run in two steps in parallel mode ?</strong></p>
+<p>Th HiC-Pro pipeline is divided into two main steps. The first part of the pipeline is &#8216;fastq&#8217; based, meaning that the same anlaysis will be performed for all fastq files.
+This part can be easily parallelized per fastq, with at the end, a list of valid interactions per fastq file.
+The second step of the pipeline is &#8216;sample&#8217; based. All lists of valid interactions from the same sample are merged in order to build and normalize the maps.
+At that time, this second step is not time consuming, and we do not parallelize it although a per sample parallelization migth be a good idea.
+So, because these two steps as either &#8216;fastq&#8217; based or &#8216;sample&#8217; based, we need to separate them during the parallele processing.</p>
+<p><strong>Does HiC-Pro support other mapper ?</strong></p>
+<p>No. HiC-Pro is only based on the bowtie2 mapper.
+However, note that HiC-Pro can be run from aligned data. In this case, the input path (-i) must be a BAM folder, and the analysis has to be run step-by-step.</p>
+<p><strong>How can I create N-masked genome for allele-specific analysis ?</strong></p>
+<p>The allele specific mode of HiC-Pro is based on a N-masked genome. Meaning that all SNPs information which can be use to distinguish parental haplotypes have to be masked. This masking can be performed in 3 steps:
+1. Extract relevant SNPs information. See the <a class="reference external" href="doc/UTILS.rst">extract_snps.py</a> utility for Mouse Sanger data. For Human data, you can use phasing data, or SNPs information available from public ressources, as the <a class="reference external" href="http://www.illumina.com/platinumgenomes/">Illumina Platinum Project</a>, the <a class="reference external" href="http://www.1000genomes.org/">1K Genome Project</a> or the <a class="reference external" href="https://www.broadinstitute.org/gatk/guide/article.php?id=1215">GATK resource bundle</a>.
+2. Mask the fasta genome. To do so, simply use the bedtools <a class="reference external" href="http://bedtools.readthedocs.org/en/latest/content/tools/maskfasta.html">maskfasta</a> utility.
+3. Then, create your bowtie2 indexes from the masked fasta file.</p>
+</div>
+
+
+    </div>
+<footer class="footer">
+    <p class="pull-right">
+      <a href="#">Back to top</a>
+      
+    </p>
+    <p>
+        &copy; Copyright 2015, Nicolas Servant.<br/>
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.2.2.<br/>
+    </p>
+</footer>
+  </body>
+</html>
