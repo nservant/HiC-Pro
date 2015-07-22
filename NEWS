@@ -7,6 +7,12 @@ NEW FEATURES
 
    o New utility to build the VCF file for allele specific analysis
 
+SIGNIFICANT USER-VISIBLE CHANGES
+
+   o New configuration file with ALLELE_SPECIFIC_SNP field. If specified HiC-Pro is run in allele specific mode.
+
+   o Improve stepwise analysis. Check input files according to the specified step
+
 ***********************************
 CHANGES IN VERSION 2.5.2
 

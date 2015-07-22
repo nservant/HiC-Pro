@@ -18,8 +18,24 @@
 ## LOGBOOK
 ##
 ################################################################################
+
 ##--------------------
-##30-06-03
+##20-07-15
+##--------------------
+
+   o Add script to combine perfastq stats files in a single file. Counts are summed, percentage are averaged.
+   o Split G1/G2 valid interactions using a script rather than using awk parsing. Using script is less efficient, but allow to generate stats after duplicates removal.
+
+##--------------------
+##19-07-15
+##--------------------
+
+   o Fix conflicts between versions
+   o Merge AS branch with master
+
+
+##--------------------
+##30-06-15
 ##--------------------
 
    o Add check when running the pipeline

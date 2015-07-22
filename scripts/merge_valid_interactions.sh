@@ -40,7 +40,7 @@ mkdir -p ${DATA_DIR}
 nbf=$(find -L ${DATA_DIR} -mindepth 1 | wc -l)
 if [[ $nbf == 0 ]]; then die "Error : empty ${DATA_DIR} folder."; fi
 
-################### Combine Bowtie mapping ###################
+################### Merge valid interaction files ###################
 for RES_FILE_NAME in ${DATA_DIR}/*
 do
     RES_FILE_NAME=$(basename $RES_FILE_NAME)

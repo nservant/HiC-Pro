@@ -51,19 +51,20 @@ do
 	for bsize in ${BIN_SIZE}
 	do
 	    mkdir -p ${NORM_DIR}/${bsize}
-	    
-	    if [[ -z ${ALLLE_SPECIFIC_SNP} ]]; then
-		INPUT_MATRIX=${MAPC_OUTPUT}/matrix/${RES_FILE_NAME}/raw/${bsize}/${RES_FILE_NAME}_${bsize}.matrix
-#	    ln -f -s ../../raw/${bsize}/${RES_FILE_NAME}_${bsize}_abs.bed ${NORM_DIR}/${bsize}/${RES_FILE_NAME}_${bsize}_abs.bed
-#	    ln -f -s ../../raw/${bsize}/${RES_FILE_NAME}_${bsize}_ord.bed  ${NORM_DIR}/${bsize}/${RES_FILE_NAME}_${bsize}_ord.bed
-		${PYTHON_PATH}/python ${SCRIPTS}/ice --results_filename ${NORM_DIR}/${bsize}/${RES_FILE_NAME}_${bsize}_iced.matrix --filtering_perc ${SPARSE_FILTERING} --max_iter ${MAX_ITER} --eps ${EPS} --verbose 1 ${INPUT_MATRIX} > ${LDIR}/ice.log
-	    else
-            ## Build haplotype contact maps if specified
+
+	    if [[ ! -z ${ALLELE_SPECIFIC_SNP} ]]; then
+		
+                ## Build haplotype contact maps if specified
 	    	INPUT_MATRIX_G1=${MAPC_OUTPUT}/matrix/${RES_FILE_NAME}/raw/${bsize}/${RES_FILE_NAME}_${bsize}_G1.matrix
 		INPUT_MATRIX_G2=${MAPC_OUTPUT}/matrix/${RES_FILE_NAME}/raw/${bsize}/${RES_FILE_NAME}_${bsize}_G2.matrix
 		${PYTHON_PATH}/python ${SCRIPTS}/ice --results_filename ${NORM_DIR}/${bsize}/${RES_FILE_NAME}_${bsize}_G1_iced.matrix --filtering_perc ${SPARSE_FILTERING} --max_iter ${MAX_ITER} --eps ${EPS} --verbose 1 ${INPUT_MATRIX_G1} > ${LDIR}/ice.log
 		${PYTHON_PATH}/python ${SCRIPTS}/ice --results_filename ${NORM_DIR}/${bsize}/${RES_FILE_NAME}_${bsize}_G2_iced.matrix --filtering_perc ${SPARSE_FILTERING} --max_iter ${MAX_ITER} --eps ${EPS} --verbose 1 ${INPUT_MATRIX_G2} > ${LDIR}/ice.log
-	    fi
+	    else
+		INPUT_MATRIX=${MAPC_OUTPUT}/matrix/${RES_FILE_NAME}/raw/${bsize}/${RES_FILE_NAME}_${bsize}.matrix
+		#ln -f -s ../../raw/${bsize}/${RES_FILE_NAME}_${bsize}_abs.bed ${NORM_DIR}/${bsize}/${RES_FILE_NAME}_${bsize}_abs.bed
+		#ln -f -s ../../raw/${bsize}/${RES_FILE_NAME}_${bsize}_ord.bed  ${NORM_DIR}/${bsize}/${RES_FILE_NAME}_${bsize}_ord.bed
+		${PYTHON_PATH}/python ${SCRIPTS}/ice --results_filename ${NORM_DIR}/${bsize}/${RES_FILE_NAME}_${bsize}_iced.matrix --filtering_perc ${SPARSE_FILTERING} --max_iter ${MAX_ITER} --eps ${EPS} --verbose 1 ${INPUT_MATRIX} > ${LDIR}/ice.log
+ 	    fi
 	done
     fi
     wait

@@ -23,11 +23,13 @@ mapping: bowtie_global bowtie_local bowtie_combine mapping_stat
 proc_hic : bowtie_pairing mapped_2hic_fragments 
 
 ## per sample - no parallelisation
-all_persample : build_contact_maps hic_qc ice_norm
+all_persample : merge_persample build_raw_maps hic_qc ice_norm
+
+merge_persample: merge_valid_interactions merge_allstat
 
 quality_checks : hic_qc
 
-build_contact_maps: merge_valid_interactions build_raw_maps
+build_contact_maps: merge_persample build_raw_maps
 
 
 ######################################
@@ -151,6 +153,13 @@ merge_valid_interactions:  config_check
 	@date 
 	@echo "Merge multiple files from the same sample ..." 
 	$(SCRIPTS)/merge_valid_interactions.sh -c $(CONFIG_FILE) >> $(LOGFILE)
+
+merge_persample: config_check
+	@echo "--------------------------------------------" 
+	@date 
+	@echo "Merge stat files per sample ..." 
+        $(SCRIPTS)/merge_stats.sh -c $(CONFIG_FILE) >> $(LOGFILE)
+
 
 build_raw_maps:  config_check
 	@echo "--------------------------------------------" 
