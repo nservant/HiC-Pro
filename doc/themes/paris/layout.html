@@ -1,0 +1,107 @@
+{% extends "basic/layout.html" %}
+
+{% block htmltitle %}
+  {{ super() }}
+  <!-- htmltitle is before nature.css - we use this hack to load bootstrap first -->
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="stylesheet"
+        href="{{ pathto('_static/css/bootstrap.min.css', 1) }}"
+	media="screen" />
+    <script src="{{ pathto('_static/js/jquery.js', 1) }}"
+          type="text/javascript"></script>
+  <script src="{{ pathto('_static/js/bootstrap.min.js', 1)}}"
+          type="text/javascript"></script>
+
+{% endblock %}
+
+{% set title = "HiC-Pro: An optimized and flexible pipeline for Hi-C processing." %}
+
+{%- block doctype -%}
+<!DOCTYPE html>
+{%- endblock %}
+
+{%- block extrahead %}
+<meta charset='utf-8'>
+<meta http-equiv='X-UA-Compatible' content='IE=edge,chrome=1'>
+<meta name='viewport'
+      content='width=device-width, initial-scale=1.0, maximum-scale=1'>
+<meta name="apple-mobile-web-app-capable" content="yes">
+<link rel="stylesheet"
+        href="{{ pathto('_static/css/jhepc.css', 1) }}"
+         media="screen" />
+  <link href='http://fonts.googleapis.com/css?family=PT+Serif'
+        rel='stylesheet' type='text/css'>
+  <link href='http://fonts.googleapis.com/css?family=PT+Sans'
+        rel='stylesheet' type='text/css'>
+  <link href='http://fonts.googleapis.com/css?family=PT+Sans+Narrow'
+        rel='stylesheet' type='text/css'>
+
+
+{% endblock %}
+
+{# Silence the sidebar's, relbar's #}
+{% block header %}
+  {%- block navbar -%}
+  <div class="navbar">
+    <a class="navbar-brand" href="{{ pathto('index') }}">
+      {#<img src="{{ pathto('_static/logos/logo_1.png', 1) }}" \>#}
+    </a>
+    <ul class="nav navbar-nav">
+{#
+      <li>
+        <a href="{{ pathto('index') }}">Home
+          <img src="{{ pathto('_static/logos/button_orange.png', 1) }}">
+        </a>
+        </li>
+      <li><a href="{{ pathto('install') }}">Installation
+          <img src="{{ pathto('_static/logos/button_blue.png', 1) }}">
+          </a>
+      </li>
+      <li><a href="{{ pathto('documentation') }}">Documentation
+          <img src="{{ pathto('_static/logos/button_green.png', 1) }}">
+          </a></li>
+	  #}
+    </ul>
+  </div>
+  {%- endblock -%}
+{% endblock %}
+{% block sidebar1 %}{% endblock %}
+{% block sidebar2 %}{% endblock %}
+{% block relbar1 %}{% endblock %}
+{% block relbar2 %}{% endblock %}
+{% block sidebarsourcelink %}{% endblock %}
+
+{%- block content %}
+    <div class="container">
+  {% block body %} {% endblock %}
+    </div>
+
+  {%- endblock %}
+
+
+{%- block footer %}
+<footer class="footer">
+    <p class="pull-right">
+      <a href="#">Back to top</a>
+      {% if theme_source_link_position == "footer" %}
+        <br/>
+        {% include "sourcelink.html" %}
+      {% endif %}
+    </p>
+    <p>
+    {%- if show_copyright %}
+      {%- if hasdoc('copyright') %}
+        {% trans path=pathto('copyright'), copyright=copyright|e %}&copy; <a href="{{ path }}">Copyright</a> {{ copyright }}.{% endtrans %}<br/>
+      {%- else %}
+        {% trans copyright=copyright|e %}&copy; Copyright {{ copyright }}.{% endtrans %}<br/>
+      {%- endif %}
+    {%- endif %}
+    {%- if last_updated %}
+      {% trans last_updated=last_updated|e %}Last updated on {{ last_updated }}.{% endtrans %}<br/>
+    {%- endif %}
+    {%- if show_sphinx %}
+      {% trans sphinx_version=sphinx_version|e %}Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> {{ sphinx_version }}.{% endtrans %}<br/>
+    {%- endif %}
+    </p>
+</footer>
+{%- endblock %}
