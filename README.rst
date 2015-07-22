@@ -10,7 +10,7 @@ This page is just a quick start guide, please read the full `online manual <http
 
 See NEWS for information about changes in this and previous versions
 
-See LOGBOOK for details about the HiC-Pro developmens
+See LOGBOOK for details about the HiC-Pro developments
 
 See LICENSE for license information
 
@@ -19,12 +19,14 @@ What is HiC-Pro ?
 =================
 
 HiC-Pro was designed to process Hi-C data, from raw fastq files (paired-end Illumina data) to the normalized contact maps. 
-The pipeline is flexible, scalable and optimized. It can operate either on a single laptop or on a computational cluster using the PBS-Torque scheduler.
-In addition, HiC-Pro can use phasing data to build allele specific contact maps. See `allele specific <doc/AS.rst>`_ section for details.
+The pipeline is flexible, scalable and optimized. It can operate either on a single laptop or on a computational cluster using the PBS-Torque scheduler. HiC-Pro is sequential and each step of the workflow can be run independantly.
+HiC-Pro includes a fast implementatation of the ICE normalization method (see the `iced <https://github.com/hiclib/iced>`_ python library for more information).
+In addition, HiC-Pro can use phasing data to build `allele specific contact maps <doc/AS.rst>`_.
 
 If you use HiC-Pro, please cite :
 
 HiC-Pro: An optimized and flexible pipeline for Hi-C processing. *Servant N., Varoquaux N., Lajoie BR., Viara E., Chen CJ., Vert JP., Dekker J., Heard E., Barillot E.*. 2015. submitted
+
 
 How to install it ?
 ===================
@@ -37,6 +39,7 @@ The HiC-Pro pipeline requires the following dependencies :
 * g++ compiler
 * Samtools (>0.1.19)
 
+Bowtie >2.2.2 is strongly recommanded for allele specific analysis.
 To install HiC-Pro:
 
 .. code-block:: guess
@@ -66,7 +69,7 @@ You can also edit the *config-install.txt* file and manually defined the paths t
 Annotation Files
 ================
 
-In order to process the raw data, HiC-Pro requires three annotation files :
+In order to process the raw data, HiC-Pro requires three annotation files. Note that the pipeline is provided with some Human and Mouse annotation files.
 
 1. **A BED file** of the restriction fragments after digestion. This file depends both of the restriction enzyme and the reference genome. See the `FAQ <FAQ.rst>`_ for details about how to generate this file. A few annotation files are provided with the HiC-Pro sources.
 
@@ -113,11 +116,11 @@ How to use it ?
   usage : HiC-Pro -i INPUT -o OUTPUT -c CONFIG [-s ANALYSIS_STEP] [-p] [-h] [-v]
   Use option -h|--help for more information
 
-  HiC-Pro 2.5.2
+  HiC-Pro 3.0.0
   ---------------
   OPTIONS
 
-   -i|--input INPUT : input data folder; Must contains a folder per sample with fastq (or bam) files
+   -i|--input INPUT : input data folder; Must contains a folder per sample with input files
    -o|--output OUTPUT : output folder
    -c|--conf CONFIG : configuration file for Hi-C processing
    [-p|--parallel] : if specified run HiC-Pro in PBS/Torque mode
@@ -126,12 +129,12 @@ How to use it ?
       proc_hic: perform Hi-C filtering
       quality_checks: run Hi-C quality control plots
       build_contact_maps: build raw inter/intrachromosomal contact maps
-      ice_norm : run ICE normalization on contact maps
+      ice_norm: run ICE normalization on contact maps
    [-h|--help]: help
    [-v|--version]: version
 
 1. Copy and edit the configuration file *'config-hicpro.txt'* in your local folder. See the `manual <MANUAL>`_ for details about the configuration file
-2. Put all fastq files in a rawdata folder. Each fastq file has to be put in a folder per sample.
+2. Put all input files in a rawdata folder. The input files have to be organized with a folder per sample.
 3. Run HiC-Pro
 
 * **On your laptop**
@@ -228,7 +231,7 @@ Small fastq files (2M reads) extracted from the Dixon et al. 2012 paper are avai
    --------------------------------------------
    lundi 2 mars 2015, 17:03:57 (UTC+0100)
    Run ICE Normalization ...
-   normContactMaps.sh -c /bioinfo/users/nservant/projects_dev/HiC-Pro/config_test.txt >> hicpro_IRM90_rep1_split.log # 2> logs/normICE.log
+   normContactMaps.sh -c /bioinfo/users/nservant/projects_dev/HiC-Pro/config_test.txt >> hicpro_IRM90_rep1_split.log 
 
    real	3m23.902s
    user	5m22.956s

@@ -26,8 +26,11 @@ The single VCF contains all SNPs information for all Mouse strains. The default 
 This script is able to extract informative and high quality SNPs (-f option) which can be then used in allele specific analysis to distinguish parental origin.
 
 .. code-block:: bash
-## Extract SNPs information for CASTEiJ/129S1 cross
-HICPRO_PATH/bin/utils/split_reads.py -i mgp.v2.snps.annot.reformat.vcf -r CASTEij -a 129S1 > snps_CASTEiJ_129S1.vcf
 
-## Extract SNPs information for C57_b6/FVB_NJ
-HICPRO_PATH/bin/utils/split_reads.py -i mgp.v2.snps.annot.reformat.vcf -a FVB_NJ > snps_CASTEiJ_129S1.vcf
+   ## Extract SNPs information for CASTEiJ/129S1 cross
+   HICPRO_PATH/bin/utils/split_reads.py -i mgp.v2.snps.annot.reformat.vcf -r CASTEij -a 129S1 > snps_CASTEiJ_129S1.vcf
+
+   ## Extract SNPs information for C57_b6/FVB_NJ
+   HICPRO_PATH/bin/utils/split_reads.py -i mgp.v2.snps.annot.reformat.vcf -a FVB_NJ > snps_CASTEiJ_129S1.vcf
+
+

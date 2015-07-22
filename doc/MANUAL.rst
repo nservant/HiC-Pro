@@ -9,12 +9,12 @@ HiC-Pro Manual
 Setting the configuration file
 ==============================
 
-1. Copy and edit the configuration file *'config-hicpro.txt'* in your local folder. The '[' options are optional and can be undefined.
+1. Copy and edit the configuration file *'config-hicpro.txt'* in your local folder. The '[]' options are optional and can be undefined.
 
 +----------------+----------------------------------------+
 | SET UP SYSTEM AND PBS/TORQUE MODE                       |
 +================+========================================+
-| N_CPU          | Number of CPU allows fper job          |
+| N_CPU          | Number of CPU allows per job           |
 +----------------+----------------------------------------+
 | LOGFILE        | Name of the main log file              |
 +----------------+----------------------------------------+
@@ -58,7 +58,7 @@ Setting the configuration file
 +=======================+===================================================================================================================================================+
 | REFERENCE_GENOME      | Reference genome prefix used for genome indexes. *Default: hg19*                                                                                  |
 +-----------------------+---------------------------------------------------------------------------------------------------------------------------------------------------+
-| GENOME_FRAGMENT       | BED file with restriction fragments. Loaded from the ANNOTATION folder in the HiC-Pro installation directory. *Default: HindIII_resfrag_hg19.bed* |
+| GENOME_FRAGMENT       | BED file with restriction fragments. Full path or name of file available in the ANNOTATION folder. *Default: HindIII_resfrag_hg19.bed*            |
 +-----------------------+---------------------------------------------------------------------------------------------------------------------------------------------------+
 | GENOME_SIZE           | Chromsome size file. Loaded from the ANNOTATION folder in the HiC-Pro installation directory. *Default: chrom_hg19.sizes*                         |
 +-----------------------+---------------------------------------------------------------------------------------------------------------------------------------------------+
@@ -74,7 +74,7 @@ Setting the configuration file
 +-----------------------------+-------------------------------------------------------------------------------------------------------------------------+
 | [MAX_INSERT_SIZE]           | Maximum sequenced insert size. Larger 3C products are discarded                                                         |
 +-----------------------------+-------------------------------------------------------------------------------------------------------------------------+
-| GET_ALL_INTERACTION_CLASSES | Create output files with all classes of 3C products. *Default: 1*                                                       |
+| GET_ALL_INTERACTION_CLASSES | Create output files with all classes of 3C products. *Default: 0*                                                       |
 +-----------------------------+-------------------------------------------------------------------------------------------------------------------------+
 | GET_PROCESS_BAM             | Create a BAM file with all aligned reads flagged according to their classifaction and mapping category. *Default: 0*    |
 +-----------------------------+-------------------------------------------------------------------------------------------------------------------------+
@@ -111,11 +111,11 @@ Available steps are described in the help command.
   usage : HiC-Pro -i INPUT -o OUTPUT -c CONFIG [-s ANALYSIS_STEP] [-p] [-h] [-v]
   Use option -h|--help for more information
 
-  HiC-Pro 2.5.2
+  HiC-Pro 3.0.0
   ---------------
   OPTIONS
 
-   -i|--input INPUT : input data folder; Must contains a folder per sample with fastq (or bam) files
+   -i|--input INPUT : input data folder; Must contains a folder per sample with input files
    -o|--output OUTPUT : output folder
    -c|--conf CONFIG : configuration file for Hi-C processing
    [-p|--parallel] : if specified run HiC-Pro in PBS/Torque mode
@@ -124,18 +124,18 @@ Available steps are described in the help command.
       proc_hic: perform Hi-C filtering
       quality_checks: run Hi-C quality control plots
       build_contact_maps: build raw inter/intrachromosomal contact maps
-      ice_norm : run ICE normalization on contact maps
+      ice_norm: run ICE normalization on contact maps
    [-h|--help]: help
    [-v|--version]: version
 
 
-As an exemple, if you want to only want to align the sequencing reads, use :
+As an exemple, if you want to only want to only align the sequencing reads and run a quality control, use :
 
 .. code-block:: guess
 
     	MY_INSTALL_PATH/bin/HiC-Pro -i FULL_PATH_TO_RAW_DATA -o FULL_PATH_TO_OUTPUTS -c MY_LOCAL_CONFIG_FILE -s mapping -s quality_checks
 
-Note that in sequential mode, the INPUT argument depends on the analysis steps.
+Note that in sequential mode, the INPUT argument depends on the analysis step. See te `user's cases <USER_CASES.rst>`_ for more examples.
 
 +-----------------------+--------------------+
 | INPUT DATA TYPE IN STEPWISE MODE           |
@@ -152,11 +152,10 @@ Note that in sequential mode, the INPUT argument depends on the analysis steps.
 +-----------------------+--------------------+
 
 
-See te `user's cases <USER_CASES.rst>`_ for more examples.
-
-
 How does HiC-Pro work ?
 =======================
+
+The HiC-Pro workflow can be divided in five main steps presented below.
 
 .. figure:: images/hicpro_wkflow.png
    :scale: 80%
@@ -164,7 +163,7 @@ How does HiC-Pro work ?
 
 1. **Reads Mapping**
 
-Each mate is independantly aligned on the reference genome. The mapping is performed in two steps. First, the reads are aligned using an end-to-end aligner. Second, reads spanning the ligation junction are trimmmed from their 3' end, and aligned on the genome. Aligned reads for both fragment mates are then paired in a single paired-end BAM file. Singletons and multi-hits can be discarded according the confirguration parameters.
+Each mate is independantly aligned on the reference genome. The mapping is performed in two steps. First, the reads are aligned using an end-to-end aligner. Second, reads spanning the ligation junction are trimmmed from their 3' end, and aligned back on the genome. Aligned reads for both fragment mates are then paired in a single paired-end BAM file. Singletons and multi-hits can be discarded according the confirguration parameters.
 
 2. **Fragment assignment and filtering**
 
@@ -185,31 +184,24 @@ Intra et inter-chromosomal contact maps are build for all specified resolutions.
 
 5. **ICE normalization**
 
-Hi-C data can contain several sources of biases which has to be corrected. HiC-Pro proposes a fast implementation of the original ICE normalization algorithm (Imakaev et al. 2012), making the assumption of equal visibility of each fragment. The ICE normalization can be used as a standalone python package and is available `<https://github.com/hiclib/>`_
+Hi-C data can contain several sources of biases which has to be corrected. HiC-Pro proposes a fast implementation of the original ICE normalization algorithm (Imakaev et al. 2012), making the assumption of equal visibility of each fragment. The ICE normalization can be used as a standalone python package through the `iced python package <https://github.com/hiclib/>`_
 
 
 Browsing the results
 ====================
 
+All outputs follow the input organization, with one folder per sample.
+See the `Results section <RESULTS.rst>`_ for more information.
+
 * *bowtie_results*
+
+The *bowtie_results* folder contains the results of the reads mapping. The results of first mapping step are available in the *bwt2_glob* folder, and the seconnd step in the *bwt2_loc* folder. Final BAM files, reads pairing, and mapping statistics are available on the *bwt2* folder.
 
 * *hic_results*
 
-A contact map is defined by :
-
-* A list of genomic intervals related to the specified resolution (BED format).
-* A matrix, stored as standard triplet sparse format (i.e. list format). Based on the observation that a contact map is symmetric and usually sparse, only non-zero values are stored for half of the matrix. The user can specified if the *'upper'*, *'lower'* or *'complete'* matrix has to be stored. The *'asis'* option allows to store the contacts as they are observed from the valid pairs files.
-
-::
-
-   A   B   10
-   A   C   23
-   B   C   24
-   (...)
-
-
-This format is memory efficient, and is compatible with other analysis softwares such as the `HiTC Bioconductor package <http://bioconductor.org/packages/release/bioc/html/HiTC.html>`_.
-
+This folder contains all Hi-C processed data, and is further divided in several sub-folders.
+The data folder is used to store the valid interaction products (.validPairs), as well as other statisics files.
+The contact maps are then available in the *matrix* folder. The *matrix* folder is organized with *raw* and *iced* contact maps for all resolutions.
 
 
 

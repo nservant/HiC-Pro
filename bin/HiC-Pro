@@ -31,7 +31,7 @@ function help {
     echo "      proc_hic: perform Hi-C filtering"
     echo "      quality_checks: run Hi-C quality control plots"
     echo "      build_contact_maps: merge multiple inputs and build raw inter/intrachromosomal contact maps"
-    echo "      ice_norm : run ICE normalization on contact maps"
+    echo "      ice_norm: run ICE normalization on contact maps"
     echo "   [-h|--help]: help"
     echo "   [-v|--version]: version"
     exit;
