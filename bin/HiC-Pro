@@ -8,7 +8,7 @@
 ## Public License, either Version 2, June 1991 or Version 3, June 2007.
                                                                    
 SOFT="HiC-Pro"
-VERSION="3.0.0"
+VERSION="3.0.0b"
 
 function usage {
     echo -e "usage : $SOFT -i INPUT -o OUTPUT -c CONFIG [-s ANALYSIS_STEP] [-p] [-h] [-v]"
@@ -22,7 +22,7 @@ function help {
     echo "---------------"
     echo "OPTIONS"
     echo
-    echo "   -i|--input INPUT : input data folder; Must contains a folder per sample with fastq (or bam) files"
+    echo "   -i|--input INPUT : input data folder; Must contains a folder per sample with input files"
     echo "   -o|--output OUTPUT : output folder"
     echo "   -c|--conf CONFIG : configuration file for Hi-C processing"
     echo "   [-p|--parallel] : if specified run $SOFT in PBS/Torque mode"
@@ -30,7 +30,7 @@ function help {
     echo "      mapping: perform reads alignment"
     echo "      proc_hic: perform Hi-C filtering"
     echo "      quality_checks: run Hi-C quality control plots"
-    echo "      build_contact_maps: build raw inter/intrachromosomal contact maps"
+    echo "      build_contact_maps: merge multiple inputs and build raw inter/intrachromosomal contact maps"
     echo "      ice_norm : run ICE normalization on contact maps"
     echo "   [-h|--help]: help"
     echo "   [-v|--version]: version"
@@ -97,24 +97,6 @@ do
     esac
 done
 
-# set -- $(getopt -u -o c:s:i:o:pvh -l conf:,step:,input:,output:,parallel,version,help -- "$@")
-# while [ $# -gt 0 ]
-# do
-#     case "$1" in
-# 	-i|--input) INPUT=$2; shift;;
-# 	-o|--output) OUTPUT=$2; shift;;
-# 	-c|--conf) CONF=$2; shift;;
-# 	-s|--step) MAKE_OPTS="$MAKE_OPTS $2"; shift;;
-# 	-p|--parallel) PBS=1;;
-# 	-v|--version) version;;
-# 	-h|--help) help;;
-# 	--) shift; break;;
-# 	-*) echo "$0: error - unrecognized option $1" 1>&2; exit 1;;
-# 	*)  break;;
-#     esac
-#     shift
-# done
-
 if [[ -z $INPUT || -z $OUTPUT || -z $CONF ]]; then
     usage
     exit
@@ -170,8 +152,6 @@ if [[ -z $GENOME_FRAGMENT ]]; then
     fi
 fi
 
-
-
 #####################
 ## Init HiC-Pro
 ####################
@@ -189,8 +169,8 @@ if [ ! -e $OUTPUT/$RAW_DIR ]; then
 fi
 
 ## cp config file in output
-if [ ! -e $CONF ]; then
-    cp $CONF $OUTPUT
+if [ ! -e ${OUTPUT}/${CONF} ]; then
+    cp $CONF ${OUTPUT}/${CONF}
 fi
 
 cd $OUTPUT
@@ -200,12 +180,17 @@ cd $OUTPUT
 #####################
 MAKE_OPTS=$(echo $MAKE_OPTS | sed -e 's/^ //')
 AVAILABLE_STEP_ARRAY=("mapping" "proc_hic" "quality_checks" "build_contact_maps" "ice_norm")
-NEED_BAM_STEP_ARRAY=("proc_hic" "build_contact_maps" "ice_norm")
+NEED_BAM_STEP_ARRAY=("proc_hic", "quality_checks")
+NEED_VALID_STEP_ARRAY=("build_contact_maps")
+NEED_MAT_STEP_ARRAY=("ice_norm")
 NEED_FASTQ_STEP_ARRAY=("mapping")
 
+NEED_BAM=0
+NEED_VALID=0
+NEED_MAT=0
+NEED_FASTQ=0
+
 if [[ $MAKE_OPTS != "" ]]; then
-    NEED_FASTQ=0
-    NEED_BAM=1
 
     for s in $MAKE_OPTS
     do
@@ -215,13 +200,24 @@ if [[ $MAKE_OPTS != "" ]]; then
 	done
 	if [[ $check_s == 0 ]]; then die "Unknown step option (\"-s $s\"). Use $0 --help for usage information."; fi
 	
-	for i in ${NEED_FASTQ_STEP_ARRAY[@]}; do
-	    if [[ "$i" == "$s" ]]; then NEED_FASTQ=1; fi
+	for i in ${NEED_BAM_STEP_ARRAY[@]}; do
+	    if [[ "$i" == "$s" ]]; then NEED_BAM=1; fi
 	done
+    
+	for i in ${NEED_VALID_STEP_ARRAY[@]}; do
+            if [[ "$i" == "$s" ]]; then NEED_VALID=1; fi
+        done
+    
+	for i in ${NEED_MAT_STEP_ARRAY[@]}; do
+            if [[ "$i" == "$s" ]]; then NEED_MAT=1; fi
+        done
+	
+	for i in ${NEED_FASTQ_STEP_ARRAY[@]}; do
+            if [[ "$i" == "$s" ]]; then NEED_FASTQ=1; fi
+        done
     done
 else
     NEED_FASTQ=1
-    NEED_BAM=0
 fi
 
 
@@ -239,10 +235,21 @@ elif [[ $NEED_BAM == 1 ]]; then
     nbin=$(find -L $INPUT -mindepth 2 -maxdepth 2 -name "*.bam" | wc -l)
     nbin_r1=$(find -L $INPUT -mindepth 2 -maxdepth 2 -name "*.bam" -and -name "*${PAIR1_EXT}* | wc -l")
     nbin_r2=$(find -L $INPUT -mindepth 2 -maxdepth 2 -name "*.bam" -and -name "*${PAIR2_EXT}* | wc -l")
-
     if [[ $nbin == 0 || $nbin_r1 != $nbin_r2 ]]; then
 	die "Error: Directory Hierarchy of rawdata '$INPUT' is not correct. Paired '.bam' files with ${PAIR1_EXT}/${PAIR2_EXT} are required for '$MAKE_OPTS' step(s)"
     fi
+elif [[ $NEED_VALID == 1 ]]; then
+    nbin=$(find -L $INPUT -mindepth 2 -maxdepth 2 -name "*.validPairs" | wc -l)
+    if [ $nbin == 0 ]; then
+        die "Error: Directory Hierarchy of rawdata '$INPUT' is not correct. No '.validPairs' files detected"
+    fi
+elif [[ $NEED_MAT == 1 ]]; then
+    nbin=$(find -L $INPUT -mindepth 2 -maxdepth 4 -name "*.matrix" | wc -l)
+    if [ $nbin == 0 ]; then
+        die "Error: Directory Hierarchy of rawdata '$INPUT' is not correct. No '.matrix' files detected"
+    fi
+else
+    die "Error: unknown type for input files"
 fi
 
 ###################

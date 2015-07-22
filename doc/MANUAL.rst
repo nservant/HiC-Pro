@@ -11,6 +11,7 @@ What is HiC-Pro ?
 
 HiC-Pro was designed to process Hi-C data, from raw fastq files (paired-end Illumina data) to the normalized contact maps. 
 The pipeline is flexible, scalable and optimized. It can operate either on a single laptop or on a computational cluster using the PBS-Torque scheduler.
+In addition, HiC-Pro can use phasing data to build allele specific contact maps. See `allele specific <doc/AS.rst>`_ section for details.
 
 If you use HiC-Pro, please cite :
 
@@ -261,8 +262,23 @@ As an exemple, if you want to only want to align the sequencing reads, use :
 
     	MY_INSTALL_PATH/bin/HiC-Pro -i FULL_PATH_TO_RAW_DATA -o FULL_PATH_TO_OUTPUTS -c MY_LOCAL_CONFIG_FILE -s mapping -s quality_checks
 
-Note that HiC-Pro can be run from aleardy aligned data. In this case, the raw data path (-i) should point into the BAM files.
-See te `user"s cases<USER_CASES.rst>`_ for more information
+Note that in sequential mode, the INPUT argument depends on the analysis steps.
+
++-----------------------+--------------------+
+| INPUT DATA TYPE IN STEPWISE MODE           |
++=======================+====================+
+|  -s mapping           | fastq(.gz) files   |
++-----------------------+--------------------+
+| -s proc_hic           | .bam files         |
++-----------------------+--------------------+
+| -s quality_checks     | .bam files         |
++-----------------------+--------------------+
+| -s build_contact_maps | .validPairs files  |
++-----------------------+--------------------+
+| -s ice_norm           | .matrix files      |
++-----------------------+--------------------+
+
+See te `user"s cases<USER_CASES.rst>`_ for more examples.
 
 
 How does HiC-Pro work ?

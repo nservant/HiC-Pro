@@ -70,3 +70,9 @@ So, because these two steps as either 'fastq' based or 'sample' based, we need t
 No. HiC-Pro is only based on the bowtie2 mapper.
 However, note that HiC-Pro can be run from aligned data. In this case, the input path (-i) must be a BAM folder, and the analysis has to be run step-by-step.
 
+**How can I create N-masked genome for allele-specific analysis ?**
+
+The allele specific mode of HiC-Pro is based on a N-masked genome. Meaning that all SNPs information which can be use to distinguish parental haplotypes have to be masked. This masking can be performed in 3 steps:
+1. Extract relevant SNPs information. See the `extract_snps.py <doc/UTILS.rst>`_ utility for Mouse Sanger data. For Human data, you can use phasing data, or SNPs information available from public ressources, as the `Illumina Platinum Project<http://www.illumina.com/platinumgenomes/>`_, the `1K Genome Project<http://www.1000genomes.org/>`_ or the `GATK resource bundle<https://www.broadinstitute.org/gatk/guide/article.php?id=1215>`_.
+2. Mask the fasta genome. To do so, simply use the bedtools `maskfasta<http://bedtools.readthedocs.org/en/latest/content/tools/maskfasta.html>`_ utility.
+3. Then, create your bowtie2 indexes from the masked fasta file.

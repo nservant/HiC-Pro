@@ -18,7 +18,8 @@ What is HiC-Pro ?
 =================
 
 HiC-Pro was designed to process Hi-C data, from raw fastq files (paired-end Illumina data) to the normalized contact maps. 
-The pipeline is flexible, scalable and optimized. It can operate either on a single laptop or on a computational cluster using the PBS-Torque scheduler
+The pipeline is flexible, scalable and optimized. It can operate either on a single laptop or on a computational cluster using the PBS-Torque scheduler.
+In addition, HiC-Pro can use phasing data to build allele specific contact maps.
 
 If you use HiC-Pro, please cite :
 
@@ -29,7 +30,7 @@ How to install it ?
 
 The HiC-Pro pipeline requires the following dependencies :
 
-* The bowtie2 mapper
+* The bowtie2 mapper (>2.2.2)
 * Python (>2.7) with *pysam*, *bx*, *numpy*, and *scipy* libraries
 * R with the *RColorBrewer* and *ggplot2* packages
 * g++ compiler
