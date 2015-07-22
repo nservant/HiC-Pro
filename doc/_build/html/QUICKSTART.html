@@ -1,0 +1,303 @@
+<!DOCTYPE html>
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+  
+    <title>HiC-Pro: An optimized and flexible pipeline for Hi-C processing. &mdash; HiC-Pro 2.3.1 documentation</title>
+  <!-- htmltitle is before nature.css - we use this hack to load bootstrap first -->
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="stylesheet"
+        href="_static/css/bootstrap.min.css"
+	media="screen" />
+    <script src="_static/js/jquery.js"
+          type="text/javascript"></script>
+  <script src="_static/js/bootstrap.min.js"
+          type="text/javascript"></script>
+
+
+    
+    <link rel="stylesheet" href="_static/basic.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     '2.3.1',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <link rel="top" title="HiC-Pro 2.3.1 documentation" href="index.html" />
+    <link rel="next" title="HiC-Pro Manual" href="MANUAL.html" />
+    <link rel="prev" title="Welcome to HiC-Pro’s documentation!" href="index.html" />
+<meta charset='utf-8'>
+<meta http-equiv='X-UA-Compatible' content='IE=edge,chrome=1'>
+<meta name='viewport'
+      content='width=device-width, initial-scale=1.0, maximum-scale=1'>
+<meta name="apple-mobile-web-app-capable" content="yes">
+<link rel="stylesheet"
+        href="_static/css/jhepc.css"
+         media="screen" />
+  <link href='http://fonts.googleapis.com/css?family=PT+Serif'
+        rel='stylesheet' type='text/css'>
+  <link href='http://fonts.googleapis.com/css?family=PT+Sans'
+        rel='stylesheet' type='text/css'>
+  <link href='http://fonts.googleapis.com/css?family=PT+Sans+Narrow'
+        rel='stylesheet' type='text/css'>
+
+
+
+  </head>
+  <body role="document"><div class="navbar">
+    <a class="navbar-brand" href="index.html">
+      
+    </a>
+    <ul class="nav navbar-nav">
+
+    </ul>
+  </div>
+    <div class="container">
+  
+  <div class="section" id="hic-pro-quick-start-guide">
+<h1>HiC-Pro Quick Start Guide<a class="headerlink" href="#hic-pro-quick-start-guide" title="Permalink to this headline">¶</a></h1>
+<p>This page is just a quick start guide, please read the full <a class="reference external" href="MANUAL.rst">manual</a> for more information !</p>
+<p>See NEWS for information about changes in this and previous versions</p>
+<p>See LOGBOOK for details about the HiC-Pro developmens</p>
+<p>See LICENSE for license information</p>
+<div class="section" id="what-is-hic-pro">
+<h2>What is HiC-Pro ?<a class="headerlink" href="#what-is-hic-pro" title="Permalink to this headline">¶</a></h2>
+<p>HiC-Pro was designed to process Hi-C data, from raw fastq files (paired-end Illumina data) to the normalized contact maps.
+The pipeline is flexible, scalable and optimized. It can operate either on a single laptop or on a computational cluster using the PBS-Torque scheduler.
+In addition, HiC-Pro can use phasing data to build allele specific contact maps. See <a class="reference external" href="doc/AS.rst">allele specific</a> section for details.</p>
+<p>If you use HiC-Pro, please cite :</p>
+<p>HiC-Pro: An optimized and flexible pipeline for Hi-C processing. <em>Servant N., Varoquaux N., Lajoie BR., Viara E., Chen CJ., Vert JP., Dekker J., Heard E., Barillot E.</em>. 2015. submitted</p>
+</div>
+<div class="section" id="how-to-install-it">
+<h2>How to install it ?<a class="headerlink" href="#how-to-install-it" title="Permalink to this headline">¶</a></h2>
+<p>The HiC-Pro pipeline requires the following dependencies :</p>
+<ul class="simple">
+<li>The <a class="reference external" href="http://bowtie-bio.sourceforge.net/bowtie2/index.shtml">bowtie2</a> mapper</li>
+<li>Python (&gt;2.7) with <em>pysam</em>, <em>bx</em>, <em>numpy</em>, and <em>scipy</em> libraries</li>
+<li>R with the <em>RColorBrewer</em> and <em>ggplot2</em> packages</li>
+<li>g++ compiler</li>
+<li>Samtools (&gt;0.1.19)</li>
+</ul>
+<p>To install HiC-Pro:</p>
+<div class="highlight-guess"><div class="highlight"><pre>tar -zxvf HiC-Pro-master.tar.gz
+cd HiC-Pro-master
+make CONFIG_SYS=config-install.txt install
+</pre></div>
+</div>
+<p>Note that if some of these dependencies are not installed (i.e. not detected in the $PATH), HiC-Pro will try to install them.
+You can also edit the <em>config-install.txt</em> file and manually defined the paths to dependencies.</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="20%" />
+<col width="80%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head" colspan="2">SYSTEM CONFIGURATION</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>PREFIX</td>
+<td>Installation path</td>
+</tr>
+<tr class="row-odd"><td>BOWTIE2_PATH</td>
+<td>Full path the bowtie2 installation directory</td>
+</tr>
+<tr class="row-even"><td>SAMTOOLS_PATH</td>
+<td>Full path to the samtools installation directory (&gt;0.1.19)</td>
+</tr>
+<tr class="row-odd"><td>R_PATH</td>
+<td>Full path to the R installation directory</td>
+</tr>
+<tr class="row-even"><td>PYTHON_PATH</td>
+<td>Full path to the python installation directory (&gt;2.7)</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="section" id="annotation-files">
+<h2>Annotation Files<a class="headerlink" href="#annotation-files" title="Permalink to this headline">¶</a></h2>
+<p>In order to process the raw data, HiC-Pro requires three annotation files :</p>
+<ol class="arabic simple">
+<li><strong>A BED file</strong> of the restriction fragments after digestion. This file depends both of the restriction enzyme and the reference genome. See the <a class="reference external" href="FAQ.rst">FAQ</a> for details about how to generate this file. A few annotation files are provided with the HiC-Pro sources.</li>
+</ol>
+<div class="highlight-python"><div class="highlight"><pre>chr1   0       16007   HIC_chr1_1    0   +
+chr1   16007   24571   HIC_chr1_2    0   +
+chr1   24571   27981   HIC_chr1_3    0   +
+chr1   27981   30429   HIC_chr1_4    0   +
+chr1   30429   32153   HIC_chr1_5    0   +
+chr1   32153   32774   HIC_chr1_6    0   +
+chr1   32774   37752   HIC_chr1_7    0   +
+chr1   37752   38369   HIC_chr1_8    0   +
+chr1   38369   38791   HIC_chr1_9    0   +
+chr1   38791   39255   HIC_chr1_10   0   +
+(...)
+</pre></div>
+</div>
+<ol class="arabic simple" start="2">
+<li><strong>A table file</strong> of chromosomes&#8217; size.</li>
+</ol>
+<div class="highlight-python"><div class="highlight"><pre>chr1    249250621
+chr2    243199373
+chr3    198022430
+chr4    191154276
+chr5    180915260
+chr6    171115067
+chr7    159138663
+chr8    146364022
+chr9    141213431
+chr10   135534747
+(...)
+</pre></div>
+</div>
+<ol class="arabic simple" start="3">
+<li><strong>The bowtie2 indexes</strong>. See <a class="reference external" href="http://bowtie-bio.sourceforge.net/bowtie2/index.shtml">the bowtie2 manual page</a> for details about how to create such indexes.</li>
+</ol>
+</div>
+<div class="section" id="how-to-use-it">
+<h2>How to use it ?<a class="headerlink" href="#how-to-use-it" title="Permalink to this headline">¶</a></h2>
+<ol class="arabic simple" start="0">
+<li>First have a look at the help message !</li>
+</ol>
+<div class="highlight-guess"><div class="highlight"><pre>HiC-Pro --help
+usage : HiC-Pro -i INPUT -o OUTPUT -c CONFIG [-s ANALYSIS_STEP] [-p] [-h] [-v]
+Use option -h|--help for more information
+
+HiC-Pro 2.5.2
+---------------
+OPTIONS
+
+ -i|--input INPUT : input data folder; Must contains a folder per sample with fastq (or bam) files
+ -o|--output OUTPUT : output folder
+ -c|--conf CONFIG : configuration file for Hi-C processing
+ [-p|--parallel] : if specified run HiC-Pro in PBS/Torque mode
+ [-s|--step ANALYSIS_STEP] : run only a subset of the HiC-Pro workflow; if not specified the complete workflow is run
+    mapping: perform reads alignment
+    proc_hic: perform Hi-C filtering
+    quality_checks: run Hi-C quality control plots
+    build_contact_maps: build raw inter/intrachromosomal contact maps
+    ice_norm : run ICE normalization on contact maps
+ [-h|--help]: help
+ [-v|--version]: version
+</pre></div>
+</div>
+<ol class="arabic simple">
+<li>Copy and edit the configuration file <em>&#8216;config-hicpro.txt&#8217;</em> in your local folder. See the <a class="reference external" href="MANUAL">manual</a> for details about the configuration file</li>
+<li>Put all fastq files in a rawdata folder. Each fastq file has to be put in a folder per sample.</li>
+<li>Run HiC-Pro</li>
+</ol>
+<ul class="simple">
+<li><strong>On your laptop</strong></li>
+</ul>
+<div class="highlight-guess"><div class="highlight"><pre>MY_INSTALL_PATH/bin/HiC-Pro -i FULL_PATH_TO_RAW_DATA -o FULL_PATH_TO_OUTPUTS -c MY_LOCAL_CONFIG_FILE
+</pre></div>
+</div>
+<ul class="simple">
+<li><strong>Using a cluster (PBS)</strong></li>
+</ul>
+<div class="highlight-guess"><div class="highlight"><pre>MY_INSTALL_PATH/bin/HiC-Pro -i FULL_PATH_TO_RAW_DATA -o FULL_PATH_TO_OUTPUTS -c MY_LOCAL_CONFIG_FILE -p
+</pre></div>
+</div>
+<p>You will get the following message :</p>
+<div class="highlight-guess"><div class="highlight"><pre>Please run HiC-Pro in two steps :
+1- The following command will launch the parallel workflow through 12 torque jobs:
+qsub HiCPro_step1.sh
+2- The second command will merge all outputs to generate the contact maps:
+qsub HiCPro_step2.sh
+</pre></div>
+</div>
+<p>Execute the displayed command from the output folder:</p>
+<div class="highlight-guess"><div class="highlight"><pre>qsub HiCPro_step1.sh
+774410[].torque.curie.fr
+</pre></div>
+</div>
+<p>Then wait for the torque mails... :)
+Once executed succesfully (may take several hours), then type:</p>
+<div class="highlight-guess"><div class="highlight"><pre>qsub HiCPro_step2.sh
+</pre></div>
+</div>
+</div>
+<div class="section" id="test-dataset">
+<h2>Test Dataset<a class="headerlink" href="#test-dataset" title="Permalink to this headline">¶</a></h2>
+<p>Small fastq files (2M reads) extracted from the Dixon et al. 2012 paper are available for test.</p>
+<div class="highlight-guess"><div class="highlight"><pre>## Get the data. Will download a test_data folder and a configuration file
+wget -r -nH --cut-dirs=2 --no-parent --reject=&quot;index.html*&quot; https://zerkalo.curie.fr/partage/HiC-Pro/
+
+## Run HiC-Pro
+time HICPRO_INSTALL_DIR/bin/HiC-Pro -i test_data -o HiC_Pro_v2.4.0_test -c config_test.txt
+Run HiC-Pro
+--------------------------------------------
+lundi 2 mars 2015, 17:00:36 (UTC+0100)
+Bowtie2 global alignment ...
+bowtie_wrap.sh -c /bioinfo/users/nservant/projects_dev/HiC-Pro/config_test.txt -u &gt;&gt; hicpro_IRM90_rep1_split.log
+--------------------------------------------
+lundi 2 mars 2015, 17:01:25 (UTC+0100)
+Bowtie2 local alignment ...
+bowtie_wrap.sh -c /bioinfo/users/nservant/projects_dev/HiC-Pro/config_test.txt -l &gt;&gt; hicpro_IRM90_rep1_split.log
+--------------------------------------------
+lundi 2 mars 2015, 17:01:41 (UTC+0100)
+Combine both alignment ...
+bowtie_combine.sh -c /bioinfo/users/nservant/projects_dev/HiC-Pro/config_test.txt &gt;&gt; hicpro_IRM90_rep1_split.log
+--------------------------------------------
+lundi 2 mars 2015, 17:01:52 (UTC+0100)
+Bowtie2 mapping statistics for R1 and R2 tags ...
+mapping_stat.sh -c /bioinfo/users/nservant/projects_dev/HiC-Pro/config_test.txt &gt;&gt; hicpro_IRM90_rep1_split.log
+--------------------------------------------
+lundi 2 mars 2015, 17:01:53 (UTC+0100)
+Pairing of R1 and R2 tags ...
+bowtie_pairing.sh -c /bioinfo/users/nservant/projects_dev/HiC-Pro/config_test.txt &gt;&gt; hicpro_IRM90_rep1_split.log
+--------------------------------------------
+lundi 2 mars 2015, 17:02:22 (UTC+0100)
+Assign alignments to HindIII sites ...
+mapped_2hic_fragments.sh -c /bioinfo/users/nservant/projects_dev/HiC-Pro/config_test.txt &gt;&gt; hicpro_IRM90_rep1_split.log
+--------------------------------------------
+lundi 2 mars 2015, 17:03:49 (UTC+0100)
+Merge multiple files from the same sample ...
+merge_valid_interactions.sh -c /bioinfo/users/nservant/projects_dev/HiC-Pro/config_test.txt &gt;&gt; hicpro_IRM90_rep1_split.log
+--------------------------------------------
+lundi 2 mars 2015, 17:03:49 (UTC+0100)
+Make plots per sample ...
+make_plots.sh -c /bioinfo/users/nservant/projects_dev/HiC-Pro/config_test.txt &gt;&gt; hicpro_IRM90_rep1_split.log
+--------------------------------------------
+lundi 2 mars 2015, 17:03:55 (UTC+0100)
+Generate binned matrix files ...
+build_raw_maps.sh -c /bioinfo/users/nservant/projects_dev/HiC-Pro/config_test.txt 2&gt; logs/build_raw_maps.log
+--------------------------------------------
+lundi 2 mars 2015, 17:03:57 (UTC+0100)
+Run ICE Normalization ...
+normContactMaps.sh -c /bioinfo/users/nservant/projects_dev/HiC-Pro/config_test.txt &gt;&gt; hicpro_IRM90_rep1_split.log # 2&gt; logs/normICE.log
+
+real 3m23.902s
+user 5m22.956s
+sys  0m40.243s
+
+## All results are available in HiC_Pro_v2.4.0_test
+</pre></div>
+</div>
+</div>
+</div>
+
+
+    </div>
+<footer class="footer">
+    <p class="pull-right">
+      <a href="#">Back to top</a>
+      
+    </p>
+    <p>
+        &copy; Copyright 2015, Nicolas Servant.<br/>
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.3.1.<br/>
+    </p>
+</footer>
+  </body>
+</html>
