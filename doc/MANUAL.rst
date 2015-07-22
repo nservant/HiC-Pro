@@ -6,97 +6,10 @@
 HiC-Pro Manual
 ******************
 
-What is HiC-Pro ?
-=================
+Setting the configuration file
+==============================
 
-HiC-Pro was designed to process Hi-C data, from raw fastq files (paired-end Illumina data) to the normalized contact maps. 
-The pipeline is flexible, scalable and optimized. It can operate either on a single laptop or on a computational cluster using the PBS-Torque scheduler.
-In addition, HiC-Pro can use phasing data to build allele specific contact maps. See `allele specific <doc/AS.rst>`_ section for details.
-
-If you use HiC-Pro, please cite :
-
-HiC-Pro: An optimized and flexible pipeline for Hi-C processing. *Servant N., Varoquaux N., Lajoie BR., Viara E., Chen CJ., Vert JP., Dekker J., Heard E., Barillot E.*. 2015. submitted
-
-How to install it ?
-===================
-
-The HiC-Pro pipeline requires the following dependencies :
-
-* The `bowtie2 <http://bowtie-bio.sourceforge.net/bowtie2/index.shtml>`_ mapper
-* Python (>2.7) with *pysam*, *bx*, *numpy*, and *scipy* libraries
-* R with the *RColorBrewer* and *ggplot2* packages
-* g++ compiler
-* Samtools (>0.1.19)
-
-To install HiC-Pro:
-
-.. code-block:: guess
-
-  tar -zxvf HiC-Pro-master.tar.gz
-  cd HiC-Pro-master
-  make CONFIG_SYS=config-install.txt install
-
-Note that if some of these dependencies are not installed (i.e. not detected in the $PATH), HiC-Pro will try to install them.
-You can also edit the *config-install.txt* file and manually defined the paths to dependencies.
-
-+---------------+------------------------------------------------------------+
-| SYSTEM CONFIGURATION                                                       |
-+===============+============================================================+
-| PREFIX        | Installation path                                          |
-+---------------+------------------------------------------------------------+
-| BOWTIE2_PATH  | Full path the bowtie2 installation directory               |
-+---------------+------------------------------------------------------------+
-| SAMTOOLS_PATH | Full path to the samtools installation directory (>0.1.19) |
-+---------------+------------------------------------------------------------+
-| R_PATH        | Full path to the R installation directory                  |
-+---------------+------------------------------------------------------------+
-| PYTHON_PATH   | Full path to the python installation directory (>2.7)      |
-+---------------+------------------------------------------------------------+
-
-
-Annotation Files
-================
-
-In order to process the raw data, HiC-Pro requires three annotation files :
-
-1. **A BED file** of the restriction fragments after digestion. This file depends both of the restriction enzyme and the reference genome. See the `FAQ <FAQ.rst>`_ for details about how to generate this file. A few annotation files are provided with the HiC-Pro sources.
-
-::
-
-   chr1   0       16007   HIC_chr1_1    0   +
-   chr1   16007   24571   HIC_chr1_2    0   +
-   chr1   24571   27981   HIC_chr1_3    0   +
-   chr1   27981   30429   HIC_chr1_4    0   +
-   chr1   30429   32153   HIC_chr1_5    0   +
-   chr1   32153   32774   HIC_chr1_6    0   +
-   chr1   32774   37752   HIC_chr1_7    0   +
-   chr1   37752   38369   HIC_chr1_8    0   +
-   chr1   38369   38791   HIC_chr1_9    0   +
-   chr1   38791   39255   HIC_chr1_10   0   +
-   (...)
-
-2. **A table file** of chromosomes' size.
-
-::
-
-   chr1    249250621
-   chr2    243199373
-   chr3    198022430
-   chr4    191154276
-   chr5    180915260
-   chr6    171115067
-   chr7    159138663
-   chr8    146364022
-   chr9    141213431
-   chr10   135534747
-   (...)
-
-3. **The bowtie2 indexes**. See `the bowtie2 manual page <http://bowtie-bio.sourceforge.net/bowtie2/index.shtml>`_ for details about how to create such indexes.
-
-How to use it ?
-===============
-
-1. Copy and edit the configuration file *'config-hicpro.txt'* in your local folder. The '[' options are optional.
+1. Copy and edit the configuration file *'config-hicpro.txt'* in your local folder. The '[' options are optional and can be undefined.
 
 +---------------+-----------------------------------------+
 | SET UP SYSTEM AND PBS/TORQUE MODE                       |
@@ -140,15 +53,17 @@ How to use it ?
 
 ------------
 
-+-----------------+---------------------------------------------------------------------------------------------------------------------------------------------------+
-| ANNOTATION FILES                                                                                                                                                    |
-+=================+===================================================================================================================================================+
-| REFERENCE_GENOME| Reference genome prefix used for genome indexes. *Default: hg19*                                                                                  |
-+-----------------+---------------------------------------------------------------------------------------------------------------------------------------------------+
-| GENOME_FRAGMENT | BED file with restriction fragments. Loaded from the ANNOTATION folder in the HiC-Pro installation directory. *Default: HindIII_resfrag_hg19.bed* |
-+-----------------+---------------------------------------------------------------------------------------------------------------------------------------------------+
-| GENOME_SIZE     | Chromsome size file. Loaded from the ANNOTATION folder in the HiC-Pro installation directory. *Default: chrom_hg19.sizes*                         |
-+-----------------+---------------------------------------------------------------------------------------------------------------------------------------------------+
++-----------------------+---------------------------------------------------------------------------------------------------------------------------------------------------+
+| ANNOTATION FILES                                                                                                                                                        |
++=======================+===================================================================================================================================================+
+| REFERENCE_GENOME      | Reference genome prefix used for genome indexes. *Default: hg19*                                                                                  |
++-----------------------+---------------------------------------------------------------------------------------------------------------------------------------------------+
+| GENOME_FRAGMENT       | BED file with restriction fragments. Loaded from the ANNOTATION folder in the HiC-Pro installation directory. *Default: HindIII_resfrag_hg19.bed* |
++-----------------------+---------------------------------------------------------------------------------------------------------------------------------------------------+
+| GENOME_SIZE           | Chromsome size file. Loaded from the ANNOTATION folder in the HiC-Pro installation directory. *Default: chrom_hg19.sizes*                         |
++-----------------------+---------------------------------------------------------------------------------------------------------------------------------------------------+
+| [ALLELE_SPECIFIC_SNP] | VCF file to SNPs which can be used to distinguish parental origin. See the `allele specific section <AS.rst>`_ for more details                   |
++-----------------------+---------------------------------------------------------------------------------------------------------------------------------------------------+
 
 ------------
 
@@ -184,55 +99,14 @@ How to use it ?
 
 ------------                                                                                                                                                              
 
-2. Put all fastq files in a rawdata folder. Each fastq file has to be put in a folder per sample.
 
-3. Run HiC-Pro
-   
-* **Run the complete workflow in a single command line**
-
-.. code-block::
-
-   MY_INSTALL_PATH/bin/HiC-Pro -i FULL_PATH_TO_RAW_DATA -o FULL_PATH_TO_OUTPUTS -c MY_LOCAL_CONFIG_FILE
-  
-* **Run the complete workflow with PBS-Torque**
-
-.. code-block:: 
-
-   	MY_INSTALL_PATH/bin/HiC-Pro -i FULL_PATH_TO_RAW_DATA -o FULL_PATH_TO_OUTPUTS -c MY_LOCAL_CONFIG_FILE -p
-
-
-You will get the following message in the output directory:
-
-.. code-block:: 
-
-  	Please run HiC-Pro in two steps :
-  	1- The following command will launch the parallel workflow through 12 torque jobs:
-  	qsub HiCPro_step1.sh
-  	2- The second command will merge all outputs to generate the contact maps:
-  	qsub HiCPro_step2.sh
-
-
-Execute the displayed command:
-
-.. code-block:: 
-
-  	qsub HiCPro_step1.sh
-
-
-Then wait for the torque mails... :)
-Once executed succesfully (may take several hours), then type:
-
-.. code-block:: 
-
-  	qsub HiCPro_step2.sh
-
-
-* **Run HiC-Pro in sequential mode**
+Run HiC-Pro in sequential mode
+==============================
 
 HiC-Pro can be run in a step-by-step mode.
-Available steps are described in the help command
+Available steps are described in the help command.
 
-.. code-block::
+.. code-block:: guess
 
   HiC-Pro --help
   usage : HiC-Pro -i INPUT -o OUTPUT -c CONFIG [-s ANALYSIS_STEP] [-p] [-h] [-v]
@@ -258,7 +132,7 @@ Available steps are described in the help command
 
 As an exemple, if you want to only want to align the sequencing reads, use :
 
-.. code-block::
+.. code-block:: guess
 
     	MY_INSTALL_PATH/bin/HiC-Pro -i FULL_PATH_TO_RAW_DATA -o FULL_PATH_TO_OUTPUTS -c MY_LOCAL_CONFIG_FILE -s mapping -s quality_checks
 
@@ -278,7 +152,8 @@ Note that in sequential mode, the INPUT argument depends on the analysis steps.
 | -s ice_norm           | .matrix files      |
 +-----------------------+--------------------+
 
-See te `user"s cases<USER_CASES.rst>`_ for more examples.
+
+See te `user's cases <USER_CASES.rst>`_ for more examples.
 
 
 How does HiC-Pro work ?
@@ -314,8 +189,8 @@ Intra et inter-chromosomal contact maps are build for all specified resolutions.
 Hi-C data can contain several sources of biases which has to be corrected. HiC-Pro proposes a fast implementation of the original ICE normalization algorithm (Imakaev et al. 2012), making the assumption of equal visibility of each fragment. The ICE normalization can be used as a standalone python package and is available `<https://github.com/hiclib/>`_
 
 
-Data format
-===========
+Output Description
+==================
 
 A contact map is defined by :
 

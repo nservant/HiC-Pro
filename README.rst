@@ -6,7 +6,7 @@
 HiC-Pro Quick Start Guide
 *************************
 
-This page is just a quick start guide, please read the full `manual <doc/MANUAL.rst>`_ for more information !
+This page is just a quick start guide, please read the full `manual <MANUAL.rst>`_ for more information !
 
 See NEWS for information about changes in this and previous versions
 
@@ -14,12 +14,13 @@ See LOGBOOK for details about the HiC-Pro developmens
 
 See LICENSE for license information
 
+
 What is HiC-Pro ?
 =================
 
 HiC-Pro was designed to process Hi-C data, from raw fastq files (paired-end Illumina data) to the normalized contact maps. 
 The pipeline is flexible, scalable and optimized. It can operate either on a single laptop or on a computational cluster using the PBS-Torque scheduler.
-In addition, HiC-Pro can use phasing data to build allele specific contact maps.
+In addition, HiC-Pro can use phasing data to build allele specific contact maps. See `allele specific <doc/AS.rst>`_ section for details.
 
 If you use HiC-Pro, please cite :
 
@@ -30,7 +31,7 @@ How to install it ?
 
 The HiC-Pro pipeline requires the following dependencies :
 
-* The bowtie2 mapper (>2.2.2)
+* The `bowtie2 <http://bowtie-bio.sourceforge.net/bowtie2/index.shtml>`_ mapper
 * Python (>2.7) with *pysam*, *bx*, *numpy*, and *scipy* libraries
 * R with the *RColorBrewer* and *ggplot2* packages
 * g++ compiler
@@ -47,16 +48,59 @@ To install HiC-Pro:
 Note that if some of these dependencies are not installed (i.e. not detected in the $PATH), HiC-Pro will try to install them.
 You can also edit the *config-install.txt* file and manually defined the paths to dependencies.
 
++---------------+------------------------------------------------------------+
+| SYSTEM CONFIGURATION                                                       |
++===============+============================================================+
+| PREFIX        | Installation path                                          |
++---------------+------------------------------------------------------------+
+| BOWTIE2_PATH  | Full path the bowtie2 installation directory               |
++---------------+------------------------------------------------------------+
+| SAMTOOLS_PATH | Full path to the samtools installation directory (>0.1.19) |
++---------------+------------------------------------------------------------+
+| R_PATH        | Full path to the R installation directory                  |
++---------------+------------------------------------------------------------+
+| PYTHON_PATH   | Full path to the python installation directory (>2.7)      |
++---------------+------------------------------------------------------------+
+
+
 Annotation Files
 ================
 
 In order to process the raw data, HiC-Pro requires three annotation files :
 
-1. A BED file of the restriction fragments after digestion. This file depends both of the restriction enzyme and the reference genome. See the `FAQ <doc/FAQ.rst>`_ for details about how to generate this file. A few annotation files are provided with the HiC-Pro sources.
-2. A table file of chromosomes' size.
-3. The bowtie2 indexes. See `the bowtie2 manual page <http://bowtie-bio.sourceforge.net/bowtie2/index.shtml>`_ for details about how to create such indexes.
+1. **A BED file** of the restriction fragments after digestion. This file depends both of the restriction enzyme and the reference genome. See the `FAQ <FAQ.rst>`_ for details about how to generate this file. A few annotation files are provided with the HiC-Pro sources.
 
-HiC-Pro is packaged with some annotation files for Mouse and Human in the annotation folder.
+::
+
+   chr1   0       16007   HIC_chr1_1    0   +
+   chr1   16007   24571   HIC_chr1_2    0   +
+   chr1   24571   27981   HIC_chr1_3    0   +
+   chr1   27981   30429   HIC_chr1_4    0   +
+   chr1   30429   32153   HIC_chr1_5    0   +
+   chr1   32153   32774   HIC_chr1_6    0   +
+   chr1   32774   37752   HIC_chr1_7    0   +
+   chr1   37752   38369   HIC_chr1_8    0   +
+   chr1   38369   38791   HIC_chr1_9    0   +
+   chr1   38791   39255   HIC_chr1_10   0   +
+   (...)
+
+2. **A table file** of chromosomes' size.
+
+::
+
+   chr1    249250621
+   chr2    243199373
+   chr3    198022430
+   chr4    191154276
+   chr5    180915260
+   chr6    171115067
+   chr7    159138663
+   chr8    146364022
+   chr9    141213431
+   chr10   135534747
+   (...)
+
+3. **The bowtie2 indexes**. See `the bowtie2 manual page <http://bowtie-bio.sourceforge.net/bowtie2/index.shtml>`_ for details about how to create such indexes.
 
 How to use it ?
 ===============
@@ -86,19 +130,18 @@ How to use it ?
    [-h|--help]: help
    [-v|--version]: version
 
-1. Copy and edit the configuration file *'config-hicpro.txt'* in your local folder.
+1. Copy and edit the configuration file *'config-hicpro.txt'* in your local folder. See the `manual <MANUAL>`_ for details about the configuration file
 2. Put all fastq files in a rawdata folder. Each fastq file has to be put in a folder per sample.
 3. Run HiC-Pro
 
-
-  * Without PBS-Torque
+* **On your laptop**
 
 .. code-block:: guess
 
     MY_INSTALL_PATH/bin/HiC-Pro -i FULL_PATH_TO_RAW_DATA -o FULL_PATH_TO_OUTPUTS -c MY_LOCAL_CONFIG_FILE
 
-  
-  * With PBS-Torque
+
+* **Using a cluster (PBS)**
 
 .. code-block:: guess
 
