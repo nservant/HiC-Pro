@@ -34,33 +34,41 @@ done
 CONF=$conf_file . $dir/hic.inc.sh
 
 ################### Define Variables ###################
-
-DATA_DIR=${MAPC_OUTPUT}/data/
+input_data_type=$(get_data_type)
+if [[ $input_data_type == "mat" ]]
+then
+    IN_DIR=${RAW_DIR}
+else
+    IN_DIR=${MAPC_OUTPUT}/matrix/
+fi
 
 ################### Combine Bowtie mapping ###################
 
-for RES_FILE_NAME in ${DATA_DIR}/*
+for RES_FILE_NAME in ${IN_DIR}/*
 do
     RES_FILE_NAME=$(basename $RES_FILE_NAME)
+    ## out
+    MAT_DIR=${MAPC_OUTPUT}/matrix
+    mkdir -p ${MAT_DIR}/${RES_FILE_NAME}
+
     ## Logs
     LDIR=${LOGS_DIR}/${RES_FILE_NAME}
     mkdir -p ${LDIR}
 
-    if [ -d ${DATA_DIR}/${RES_FILE_NAME} ]; then
-	NORM_DIR=${MAPC_OUTPUT}/matrix/${RES_FILE_NAME}/iced
+    if [ -d ${MAT_DIR}/${RES_FILE_NAME} ]; then
+	NORM_DIR=${MAT_DIR}/${RES_FILE_NAME}/iced
 	for bsize in ${BIN_SIZE}
 	do
 	    mkdir -p ${NORM_DIR}/${bsize}
 
 	    if [[ ! -z ${ALLELE_SPECIFIC_SNP} ]]; then
-		
-                ## Build haplotype contact maps if specified
-	    	INPUT_MATRIX_G1=${MAPC_OUTPUT}/matrix/${RES_FILE_NAME}/raw/${bsize}/${RES_FILE_NAME}_${bsize}_G1.matrix
-		INPUT_MATRIX_G2=${MAPC_OUTPUT}/matrix/${RES_FILE_NAME}/raw/${bsize}/${RES_FILE_NAME}_${bsize}_G2.matrix
+		## Build haplotype contact maps if specified
+	    	INPUT_MATRIX_G1=${IN_DIR}/${RES_FILE_NAME}/raw/${bsize}/${RES_FILE_NAME}_${bsize}_G1.matrix
+		INPUT_MATRIX_G2=${IN_DIR}/${RES_FILE_NAME}/raw/${bsize}/${RES_FILE_NAME}_${bsize}_G2.matrix
 		${PYTHON_PATH}/python ${SCRIPTS}/ice --results_filename ${NORM_DIR}/${bsize}/${RES_FILE_NAME}_${bsize}_G1_iced.matrix --filtering_perc ${SPARSE_FILTERING} --max_iter ${MAX_ITER} --eps ${EPS} --verbose 1 ${INPUT_MATRIX_G1} > ${LDIR}/ice.log
 		${PYTHON_PATH}/python ${SCRIPTS}/ice --results_filename ${NORM_DIR}/${bsize}/${RES_FILE_NAME}_${bsize}_G2_iced.matrix --filtering_perc ${SPARSE_FILTERING} --max_iter ${MAX_ITER} --eps ${EPS} --verbose 1 ${INPUT_MATRIX_G2} > ${LDIR}/ice.log
 	    else
-		INPUT_MATRIX=${MAPC_OUTPUT}/matrix/${RES_FILE_NAME}/raw/${bsize}/${RES_FILE_NAME}_${bsize}.matrix
+		INPUT_MATRIX=${IN_DIR}/${RES_FILE_NAME}/raw/${bsize}/${RES_FILE_NAME}_${bsize}.matrix
 		#ln -f -s ../../raw/${bsize}/${RES_FILE_NAME}_${bsize}_abs.bed ${NORM_DIR}/${bsize}/${RES_FILE_NAME}_${bsize}_abs.bed
 		#ln -f -s ../../raw/${bsize}/${RES_FILE_NAME}_${bsize}_ord.bed  ${NORM_DIR}/${bsize}/${RES_FILE_NAME}_${bsize}_ord.bed
 		${PYTHON_PATH}/python ${SCRIPTS}/ice --results_filename ${NORM_DIR}/${bsize}/${RES_FILE_NAME}_${bsize}_iced.matrix --filtering_perc ${SPARSE_FILTERING} --max_iter ${MAX_ITER} --eps ${EPS} --verbose 1 ${INPUT_MATRIX} > ${LDIR}/ice.log
