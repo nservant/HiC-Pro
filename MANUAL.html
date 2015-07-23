@@ -290,28 +290,38 @@ Available steps are described in the help command.</p>
 <ol class="arabic simple">
 <li><strong>Reads Mapping</strong></li>
 </ol>
-<p>Each mate is independantly aligned on the reference genome. The mapping is performed in two steps. First, the reads are aligned using an end-to-end aligner. Second, reads spanning the ligation junction are trimmmed from their 3&#8217; end, and aligned back on the genome. Aligned reads for both fragment mates are then paired in a single paired-end BAM file. Singletons and multi-hits can be discarded according the confirguration parameters.</p>
+<div class="line-block">
+<div class="line">Each mate is independantly aligned on the reference genome. The mapping is performed in two steps. First, the reads are aligned using an end-to-end aligner. Second, reads spanning the ligation junction are trimmmed from their 3&#8217; end, and aligned back on the genome. Aligned reads for both fragment mates are then paired in a single paired-end BAM file. Singletons and multi-hits can be discarded according the confirguration parameters.</div>
+</div>
 <ol class="arabic simple" start="2">
 <li><strong>Fragment assignment and filtering</strong></li>
 </ol>
-<p>Each aligned reads can be assigned to one restriction fragment according to the reference genome and the restriction enzyme.
-The next step is to separate the invalid ligation products from the valid pairs. Dangling end and self circles pairs are therefore excluded.
-Only valid pairs involving two different restriction fragments are used to build the contact maps. Duplicated valid pairs associated to PCR artefacts are discarded.
-The fragment assignment can be visualized through a BAM files of aliged pairs where each pair is flagged according to its classification.</p>
+<div class="line-block">
+<div class="line">Each aligned reads can be assigned to one restriction fragment according to the reference genome and the restriction enzyme.</div>
+<div class="line">The next step is to separate the invalid ligation products from the valid pairs. Dangling end and self circles pairs are therefore excluded.</div>
+</div>
+<p>Only valid pairs involving two different restriction fragments are used to build the contact maps. Duplicated valid pairs associated to PCR artefacts are discarded.
+| The fragment assignment can be visualized through a BAM files of aliged pairs where each pair is flagged according to its classification.</p>
 <ol class="arabic simple" start="3">
 <li><strong>Quality Controls</strong></li>
 </ol>
-<p>HiC-Pro performs a couple of quality controls for most of the analysis steps. The alignment statistics are the first quality controls. Aligned reads in the first (end-to-end) step, and alignment after trimming are reported. Note that in pratice, we ususally observed around 10-20% of trimmed reads. An abnormal level of trimmed reads can reflect a ligation issue.
-Once the reads are aligned on the genome, HiC-pro checks the number of singleton, multiple hits or duplicates. The fraction of valid pairs are presented for each type of ligation products. Invalid pairs such as dangling and or self-circle are also represented. A high level of dangling ends, or an imbalance in valid pairs ligation type can be due to a ligation, fill-in or digestion issue.
-Finally HiC-Pro also calculated the distribution of fragment size on a subset of valid pairs. Additional statistics will report the fraction of intra/inter-chromosomal contacts, as well as the proportion of short range (&lt;20kb) versus long range (&gt;20kb) contacts.</p>
+<div class="line-block">
+<div class="line">HiC-Pro performs a couple of quality controls for most of the analysis steps. The alignment statistics are the first quality controls. Aligned reads in the first (end-to-end) step, and alignment after trimming are reported. Note that in pratice, we ususally observed around 10-20% of trimmed reads. An abnormal level of trimmed reads can reflect a ligation issue.</div>
+<div class="line">Once the reads are aligned on the genome, HiC-pro checks the number of singleton, multiple hits or duplicates. The fraction of valid pairs are presented for each type of ligation products. Invalid pairs such as dangling and or self-circle are also represented. A high level of dangling ends, or an imbalance in valid pairs ligation type can be due to a ligation, fill-in or digestion issue.</div>
+<div class="line">Finally HiC-Pro also calculated the distribution of fragment size on a subset of valid pairs. Additional statistics will report the fraction of intra/inter-chromosomal contacts, as well as the proportion of short range (&lt;20kb) versus long range (&gt;20kb) contacts.</div>
+</div>
 <ol class="arabic simple" start="4">
 <li><strong>Map builder</strong></li>
 </ol>
-<p>Intra et inter-chromosomal contact maps are build for all specified resolutions. The genome is splitted into bins of equal size. Each valid interaction is associated with the genomic bins to generate the raw maps.</p>
+<div class="line-block">
+<div class="line">Intra et inter-chromosomal contact maps are build for all specified resolutions. The genome is splitted into bins of equal size. Each valid interaction is associated with the genomic bins to generate the raw maps.</div>
+</div>
 <ol class="arabic simple" start="5">
 <li><strong>ICE normalization</strong></li>
 </ol>
-<p>Hi-C data can contain several sources of biases which has to be corrected. HiC-Pro proposes a fast implementation of the original ICE normalization algorithm (Imakaev et al. 2012), making the assumption of equal visibility of each fragment. The ICE normalization can be used as a standalone python package through the <a class="reference external" href="https://github.com/hiclib/">iced python package</a></p>
+<div class="line-block">
+<div class="line">Hi-C data can contain several sources of biases which has to be corrected. HiC-Pro proposes a fast implementation of the original ICE normalization algorithm (Imakaev et al. 2012), making the assumption of equal visibility of each fragment. The ICE normalization can be used as a standalone python package through the <a class="reference external" href="https://github.com/hiclib/">iced python package</a></div>
+</div>
 </div>
 <div class="section" id="browsing-the-results">
 <h2>Browsing the results<a class="headerlink" href="#browsing-the-results" title="Permalink to this headline">¶</a></h2>
@@ -324,9 +334,11 @@ See the <a class="reference external" href="RESULTS.rst">Results section</a> for
 <ul class="simple">
 <li><em>hic_results</em></li>
 </ul>
-<p>This folder contains all Hi-C processed data, and is further divided in several sub-folders.
-The data folder is used to store the valid interaction products (.validPairs), as well as other statisics files.
-The contact maps are then available in the <em>matrix</em> folder. The <em>matrix</em> folder is organized with <em>raw</em> and <em>iced</em> contact maps for all resolutions.</p>
+<div class="line-block">
+<div class="line">This folder contains all Hi-C processed data, and is further divided in several sub-folders.</div>
+<div class="line">The <em>data</em> folder is used to store the valid interaction products (<em>.validPairs</em>), as well as other statisics files.</div>
+<div class="line">The contact maps are then available in the <em>matrix</em> folder. The <em>matrix</em> folder is organized with <em>raw</em> and <em>iced</em> contact maps for all resolutions.</div>
+</div>
 </div>
 </div>
 

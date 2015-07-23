@@ -163,28 +163,28 @@ The HiC-Pro workflow can be divided in five main steps presented below.
 
 1. **Reads Mapping**
 
-Each mate is independantly aligned on the reference genome. The mapping is performed in two steps. First, the reads are aligned using an end-to-end aligner. Second, reads spanning the ligation junction are trimmmed from their 3' end, and aligned back on the genome. Aligned reads for both fragment mates are then paired in a single paired-end BAM file. Singletons and multi-hits can be discarded according the confirguration parameters.
+| Each mate is independantly aligned on the reference genome. The mapping is performed in two steps. First, the reads are aligned using an end-to-end aligner. Second, reads spanning the ligation junction are trimmmed from their 3' end, and aligned back on the genome. Aligned reads for both fragment mates are then paired in a single paired-end BAM file. Singletons and multi-hits can be discarded according the confirguration parameters.
 
 2. **Fragment assignment and filtering**
 
-Each aligned reads can be assigned to one restriction fragment according to the reference genome and the restriction enzyme.
-The next step is to separate the invalid ligation products from the valid pairs. Dangling end and self circles pairs are therefore excluded.
+| Each aligned reads can be assigned to one restriction fragment according to the reference genome and the restriction enzyme.
+| The next step is to separate the invalid ligation products from the valid pairs. Dangling end and self circles pairs are therefore excluded.
 Only valid pairs involving two different restriction fragments are used to build the contact maps. Duplicated valid pairs associated to PCR artefacts are discarded.
-The fragment assignment can be visualized through a BAM files of aliged pairs where each pair is flagged according to its classification.
+| The fragment assignment can be visualized through a BAM files of aliged pairs where each pair is flagged according to its classification.
 
 3. **Quality Controls**
 
-HiC-Pro performs a couple of quality controls for most of the analysis steps. The alignment statistics are the first quality controls. Aligned reads in the first (end-to-end) step, and alignment after trimming are reported. Note that in pratice, we ususally observed around 10-20% of trimmed reads. An abnormal level of trimmed reads can reflect a ligation issue.
-Once the reads are aligned on the genome, HiC-pro checks the number of singleton, multiple hits or duplicates. The fraction of valid pairs are presented for each type of ligation products. Invalid pairs such as dangling and or self-circle are also represented. A high level of dangling ends, or an imbalance in valid pairs ligation type can be due to a ligation, fill-in or digestion issue.
-Finally HiC-Pro also calculated the distribution of fragment size on a subset of valid pairs. Additional statistics will report the fraction of intra/inter-chromosomal contacts, as well as the proportion of short range (<20kb) versus long range (>20kb) contacts.
+| HiC-Pro performs a couple of quality controls for most of the analysis steps. The alignment statistics are the first quality controls. Aligned reads in the first (end-to-end) step, and alignment after trimming are reported. Note that in pratice, we ususally observed around 10-20% of trimmed reads. An abnormal level of trimmed reads can reflect a ligation issue.
+| Once the reads are aligned on the genome, HiC-pro checks the number of singleton, multiple hits or duplicates. The fraction of valid pairs are presented for each type of ligation products. Invalid pairs such as dangling and or self-circle are also represented. A high level of dangling ends, or an imbalance in valid pairs ligation type can be due to a ligation, fill-in or digestion issue.
+| Finally HiC-Pro also calculated the distribution of fragment size on a subset of valid pairs. Additional statistics will report the fraction of intra/inter-chromosomal contacts, as well as the proportion of short range (<20kb) versus long range (>20kb) contacts.
 
 4. **Map builder**
 
-Intra et inter-chromosomal contact maps are build for all specified resolutions. The genome is splitted into bins of equal size. Each valid interaction is associated with the genomic bins to generate the raw maps.
+| Intra et inter-chromosomal contact maps are build for all specified resolutions. The genome is splitted into bins of equal size. Each valid interaction is associated with the genomic bins to generate the raw maps.
 
 5. **ICE normalization**
 
-Hi-C data can contain several sources of biases which has to be corrected. HiC-Pro proposes a fast implementation of the original ICE normalization algorithm (Imakaev et al. 2012), making the assumption of equal visibility of each fragment. The ICE normalization can be used as a standalone python package through the `iced python package <https://github.com/hiclib/>`_
+| Hi-C data can contain several sources of biases which has to be corrected. HiC-Pro proposes a fast implementation of the original ICE normalization algorithm (Imakaev et al. 2012), making the assumption of equal visibility of each fragment. The ICE normalization can be used as a standalone python package through the `iced python package <https://github.com/hiclib/>`_
 
 
 Browsing the results
@@ -199,9 +199,9 @@ The *bowtie_results* folder contains the results of the reads mapping. The resul
 
 * *hic_results*
 
-This folder contains all Hi-C processed data, and is further divided in several sub-folders.
-The data folder is used to store the valid interaction products (.validPairs), as well as other statisics files.
-The contact maps are then available in the *matrix* folder. The *matrix* folder is organized with *raw* and *iced* contact maps for all resolutions.
+| This folder contains all Hi-C processed data, and is further divided in several sub-folders.
+| The *data* folder is used to store the valid interaction products (*.validPairs*), as well as other statisics files.
+| The contact maps are then available in the *matrix* folder. The *matrix* folder is organized with *raw* and *iced* contact maps for all resolutions.
 
 
 
