@@ -20,6 +20,13 @@
 ################################################################################
 
 ##--------------------
+##23-07-15
+##--------------------
+
+   o Update split_reads.py utility to handle fastq.gz files
+   o Update manual and create gh-pages under github. The HiC-Pro website is now available at http://nservant.github.io/HiC-Pro/
+
+##--------------------
 ##20-07-15
 ##--------------------
 
@@ -32,7 +39,6 @@
 
    o Fix conflicts between versions
    o Merge AS branch with master
-
 
 ##--------------------
 ##30-06-15
