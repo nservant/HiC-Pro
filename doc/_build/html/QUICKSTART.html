@@ -73,10 +73,17 @@
 <p>See LICENSE for license information</p>
 <div class="section" id="what-is-hic-pro">
 <h2>What is HiC-Pro ?<a class="headerlink" href="#what-is-hic-pro" title="Permalink to this headline">¶</a></h2>
-<p>HiC-Pro was designed to process Hi-C data, from raw fastq files (paired-end Illumina data) to the normalized contact maps.
-The pipeline is flexible, scalable and optimized. It can operate either on a single laptop or on a computational cluster using the PBS-Torque scheduler. HiC-Pro is sequential and each step of the workflow can be run independantly.
-HiC-Pro includes a fast implementatation of the ICE normalization method (see the <a class="reference external" href="https://github.com/hiclib/iced">iced</a> python library for more information).
-In addition, HiC-Pro can use phasing data to build <a class="reference external" href="doc/AS.rst">allele specific contact maps</a>.</p>
+<div class="line-block">
+<div class="line">HiC-Pro was designed to process Hi-C data, from raw fastq files (paired-end Illumina data) to the normalized contact maps.</div>
+</div>
+<dl class="docutils">
+<dt>The pipeline is flexible, scalable and optimized. It can operate either on a single laptop or on a computational cluster using the PBS-Torque scheduler.</dt>
+<dd>HiC-Pro is sequential and each step of the workflow can be run independantly.</dd>
+</dl>
+<div class="line-block">
+<div class="line">HiC-Pro includes a fast implementatation of the ICE normalization method (see the <a class="reference external" href="https://github.com/hiclib/iced">iced</a> python library for more information).</div>
+</div>
+<p>In addition, HiC-Pro can use phasing data to build <a class="reference external" href="doc/AS.rst">allele specific contact maps</a>.</p>
 <p>If you use HiC-Pro, please cite :</p>
 <p>HiC-Pro: An optimized and flexible pipeline for Hi-C processing. <em>Servant N., Varoquaux N., Lajoie BR., Viara E., Chen CJ., Vert JP., Dekker J., Heard E., Barillot E.</em>. 2015. submitted</p>
 </div>
@@ -97,8 +104,10 @@ To install HiC-Pro:</p>
 <span class="n">make</span> <span class="n">CONFIG_SYS</span><span class="o">=</span><span class="n">config</span><span class="o">-</span><span class="n">install</span><span class="p">.</span><span class="n">txt</span> <span class="n">install</span>
 </pre></div>
 </div>
-<p>Note that if some of these dependencies are not installed (i.e. not detected in the $PATH), HiC-Pro will try to install them.
-You can also edit the <em>config-install.txt</em> file and manually defined the paths to dependencies.</p>
+<div class="line-block">
+<div class="line">Note that if some of these dependencies are not installed (i.e. not detected in the $PATH), HiC-Pro will try to install them.</div>
+<div class="line">You can also edit the <em>config-install.txt</em> file and manually defined the paths to dependencies.</div>
+</div>
 <table border="1" class="docutils">
 <colgroup>
 <col width="20%" />

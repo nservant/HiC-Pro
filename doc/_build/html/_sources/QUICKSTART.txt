@@ -18,9 +18,10 @@ See LICENSE for license information
 What is HiC-Pro ?
 =================
 
-HiC-Pro was designed to process Hi-C data, from raw fastq files (paired-end Illumina data) to the normalized contact maps. 
-The pipeline is flexible, scalable and optimized. It can operate either on a single laptop or on a computational cluster using the PBS-Torque scheduler. HiC-Pro is sequential and each step of the workflow can be run independantly.
-HiC-Pro includes a fast implementatation of the ICE normalization method (see the `iced <https://github.com/hiclib/iced>`_ python library for more information).
+| HiC-Pro was designed to process Hi-C data, from raw fastq files (paired-end Illumina data) to the normalized contact maps. 
+The pipeline is flexible, scalable and optimized. It can operate either on a single laptop or on a computational cluster using the PBS-Torque scheduler.
+ HiC-Pro is sequential and each step of the workflow can be run independantly.
+| HiC-Pro includes a fast implementatation of the ICE normalization method (see the `iced <https://github.com/hiclib/iced>`_ python library for more information).
 In addition, HiC-Pro can use phasing data to build `allele specific contact maps <doc/AS.rst>`_.
 
 If you use HiC-Pro, please cite :
@@ -48,8 +49,8 @@ To install HiC-Pro:
   cd HiC-Pro-master
   make CONFIG_SYS=config-install.txt install
 
-Note that if some of these dependencies are not installed (i.e. not detected in the $PATH), HiC-Pro will try to install them.
-You can also edit the *config-install.txt* file and manually defined the paths to dependencies.
+| Note that if some of these dependencies are not installed (i.e. not detected in the $PATH), HiC-Pro will try to install them.
+| You can also edit the *config-install.txt* file and manually defined the paths to dependencies.
 
 +---------------+------------------------------------------------------------+
 | SYSTEM CONFIGURATION                                                       |

@@ -67,26 +67,38 @@
   
   <div class="section" id="hic-pro-utilities">
 <h1>HiC-Pro Utilities<a class="headerlink" href="#hic-pro-utilities" title="Permalink to this headline">¶</a></h1>
-<p id="utils">HiC-Pro provides a couple of utilities which are not part of the main pipeline, but was designed to help the user to perform a couple of tasks.
-All utilities are installed in /bin/utils/.</p>
-<p><strong>1- split_reads.py - How can I split my reads in chunck ?</strong></p>
-<p>Split reads is highly recommanded in HiC-pro parallel mode.
-To split the reads in chunck, you can simply used the split_reads.py utility.</p>
+<div class="line-block" id="utils">
+<div class="line">HiC-Pro provides a couple of utilities which are not part of the main pipeline, but was designed to help the user to perform a couple of tasks.</div>
+</div>
+<p>All utilities are installed in /bin/utils/.</p>
+<div class="section" id="split-reads-py">
+<h2>1- split_reads.py<a class="headerlink" href="#split-reads-py" title="Permalink to this headline">¶</a></h2>
+<p>or <strong>How can I split my reads in chunck ?</strong></p>
+<div class="line-block">
+<div class="line">Split reads is highly recommanded in HiC-pro parallel mode.</div>
+<div class="line">To split the reads in chunck, you can simply used the split_reads.py utility.</div>
+</div>
 <div class="highlight-bash"><div class="highlight"><pre><span class="c">## split the fastq file in blocks of 10M reads</span>
 HICPRO_PATH/bin/utils/split_reads.py --results_folder OUTPUT --nreads READS_NB INPUT_FASTQ
 </pre></div>
 </div>
-<p><strong>2- extract_snps.py - How can I extract SNPs information from phasing data ?</strong></p>
-<p>This script was designed to extract SNPs information from a VCF file.
-As a example, the Sanger database provides a list of SNPs which can be used to differentiate several Mouse strains (see <a class="reference external" href="ftp://ftp-mouse.sanger.ac.uk/current_snps/">ftp://ftp-mouse.sanger.ac.uk/current_snps/</a>)
-The single VCF contains all SNPs information for all Mouse strains. The default reference allele is the C57 black strain
-This script is able to extract informative and high quality SNPs (-f option) which can be then used in allele specific analysis to distinguish parental origin.</p>
+</div>
+<div class="section" id="extract-snps-py">
+<h2>2- extract_snps.py<a class="headerlink" href="#extract-snps-py" title="Permalink to this headline">¶</a></h2>
+<p>or <strong>How can I extract SNPs information from phasing data ?</strong></p>
+<div class="line-block">
+<div class="line">This script was designed to extract SNPs information from a VCF file.</div>
+<div class="line">As a example, the Sanger database provides a list of SNPs which can be used to differentiate several Mouse strains (see <a class="reference external" href="ftp://ftp-mouse.sanger.ac.uk/current_snps/">ftp://ftp-mouse.sanger.ac.uk/current_snps/</a>).</div>
+<div class="line">The single VCF contains all SNPs information for all Mouse strains. The default reference allele is the C57 black strain.</div>
+<div class="line">This script is able to extract informative and high quality SNPs (-f option) which can be then used in allele specific analysis to distinguish parental origin.</div>
+</div>
 <div class="highlight-bash"><div class="highlight"><pre><span class="c">## Extract SNPs information for CASTEiJ/129S1 cross</span>
 HICPRO_PATH/bin/utils/split_reads.py -i mgp.v2.snps.annot.reformat.vcf -r CASTEij -a 129S1 &gt; snps_CASTEiJ_129S1.vcf
 
 <span class="c">## Extract SNPs information for C57_b6/FVB_NJ</span>
 HICPRO_PATH/bin/utils/split_reads.py -i mgp.v2.snps.annot.reformat.vcf -a FVB_NJ &gt; snps_CASTEiJ_129S1.vcf
 </pre></div>
+</div>
 </div>
 </div>
 

@@ -67,16 +67,16 @@
   <div class="section" id="faq">
 <h1>FAQ<a class="headerlink" href="#faq" title="Permalink to this headline">¶</a></h1>
 <div class="section" id="hic-pro-failed-how-to-find-what-s-going-wrong">
-<h2><strong>HiC-Pro failed. How to find what&#8217;s going wrong ?</strong><a class="headerlink" href="#hic-pro-failed-how-to-find-what-s-going-wrong" title="Permalink to this headline">¶</a></h2>
+<h2>HiC-Pro failed. How to find what&#8217;s going wrong ?<a class="headerlink" href="#hic-pro-failed-how-to-find-what-s-going-wrong" title="Permalink to this headline">¶</a></h2>
 <p>A log file is generated when you run HiC-Pro. Its name is specified in the configuration file. In addition, some parts of the pipeline generate specific logs which are available in the <em>log</em> folder</p>
 </div>
 <div class="section" id="how-can-i-split-my-fastq-files-into-smaller-files">
-<h2><strong>How can I split my .fastq files into smaller files ?</strong><a class="headerlink" href="#how-can-i-split-my-fastq-files-into-smaller-files" title="Permalink to this headline">¶</a></h2>
+<h2>How can I split my .fastq files into smaller files ?<a class="headerlink" href="#how-can-i-split-my-fastq-files-into-smaller-files" title="Permalink to this headline">¶</a></h2>
 <p>See the <a class="reference external" href="UTILS.rst">HiC-Pro Utilities</a> which is baed on the split unix command.
 For more information, see <tt class="code docutils literal"><span class="pre">man</span> <span class="pre">split</span></tt></p>
 </div>
 <div class="section" id="how-can-i-generate-my-annotation-files">
-<h2><strong>How can I generate my annotation files ?</strong><a class="headerlink" href="#how-can-i-generate-my-annotation-files" title="Permalink to this headline">¶</a></h2>
+<h2>How can I generate my annotation files ?<a class="headerlink" href="#how-can-i-generate-my-annotation-files" title="Permalink to this headline">¶</a></h2>
 <p>HiC-Pro requires two annotation files.</p>
 <ul>
 <li><p class="first">The chromosomes size are usually available through annotation website, such as the UCSC Genome Browser:</p>
@@ -121,7 +121,7 @@ export<span class="p">(</span>allRF<span class="p">,</span> format<span class="o
 </div>
 </div>
 <div class="section" id="why-hic-pro-need-to-be-run-in-two-steps-in-parallel-mode">
-<h2><strong>Why HiC-Pro need to be run in two steps in parallel mode ?</strong><a class="headerlink" href="#why-hic-pro-need-to-be-run-in-two-steps-in-parallel-mode" title="Permalink to this headline">¶</a></h2>
+<h2>Why HiC-Pro need to be run in two steps in parallel mode ?<a class="headerlink" href="#why-hic-pro-need-to-be-run-in-two-steps-in-parallel-mode" title="Permalink to this headline">¶</a></h2>
 <p>Th HiC-Pro pipeline is divided into two main steps. The first part of the pipeline is &#8216;fastq&#8217; based, meaning that the same anlaysis will be performed for all fastq files.
 This part can be easily parallelized per fastq, with at the end, a list of valid interactions per fastq file.
 The second step of the pipeline is &#8216;sample&#8217; based. All lists of valid interactions from the same sample are merged in order to build and normalize the maps.
@@ -129,19 +129,19 @@ At that time, this second step is not time consuming, and we do not parallelize 
 So, because these two steps as either &#8216;fastq&#8217; based or &#8216;sample&#8217; based, we need to separate them during the parallele processing.</p>
 </div>
 <div class="section" id="does-hic-pro-support-other-mappers">
-<h2><strong>Does HiC-Pro support other mappers ?</strong><a class="headerlink" href="#does-hic-pro-support-other-mappers" title="Permalink to this headline">¶</a></h2>
+<h2>Does HiC-Pro support other mappers ?<a class="headerlink" href="#does-hic-pro-support-other-mappers" title="Permalink to this headline">¶</a></h2>
 <p>No. HiC-Pro is only based on the bowtie2 mapper.
 However, note that HiC-Pro can be run from aligned data. In this case, the input path (-i) must be a BAM folder, and the analysis has to be run step-by-step.</p>
 </div>
 <div class="section" id="how-can-i-create-n-masked-genome-for-allele-specific-analysis">
-<h2><strong>How can I create N-masked genome for allele-specific analysis ?</strong><a class="headerlink" href="#how-can-i-create-n-masked-genome-for-allele-specific-analysis" title="Permalink to this headline">¶</a></h2>
+<h2>How can I create N-masked genome for allele-specific analysis ?<a class="headerlink" href="#how-can-i-create-n-masked-genome-for-allele-specific-analysis" title="Permalink to this headline">¶</a></h2>
 <p>The allele specific mode of HiC-Pro is based on a N-masked genome. Meaning that all SNPs information which can be use to distinguish parental haplotypes have to be masked. This masking can be performed in 3 steps:
 1. Extract relevant SNPs information. See the <a class="reference external" href="doc/UTILS.rst">extract_snps.py</a> utility for Mouse Sanger data. For Human data, you can use phasing data, or SNPs information available from public ressources, as the <a class="reference external" href="http://www.illumina.com/platinumgenomes/">Illumina Platinum Project</a>, the <a class="reference external" href="http://www.1000genomes.org/">1K Genome Project</a> or the <a class="reference external" href="https://www.broadinstitute.org/gatk/guide/article.php?id=1215">GATK resource bundle</a>.
 2. Mask the fasta genome. To do so, simply use the bedtools <a class="reference external" href="http://bedtools.readthedocs.org/en/latest/content/tools/maskfasta.html">maskfasta</a> utility.
 3. Then, create your bowtie2 indexes from the masked fasta file.</p>
 </div>
 <div class="section" id="what-can-i-do-once-i-have-the-iced-contact-maps">
-<h2><strong>What can I do once I have the iced contact maps</strong><a class="headerlink" href="#what-can-i-do-once-i-have-the-iced-contact-maps" title="Permalink to this headline">¶</a></h2>
+<h2>What can I do once I have the iced contact maps<a class="headerlink" href="#what-can-i-do-once-i-have-the-iced-contact-maps" title="Permalink to this headline">¶</a></h2>
 <p>The matrix format is a standard sparse triplet format which can easoly be loaded in R or matlab environment.
 For instance, the matrix can be easily loaded in the R environment using the <a class="reference external" href="http://bioconductor.org/packages/release/bioc/html/HiTC.html">HiTC Bioconductor package</a>.</p>
 <div class="highlight-guess"><div class="highlight"><pre>require<span class="p">(</span>HiTC<span class="p">)</span>

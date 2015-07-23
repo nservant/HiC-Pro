@@ -67,27 +67,43 @@
   
   <div class="section" id="allele-specific-analysis">
 <h1>Allele specific analysis<a class="headerlink" href="#allele-specific-analysis" title="Permalink to this headline">¶</a></h1>
-<p>If the ALLELE_SPECIFIC_SNP option is defined in the configuration, HiC-Pro will run the allele specific mode.
-The ALLELE_SPECIFIC_SNP option must contain the path to a VCF file with phasing SNPs information.
-HiC-Pro provides the <a class="reference external" href="UTILS.rst">*extract_snps.py* utilities</a> to generate such file.
-This utility was first design to extract relevant information from the Mouse Sanger database SNPs file. The goal is to generate a VCF file of the F1 individual according to its parental genotype. For instance using <em>extract_snps.py</em> with <em>-r CASTEiJ</em> and <em>-a 129S1</em> will generate a VCF file with all F1 heterogyzote SNPs which can be used to distinguish <em>CASTEiJ</em> and <em>129S1</em> alleles.</p>
-<p><strong>Allele specific mapping</strong></p>
-<p>In allele-specific mode, the sequencing reads are first aligned on masked reference genome for which all polymorphic sites were first N-masked.
-In the current version, <strong>this is the user responsability to provide to generate this genome and to provide the bowtie2 indexes to HiC-Pro.</strong>
-Example of how to generate such reference genome is discribed in the <a class="reference external" href="FAQ.rst">FAQ</a> section.
-This masking strategy avoid systematic bias toward the reference allele, compared to standard mapping where reads with the reference allele are more likely to be mapped than the reads with non-reference alleles.</p>
-<p><strong>Assignment to parental genome</strong></p>
-<p>Once aligned HiC-Pro browses all reads spanning a polymorphic site, locates the nucleotide at the appropriate position, and assigns the read either to the maternal or paternal allele. Reads with conflicting allele assignment or unexpected allele at polymorphic sites are discarded.
-This step generates a bam file with all reads flagged according to its parental assignment (AS flag).
-<strong>AS:i:0</strong> - unassigned (UA)
-<strong>AS:i:1</strong> - assigned to reference genome (G1)
-<strong>AS:i:2</strong> - assigned to alternative genome (G2)
-<strong>AS:i:3</strong> - conflicting (C)</p>
-<p><strong>Allele specific maps</strong></p>
-<p>Finally, read pairs with at least one allele specific mate are used to construct allele specific contact maps.
-In allele-specific mode, the <em>.validPairs</em> file will contains an additional columns with the allele status of each reads pair.
-Therefore, valid pairs assigned to &#8216;G1-G1&#8217;, &#8216;G1-UA&#8217; or &#8216;UA-G1&#8217; are used to build the G1 genome-wide contact maps. In the same way, &#8216;G2-G2&#8217;, &#8216;G2-UA&#8217;, &#8216;UA-G2&#8217; pairs will be used to generate the G2 genome-wide contact maps.
-All maps are then normalized using the ICE method.</p>
+<div class="line-block">
+<div class="line">If the ALLELE_SPECIFIC_SNP option is defined in the configuration, HiC-Pro will run the allele specific mode.</div>
+<div class="line">The ALLELE_SPECIFIC_SNP option must contain the path to a VCF file with phasing SNPs information.</div>
+<div class="line">HiC-Pro provides the <a class="reference external" href="UTILS.rst">extract_snps.py utilities</a> to generate such file.</div>
+<div class="line">This utility was first design to extract relevant information from the Mouse Sanger database SNPs file. The goal is to generate a VCF file of the F1 individual according to its parental genotype. For instance using <em>extract_snps.py</em> with <em>-r CASTEiJ</em> and <em>-a 129S1</em> will generate a VCF file with all F1 heterogyzote SNPs which can be used to distinguish <em>CASTEiJ</em> and <em>129S1</em> alleles.</div>
+</div>
+<div class="section" id="allele-specific-mapping">
+<h2>Allele specific mapping<a class="headerlink" href="#allele-specific-mapping" title="Permalink to this headline">¶</a></h2>
+<div class="line-block">
+<div class="line">In allele-specific mode, the sequencing reads are first aligned on masked reference genome for which all polymorphic sites were first N-masked.</div>
+<div class="line">In the current version, <strong>this is the user responsability to provide to generate this genome and to provide the bowtie2 indexes to HiC-Pro.</strong></div>
+<div class="line">Example of how to generate such reference genome is discribed in the <a class="reference external" href="FAQ.rst">FAQ</a> section.</div>
+<div class="line">This masking strategy avoid systematic bias toward the reference allele, compared to standard mapping where reads with the reference allele are more likely to be mapped than the reads with non-reference alleles.</div>
+</div>
+</div>
+<div class="section" id="assignment-to-parental-genome">
+<h2>Assignment to parental genome<a class="headerlink" href="#assignment-to-parental-genome" title="Permalink to this headline">¶</a></h2>
+<div class="line-block">
+<div class="line">Once aligned HiC-Pro browses all reads spanning a polymorphic site, locates the nucleotide at the appropriate position, and assigns the read either to the maternal or paternal allele. Reads with conflicting allele assignment or unexpected allele at polymorphic sites are discarded.</div>
+<div class="line">This step generates a bam file with all reads flagged according to its parental assignment (AS flag).</div>
+</div>
+<ul class="simple">
+<li><strong>AS:i:0</strong> - unassigned (UA)</li>
+<li><strong>AS:i:1</strong> - assigned to reference genome (G1)</li>
+<li><strong>AS:i:2</strong> - assigned to alternative genome (G2)</li>
+<li><strong>AS:i:3</strong> - conflicting (C)</li>
+</ul>
+</div>
+<div class="section" id="allele-specific-maps">
+<h2>Allele specific maps<a class="headerlink" href="#allele-specific-maps" title="Permalink to this headline">¶</a></h2>
+<div class="line-block">
+<div class="line">Finally, read pairs with at least one allele specific mate are used to construct allele specific contact maps.</div>
+<div class="line">In allele-specific mode, the <em>.validPairs</em> file will contains an additional columns with the allele status of each reads pair.</div>
+<div class="line">Therefore, valid pairs assigned to &#8216;G1-G1&#8217;, &#8216;G1-UA&#8217; or &#8216;UA-G1&#8217; are used to build the G1 genome-wide contact maps. In the same way, &#8216;G2-G2&#8217;, &#8216;G2-UA&#8217;, &#8216;UA-G2&#8217; pairs will be used to generate the G2 genome-wide contact maps.</div>
+<div class="line">All maps are then normalized using the ICE method.</div>
+</div>
+</div>
 </div>
 
 
