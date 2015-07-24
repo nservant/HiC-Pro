@@ -5,7 +5,8 @@ FAQ
 HiC-Pro failed. How to find what's going wrong ?
 ------------------------------------------------
 
-A log file is generated when you run HiC-Pro. Its name is specified in the configuration file. In addition, some parts of the pipeline generate specific logs which are available in the *log* folder
+| A log file is generated when you run HiC-Pro. Its name is specified in the configuration file. 
+| In addition, some parts of the pipeline generate specific logs which are available in the *log* folder
 
 
 How can I split my .fastq files into smaller files ?

@@ -18,16 +18,15 @@ See LICENSE for license information
 What is HiC-Pro ?
 =================
 
-| HiC-Pro was designed to process Hi-C data, from raw fastq files (paired-end Illumina data) to the normalized contact maps. 
-The pipeline is flexible, scalable and optimized. It can operate either on a single laptop or on a computational cluster using the PBS-Torque scheduler.
- HiC-Pro is sequential and each step of the workflow can be run independantly.
+| HiC-Pro was designed to process Hi-C data, from raw fastq files (paired-end Illumina data) to the normalized contact maps. The pipeline is flexible, scalable and optimized. It can operate either on a single laptop or on a computational cluster using the PBS-Torque scheduler. HiC-Pro is sequential and each step of the workflow can be run independantly.
 | HiC-Pro includes a fast implementatation of the ICE normalization method (see the `iced <https://github.com/hiclib/iced>`_ python library for more information).
-In addition, HiC-Pro can use phasing data to build `allele specific contact maps <doc/AS.rst>`_.
+| In addition, HiC-Pro can use phasing data to build `allele specific contact maps <doc/AS.rst>`_.
 
 If you use HiC-Pro, please cite :
 
 HiC-Pro: An optimized and flexible pipeline for Hi-C processing. *Servant N., Varoquaux N., Lajoie BR., Viara E., Chen CJ., Vert JP., Dekker J., Heard E., Barillot E.*. 2015. submitted
 
+For any question about HiC-Pro, please contact nicolas.servant@curie.fr
 
 How to install it ?
 ===================
@@ -41,7 +40,7 @@ The HiC-Pro pipeline requires the following dependencies :
 * Samtools (>0.1.19)
 
 Bowtie >2.2.2 is strongly recommanded for allele specific analysis.
-To install HiC-Pro:
+| To install HiC-Pro:
 
 .. code-block:: guess
 

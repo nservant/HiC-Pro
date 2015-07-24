@@ -74,18 +74,13 @@
 <div class="section" id="what-is-hic-pro">
 <h2>What is HiC-Pro ?<a class="headerlink" href="#what-is-hic-pro" title="Permalink to this headline">¶</a></h2>
 <div class="line-block">
-<div class="line">HiC-Pro was designed to process Hi-C data, from raw fastq files (paired-end Illumina data) to the normalized contact maps.</div>
-</div>
-<dl class="docutils">
-<dt>The pipeline is flexible, scalable and optimized. It can operate either on a single laptop or on a computational cluster using the PBS-Torque scheduler.</dt>
-<dd>HiC-Pro is sequential and each step of the workflow can be run independantly.</dd>
-</dl>
-<div class="line-block">
+<div class="line">HiC-Pro was designed to process Hi-C data, from raw fastq files (paired-end Illumina data) to the normalized contact maps. The pipeline is flexible, scalable and optimized. It can operate either on a single laptop or on a computational cluster using the PBS-Torque scheduler. HiC-Pro is sequential and each step of the workflow can be run independantly.</div>
 <div class="line">HiC-Pro includes a fast implementatation of the ICE normalization method (see the <a class="reference external" href="https://github.com/hiclib/iced">iced</a> python library for more information).</div>
+<div class="line">In addition, HiC-Pro can use phasing data to build <a class="reference external" href="doc/AS.rst">allele specific contact maps</a>.</div>
 </div>
-<p>In addition, HiC-Pro can use phasing data to build <a class="reference external" href="doc/AS.rst">allele specific contact maps</a>.</p>
 <p>If you use HiC-Pro, please cite :</p>
 <p>HiC-Pro: An optimized and flexible pipeline for Hi-C processing. <em>Servant N., Varoquaux N., Lajoie BR., Viara E., Chen CJ., Vert JP., Dekker J., Heard E., Barillot E.</em>. 2015. submitted</p>
+<p>For any question about HiC-Pro, please contact <a class="reference external" href="mailto:nicolas&#46;servant&#37;&#52;&#48;curie&#46;fr">nicolas<span>&#46;</span>servant<span>&#64;</span>curie<span>&#46;</span>fr</a></p>
 </div>
 <div class="section" id="how-to-install-it">
 <h2>How to install it ?<a class="headerlink" href="#how-to-install-it" title="Permalink to this headline">¶</a></h2>
@@ -98,7 +93,7 @@
 <li>Samtools (&gt;0.1.19)</li>
 </ul>
 <p>Bowtie &gt;2.2.2 is strongly recommanded for allele specific analysis.
-To install HiC-Pro:</p>
+| To install HiC-Pro:</p>
 <div class="highlight-guess"><div class="highlight"><pre><span class="n">tar</span> <span class="o">-</span><span class="n">zxvf</span> <span class="n">HiC</span><span class="o">-</span><span class="n">Pro</span><span class="o">-</span><span class="n">master</span><span class="p">.</span><span class="n">tar</span><span class="p">.</span><span class="n">gz</span>
 <span class="n">cd</span> <span class="n">HiC</span><span class="o">-</span><span class="n">Pro</span><span class="o">-</span><span class="n">master</span>
 <span class="n">make</span> <span class="n">CONFIG_SYS</span><span class="o">=</span><span class="n">config</span><span class="o">-</span><span class="n">install</span><span class="p">.</span><span class="n">txt</span> <span class="n">install</span>

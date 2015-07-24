@@ -1,18 +1,17 @@
 Allele specific analysis
 ========================
 
-| If the ALLELE_SPECIFIC_SNP option is defined in the configuration, HiC-Pro will run the allele specific mode.
-| The ALLELE_SPECIFIC_SNP option must contain the path to a VCF file with phasing SNPs information.
-| HiC-Pro provides the `extract_snps.py utilities <UTILS.rst>`_ to generate such file.
-| This utility was first design to extract relevant information from the Mouse Sanger database SNPs file. The goal is to generate a VCF file of the F1 individual according to its parental genotype. For instance using *extract_snps.py* with *-r CASTEiJ* and *-a 129S1* will generate a VCF file with all F1 heterogyzote SNPs which can be used to distinguish *CASTEiJ* and *129S1* alleles.
+| If the ALLELE_SPECIFIC_SNP option is defined in the configuration file, HiC-Pro will run the allele specific mode.
+| The ALLELE_SPECIFIC_SNP option must contain the path to a VCF file with phasing SNPs information. The `extract_snps.py <UTILS.rst>`_ utility can be used to generate such file.
+| This utility was first design to extract relevant information from VCF file provided by the `Mouse Sanger database <http://www.sanger.ac.uk/resources/mouse/genomes/>`_. It aims at generating a VCF file of the F1 individual based on its parental genotype. For instance using *extract_snps.py* with *-r CASTEiJ* and *-a 129S1* will generate a VCF file with all F1 heterogyzote SNPs which can be used to distinguish *CASTEiJ* and *129S1* alleles.
+| Phasing data, such as the ones available from the `Illumina Platinum Project <http://www.illumina.com/platinumgenomes/>_` can be simply used as is.
 
 
 Allele specific mapping
 -----------------------
 
-| In allele-specific mode, the sequencing reads are first aligned on masked reference genome for which all polymorphic sites were first N-masked.
-| In the current version, **this is the user responsability to provide to generate this genome and to provide the bowtie2 indexes to HiC-Pro.**
-| Example of how to generate such reference genome is discribed in the `FAQ <FAQ.rst>`_ section.
+| In allele-specific mode, the sequencing reads are first aligned on a masked reference genome for which all polymorphic sites were first N-masked.
+| In the current version, **this is the user responsability to generate this genome and to provide the bowtie2 indexes to HiC-Pro.** Example of how to generate such reference genome is discribed in the `FAQ <FAQ.rst>`_ section.
 | This masking strategy avoid systematic bias toward the reference allele, compared to standard mapping where reads with the reference allele are more likely to be mapped than the reads with non-reference alleles.
 
 Assignment to parental genome
@@ -29,8 +28,7 @@ Allele specific maps
 --------------------
 
 | Finally, read pairs with at least one allele specific mate are used to construct allele specific contact maps. 
-| In allele-specific mode, the *.validPairs* file will contains an additional columns with the allele status of each reads pair.
-| Therefore, valid pairs assigned to 'G1-G1', 'G1-UA' or 'UA-G1' are used to build the G1 genome-wide contact maps. In the same way, 'G2-G2', 'G2-UA', 'UA-G2' pairs will be used to generate the G2 genome-wide contact maps.
+| In allele-specific mode, the *.validPairs* files will contain an additional columns with the allele status of each reads pair. Therefore, valid pairs assigned to **'G1-G1', 'G1-UA' or 'UA-G1'** are used to build the **G1** genome-wide contact maps. In the same way, **'G2-G2', 'G2-UA', 'UA-G2'** pairs will be used to generate the **G2** genome-wide contact maps.
 | All maps are then normalized using the ICE method.
 
 
