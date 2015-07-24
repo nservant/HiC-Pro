@@ -140,7 +140,7 @@ Note that in sequential mode, the INPUT argument depends on the analysis step. S
 +-----------------------+--------------------+
 | INPUT DATA TYPE IN STEPWISE MODE           |
 +=======================+====================+
-|  -s mapping           | fastq(.gz) files   |
+|  -s mapping           | .fastq(.gz) files  |
 +-----------------------+--------------------+
 | -s proc_hic           | .bam files         |
 +-----------------------+--------------------+
@@ -169,7 +169,7 @@ The HiC-Pro workflow can be divided in five main steps presented below.
 
 | Each aligned reads can be assigned to one restriction fragment according to the reference genome and the restriction enzyme.
 | The next step is to separate the invalid ligation products from the valid pairs. Dangling end and self circles pairs are therefore excluded.
-Only valid pairs involving two different restriction fragments are used to build the contact maps. Duplicated valid pairs associated to PCR artefacts are discarded.
+| Only valid pairs involving two different restriction fragments are used to build the contact maps. Duplicated valid pairs associated to PCR artefacts are discarded.
 | The fragment assignment can be visualized through a BAM files of aliged pairs where each pair is flagged according to its classification.
 
 3. **Quality Controls**
@@ -184,7 +184,7 @@ Only valid pairs involving two different restriction fragments are used to build
 
 5. **ICE normalization**
 
-| Hi-C data can contain several sources of biases which has to be corrected. HiC-Pro proposes a fast implementation of the original ICE normalization algorithm (Imakaev et al. 2012), making the assumption of equal visibility of each fragment. The ICE normalization can be used as a standalone python package through the `iced python package <https://github.com/hiclib/>`_
+| Hi-C data can contain several sources of biases which has to be corrected. HiC-Pro proposes a fast implementation of the original ICE normalization algorithm (Imakaev et al. 2012), making the assumption of equal visibility of each fragment. The ICE normalization can be used as a standalone python package through the `iced python package <https://github.com/hiclib/>`_.
 
 
 Browsing the results
@@ -202,6 +202,7 @@ The *bowtie_results* folder contains the results of the reads mapping. The resul
 | This folder contains all Hi-C processed data, and is further divided in several sub-folders.
 | The *data* folder is used to store the valid interaction products (*.validPairs*), as well as other statisics files.
 | The contact maps are then available in the *matrix* folder. The *matrix* folder is organized with *raw* and *iced* contact maps for all resolutions.
+| Finally, the *pic* folder contains graphical outputs of the quality control checks.
 
 
 
