@@ -9,6 +9,8 @@ NEW FEATURES
 
    o New manual version
 
+   o Manual is now online at http://nservant.github.io/HiC-Pro/
+
 SIGNIFICANT USER-VISIBLE CHANGES
 
    o New configuration file with ALLELE_SPECIFIC_SNP field. If specified HiC-Pro is run in allele specific mode.
