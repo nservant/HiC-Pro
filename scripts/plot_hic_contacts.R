@@ -47,10 +47,10 @@ getContactsStatMat <- function(x){
   cis_sr.perc <- round(100*cis_sr/ncontacts)
   cis_lr.perc <- round(100*cis_lr/ncontacts)
   
-  perc <- c(rmdup.perc, ndup.perc, trans_inter.perc, cis_sr.perc, cis_lr.perc)
+  perc <- c(rmdup.perc, ndup.perc, trans_inter.perc, cis_lr.perc, cis_sr.perc)
   p <- c(rep("1",2), rep("2", 3))
 
-  lab <- c("n.a.rmdup", "n.b.dup", "n.c.trans", "n.d.cis.sr", "n.e.cis.lr")
+  lab <- c("n.a.rmdup", "n.b.dup", "n.c.trans", "n.e.cis.lr", "n.d.cis.sr")
   mmat <- data.frame(cbind(lab, p, count, perc), stringsAsFactors=FALSE)
   mmat$pos <- as.vector(unlist(sapply(unique(mmat$p), function(i){
   idx <-  which(mmat$p==i)
@@ -136,7 +136,7 @@ mids <- allhist[[1]]$mids
 mat<-data.frame(allcounts=allcounts, mids=mids)
 mat[dim(mat)[1],2]<-1505
 
-p2 <- plotDistanceHist(mat, sampleName, n=100000*length(allvalidpairs))
+p2 <- plotDstanceHist(mat, sampleName, n=100000*length(allvalidpairs))
 pdf(file.path(picDir, paste0("plotHiCFragmentSize_",sampleName,".pdf")), width=7, height=5)
 p2
 dev.off()

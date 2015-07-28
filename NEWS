@@ -19,6 +19,10 @@ SIGNIFICANT USER-VISIBLE CHANGES
 
    o The split_reads.py utility can now handle fastq.gz files
 
+BUG FIXES
+
+   o Fix bug in plotHiCContactRanges. Percent of CIS long/short ranges were inverted.
+
 ***********************************
 CHANGES IN VERSION 2.5.2
 
