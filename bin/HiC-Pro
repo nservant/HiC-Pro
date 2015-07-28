@@ -184,11 +184,13 @@ NEED_BAM_STEP_ARRAY=("proc_hic")
 NEED_VALID_STEP_ARRAY=("build_contact_maps")
 NEED_MAT_STEP_ARRAY=("ice_norm")
 NEED_FASTQ_STEP_ARRAY=("mapping")
+NEED_ANY_STEP_ARRAY=("quality_checks")
 
 NEED_BAM=0
 NEED_VALID=0
 NEED_MAT=0
 NEED_FASTQ=0
+NEED_ANY=0
 
 if [[ $MAKE_OPTS != "" ]]; then
 
@@ -215,11 +217,15 @@ if [[ $MAKE_OPTS != "" ]]; then
 	for i in ${NEED_FASTQ_STEP_ARRAY[@]}; do
             if [[ "$i" == "$s" ]]; then NEED_FASTQ=1; fi
         done
+
+    	for i in ${NEED_ANY_STEP_ARRAY[@]}; do
+            if [[ "$i" == "$s" ]]; then NEED_ANY=1; fi
+        done
+
     done
 else
     NEED_FASTQ=1
 fi
-
 
 #####################
 ## Check data structure
@@ -249,7 +255,9 @@ elif [[ $NEED_MAT == 1 ]]; then
         die "Error: Directory Hierarchy of rawdata '$INPUT' is not correct. No '.matrix' files detected"
     fi
 else
-    die "Error: unknown type for input files"
+    if [[ $NEED_ANY == 0 ]]; then
+    	die "Error: unknown type for input files"
+    fi
 fi
 
 ###################
