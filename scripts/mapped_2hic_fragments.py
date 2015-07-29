@@ -468,6 +468,9 @@ if __name__ == "__main__":
             if not r1.is_unmapped:
                 r1_chrom = samfile.getrname(r1.tid)
                 r1_resfrag = get_overlapping_restriction_fragment(resFrag, r1_chrom, r1)
+            else:
+                r1_resfrag = None
+                r1_chrom = None
 
         # Second mate
         elif read.is_read2:
@@ -475,8 +478,12 @@ if __name__ == "__main__":
             if not r2.is_unmapped:
                 r2_chrom = samfile.getrname(r2.tid)
                 r2_resfrag = get_overlapping_restriction_fragment(resFrag, r2_chrom, r2)
+            else:
+                r2_resfrag = None
+                r2_chrom = None
 
-            if r1_resfrag is not None and r2_resfrag is not None:
+
+            if r1_resfrag is not None or r2_resfrag is not None:
                 interactionType = get_interaction_type(r1, r1_chrom, r1_resfrag, r2, r2_chrom, r2_resfrag, verbose)
                 dist = get_PE_fragment_size(r1, r2, r1_resfrag, r2_resfrag, interactionType)
 

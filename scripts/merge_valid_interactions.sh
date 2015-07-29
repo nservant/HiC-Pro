@@ -71,17 +71,19 @@ do
 	    cat ${IN_DIR}/${RES_FILE_NAME}/*.validPairs > ${DATA_DIR}/${RES_FILE_NAME}/${RES_FILE_NAME}_allValidPairs
 	else
 	    echo "## Remove duplicates ..." >> ${LDIR}/merge_valid_interactions.log
-	    allcount=$(cat  ${IN_DIR}/${RES_FILE_NAME}/*.validPairs | wc -l)
 	    sort -k2,2V -k3,3n -k5,5V -k6,6n -T ${TMP_DIR} -m ${IN_DIR}/${RES_FILE_NAME}/*.validPairs | awk -F"\t" 'BEGIN{c1=0;c2=0;s1=0;s2=0}(c1!=$2 || c2!=$5 || s1!=$3 || s2!=$6){print;c1=$2;c2=$5;s1=$3;s2=$6}' > ${DATA_DIR}/${RES_FILE_NAME}/${RES_FILE_NAME}_allValidPairs
-	    allcount_rmdup=$(cat ${DATA_DIR}/${RES_FILE_NAME}/${RES_FILE_NAME}_allValidPairs | wc -l)
-	    nbdup=$(( allcount-allcount_rmdup ))
-	    echo -e $RES_FILE_NAME"\t"$nbdup >> ${LDIR}/merge_valid_interactions.log
-
-	    ## merge stat file
-	    echo -e "valid_interaction\t"$allcount > ${DATA_DIR}/${RES_FILE_NAME}/${RES_FILE_NAME}_allValidPairs.mergestat
-	    echo -e "valid_interaction_rmdup\t"$allcount_rmdup >> ${DATA_DIR}/${RES_FILE_NAME}/${RES_FILE_NAME}_allValidPairs.mergestat
-	    awk '$2 == $5{cis=cis+1; d=$6>$3?$6-$3:$3-$6; if (d<=20000)){sr=sr+1}else{lr=lr+1}} $2!=$5{trans=trans+1}END{print "trans_interaction\t"trans"\ncis_interaction\t"cis"\ncis_shortRange\t"sr"\ncis_longRange\t"lr}' ${DATA_DIR}/${RES_FILE_NAME}/${RES_FILE_NAME}_allValidPairs >> ${DATA_DIR}/${RES_FILE_NAME}/${RES_FILE_NAME}_allValidPairs.mergestat
 	fi
+
+	allcount=$(cat  ${IN_DIR}/${RES_FILE_NAME}/*.validPairs | wc -l)
+	allcount_rmdup=$(cat ${DATA_DIR}/${RES_FILE_NAME}/${RES_FILE_NAME}_allValidPairs | wc -l)
+	nbdup=$(( allcount-allcount_rmdup ))
+	echo -e $RES_FILE_NAME"\t"$nbdup >> ${LDIR}/merge_valid_interactions.log
+
+	## merge stat file
+	echo -e "valid_interaction\t"$allcount > ${DATA_DIR}/${RES_FILE_NAME}/${RES_FILE_NAME}_allValidPairs.mergestat
+	echo -e "valid_interaction_rmdup\t"$allcount_rmdup >> ${DATA_DIR}/${RES_FILE_NAME}/${RES_FILE_NAME}_allValidPairs.mergestat
+	awk '$2 == $5{cis=cis+1; d=$6>$3?$6-$3:$3-$6; if (d<=20000){sr=sr+1}else{lr=lr+1}} $2!=$5{trans=trans+1}END{print "trans_interaction\t"trans"\ncis_interaction\t"cis"\ncis_shortRange\t"sr"\ncis_longRange\t"lr}' ${DATA_DIR}/${RES_FILE_NAME}/${RES_FILE_NAME}_allValidPairs >> ${DATA_DIR}/${RES_FILE_NAME}/${RES_FILE_NAME}_allValidPairs.mergestat
+	
 
 	## Split valid interaction per haplotype
 	if [[ ! -z ${ALLELE_SPECIFIC_SNP} ]]; then

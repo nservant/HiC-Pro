@@ -73,8 +73,16 @@ def sam_flag(read1, read2, hr1, hr2):
 
     f1 = read1.flag
     f2 = read2.flag
-    r1_chrom = hr1.getrname(r1.tid)
-    r2_chrom = hr2.getrname(r2.tid)
+
+    if r1.is_unmapped == False:
+        r1_chrom = hr1.getrname(r1.tid)
+    else:
+        r1_chrom="*"
+    if r2.is_unmapped == False:
+        r2_chrom = hr2.getrname(r2.tid)
+    else:
+        r2_chrom="*"
+
 
   ##Relevant bitwise flags (flag in an 11-bit binary number)
   ##1 The read is one of a pair
@@ -167,7 +175,7 @@ if __name__ == "__main__":
             mapq = arg
         elif opt in ("-s", "--single"):
             report_single = True
-        elif opt in ("-l", "--multi"):
+        elif opt in ("-m", "--multi"):
             report_multi = True
         elif opt in ("-t", "--stat"):
             stat = True

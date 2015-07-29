@@ -23,6 +23,10 @@ BUG FIXES
 
    o Fix bugs in CIS short/long ranges interaction reporting
 
+   o Fix bugs in bowtie pairing - option -m and -s
+
+   o Fix bug in mapped_2hic_fragments when singleton are not removed during the pairing
+
 ***********************************
 CHANGES IN VERSION 2.5.2
 

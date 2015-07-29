@@ -55,11 +55,11 @@ else
 	@$(SCRIPTS)/make_torque_script.sh -c $(CONFIG_FILE)
 endif
 
-clean: 
-ifdef LOGS_DIR
-	@/bin/rm -f $(LOGS_DIR)/*
-endif
-	@/bin/rm -rf $(BOWTIE2_OUTPUT_DIR) $(MAPC_OUTPUT)
+clean:
+	@/bin/rm -rf $(LOGS_DIR)/*
+	@/bin/rm -rf $(BOWTIE2_OUTPUT_DIR)/bwt2_glob  
+	@/bin/rm -rf $(BOWTIE2_OUTPUT_DIR)/bwt2_loc  
+
 
 debug: config_check
 	@echo "RAW_DIR="$(RAW_DIR)
