@@ -19,10 +19,10 @@ Assignment to parental genome
 
 | Once aligned HiC-Pro browses all reads spanning a polymorphic site, locates the nucleotide at the appropriate position, and assigns the read either to the maternal or paternal allele. Reads with conflicting allele assignment or unexpected allele at polymorphic sites are discarded.
 | This step generates a bam file with all reads flagged according to its parental assignment (AS flag).
-* **AS:i:0** - unassigned (UA)
-* **AS:i:1** - assigned to reference genome (G1)
-* **AS:i:2** - assigned to alternative genome (G2)
-* **AS:i:3** - conflicting (C)
+* **XS:i:0** - unassigned (UA)
+* **XS:i:1** - assigned to reference genome (G1)
+* **XS:i:2** - assigned to alternative genome (G2)
+* **XS:i:3** - conflicting (C)
 
 Allele specific maps
 --------------------

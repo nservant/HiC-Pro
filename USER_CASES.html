@@ -67,6 +67,52 @@
   
   <div class="section" id="user-cases">
 <h1>User cases<a class="headerlink" href="#user-cases" title="Permalink to this headline">¶</a></h1>
+<p>Let&#8217;s defined a few variables</p>
+<ul class="simple">
+<li>TEST_DATA is my input folder with one folder per sample and all my fastq files</li>
+<li>RES_PREFIX is the prefix of my output directory</li>
+<li>config_test.txt is my configuration file</li>
+</ul>
+<ol class="arabic simple">
+<li><strong>Running HiC-Pro&#8217;s complete pipeline on my laptop</strong></li>
+</ol>
+<div class="highlight-guess"><div class="highlight"><pre>HiC-Pro -i <span class="cp">${</span><span class="n">TEST_DATA</span><span class="cp">}</span> -o <span class="cp">${</span><span class="n">RES_PREFIX</span><span class="cp">}</span>_1 -c config_test.txt
+</pre></div>
+</div>
+<ol class="arabic simple" start="2">
+<li><strong>Running HiC-Pro on a cluster with PBS</strong></li>
+</ol>
+<div class="highlight-guess"><div class="highlight"><pre>HiC-Pro -i <span class="cp">${</span><span class="n">TEST_DATA</span><span class="cp">}</span> -o <span class="cp">${</span><span class="n">RES_PREFIX</span><span class="cp">}</span>_2 -c config_test.txt -p
+cd <span class="cp">${</span><span class="n">TEST_DATA</span><span class="cp">}</span>
+qsub HiCPro_step1_test.sh
+## wait ...
+qsub HiCPro_step2_test.sh
+</pre></div>
+</div>
+<ol class="arabic simple" start="3">
+<li><strong>Running HiC-Pro using stepwise function</strong></li>
+</ol>
+<p>I first want to align to raw reads and make the quality controls on the mapping results using the parallel mode</p>
+<div class="highlight-guess"><div class="highlight"><pre>HiC-Pro -i <span class="cp">${</span><span class="n">TEST_DATA</span><span class="cp">}</span> -o <span class="cp">${</span><span class="n">RES_PREFIX</span><span class="cp">}</span>_3 -c config_test.txt -s mapping -s quality_checks -p
+cd <span class="cp">${</span><span class="n">RES_PREFIX</span><span class="cp">}</span>_3
+qsub HiCPro_step1_mappingtest.sh
+</pre></div>
+</div>
+<p>Once the reads are mapped, let&#8217;s run the Hi-C processing step from the aligned data on my own laptop</p>
+<div class="highlight-guess"><div class="highlight"><pre>HiC-Pro -i <span class="cp">${</span><span class="n">RES_PREFIX</span><span class="cp">}</span>_3/bowtie_results/bwt2 -o <span class="cp">${</span><span class="n">RES_PREFIX</span><span class="cp">}</span>_3.1 -c config_test.txt -s proc_hic -s quality_checks
+</pre></div>
+</div>
+<p>Everything looks good, I can then create the contact maps and normalize them</p>
+<div class="highlight-guess"><div class="highlight"><pre>HiC-Pro -i <span class="cp">${</span><span class="n">RES_PREFIX</span><span class="cp">}</span>_3.1/hic_results/data -o <span class="cp">${</span><span class="n">RES_PREFIX</span><span class="cp">}</span>_3.2 -c config_test.txt -s build_contact_maps -s ice_norm
+</pre></div>
+</div>
+<ol class="arabic simple" start="4">
+<li><strong>Running HiC-Pro allele specific analysis</strong></li>
+</ol>
+<p>First set the ALLELE_SPECIFIC_SNP variable in the configuration file and check whether the N-masked genome is available. Then simply run HiC-Pro as usually.</p>
+<div class="highlight-guess"><div class="highlight"><pre>HiC-Pro -i <span class="cp">${</span><span class="n">TEST_DATA</span><span class="cp">}</span> -o <span class="cp">${</span><span class="n">RES_PREFIX</span><span class="cp">}</span>_5 -c config_test_as.txt
+</pre></div>
+</div>
 </div>
 
 
