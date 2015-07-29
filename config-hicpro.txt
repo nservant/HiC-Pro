@@ -37,7 +37,7 @@ FORMAT = phred33
 MIN_MAPQ = 0
 LIGATION_SITE = AAGCTAGCTT
 
-BOWTIE2_IDX_PATH = /data/annotations/Human/hg19/bowtie2_indexes/base/
+BOWTIE2_IDX_PATH = 
 BOWTIE2_GLOBAL_OPTIONS = --very-sensitive -L 30 --score-min L,-0.6,-0.2 --end-to-end --reorder
 BOWTIE2_LOCAL_OPTIONS =  --very-sensitive -L 20 --score-min L,-0.6,-0.2 --end-to-end --reorder
 
@@ -48,7 +48,7 @@ BOWTIE2_LOCAL_OPTIONS =  --very-sensitive -L 20 --score-min L,-0.6,-0.2 --end-to
 REFERENCE_GENOME = hg19
 GENOME_FRAGMENT = HindIII_resfrag_hg19.bed
 GENOME_SIZE = chrom_hg19.sizes
-ALLELE_SPECIFIC_SNP = /bioinfo/users/nservant/phd/projects/modhep/rna_monoallelic/home_pip/mgp.v2.snps.annot.reformat_CAST_FVB_FI.vcf
+ALLELE_SPECIFIC_SNP = 
 
 #######################################################################
 ## Hi-C processing
@@ -56,8 +56,8 @@ ALLELE_SPECIFIC_SNP = /bioinfo/users/nservant/phd/projects/modhep/rna_monoalleli
 
 MIN_INSERT_SIZE = 
 MAX_INSERT_SIZE = 
-GET_ALL_INTERACTION_CLASSES = 1
-GET_PROCESS_SAM = 1
+GET_ALL_INTERACTION_CLASSES = 0
+GET_PROCESS_SAM = 0
 RM_SINGLETON = 1
 RM_MULTI = 1
 RM_DUP = 1
