@@ -21,6 +21,8 @@ SIGNIFICANT USER-VISIBLE CHANGES
 
 BUG FIXES
 
+   o Fix bug in build_raw_maps.sh in --chrsize (reported by D. Robelin)
+
    o Fix bugs in CIS short/long ranges interaction reporting
 
    o Fix bugs in bowtie pairing - option -m and -s
