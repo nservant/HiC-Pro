@@ -153,29 +153,6 @@ if [[ -z $GENOME_FRAGMENT ]]; then
 fi
 
 #####################
-## Init HiC-Pro
-####################
-if [ -d $OUTPUT ]; then
-    echo "$OUTPUT folder alreads exists. Do you want to delete it before running ?(y/n) [n] : "
-    read ans
-    if [ XX${ans} = XXy ]; then
-	/bin/rm -rf $OUTPUT
-    fi
-fi
-mkdir -p $OUTPUT
-    
-if [ ! -e $OUTPUT/$RAW_DIR ]; then
-    ln -s $INPUT $OUTPUT/$RAW_DIR
-fi
-
-## cp config file in output
-if [ ! -e ${OUTPUT}/$(basename ${CONF}) ]; then
-    cp $CONF ${OUTPUT}/$(basename ${CONF})
-fi
-
-cd $OUTPUT
-
-#####################
 ## Check step option
 #####################
 MAKE_OPTS=$(echo $MAKE_OPTS | sed -e 's/^ //')
@@ -260,6 +237,30 @@ else
     fi
 fi
 
+#####################
+## Init HiC-Pro
+####################
+if [[ -d $OUTPUT && $MAKE_OPTS == "" ]]; then
+    echo "$OUTPUT folder alreads exists. Do you want to delete it before running ?(y/n) [n] : "
+    read ans
+    if [ XX${ans} = XXy ]; then
+	/bin/rm -rf $OUTPUT
+    fi
+fi
+mkdir -p $OUTPUT
+    
+if [ -L $OUTPUT/$RAW_DIR ]; then
+    /bin/rm $OUTPUT/$RAW_DIR
+fi
+ln -s $INPUT $OUTPUT/$RAW_DIR
+
+## cp config file in output
+if [ ! -e ${OUTPUT}/$(basename ${CONF}) ]; then
+    cp $CONF ${OUTPUT}/$(basename ${CONF})
+fi
+
+cd $OUTPUT
+
 ###################
 ## Run HiC-Pro
 ###################
@@ -274,6 +275,7 @@ else
     then	
 	MAKE_OPTS=$(echo $MAKE_OPTS | sed -e 's/ /,/g')
 	make --file $SCRIPTS_PATH/Makefile CONFIG_FILE=$CONF CONFIG_SYS=${INSTALL_PATH}/config-system.txt MAKE_OPTS=$MAKE_OPTS make_torque_script 2>&1
+
     else
     	make --file $SCRIPTS_PATH/Makefile CONFIG_FILE=$CONF CONFIG_SYS=${INSTALL_PATH}/config-system.txt make_torque_script 2>&1
     fi
