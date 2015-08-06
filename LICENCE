@@ -55,8 +55,16 @@
 # Copyleft 2015 Institut Curie                               
 # Author(s): Nicolas Servant, Eric Viara, Nelle Varoquaux
 # Contact: nicolas.servant@curie.fr
-# This software is distributed without any guarantee under the terms of the GNU General
-# Public License, either Version 2, June 1991 or Version 3, June 2007.
+#
+# HiC-Pro is free software; you can redistribute it and/or
+# modify it under the terms of the GNU General Public
+# License as published by the Free Software Foundation; either
+# Version 2, June 1991 or Version 3, June 2007.
+# 
+# HiC-Pro is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+# General Public License for more details.
 #
 # If you use this software, please cite :
 # HiC-Pro: An optimized and flexible pipeline for Hi-C data processing. Servant N. et al. 2015
