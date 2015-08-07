@@ -7,11 +7,6 @@
 ##
 ################################################################################
 
-   o Add a plot for allele specific status
-
-   o Remove more tmp files as all intermediate mapping results
-
-   o Update doc
 
 ################################################################################
 ##
@@ -23,6 +18,7 @@
 ##23-07-15
 ##--------------------
 
+   o Release v2.6.0
    o Update split_reads.py utility to handle fastq.gz files
    o Update manual and create gh-pages under github. The HiC-Pro website is now available at http://nservant.github.io/HiC-Pro/
 
