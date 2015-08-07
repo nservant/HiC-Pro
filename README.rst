@@ -116,7 +116,7 @@ How to use it ?
   usage : HiC-Pro -i INPUT -o OUTPUT -c CONFIG [-s ANALYSIS_STEP] [-p] [-h] [-v]
   Use option -h|--help for more information
 
-  HiC-Pro 3.0.0
+  HiC-Pro 2.6.0
   ---------------
   OPTIONS
 
