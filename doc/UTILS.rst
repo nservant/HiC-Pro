@@ -39,3 +39,28 @@ or **How can I extract SNPs information from phasing data ?**
    HICPRO_PATH/bin/utils/split_reads.py -i mgp.v2.snps.annot.reformat.vcf -a FVB_NJ > snps_CASTEiJ_129S1.vcf
 
 
+
+2- digest_genome.py
+------------------
+or **How can I generate the list of restriction fragments after genome digestion ?**
+
+| Digest the reference genome by the provided restriction enzymes(s) and generate a BED file with the list of restriction fragments after digestion.
+| This file can then be used by HiC-Pro (GENOME_FRAGMENT) for the data processing.
+| Note that the cutting site of the restriction enzyme has to be specified using the '^' character.
+| The restriction enzymes HindIII, DpnII and BglII are encoded within the script and are therefore recognized if specified to the program.
+| Finally, multiple restriction enzymes can also be provided.
+
+.. code-block:: bash
+
+   ## Digest the mm9 genome by HindIII
+   HICPRO_PATH/bin/utils/digest_genome.py -r A^AGCTT -o mm9_hindiii.bed mm9.fasta
+
+   ## The same ...
+   HICPRO_PATH/bin/utils/digest_genome.py -r hindiii -o mm9_hindiii.bed mm9.fasta
+
+   ## Double digestion, HindIII + DpnII
+   HICPRO_PATH/bin/utils/digest_genome.py -r hindiii dpnii -o mm9_hindiii_dpnii.bed mm9.fasta
+
+
+
+

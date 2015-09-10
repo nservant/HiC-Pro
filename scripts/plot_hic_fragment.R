@@ -25,8 +25,8 @@ if (la > 0){
 getHiCMat <- function(x){
   require(RColorBrewer)
   
-  invalid.lab <- c("Self_Cycle_pairs", "Dangling_end_pairs", "Single-end_pairs", "Dumped_pairs")
-  valid.lab <- c("Valid_interaction_pairs_FF", "Valid_interaction_pairs_RR", "Valid_interaction_pairs_RF", "Valid_interaction_pairs_FR")
+  invalid.lab <- intersect(names(x), c("Self_Cycle_pairs", "Dangling_end_pairs", "Single-end_pairs", "Dumped_pairs"))
+  valid.lab <- intersect(names(x), c("Valid_interaction_pairs_FF", "Valid_interaction_pairs_RR", "Valid_interaction_pairs_RF", "Valid_interaction_pairs_FR"))
   x <- x[c("Valid_interaction_pairs", valid.lab, invalid.lab)]
   
   ## Add number of invalid pairs
@@ -94,7 +94,8 @@ plotHiCStat <- function(mat, xlab="", legend=TRUE){
   if (legend){
     scol <- mat$selcol
     names(scol) <- mat$lab
-    gp = gp + scale_fill_manual(values=scol) + guides(fill=guide_legend(title="")) + theme(plot.margin=unit(x=c(1,0,0,0), units="cm"), legend.position="right", legend.margin=unit(.5,"cm"), legend.text=element_text(size=4))
+    gp = gp + scale_fill_manual(values=scol) + guides(fill=guide_legend(title="")) + theme(plot.margin=unit(x=c(1,0,0,0), units="cm"), legend.position="right",
+                                                        legend.margin=unit(.5,"cm"), legend.text=element_text(size=4))
   }else{
     gp = gp + scale_fill_manual(values=as.character(col)) + theme(plot.margin=unit(c(1,0,1.9,0),"cm"))+ guides(fill=FALSE)
   }
@@ -121,7 +122,4 @@ print (stats_per_sample)
 ## Make plots
 mat <- getHiCMat(stats_per_sample)
 p1 <- plotHiCStat(mat, xlab=sampleName)
-
-pdf(file.path(picDir, paste0("plotHicFragment_",sampleName,".pdf")), width=5, height=5)
-p1
-dev.off()
+ggsave(filename=file.path(picDir, paste0("plotHiCFragment_",sampleName,".pdf")), p1, width=5, height=5)

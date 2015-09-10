@@ -55,9 +55,12 @@ mapping_stat(){
     map_reads=`exec_ret $cmd`
     cmd="${SAMTOOLS_PATH}/samtools view -c -F 4 ${BOWTIE2_GLOBAL_OUTPUT_DIR}/${prefix}.bwt2glob.bam"
     gmap_reads=`exec_ret $cmd`
-    cmd="${SAMTOOLS_PATH}/samtools view -c -F 4 ${BOWTIE2_LOCAL_OUTPUT_DIR}/${prefix}.bwt2glob.unmap_bwt2loc.bam"
-    lmap_reads=`exec_ret $cmd`
-    
+    if [[ -e ${BOWTIE2_LOCAL_OUTPUT_DIR}/${prefix}.bwt2glob.unmap_bwt2loc.bam ]]; then
+	cmd="${SAMTOOLS_PATH}/samtools view -c -F 4 ${BOWTIE2_LOCAL_OUTPUT_DIR}/${prefix}.bwt2glob.unmap_bwt2loc.bam"
+	lmap_reads=`exec_ret $cmd`
+    else
+	lmap_reads=0
+    fi
     echo "## $prefix.mapstat"
     echo -e "total\t$tot_reads"
     echo -e "mapped\t$map_reads"
@@ -79,6 +82,3 @@ do
 
     wait
 done
-
-## Make plots
-##${SCRIPTS}/make_plots.sh -c ${conf_file} -p "mapping" >> ${LOGFILE}

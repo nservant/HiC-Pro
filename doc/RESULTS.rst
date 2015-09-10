@@ -30,6 +30,7 @@ List of valid interaction products
 | The *hic_results/data* folder is used to store the valid interaction products (*'.validPairs'*), as well as other statisics files.
 | Statistics about read pairs filtering are available in the *'.RSstat'* files, and combined in the *'SAMPLE_NAME.mRSstat'* file.
 | The ligation efficiency can be assessed using the filtering of valid and invalid pairs. As the ligation is a random process, 25% of each valid ligation class is expected. In the same way, a high level of dangling-end or self-circle read pairs is associated with a low quality experiment, and reveals a problem during the digestion, fill-in or ligation steps. 
+| In the context of Hi-C protocol without restriction enzyme, this analysis step is skipped. The aligned pairs are therefore directly used to generate the contact maps. A filter of the short range contact (typically <1kb) is recommanded as this pairs are likely to be self ligation products.
 
 .. figure:: images/hicpro_filteringstat_IMR90rep1.png
    :scale: 80%

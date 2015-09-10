@@ -131,7 +131,4 @@ print(stats_per_sample)
 ## Make plots
 mat <- getPairMat(stats_per_sample, perc_per_sample, rmMulti=rmMulti, rmSingle=rmSingle)
 p1 <- plotPairStat(mat, xlab=sampleName)
-
-pdf(file.path(picDir, paste0("plotMappingPairing_",sampleName,".pdf")), width=5, height=5)
-p1
-dev.off()
+ggsave(file.path(picDir, paste0("plotMappingPairing_",sampleName,".pdf")), p1, width=5, height=5)

@@ -84,7 +84,7 @@ configure:  config_check
 bowtie_global:  config_check
 	@echo "--------------------------------------------" 
 	@date 
-	@echo "Bowtie2 global alignment ..." 
+	@echo "Bowtie2 alignment step1 ..." 
 	$(SCRIPTS)/bowtie_wrap.sh -c $(CONFIG_FILE) -u >> $(LOGFILE)
 
 ######################################
@@ -96,7 +96,7 @@ bowtie_global:  config_check
 bowtie_local:  config_check
 	@echo "--------------------------------------------" 
 	@date 
-	@echo "Bowtie2 local alignment ..." 
+	@echo "Bowtie2 alignment step2 ..." 
 	$(SCRIPTS)/bowtie_wrap.sh -c $(CONFIG_FILE) -l >> $(LOGFILE)
 
 ######################################

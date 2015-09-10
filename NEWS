@@ -1,4 +1,19 @@
 ***********************************
+CHANGES IN VERSION 2.6.1
+
+NEW FEATURES
+
+   o New utility ; digest_genome.py which take a fasta file and the name(s) or sequence(s) of the restriction enzyme(s) in order to generate the list of restriction fragments after genome digestion. 
+
+   o HiC-Pro is now able to process data generate from protocols without restriction enzyme such as DNase Hi-C. See the manual for more information
+
+SIGNIFICANT USER-VISIBLE CHANGES
+
+   o The mapping step2 is now optional and will be run only if the ligation site is specified
+
+   o New parameter MIN_CIS_DIST in order to discard all contacts below the specified distance. This is mainly used for DNase Hi-C to remove artefact which are likely to be self ligation product.
+
+***********************************
 CHANGES IN VERSION 2.6.0
 
 NEW FEATURES
@@ -20,8 +35,6 @@ SIGNIFICANT USER-VISIBLE CHANGES
    o The split_reads.py utility can now handle fastq.gz files
 
 BUG FIXES
-
-   o Fix bug in MAX_INSERT_SIZE
 
    o Fix bug in build_raw_maps.sh in --chrsize (reported by D. Robelin)
 

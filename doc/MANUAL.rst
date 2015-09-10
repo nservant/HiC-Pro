@@ -5,6 +5,8 @@
 
 HiC-Pro Manual
 ******************
+Modified - 09th September 2015
+Reference version - HiC-Pro 2.6.1
 
 Setting the configuration file
 ==============================
@@ -42,8 +44,6 @@ Setting the configuration file
 +------------------------+---------------------------------------------------------------------------------------------------------------------+
 | MIN_MAPQ               | Minimum mapping quality. Reads with lower quality are discarded. *Default: 0*                                       |
 +------------------------+---------------------------------------------------------------------------------------------------------------------+
-| LIGATION SITE          | Ligation site sequence used for reads trimming. Depends on the fill in strategy. *Default: AAGCTAGCTT*              |
-+------------------------+---------------------------------------------------------------------------------------------------------------------+ 
 | BOWTIE2_IDX_PATH       | Path to bowtie2 indexes                                                                                             |
 +------------------------+---------------------------------------------------------------------------------------------------------------------+
 | BOWTIE2_GLOBAL_OPTIONS | bowtie2 options for mapping step1. *Default: --very-sensitive -L 30 --score-min L,-0.6,-0.2 --end-to-end --reorder* |
@@ -58,8 +58,6 @@ Setting the configuration file
 +=======================+===================================================================================================================================================+
 | REFERENCE_GENOME      | Reference genome prefix used for genome indexes. *Default: hg19*                                                                                  |
 +-----------------------+---------------------------------------------------------------------------------------------------------------------------------------------------+
-| GENOME_FRAGMENT       | BED file with restriction fragments. Full path or name of file available in the ANNOTATION folder. *Default: HindIII_resfrag_hg19.bed*            |
-+-----------------------+---------------------------------------------------------------------------------------------------------------------------------------------------+
 | GENOME_SIZE           | Chromsome size file. Loaded from the ANNOTATION folder in the HiC-Pro installation directory. *Default: chrom_hg19.sizes*                         |
 +-----------------------+---------------------------------------------------------------------------------------------------------------------------------------------------+
 | [ALLELE_SPECIFIC_SNP] | VCF file to SNPs which can be used to distinguish parental origin. See the `allele specific section <AS.rst>`_ for more details                   |
@@ -67,12 +65,36 @@ Setting the configuration file
 
 ------------
 
++---------------------------+---------------------------------------------------------------------------------------------------------------------------------------------------+
+| ALLLELE SPECIFIC ANALYSIS |                                                                                                                                                   |
++=======================+=======================================================================================================================================================+
+| [ALLELE_SPECIFIC_SNP]     | VCF file to SNPs which can be used to distinguish parental origin. See the `allele specific section <AS.rst>`_ for more details                   |
++---------------------------+---------------------------------------------------------------------------------------------------------------------------------------------------+
+
+------------
+
++-----------------------+---------------------------------------------------------------------------------------------------------------------------------------------------+
+| DIGESTION Hi-C        |                                                                                                                                                   |
++=======================+===================================================================================================================================================+
+| [GENOME_FRAGMENT]     | BED file with restriction fragments. Full path or name of file available in the ANNOTATION folder. *Default: HindIII_resfrag_hg19.bed*            |
++-----------------------+---------------------------------------------------------------------------------------------------------------------------------------------------+
+| [LIGATION SITE]       | Ligation site sequence used for reads trimming. Depends on the fill in strategy. *Example: AAGCTAGCTT*                                            |
++------------------------+--------------------------------------------------------------------------------------------------------------------------------------------------+ 
+| [MIN_FRAG_SIZE]       | Maximum size of restriction fragments to consider for the Hi-C processing. *Example: 100*                                                         | 
++------------------------+--------------------------------------------------------------------------------------------------------------------------------------------------+ 
+| [MAX_FRAG_SIZE]       | Maximum size of restriction fragments to consider for the Hi-C processing. *Example: 100000*                                                      |
++------------------------+--------------------------------------------------------------------------------------------------------------------------------------------------+ 
+| [MIN_INSERT_SIZE]     | Minimum sequenced insert size. Shorter 3C products are discarded. *Example: 100*                                                                  |
++-----------------------------+---------------------------------------------------------------------------------------------------------------------------------------------+
+| [MAX_INSERT_SIZE]     | Maximum sequenced insert size. Larger 3C products are discarded. *Example: 600*                                                                   |
++-----------------------------+---------------------------------------------------------------------------------------------------------------------------------------------+
+
+------------
+
 +-----------------------------+-------------------------------------------------------------------------------------------------------------------------+
 | Hi-C PROCESSING                                                                                                                                       |
 +=============================+=========================================================================================================================+
-| [MIN_INSERT_SIZE]           | Minimum sequenced insert size. Shorter 3C products are discarded                                                        |
-+-----------------------------+-------------------------------------------------------------------------------------------------------------------------+
-| [MAX_INSERT_SIZE]           | Maximum sequenced insert size. Larger 3C products are discarded                                                         |
+| [MIN_CIS_DIST]              | Filter short range contact below the specified distance. Mainly useful for DNase Hi-C. *Example: 1000*                  |
 +-----------------------------+-------------------------------------------------------------------------------------------------------------------------+
 | GET_ALL_INTERACTION_CLASSES | Create output files with all classes of 3C products. *Default: 0*                                                       |
 +-----------------------------+-------------------------------------------------------------------------------------------------------------------------+
@@ -84,12 +106,24 @@ Setting the configuration file
 +-----------------------------+-------------------------------------------------------------------------------------------------------------------------+
 | RM_DUP                      | Remove duplicated reads' pairs. *Default: 1*                                                                            |
 +-----------------------------+-------------------------------------------------------------------------------------------------------------------------+
+
+------------
+
++-----------------------------+-------------------------------------------------------------------------------------------------------------------------+
+| GENOME-WIDE CONTACT MAPS                                                                                                                              |
++=============================+=========================================================================================================================+
 | BIN_SIZE                    | Resolution of contact maps to generate (space separated). *Default: 20000 40000 150000 500000 1000000*                  |
 +-----------------------------+-------------------------------------------------------------------------------------------------------------------------+
 | BIN_STEP                    | Binning step size in ‘n’ coverage _i.e._ window step. *Default: 1*                                                      |
 +-----------------------------+-------------------------------------------------------------------------------------------------------------------------+
 | MATRIX_FORMAT               | Output matrix format. Must be complete, asis, upper or lower. *Default: upper*                                          |
 +-----------------------------+-------------------------------------------------------------------------------------------------------------------------+
+
+------------
+
++-----------------------------+-------------------------------------------------------------------------------------------------------------------------+
+| NORMALIZATION                                                                                                                                         |
++=============================+=========================================================================================================================+
 | MAX_ITER                    | Maximum number of iteration for ICE normalization. *Default: 100*                                                       |
 +-----------------------------+-------------------------------------------------------------------------------------------------------------------------+
 | SPARSE_FILTERING            | Define which pourcentage of bins with high sparsity should be force to zero. *Default: 0.02*                            |
@@ -163,7 +197,7 @@ The HiC-Pro workflow can be divided in five main steps presented below.
 
 1. **Reads Mapping**
 
-| Each mate is independantly aligned on the reference genome. The mapping is performed in two steps. First, the reads are aligned using an end-to-end aligner. Second, reads spanning the ligation junction are trimmmed from their 3' end, and aligned back on the genome. Aligned reads for both fragment mates are then paired in a single paired-end BAM file. Singletons and multi-hits can be discarded according the confirguration parameters.
+| Each mate is independantly aligned on the reference genome. The mapping is performed in two steps. First, the reads are aligned using an end-to-end aligner. Second, reads spanning the ligation junction are trimmmed from their 3' end, and aligned back on the genome. Aligned reads for both fragment mates are then paired in a single paired-end BAM file. Singletons and multi-hits can be discarded according the confirguration parameters. Note that if if the *LIGATION_SITE* parameter in the not defined, HiC-Pro will skip the second step of mapping.
 
 2. **Fragment assignment and filtering**
 
@@ -171,6 +205,7 @@ The HiC-Pro workflow can be divided in five main steps presented below.
 | The next step is to separate the invalid ligation products from the valid pairs. Dangling end and self circles pairs are therefore excluded.
 | Only valid pairs involving two different restriction fragments are used to build the contact maps. Duplicated valid pairs associated to PCR artefacts are discarded.
 | The fragment assignment can be visualized through a BAM files of aliged pairs where each pair is flagged according to its classification.
+| In case of Hi-C protocols that do not require a restriction enzyme such as DNase Hi-C or micro Hi-C, the assignment to a restriction is not possible. If no GENOME_FRAGMENT file are specified, this step is ignored. Short range interactions can however still be discarded using the *MIN_CIS_DIST* parameter.
 
 3. **Quality Controls**
 

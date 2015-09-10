@@ -40,18 +40,25 @@ mapping_combine()
     mkdir -p ${BOWTIE2_FINAL_OUTPUT_DIR}/${sample_dir}    
 
     ## Merge local and global alignment
-    cmd="${SAMTOOLS_PATH}/samtools merge -@ ${N_CPU} -n -f ${BOWTIE2_FINAL_OUTPUT_DIR}/${prefix}.bwt2merged.bam ${BOWTIE2_GLOBAL_OUTPUT_DIR}/${prefix}.bwt2glob.bam ${BOWTIE2_LOCAL_OUTPUT_DIR}/${prefix}.bwt2glob.unmap_bwt2loc.bam "
-    #echo $cmd
-    exec_cmd $cmd
+    if [[ -e ${BOWTIE2_GLOBAL_OUTPUT_DIR}/${prefix}.bwt2glob.bam && -e ${BOWTIE2_LOCAL_OUTPUT_DIR}/${prefix}.bwt2glob.unmap_bwt2loc.bam ]]; then
+	
+	cmd="${SAMTOOLS_PATH}/samtools merge -@ ${N_CPU} -n -f ${BOWTIE2_FINAL_OUTPUT_DIR}/${prefix}.bwt2merged.bam ${BOWTIE2_GLOBAL_OUTPUT_DIR}/${prefix}.bwt2glob.bam ${BOWTIE2_LOCAL_OUTPUT_DIR}/${prefix}.bwt2glob.unmap_bwt2loc.bam"
+	exec_cmd $cmd
 
-    ## Sort merge file. In theory, should be perform by "merge -n", but do not work in some cases ... depending on read name ?
-    cmd="${SAMTOOLS_PATH}/samtools sort -@ ${N_CPU} -n ${BOWTIE2_FINAL_OUTPUT_DIR}/${prefix}.bwt2merged.bam ${BOWTIE2_FINAL_OUTPUT_DIR}/${prefix}.bwt2merged.sorted"
-    #echo $cmd
-    exec_cmd $cmd
+        ## Sort merge file. In theory, should be perform by "merge -n", but do not work in some cases ... depending on read name ?
+	cmd="${SAMTOOLS_PATH}/samtools sort -@ ${N_CPU} -n ${BOWTIE2_FINAL_OUTPUT_DIR}/${prefix}.bwt2merged.bam ${BOWTIE2_FINAL_OUTPUT_DIR}/${prefix}.bwt2merged.sorted"
+        exec_cmd $cmd
     
-    cmd="mv ${BOWTIE2_FINAL_OUTPUT_DIR}/${prefix}.bwt2merged.sorted.bam ${BOWTIE2_FINAL_OUTPUT_DIR}/${prefix}.bwt2merged.bam"
-    #echo $cmd
-    exec_cmd $cmd
+	cmd="mv ${BOWTIE2_FINAL_OUTPUT_DIR}/${prefix}.bwt2merged.sorted.bam ${BOWTIE2_FINAL_OUTPUT_DIR}/${prefix}.bwt2merged.bam"
+        exec_cmd $cmd
+    
+    elif [[ ${LIGATTION_SITE} == "" ]]; then
+	
+	cmd="ln -f -s ../../bwt2_global/${prefix}.bwt2glob.bam ${BOWTIE2_FINAL_OUTPUT_DIR}/${prefix}.bwt2merged.bam "
+	exec_cmd $cmd
+    else
+	die "Error - Mapping files not found"
+    fi
 }
 
 ## Combine local and global alignments

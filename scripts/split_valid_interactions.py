@@ -9,7 +9,7 @@
 # Public License, either Version 2, June 1991 or Version 3, June 2007.
 
 """
-Script to pair 2 SAM/BAM files into one PE BAM
+Script to split valid interactions into G1/G2 interaction files and calculate statistics
 """
 
 import getopt

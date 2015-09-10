@@ -8,6 +8,7 @@
 
 ##
 ## Merge all valid interaction file and remove duplicates
+## Split the interaction into G1/G2 files if specified
 ##
 
 dir=$(dirname $0)

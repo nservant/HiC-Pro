@@ -22,12 +22,15 @@ from bx.intervals.intersection import Intersecter, Interval
 
 def usage():
     """Usage function"""
-    print "Usage : python overlapMapped2HiCFragments.py"
+    print "Usage : python mapped_2hic_fragments.py"
     print "-f/--fragmentFile <Restriction fragment file GFF3>"
     print "-r/--mappedReadsFile <BAM/SAM file of mapped reads>"
     print "[-o/--outputDir] <Output directory. Default is current directory>"
     print "[-s/--shortestInsertSize] <Shortest insert size of mapped reads to consider>"
     print "[-l/--longestInsertSize] <Longest insert size of mapped reads to consider>"
+    print "[-t/--shortestFragmentLength] <Shortest restriction fragment length to consider>"
+    print "[-m/--longestFragmentLength] <Longest restriction fragment length to consider>"
+    print "[-d/--minCisDist] <Minimum distance between intrachromosomal contact to consider>"
     print "[-g/--gtag] <Genotype tag. If specified, this tag will be reported in the valid pairs output for allele specific classification>"
     print "[-a/--all] <Write all additional output files, with information about the discarded reads (self-circle, dangling end, etc.)>"
     print "[-S/--sam] <Output an additional SAM file with flag 'CT' for pairs classification>"
@@ -41,11 +44,14 @@ def get_args():
     try:
         opts, args = getopt.getopt(
             sys.argv[1:],
-            "f:r:o:c:s:l:g:Svah",
+            "f:r:o:s:l:t:m:d:g:Svah",
             ["fragmentFile=",
              "mappedReadsFile=",
-             "outputDir=", "cutSite=", "minInsertSize=", "gtag",
-             "maxInsertSize", "samOut", "verbose", "all", "help"])
+             "outputDir=", 
+             "minInsertSize=", "maxInsertSize", 
+             "minFragSize", "maxFragSize", 
+             "minDist",
+             "gatg", "samOut", "verbose", "all", "help"])
     except getopt.GetoptError:
         usage()
         sys.exit(-1)
@@ -65,6 +71,40 @@ def get_read_strand(read):
     if read.is_reverse:
         strand = "-"
     return strand
+
+
+def isIntraChrom(read1, read2):
+    """
+    Return true is the reads pair is intrachromosomal
+    
+    read1 : [AlignedRead]
+    read2 : [AlignedRead]
+
+    """
+    if read1.tid == read2.tid:
+        return True
+    else:
+        return False
+
+
+def get_cis_dist(read1, read2):
+     """
+     Calculte the contact distance between two intrachromosomal reads
+
+     read1 : [AlignedRead]
+     read2 : [AlignedRead]
+
+     """
+     # Get oriented reads
+     ##r1, r2 = get_ordered_reads(read1, read2)
+     dist = None
+     if not r1.is_unmapped and not r2.is_unmapped:         
+         ## Contact distances can be calculated for intrachromosomal reads only
+         if isIntraChrom(read1, read2):
+             r1pos = get_read_pos(read1)
+             r2pos = get_read_pos(read2)
+             dist = abs(r1pos - r2pos)
+     return dist
 
 
 def get_read_pos(read):
@@ -123,7 +163,7 @@ def get_ordered_reads(read1, read2):
     return r1, r2
 
 
-def load_restriction_fragment(in_file, verbose):
+def load_restriction_fragment(in_file, minfragsize=None, maxfragsize=None, verbose=False):
     """
     Read a BED file and store the intervals in a tree
 
@@ -139,18 +179,30 @@ def load_restriction_fragment(in_file, verbose):
         print "## Loading Restriction File Intervals '", in_file, "'..."
 
     bed_handle = open(in_file)
+    nline = 0
     for line in bed_handle:
+        nline +=1
         bedtab = line.split("\t")
         try:
             chromosome, start, end, name = bedtab[:4]
         except ValueError:
-            # FIXME we might want a proper warning message here !
+            print "Warning : wrong input format in line", nline,". Not a BED file !?"
             continue
 
         # BED files are zero-based as Intervals objects
         start = int(start)  # + 1
         end = int(end)
+        fragl = abs(end - start)
         name = name.strip()
+
+        ## Discard fragments outside the size range
+        if minfragsize != None and int(fragl) < int(minfragsize):
+            print "Warning : fragment ", name, " [", fragl, "] outside of range. Discarded"  
+            continue
+        if maxfragsize != None and int(fragl) > int(maxfragsize):
+            print "Warning : fragment ", name, " [", fragl,"] outside of range. Discarded"  
+            continue
+       
         if chromosome in resFrag.keys():
             tree = resFrag[chromosome]
             tree.add_interval(Interval(start, end, value={'name': name}))
@@ -158,6 +210,7 @@ def load_restriction_fragment(in_file, verbose):
             tree = Intersecter()
             tree.add_interval(Interval(start, end, value={'name': name}))
             resFrag[chromosome] = tree
+    
     bed_handle.close()
     return resFrag
 
@@ -320,23 +373,23 @@ def get_interaction_type(read1, read1_chrom, resfrag1, read2,
     """
     # If returned InteractionType=None -> Same restriction fragment
     # and same strand = Dump
-    InteractionType = None
-
-    if not (r1.is_unmapped) and not (r2.is_unmapped):
+    interactionType = None
+ 
+    if not r1.is_unmapped and not r2.is_unmapped and resfrag1 is not None and resfrag2 is not None:
         # same restriction fragment
         if resfrag1 == resfrag2:
             # Self_circle <- ->
             if is_self_circle(read1, read2):
-                InteractionType = "SC"
+                interactionType = "SC"
             # Dangling_end -> <-
             elif is_dangling_end(read1, read2):
-                InteractionType = "DE"
+                interactionType = "DE"
         else:
-            InteractionType = "VI"
+            interactionType = "VI"
     elif r1.is_unmapped or r2.is_unmapped:
-        InteractionType = "SI"
+        interactionType = "SI"
 
-    return InteractionType
+    return interactionType
 
 
 def get_read_tag(read, tag):
@@ -349,13 +402,14 @@ def get_read_tag(read, tag):
 if __name__ == "__main__":
     # Read command line arguments
     opts = get_args()
-    inputFile = None
-    outputFile = None
     samOut = False
     verbose = False
     allOutput = False
     minInsertSize = None
     maxInsertSize = None
+    minFragSize = None
+    maxFragSize = None
+    minDist = None
     outputDir = "."
     gtag = None
 
@@ -377,6 +431,12 @@ if __name__ == "__main__":
             minInsertSize = arg
         elif opt in ("-l", "--longestInsertSize"):
             maxInsertSize = arg
+        elif opt in ("-t", "--shortestFragmentLength"):
+            minFragSize = arg
+        elif opt in ("-m", "--longestFragmentLength"):
+            maxFragSize = arg
+        elif opt in ("-d", "--minCisDist"):
+            minDist = arg
         elif opt in ("-g", "--gtag"):
             gtag = arg
         elif opt in ("-a", "--all"):
@@ -395,6 +455,8 @@ if __name__ == "__main__":
         print "## fragmentFile=", fragmentFile
         print "## minInsertSize=", minInsertSize
         print "## maxInsertSize=", maxInsertSize
+        print "## minFragSize=", minFragSize
+        print "## maxFragSize=", maxFragSize
         print "## allOuput=", allOutput
         print "## SAM ouput=", samOut
         print "## verbose=", verbose, "\n"
@@ -437,7 +499,7 @@ if __name__ == "__main__":
                              'w')
 
     # Read the BED file
-    resFrag = load_restriction_fragment(fragmentFile, verbose)
+    resFrag = load_restriction_fragment(fragmentFile, minFragSize, maxFragSize, verbose)
     print resFrag.keys()
     
     # Read the SAM/BAM file
@@ -484,21 +546,24 @@ if __name__ == "__main__":
 
 
             if r1_resfrag is not None or r2_resfrag is not None:
+                
+   
                 interactionType = get_interaction_type(r1, r1_chrom, r1_resfrag, r2, r2_chrom, r2_resfrag, verbose)
                 dist = get_PE_fragment_size(r1, r2, r1_resfrag, r2_resfrag, interactionType)
+                cdist = get_cis_dist(r1, r2)
+                #print r1.qname + "\t" + r1_chrom + "\t" + str(get_read_pos(r1)) + "\t" + r2_chrom + "\t" + str(get_read_pos(r2)) + "\t" + str(dist) + "\t" + str(htag) + "\n"
 
-                # Check cut site in local mapping reads
-                # if get_read_tag(r1, "RG") == "BML" or get_read_tag(r2, "RG") == "BML":
-                #     bowloc_counter+=1
-                #     if cutSite and (overlapRestrictionSite(r1, cutSite) or overlapRestrictionSite(r2, cutSite)):
-                #         cutsite_counter+=1
-                
-                # Check Insert size criteria
+                # Check Insert size criteria - DUMP
                 if (minInsertSize is not None and dist is not None and
                     dist < int(minInsertSize)) or \
                     (maxInsertSize is not None and dist is not None and dist > int(maxInsertSize)):
                     interactionType = "DUMP"
 
+                # Check Distance criteria - DUMP
+                # Done for VI otherwise this criteria will overwrite all other invalid classification
+                if (interactionType == "VI" and minDist is not None and cdist is not None and cdist < int(minDist)):
+                    interactionType = "DUMP"
+        
                 if interactionType == "VI":
                     valid_counter += 1
                     cur_handler = handle_valid
@@ -558,7 +623,7 @@ if __name__ == "__main__":
                 interactionType = "DUMP"
                 dump_counter += 1
                 cur_handler = handle_dump if allOutput else None
-
+                dist = None
 
             if cur_handler is not None:
                 if not r1.is_unmapped and not r2.is_unmapped:

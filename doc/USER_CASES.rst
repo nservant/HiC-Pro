@@ -61,3 +61,11 @@ First set the ALLELE_SPECIFIC_SNP variable in the configuration file and check w
    HiC-Pro -i ${TEST_DATA} -o ${RES_PREFIX}_5 -c config_test_as.txt
 
 
+5. **Running HiC-Pro on DNase Hi-C data**
+
+HiC-Pro is now able to process Hi-C data generated without restriction enzyme, such as DNase Hi-C.
+To analyse such data, simply unset the variable LIGATION_SITE and GENOME_FRAGMENT from the configuration file.
+As the ligation site is unknown, the mapping will be done in only one step (step 2 is not run). Then, the uniquely mapped reads are directly used to build the contact maps.
+In the context of DNase Hi-C, one way to filter out artefacts such as self ligation is to discard intra-chromosomal pairs below a given distance threshold. 
+A filtering of the short contact distance is therefore proposed using the parameter MIN_CIS_DIST. 
+

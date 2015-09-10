@@ -80,7 +80,10 @@ plotDedup <- function(mat, sampleName="", legend=TRUE){
                 ggtitle("Valid Pairs - duplicates and contact ranges") + theme(plot.title = element_text(lineheight=.8, face="bold", size=6))
 
   if (legend){
-    gp = gp + scale_fill_manual(values=sel.colours, labels = c("Valid Interactions (%)",  "Duplicates (%)", "Trans Contacts (%)", "Cis short-range (<20kb) (%)", "Cis long-range contacts (>20kb) (%)")) + guides(fill=guide_legend(title="")) + theme(plot.margin=unit(x=c(1,0,0,0), units="cm"), legend.position="bottom", legend.margin=unit(.5,"cm"), legend.text=element_text(size=4))
+    gp = gp + scale_fill_manual(values=sel.colours, labels = c("Valid Interactions (%)",  "Duplicates (%)", "Trans Contacts (%)", "Cis short-range (<20kb) (%)",
+                                                      "Cis long-range contacts (>20kb) (%)")) + guides(fill=guide_legend(title="")) +
+                                                        theme(plot.margin=unit(x=c(1,0,0,0), units="cm"), legend.position="bottom", legend.margin=unit(.5,"cm"),
+                                                              legend.text=element_text(size=4))
   }else{
     gp = gp + scale_fill_manual(values=sel.colours) + theme(plot.margin=unit(c(1,0,1.9,0),"cm"))+ guides(fill=FALSE)
   }
@@ -119,24 +122,23 @@ print(stats_per_sample)
 
 mat <- getContactsStatMat(stats_per_sample)
 p1 <- plotDedup(mat, sampleName)
-
-pdf(file.path(picDir, paste0("plotHiCContactRanges_",sampleName,".pdf")), width=5, height=5)
-p1
-dev.off()
+ggsave(filename=file.path(picDir, paste0("plotHiCContactRanges_",sampleName,".pdf")), p1, width=5, height=5)
 
 
-## Histogram of distance
+## Histogram of insert size
 allvalidpairs <- list.files(path=hicDir, pattern=paste0("^[[:print:]]*.validPairs$"), full.names=TRUE)
 stats_per_validpairs<- lapply(allvalidpairs, read.csv, sep="\t", as.is=TRUE, header=FALSE, row.names=1, nrow=100000)
 lv <- sapply(stats_per_validpairs, "[", 7)
+lv <- lapply(lv, function(x){as.numeric(x[which(x!="None" & ! is.na(x))])})
 allhist <- lapply(lv, hist, breaks=c(seq.int(from=0, to=1500, by=10), Inf), plot=FALSE)
-
 allcounts <- Reduce("+", lapply(allhist, "[[", "counts"))
-mids <- allhist[[1]]$mids
-mat<-data.frame(allcounts=allcounts, mids=mids)
-mat[dim(mat)[1],2]<-1505
 
-p2 <- plotDistanceHist(mat, sampleName, n=100000*length(allvalidpairs))
-pdf(file.path(picDir, paste0("plotHiCFragmentSize_",sampleName,".pdf")), width=7, height=5)
-p2
-dev.off()
+if (max(allcounts)>0){
+  mids <- allhist[[1]]$mids
+  mat<-data.frame(allcounts=allcounts, mids=mids)
+  mat[dim(mat)[1],2]<-1505
+  print(allcounts)
+  p2 <- plotDistanceHist(mat, sampleName, n=100000*length(allvalidpairs))
+  ggsave(filename=file.path(picDir, paste0("plotHiCFragmentSize_",sampleName,".pdf")), p2, width=7, height=5)
+}
+

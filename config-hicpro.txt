@@ -35,7 +35,6 @@ PAIR2_EXT = _R2
 
 FORMAT = phred33
 MIN_MAPQ = 0
-LIGATION_SITE = AAGCTAGCTT
 
 BOWTIE2_IDX_PATH = 
 BOWTIE2_GLOBAL_OPTIONS = --very-sensitive -L 30 --score-min L,-0.6,-0.2 --end-to-end --reorder
@@ -46,24 +45,39 @@ BOWTIE2_LOCAL_OPTIONS =  --very-sensitive -L 20 --score-min L,-0.6,-0.2 --end-to
 #######################################################################
 
 REFERENCE_GENOME = hg19
-GENOME_FRAGMENT = HindIII_resfrag_hg19.bed
 GENOME_SIZE = chrom_hg19.sizes
+
+
+#######################################################################
+## Allele specific analysis
+#######################################################################
+
 ALLELE_SPECIFIC_SNP = 
+
+#######################################################################
+## Digestion Hi-C
+#######################################################################
+
+GENOME_FRAGMENT = HindIII_resfrag_hg19.bed
+LIGATION_SITE = AAGCTAGCTT
+MIN_FRAG_SIZE = 
+MAX_FRAG_SIZE =
+MIN_INSERT_SIZE =
+MAX_INSERT_SIZE =
 
 #######################################################################
 ## Hi-C processing
 #######################################################################
 
-MIN_INSERT_SIZE = 
-MAX_INSERT_SIZE = 
-GET_ALL_INTERACTION_CLASSES = 0
-GET_PROCESS_SAM = 0
+MIN_CIS_DIST =
+GET_ALL_INTERACTION_CLASSES = 1
+GET_PROCESS_SAM = 1
 RM_SINGLETON = 1
 RM_MULTI = 1
 RM_DUP = 1
 
 #######################################################################
-## Generate interaction count matrices
+## Contact Maps
 #######################################################################
 
 BIN_SIZE = 20000 40000 150000 500000 1000000
@@ -71,7 +85,7 @@ BIN_STEP = 1
 MATRIX_FORMAT = upper
 
 #######################################################################
-## ICE Normalization
+## Normalization
 #######################################################################
 MAX_ITER = 100
 SPARSE_FILTERING = 0.02
