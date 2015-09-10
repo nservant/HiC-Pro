@@ -111,32 +111,29 @@ Reference version - HiC-Pro 2.6.1</p>
 <col width="83%" />
 </colgroup>
 <thead valign="bottom">
-<tr class="row-odd"><th class="head" colspan="2">READS ALIGNMENT OPTIONS</th>
+<tr class="row-odd"><th class="head" colspan="2">DATA AND READS ALIGNMENT OPTIONS</th>
 </tr>
 </thead>
 <tbody valign="top">
-<tr class="row-even"><td>RAW_DIR</td>
-<td>Link to rawdata folder. The user usually not need to change this option. <em>Default: rawdata</em></td>
-</tr>
-<tr class="row-odd"><td>PAIR1_EXT</td>
+<tr class="row-even"><td>PAIR1_EXT</td>
 <td>Keyword for first mate detection. <em>Default:_R1</em></td>
 </tr>
-<tr class="row-even"><td>PAIR2_EXT</td>
+<tr class="row-odd"><td>PAIR2_EXT</td>
 <td>Keywoard for seconde mate detection. <em>Default:_R2</em></td>
 </tr>
-<tr class="row-odd"><td>FORMAT</td>
+<tr class="row-even"><td>FORMAT</td>
 <td>Sequencing qualities encoding. <em>Default: phred33</em></td>
 </tr>
-<tr class="row-even"><td>MIN_MAPQ</td>
+<tr class="row-odd"><td>MIN_MAPQ</td>
 <td>Minimum mapping quality. Reads with lower quality are discarded. <em>Default: 0</em></td>
 </tr>
-<tr class="row-odd"><td>BOWTIE2_IDX_PATH</td>
+<tr class="row-even"><td>BOWTIE2_IDX_PATH</td>
 <td>Path to bowtie2 indexes</td>
 </tr>
-<tr class="row-even"><td>BOWTIE2_GLOBAL_OPTIONS</td>
+<tr class="row-odd"><td>BOWTIE2_GLOBAL_OPTIONS</td>
 <td>bowtie2 options for mapping step1. <em>Default: &#8211;very-sensitive -L 30 &#8211;score-min L,-0.6,-0.2 &#8211;end-to-end &#8211;reorder</em></td>
 </tr>
-<tr class="row-odd"><td>BOWTIE2_LOCAL_OPTIONS</td>
+<tr class="row-even"><td>BOWTIE2_LOCAL_OPTIONS</td>
 <td>bowtie2 options for mapping step2. <em>Default: &#8211;very-sensitive -L 20 &#8211;score-min L,-0.6,-0.2 &#8211;end-to-end &#8211;reorder</em></td>
 </tr>
 </tbody>
@@ -148,8 +145,7 @@ Reference version - HiC-Pro 2.6.1</p>
 <col width="86%" />
 </colgroup>
 <thead valign="bottom">
-<tr class="row-odd"><th class="head">ANNOTATION FILES</th>
-<th class="head">&nbsp;</th>
+<tr class="row-odd"><th class="head" colspan="2">ANNOTATION FILES</th>
 </tr>
 </thead>
 <tbody valign="top">
@@ -158,9 +154,6 @@ Reference version - HiC-Pro 2.6.1</p>
 </tr>
 <tr class="row-odd"><td>GENOME_SIZE</td>
 <td>Chromsome size file. Loaded from the ANNOTATION folder in the HiC-Pro installation directory. <em>Default: chrom_hg19.sizes</em></td>
-</tr>
-<tr class="row-even"><td>[ALLELE_SPECIFIC_SNP]</td>
-<td>VCF file to SNPs which can be used to distinguish parental origin. See the <a class="reference external" href="AS.rst">allele specific section</a> for more details</td>
 </tr>
 </tbody>
 </table>
@@ -172,7 +165,7 @@ Reference version - HiC-Pro 2.6.1</p>
 <col width="85%" />
 </colgroup>
 <thead valign="bottom">
-<tr class="row-odd"><th class="head" colspan="3">ALLLELE SPECIFIC ANALYSIS |</th>
+<tr class="row-odd"><th class="head" colspan="3">ALLLELE SPECIFIC ANALYSIS</th>
 </tr>
 </thead>
 <tbody valign="top">
@@ -184,28 +177,30 @@ Reference version - HiC-Pro 2.6.1</p>
 <table border="1" class="docutils">
 <colgroup>
 <col width="14%" />
-<col width="0%" />
-<col width="2%" />
-<col width="84%" />
+<col width="86%" />
 </colgroup>
 <thead valign="bottom">
-<tr class="row-odd"><th class="head">DIGESTION Hi-C</th>
-<th class="head" colspan="3">&nbsp;</th>
+<tr class="row-odd"><th class="head" colspan="2">DIGESTION Hi-C</th>
 </tr>
 </thead>
 <tbody valign="top">
 <tr class="row-even"><td>[GENOME_FRAGMENT]</td>
-<td colspan="3">BED file with restriction fragments. Full path or name of file available in the ANNOTATION folder. <em>Default: HindIII_resfrag_hg19.bed</em></td>
+<td>BED file with restriction fragments. Full path or name of file available in the ANNOTATION folder. <em>Example: HindIII_resfrag_hg19.bed</em></td>
 </tr>
-<tr class="row-odd"><td colspan="4">[LIGATION SITE]       | Ligation site sequence used for reads trimming. Depends on the fill in strategy. <em>Example: AAGCTAGCTT</em></td>
+<tr class="row-odd"><td>[LIGATION SITE]</td>
+<td>Ligation site sequence used for reads trimming. Depends on the fill in strategy. <em>Example: AAGCTAGCTT</em></td>
 </tr>
-<tr class="row-even"><td colspan="4">[MIN_FRAG_SIZE]       | Maximum size of restriction fragments to consider for the Hi-C processing. <em>Example: 100</em></td>
+<tr class="row-even"><td>[MIN_FRAG_SIZE]</td>
+<td>Maximum size of restriction fragments to consider for the Hi-C processing. <em>Example: 100</em></td>
 </tr>
-<tr class="row-odd"><td colspan="4">[MAX_FRAG_SIZE]       | Maximum size of restriction fragments to consider for the Hi-C processing. <em>Example: 100000</em></td>
+<tr class="row-odd"><td>[MAX_FRAG_SIZE]</td>
+<td>Maximum size of restriction fragments to consider for the Hi-C processing. <em>Example: 100000</em></td>
 </tr>
-<tr class="row-even"><td colspan="4">[MIN_INSERT_SIZE]     | Minimum sequenced insert size. Shorter 3C products are discarded. <em>Example: 100</em></td>
+<tr class="row-even"><td>[MIN_INSERT_SIZE]</td>
+<td>Minimum sequenced insert size. Shorter 3C products are discarded. <em>Example: 100</em></td>
 </tr>
-<tr class="row-odd"><td colspan="4">[MAX_INSERT_SIZE]     | Maximum sequenced insert size. Larger 3C products are discarded. <em>Example: 600</em></td>
+<tr class="row-odd"><td>[MAX_INSERT_SIZE]</td>
+<td>Maximum sequenced insert size. Larger 3C products are discarded. <em>Example: 600</em></td>
 </tr>
 </tbody>
 </table>
@@ -365,7 +360,7 @@ OPTIONS
 <div class="line">The next step is to separate the invalid ligation products from the valid pairs. Dangling end and self circles pairs are therefore excluded.</div>
 <div class="line">Only valid pairs involving two different restriction fragments are used to build the contact maps. Duplicated valid pairs associated to PCR artefacts are discarded.</div>
 <div class="line">The fragment assignment can be visualized through a BAM files of aliged pairs where each pair is flagged according to its classification.</div>
-<div class="line">In case of Hi-C protocols that do not require a restriction enzyme such as DNase Hi-C or micro Hi-C, the assignment to a restriction is not possible. If no GENOME_FRAGMENT file are specified, this step is ignored. Short range interactions can however still be discarded using the <em>MIN_CIS_DIST</em> parameter.</div>
+<div class="line">In case of Hi-C protocols that do not require a restriction enzyme such as DNase Hi-C or micro Hi-C, the assignment to a restriction is not possible. If no <em>GENOME_FRAGMENT</em> file are specified, this step is ignored. Short range interactions can however still be discarded using the <em>MIN_CIS_DIST</em> parameter.</div>
 </div>
 <ol class="arabic simple" start="3">
 <li><strong>Quality Controls</strong></li>
