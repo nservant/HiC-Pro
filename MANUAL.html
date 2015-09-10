@@ -55,7 +55,7 @@
 
 
   </head>
-  <body><div class="navbar">
+  <body role="document"><div class="navbar">
     <a class="navbar-brand" href="index.html">
       
     </a>
@@ -67,6 +67,8 @@
   
   <div class="section" id="hic-pro-manual">
 <h1>HiC-Pro Manual<a class="headerlink" href="#hic-pro-manual" title="Permalink to this headline">¶</a></h1>
+<p>Modified - 09th September 2015
+Reference version - HiC-Pro 2.6.1</p>
 <div class="section" id="setting-the-configuration-file">
 <h2>Setting the configuration file<a class="headerlink" href="#setting-the-configuration-file" title="Permalink to this headline">¶</a></h2>
 <ol class="arabic simple">
@@ -128,16 +130,13 @@
 <tr class="row-even"><td>MIN_MAPQ</td>
 <td>Minimum mapping quality. Reads with lower quality are discarded. <em>Default: 0</em></td>
 </tr>
-<tr class="row-odd"><td>LIGATION SITE</td>
-<td>Ligation site sequence used for reads trimming. Depends on the fill in strategy. <em>Default: AAGCTAGCTT</em></td>
-</tr>
-<tr class="row-even"><td>BOWTIE2_IDX_PATH</td>
+<tr class="row-odd"><td>BOWTIE2_IDX_PATH</td>
 <td>Path to bowtie2 indexes</td>
 </tr>
-<tr class="row-odd"><td>BOWTIE2_GLOBAL_OPTIONS</td>
+<tr class="row-even"><td>BOWTIE2_GLOBAL_OPTIONS</td>
 <td>bowtie2 options for mapping step1. <em>Default: &#8211;very-sensitive -L 30 &#8211;score-min L,-0.6,-0.2 &#8211;end-to-end &#8211;reorder</em></td>
 </tr>
-<tr class="row-even"><td>BOWTIE2_LOCAL_OPTIONS</td>
+<tr class="row-odd"><td>BOWTIE2_LOCAL_OPTIONS</td>
 <td>bowtie2 options for mapping step2. <em>Default: &#8211;very-sensitive -L 20 &#8211;score-min L,-0.6,-0.2 &#8211;end-to-end &#8211;reorder</em></td>
 </tr>
 </tbody>
@@ -157,14 +156,56 @@
 <tr class="row-even"><td>REFERENCE_GENOME</td>
 <td>Reference genome prefix used for genome indexes. <em>Default: hg19</em></td>
 </tr>
-<tr class="row-odd"><td>GENOME_FRAGMENT</td>
-<td>BED file with restriction fragments. Full path or name of file available in the ANNOTATION folder. <em>Default: HindIII_resfrag_hg19.bed</em></td>
-</tr>
-<tr class="row-even"><td>GENOME_SIZE</td>
+<tr class="row-odd"><td>GENOME_SIZE</td>
 <td>Chromsome size file. Loaded from the ANNOTATION folder in the HiC-Pro installation directory. <em>Default: chrom_hg19.sizes</em></td>
 </tr>
-<tr class="row-odd"><td>[ALLELE_SPECIFIC_SNP]</td>
+<tr class="row-even"><td>[ALLELE_SPECIFIC_SNP]</td>
 <td>VCF file to SNPs which can be used to distinguish parental origin. See the <a class="reference external" href="AS.rst">allele specific section</a> for more details</td>
+</tr>
+</tbody>
+</table>
+<hr class="docutils" />
+<table border="1" class="docutils">
+<colgroup>
+<col width="13%" />
+<col width="2%" />
+<col width="85%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head" colspan="3">ALLLELE SPECIFIC ANALYSIS |</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td colspan="3">[ALLELE_SPECIFIC_SNP]     | VCF file to SNPs which can be used to distinguish parental origin. See the <a class="reference external" href="AS.rst">allele specific section</a> for more details</td>
+</tr>
+</tbody>
+</table>
+<hr class="docutils" />
+<table border="1" class="docutils">
+<colgroup>
+<col width="14%" />
+<col width="0%" />
+<col width="2%" />
+<col width="84%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">DIGESTION Hi-C</th>
+<th class="head" colspan="3">&nbsp;</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>[GENOME_FRAGMENT]</td>
+<td colspan="3">BED file with restriction fragments. Full path or name of file available in the ANNOTATION folder. <em>Default: HindIII_resfrag_hg19.bed</em></td>
+</tr>
+<tr class="row-odd"><td colspan="4">[LIGATION SITE]       | Ligation site sequence used for reads trimming. Depends on the fill in strategy. <em>Example: AAGCTAGCTT</em></td>
+</tr>
+<tr class="row-even"><td colspan="4">[MIN_FRAG_SIZE]       | Maximum size of restriction fragments to consider for the Hi-C processing. <em>Example: 100</em></td>
+</tr>
+<tr class="row-odd"><td colspan="4">[MAX_FRAG_SIZE]       | Maximum size of restriction fragments to consider for the Hi-C processing. <em>Example: 100000</em></td>
+</tr>
+<tr class="row-even"><td colspan="4">[MIN_INSERT_SIZE]     | Minimum sequenced insert size. Shorter 3C products are discarded. <em>Example: 100</em></td>
+</tr>
+<tr class="row-odd"><td colspan="4">[MAX_INSERT_SIZE]     | Maximum sequenced insert size. Larger 3C products are discarded. <em>Example: 600</em></td>
 </tr>
 </tbody>
 </table>
@@ -179,36 +220,59 @@
 </tr>
 </thead>
 <tbody valign="top">
-<tr class="row-even"><td>[MIN_INSERT_SIZE]</td>
-<td>Minimum sequenced insert size. Shorter 3C products are discarded</td>
+<tr class="row-even"><td>[MIN_CIS_DIST]</td>
+<td>Filter short range contact below the specified distance. Mainly useful for DNase Hi-C. <em>Example: 1000</em></td>
 </tr>
-<tr class="row-odd"><td>[MAX_INSERT_SIZE]</td>
-<td>Maximum sequenced insert size. Larger 3C products are discarded</td>
-</tr>
-<tr class="row-even"><td>GET_ALL_INTERACTION_CLASSES</td>
+<tr class="row-odd"><td>GET_ALL_INTERACTION_CLASSES</td>
 <td>Create output files with all classes of 3C products. <em>Default: 0</em></td>
 </tr>
-<tr class="row-odd"><td>GET_PROCESS_BAM</td>
+<tr class="row-even"><td>GET_PROCESS_BAM</td>
 <td>Create a BAM file with all aligned reads flagged according to their classifaction and mapping category. <em>Default: 0</em></td>
 </tr>
-<tr class="row-even"><td>RM_SINGLETON</td>
+<tr class="row-odd"><td>RM_SINGLETON</td>
 <td>Remove singleton reads. <em>Default: 1</em></td>
 </tr>
-<tr class="row-odd"><td>RM_MULTI</td>
+<tr class="row-even"><td>RM_MULTI</td>
 <td>Remove multi-mapped reads. <em>Default: 1</em></td>
 </tr>
-<tr class="row-even"><td>RM_DUP</td>
+<tr class="row-odd"><td>RM_DUP</td>
 <td>Remove duplicated reads&#8217; pairs. <em>Default: 1</em></td>
 </tr>
-<tr class="row-odd"><td>BIN_SIZE</td>
+</tbody>
+</table>
+<hr class="docutils" />
+<table border="1" class="docutils">
+<colgroup>
+<col width="19%" />
+<col width="81%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head" colspan="2">GENOME-WIDE CONTACT MAPS</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>BIN_SIZE</td>
 <td>Resolution of contact maps to generate (space separated). <em>Default: 20000 40000 150000 500000 1000000</em></td>
 </tr>
-<tr class="row-even"><td>BIN_STEP</td>
+<tr class="row-odd"><td>BIN_STEP</td>
 <td>Binning step size in ‘n’ coverage _i.e._ window step. <em>Default: 1</em></td>
 </tr>
-<tr class="row-odd"><td>MATRIX_FORMAT</td>
+<tr class="row-even"><td>MATRIX_FORMAT</td>
 <td>Output matrix format. Must be complete, asis, upper or lower. <em>Default: upper</em></td>
 </tr>
+</tbody>
+</table>
+<hr class="docutils" />
+<table border="1" class="docutils">
+<colgroup>
+<col width="19%" />
+<col width="81%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head" colspan="2">NORMALIZATION</th>
+</tr>
+</thead>
+<tbody valign="top">
 <tr class="row-even"><td>MAX_ITER</td>
 <td>Maximum number of iteration for ICE normalization. <em>Default: 100</em></td>
 </tr>
@@ -226,30 +290,30 @@
 <h2>Run HiC-Pro in sequential mode<a class="headerlink" href="#run-hic-pro-in-sequential-mode" title="Permalink to this headline">¶</a></h2>
 <p>HiC-Pro can be run in a step-by-step mode.
 Available steps are described in the help command.</p>
-<div class="highlight-guess"><div class="highlight"><pre><span class="n">HiC</span><span class="o">-</span><span class="n">Pro</span> <span class="o">--</span><span class="n">help</span>
-<span class="n">usage</span> <span class="o">:</span> <span class="n">HiC</span><span class="o">-</span><span class="n">Pro</span> <span class="o">-</span><span class="n">i</span> <span class="n">INPUT</span> <span class="o">-</span><span class="n">o</span> <span class="n">OUTPUT</span> <span class="o">-</span><span class="n">c</span> <span class="n">CONFIG</span> <span class="p">[</span><span class="o">-</span><span class="n">s</span> <span class="n">ANALYSIS_STEP</span><span class="p">]</span> <span class="p">[</span><span class="o">-</span><span class="n">p</span><span class="p">]</span> <span class="p">[</span><span class="o">-</span><span class="n">h</span><span class="p">]</span> <span class="p">[</span><span class="o">-</span><span class="n">v</span><span class="p">]</span>
-<span class="n">Use</span> <span class="n">option</span> <span class="o">-</span><span class="n">h</span><span class="o">|--</span><span class="n">help</span> <span class="k">for</span> <span class="n">more</span> <span class="n">information</span>
+<div class="highlight-guess"><div class="highlight"><pre>HiC-Pro --help
+usage : HiC-Pro -i INPUT -o OUTPUT -c CONFIG [-s ANALYSIS_STEP] [-p] [-h] [-v]
+Use option -h|--help for more information
 
-<span class="n">HiC</span><span class="o">-</span><span class="n">Pro</span> <span class="mf">3.0.0</span>
-<span class="o">---------------</span>
-<span class="n">OPTIONS</span>
+HiC-Pro 2.6.0
+---------------
+OPTIONS
 
- <span class="o">-</span><span class="n">i</span><span class="o">|--</span><span class="n">input</span> <span class="n">INPUT</span> <span class="o">:</span> <span class="n">input</span> <span class="n">data</span> <span class="n">folder</span><span class="p">;</span> <span class="n">Must</span> <span class="n">contains</span> <span class="n">a</span> <span class="n">folder</span> <span class="n">per</span> <span class="n">sample</span> <span class="n">with</span> <span class="n">input</span> <span class="n">files</span>
- <span class="o">-</span><span class="n">o</span><span class="o">|--</span><span class="n">output</span> <span class="n">OUTPUT</span> <span class="o">:</span> <span class="n">output</span> <span class="n">folder</span>
- <span class="o">-</span><span class="n">c</span><span class="o">|--</span><span class="n">conf</span> <span class="n">CONFIG</span> <span class="o">:</span> <span class="n">configuration</span> <span class="n">file</span> <span class="k">for</span> <span class="n">Hi</span><span class="o">-</span><span class="n">C</span> <span class="n">processing</span>
- <span class="p">[</span><span class="o">-</span><span class="n">p</span><span class="o">|--</span><span class="n">parallel</span><span class="p">]</span> <span class="o">:</span> <span class="k">if</span> <span class="n">specified</span> <span class="n">run</span> <span class="n">HiC</span><span class="o">-</span><span class="n">Pro</span> <span class="n">in</span> <span class="n">PBS</span><span class="o">/</span><span class="n">Torque</span> <span class="n">mode</span>
- <span class="p">[</span><span class="o">-</span><span class="n">s</span><span class="o">|--</span><span class="n">step</span> <span class="n">ANALYSIS_STEP</span><span class="p">]</span> <span class="o">:</span> <span class="n">run</span> <span class="n">only</span> <span class="n">a</span> <span class="n">subset</span> <span class="n">of</span> <span class="n">the</span> <span class="n">HiC</span><span class="o">-</span><span class="n">Pro</span> <span class="n">workflow</span><span class="p">;</span> <span class="k">if</span> <span class="n">not</span> <span class="n">specified</span> <span class="n">the</span> <span class="n">complete</span> <span class="n">workflow</span> <span class="n">is</span> <span class="n">run</span>
-    <span class="nl">mapping:</span> <span class="n">perform</span> <span class="n">reads</span> <span class="n">alignment</span>
-    <span class="nl">proc_hic:</span> <span class="n">perform</span> <span class="n">Hi</span><span class="o">-</span><span class="n">C</span> <span class="n">filtering</span>
-    <span class="nl">quality_checks:</span> <span class="n">run</span> <span class="n">Hi</span><span class="o">-</span><span class="n">C</span> <span class="n">quality</span> <span class="n">control</span> <span class="n">plots</span>
-    <span class="nl">build_contact_maps:</span> <span class="n">build</span> <span class="n">raw</span> <span class="n">inter</span><span class="o">/</span><span class="n">intrachromosomal</span> <span class="n">contact</span> <span class="n">maps</span>
-    <span class="nl">ice_norm:</span> <span class="n">run</span> <span class="n">ICE</span> <span class="n">normalization</span> <span class="n">on</span> <span class="n">contact</span> <span class="n">maps</span>
- <span class="p">[</span><span class="o">-</span><span class="n">h</span><span class="o">|--</span><span class="n">help</span><span class="p">]</span><span class="o">:</span> <span class="n">help</span>
- <span class="p">[</span><span class="o">-</span><span class="n">v</span><span class="o">|--</span><span class="n">version</span><span class="p">]</span><span class="o">:</span> <span class="n">version</span>
+ -i|--input INPUT : input data folder; Must contains a folder per sample with input files
+ -o|--output OUTPUT : output folder
+ -c|--conf CONFIG : configuration file for Hi-C processing
+ [-p|--parallel] : if specified run HiC-Pro in PBS/Torque mode
+ [-s|--step ANALYSIS_STEP] : run only a subset of the HiC-Pro workflow; if not specified the complete workflow is run
+    mapping: perform reads alignment
+    proc_hic: perform Hi-C filtering
+    quality_checks: run Hi-C quality control plots
+    build_contact_maps: build raw inter/intrachromosomal contact maps
+    ice_norm: run ICE normalization on contact maps
+ [-h|--help]: help
+ [-v|--version]: version
 </pre></div>
 </div>
 <p>As an exemple, if you want to only want to only align the sequencing reads and run a quality control, use :</p>
-<div class="highlight-guess"><div class="highlight"><pre><span class="n">MY_INSTALL_PATH</span><span class="o">/</span><span class="n">bin</span><span class="o">/</span><span class="n">HiC</span><span class="o">-</span><span class="n">Pro</span> <span class="o">-</span><span class="n">i</span> <span class="n">FULL_PATH_TO_RAW_DATA</span> <span class="o">-</span><span class="n">o</span> <span class="n">FULL_PATH_TO_OUTPUTS</span> <span class="o">-</span><span class="n">c</span> <span class="n">MY_LOCAL_CONFIG_FILE</span> <span class="o">-</span><span class="n">s</span> <span class="n">mapping</span> <span class="o">-</span><span class="n">s</span> <span class="n">quality_checks</span>
+<div class="highlight-guess"><div class="highlight"><pre>MY_INSTALL_PATH/bin/HiC-Pro -i FULL_PATH_TO_RAW_DATA -o FULL_PATH_TO_OUTPUTS -c MY_LOCAL_CONFIG_FILE -s mapping -s quality_checks
 </pre></div>
 </div>
 <p>Note that in sequential mode, the INPUT argument depends on the analysis step. See te <a class="reference external" href="USER_CASES.rst">user&#8217;s cases</a> for more examples.</p>
@@ -285,13 +349,13 @@ Available steps are described in the help command.</p>
 <h2>How does HiC-Pro work ?<a class="headerlink" href="#how-does-hic-pro-work" title="Permalink to this headline">¶</a></h2>
 <p>The HiC-Pro workflow can be divided in five main steps presented below.</p>
 <div class="figure">
-<a class="reference internal image-reference" href="_images/hicpro_wkflow.png"><img alt="_images/hicpro_wkflow.png" src="_images/hicpro_wkflow.png" style="width: 471.2px; height: 640.0px;" /></a>
+<a class="reference internal image-reference" href="_images/hicpro_wkflow.png"><img alt="_images/hicpro_wkflow.png" src="_images/hicpro_wkflow.png" /></a>
 </div>
 <ol class="arabic simple">
 <li><strong>Reads Mapping</strong></li>
 </ol>
 <div class="line-block">
-<div class="line">Each mate is independantly aligned on the reference genome. The mapping is performed in two steps. First, the reads are aligned using an end-to-end aligner. Second, reads spanning the ligation junction are trimmmed from their 3&#8217; end, and aligned back on the genome. Aligned reads for both fragment mates are then paired in a single paired-end BAM file. Singletons and multi-hits can be discarded according the confirguration parameters.</div>
+<div class="line">Each mate is independantly aligned on the reference genome. The mapping is performed in two steps. First, the reads are aligned using an end-to-end aligner. Second, reads spanning the ligation junction are trimmmed from their 3&#8217; end, and aligned back on the genome. Aligned reads for both fragment mates are then paired in a single paired-end BAM file. Singletons and multi-hits can be discarded according the confirguration parameters. Note that if if the <em>LIGATION_SITE</em> parameter in the not defined, HiC-Pro will skip the second step of mapping.</div>
 </div>
 <ol class="arabic simple" start="2">
 <li><strong>Fragment assignment and filtering</strong></li>
@@ -301,6 +365,7 @@ Available steps are described in the help command.</p>
 <div class="line">The next step is to separate the invalid ligation products from the valid pairs. Dangling end and self circles pairs are therefore excluded.</div>
 <div class="line">Only valid pairs involving two different restriction fragments are used to build the contact maps. Duplicated valid pairs associated to PCR artefacts are discarded.</div>
 <div class="line">The fragment assignment can be visualized through a BAM files of aliged pairs where each pair is flagged according to its classification.</div>
+<div class="line">In case of Hi-C protocols that do not require a restriction enzyme such as DNase Hi-C or micro Hi-C, the assignment to a restriction is not possible. If no GENOME_FRAGMENT file are specified, this step is ignored. Short range interactions can however still be discarded using the <em>MIN_CIS_DIST</em> parameter.</div>
 </div>
 <ol class="arabic simple" start="3">
 <li><strong>Quality Controls</strong></li>
@@ -352,7 +417,7 @@ See the <a class="reference external" href="RESULTS.rst">Results section</a> for
     </p>
     <p>
         &copy; Copyright 2015, Nicolas Servant.<br/>
-      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.2.2.<br/>
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.3.1.<br/>
     </p>
 </footer>
   </body>
