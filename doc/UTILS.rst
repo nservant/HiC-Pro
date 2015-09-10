@@ -5,7 +5,8 @@ HiC-Pro Utilities
 
 
 | HiC-Pro provides a couple of utilities which are not part of the main pipeline, but was designed to help the user to perform a couple of tasks.
-All utilities are installed in /bin/utils/.
+| All utilities are installed in /bin/utils/.
+
 
 1- split_reads.py
 -----------------
@@ -41,7 +42,7 @@ or **How can I extract SNPs information from phasing data ?**
 
 
 2- digest_genome.py
-------------------
+-------------------
 or **How can I generate the list of restriction fragments after genome digestion ?**
 
 | Digest the reference genome by the provided restriction enzymes(s) and generate a BED file with the list of restriction fragments after digestion.

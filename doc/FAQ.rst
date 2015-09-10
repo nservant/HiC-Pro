@@ -44,9 +44,9 @@ Another way to generate this file is, for instance, to use the R environment.
 
 
 * The restriction fragments file has to be generated according to the reference genome, and the restriction enzyme(s) used to generate the Hi-C data.
+
 | Since version 2.6.1, HiC-Pro proposes the utility *digest_genome.py* to generate this file using as input, the fasta file and the name(s) or sequence(s) of the restriction enzyme(s).
 | See the `HiC-Pro Utilities <UTILS.rst>`_ section for more details.
-
 | Another way is to generate the list of restriction fragments is to use the `HiTC <http://bioconductor.org/packages/release/bioc/html/HiTC.html>`_ BioConductor package. 
 | Note that this method only works for the genomes which are already available in BioConductor and for one restriction enzyme. 
 | The packages `HiTC <http://bioconductor.org/packages/release/bioc/html/HiTC.html>`_, `rtracklayer <http://bioconductor.org/packages/release/bioc/html/rtracklayer.html>`_ and `BSgenome.Hsapiens.UCSC.hg19 <http://bioconductor.org/packages/release/data/annotation/html/BSgenome.Hsapiens.UCSC.hg19.html>`_ have to be already installed to run the following example.
