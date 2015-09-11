@@ -57,7 +57,7 @@ if "--filter_low_counts_perc" in sys.argv and "--filtering_perc" in sys.argv:
     raise Warning("This two options are incompatible")
 if "--filtering_perc" is None and "--filter_low_counts_perc" not in sys.argv:
     filter_low_counts_perc = 0.02
-elif arg.filter_low_counts_perc not None:
+elif arg.filter_low_counts_perc is not None:
     filter_low_counts_perc = args.filter_low_counts_perc
 
 if args.verbose:
