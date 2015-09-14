@@ -88,5 +88,6 @@ MATRIX_FORMAT = upper
 ## Normalization
 #######################################################################
 MAX_ITER = 100
-SPARSE_FILTERING = 0.02
+FILTER_LOW_COUNT_PERC = 0.02
+FILTER_HIGH_COUNT_PERC = 0
 EPS = 0.1

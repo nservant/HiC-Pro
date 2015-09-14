@@ -3,6 +3,8 @@ CHANGES IN VERSION 2.6.1
 
 NEW FEATURES
 
+   o New parameters - FILTER_HIGH_COUNT_PERC / FILTER_LOW_COUNT_PERC to filter out extreme count before normalization. Note that the parameter SPARSE_FILTERING is now deprecated and replaced by FILTER_LOW_COUNT_PERC
+
    o New utility ; digest_genome.py which take a fasta file and the name(s) or sequence(s) of the restriction enzyme(s) in order to generate the list of restriction fragments after genome digestion. 
 
    o HiC-Pro is now able to process data generate from protocols without restriction enzyme such as DNase Hi-C. See the manual for more information
