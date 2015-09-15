@@ -1,9 +1,8 @@
 // HiC-Pro
-// Copyleft 2015 Institut Curie                               
+// Copyright 2015 Institut Curie                               
 // Author(s): Nicolas Servant
 // Contact: nicolas.servant@curie.fr
-// This software is distributed without any guarantee under the terms of the GNU General
-// Public License, either Version 2, June 1991 or Version 3, June 2007.
+// This software is distributed without any guarantee under the terms of the BSD-3 licence
 
 // g++ -std=c++0x -o cutsite_trimming cutsite_trimming.cpp
 //./cutsite_trimming -fastq fastq -cutsite AGCTT

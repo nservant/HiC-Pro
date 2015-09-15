@@ -1,10 +1,11 @@
 #!/bin/bash
+
 ## HiC-Pro
-## Copyleft 2015 Institut Curie                               
+## Copyright (c) 2015 Institut Curie                               
 ## Author(s): Nicolas Servant, Eric Viara
 ## Contact: nicolas.servant@curie.fr
-## This software is distributed without any guarantee under the terms of the GNU General
-## Public License, either Version 2, June 1991 or Version 3, June 2007.
+## This software is distributed without any guarantee under the terms of the BSD-3 licence.
+## See the LICENCE file for details
 
 ##
 ## Launcher of mergeSAM script

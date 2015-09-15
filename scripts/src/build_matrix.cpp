@@ -1,9 +1,8 @@
 // HiC-Pro
-// Copyleft 2015 Institut Curie                               
+// Copyright 2015 Institut Curie                               
 // Author(s): Eric Viara
 // Contact: nicolas.servant@curie.fr
-// This software is distributed without any guarantee under the terms of the GNU General
-// Public License, either Version 2, June 1991 or Version 3, June 2007.
+// This software is distributed without any guarantee under the terms of the BSD-3 License
 
 // g++ -std=c++0x -o build_matrix build_matrix.cpp
 //./build_matrix --binsize 10000 --chrsizes ../annotation/chrom.sizes --ifile ../hic_results/data/mAST-Rad21-WT-rep1/SRR941305.mm9.interaction --oprefix /tmp/zoo

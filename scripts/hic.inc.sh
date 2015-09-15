@@ -1,9 +1,10 @@
-##
 ## hic.inc.sh
 ##
-## Eric Viara for Institut Curie, copyright (c) May 2014
-## Modified Nicolas Servant Octobre 29 
-##
+## Copyright (c) 2015 Institut Curie                               
+## Author(s): Eric Viara, Nicolas Servant
+## Contact: nicolas.servant@curie.fr
+## This software is distributed without any guarantee under the terms of the BSD-3 licence.
+## See the LICENCE file for details
 
 ###########################
 ## Load Configuration

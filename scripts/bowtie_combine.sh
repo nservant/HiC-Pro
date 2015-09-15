@@ -1,4 +1,5 @@
 #!/bin/bash
+
 ## HiC-Pro
 ## Copyleft 2015 Institut Curie                               
 ## Author(s): Nicolas Servant, Eric Viara
