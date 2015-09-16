@@ -6,8 +6,7 @@ Allele specific analysis
 | This utility was first design to extract relevant information from VCF file provided by the `Mouse Sanger database <http://www.sanger.ac.uk/resources/mouse/genomes/>`_. It aims at generating a VCF file of the F1 individual based on its parental genotype. For instance using *extract_snps.py* with *-r CASTEiJ* and *-a 129S1* will generate a VCF file with all F1 heterogyzote SNPs which can be used to distinguish *CASTEiJ* and *129S1* alleles.
 | The idea is therefore to have a VCF will maternal/paternal haplotypes encoded as the reference/alternative SNPs information.
 | Phasing data, such as the ones available from the `Illumina Platinum Project <http://www.illumina.com/platinumgenomes/>`_ can be simply used as is.
-| Note that the most important point here is to used phased data, meaning that the order the genotype is important (1|0 is different from 0|1), and not really the ALT/REF information. 
-| The genotype for each SNPs is interpreted as G1|G2.
+| Note that the most important point here is to used phased data, meaning that the genotype order is important (1|0 is different from 0|1). The genotype at each SNP position is interpreted as G1|G2.
 | For instance, let's consider the data such as REF / ALT / GENO
 
 * A   / C   / 0|1 means G1 = A / G2 = C
