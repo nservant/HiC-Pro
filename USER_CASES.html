@@ -66,7 +66,7 @@
     <div class="container">
   
   <div class="section" id="user-cases">
-<h1>User cases<a class="headerlink" href="#user-cases" title="Permalink to this headline">¶</a></h1>
+<span id="usercases"></span><h1>User cases<a class="headerlink" href="#user-cases" title="Permalink to this headline">¶</a></h1>
 <p>Let&#8217;s defined a few variables</p>
 <ul class="simple">
 <li>TEST_DATA is my input folder with one folder per sample and all my fastq files</li>
@@ -109,7 +109,8 @@ qsub HiCPro_step1_mappingtest.sh
 <ol class="arabic simple" start="4">
 <li><strong>Running HiC-Pro allele specific analysis</strong></li>
 </ol>
-<p>First set the ALLELE_SPECIFIC_SNP variable in the configuration file and check whether the N-masked genome is available. Then simply run HiC-Pro as usually.</p>
+<p>First set the ALLELE_SPECIFIC_SNP variable in the configuration file and check whether the N-masked genome is available. Then simply run HiC-Pro as usually.
+See the <a class="reference internal" href="AS.html#as"><span>allele specific</span></a> section for details.</p>
 <div class="highlight-guess"><div class="highlight"><pre>HiC-Pro -i ${TEST_DATA} -o ${RES_PREFIX}_5 -c config_test_as.txt
 </pre></div>
 </div>
@@ -117,10 +118,10 @@ qsub HiCPro_step1_mappingtest.sh
 <li><strong>Running HiC-Pro on DNase Hi-C data</strong></li>
 </ol>
 <p>HiC-Pro is now able to process Hi-C data generated without restriction enzyme, such as DNase Hi-C.
-To analyse such data, simply unset the variable <em>LIGATION_SITE</em> and <em>GENOME_FRAGMENT</em> from the configuration file.
+To analyse such data, simply unset the variable LIGATION_SITE and GENOME_FRAGMENT from the configuration file.
 As the ligation site is unknown, the mapping will be done in only one step (step 2 is not run). Then, the uniquely mapped reads are directly used to build the contact maps.
 In the context of DNase Hi-C, one way to filter out artefacts such as self ligation is to discard intra-chromosomal pairs below a given distance threshold.
-A filtering of the short range contacts is therefore proposed using the parameter <em>MIN_CIS_DIST</em>.</p>
+A filtering of the short contact distance is therefore proposed using the parameter MIN_CIS_DIST.</p>
 </div>
 
 

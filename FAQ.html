@@ -65,7 +65,7 @@
     <div class="container">
   
   <div class="section" id="faq">
-<h1>FAQ<a class="headerlink" href="#faq" title="Permalink to this headline">¶</a></h1>
+<span id="id1"></span><h1>FAQ<a class="headerlink" href="#faq" title="Permalink to this headline">¶</a></h1>
 <div class="section" id="hic-pro-failed-how-to-find-what-s-going-wrong">
 <h2>HiC-Pro failed. How to find what&#8217;s going wrong ?<a class="headerlink" href="#hic-pro-failed-how-to-find-what-s-going-wrong" title="Permalink to this headline">¶</a></h2>
 <div class="line-block">
@@ -75,7 +75,7 @@
 </div>
 <div class="section" id="how-can-i-split-my-fastq-files-into-smaller-files">
 <h2>How can I split my .fastq files into smaller files ?<a class="headerlink" href="#how-can-i-split-my-fastq-files-into-smaller-files" title="Permalink to this headline">¶</a></h2>
-<p>See the <a class="reference external" href="UTILS.rst">HiC-Pro Utilities</a> which is baed on the split unix command.
+<p>See the <a class="reference internal" href="UTILS.html#utils"><span>HiC-Pro Utilities</span></a> which is baed on the split unix command.
 For more information, see <code class="code docutils literal"><span class="pre">man</span> <span class="pre">split</span></code></p>
 </div>
 <div class="section" id="how-can-i-generate-my-annotation-files">
@@ -108,7 +108,7 @@ write.table(chrom_size, file=&quot;chrom_hg19.sizes&quot;, quote=FALSE, col.name
 </ul>
 <div class="line-block">
 <div class="line">Since version 2.6.1, HiC-Pro proposes the utility <em>digest_genome.py</em> to generate this file using as input, the fasta file and the name(s) or sequence(s) of the restriction enzyme(s).</div>
-<div class="line">See the <a class="reference external" href="UTILS.rst">HiC-Pro Utilities</a> section for more details.</div>
+<div class="line">See the <a class="reference internal" href="UTILS.html#utils"><span>HiC-Pro Utilities</span></a> section for more details.</div>
 <div class="line">Another way is to generate the list of restriction fragments is to use the <a class="reference external" href="http://bioconductor.org/packages/release/bioc/html/HiTC.html">HiTC</a> BioConductor package.</div>
 <div class="line">Note that this method only works for the genomes which are already available in BioConductor and for one restriction enzyme.</div>
 <div class="line">The packages <a class="reference external" href="http://bioconductor.org/packages/release/bioc/html/HiTC.html">HiTC</a>, <a class="reference external" href="http://bioconductor.org/packages/release/bioc/html/rtracklayer.html">rtracklayer</a> and <a class="reference external" href="http://bioconductor.org/packages/release/data/annotation/html/BSgenome.Hsapiens.UCSC.hg19.html">BSgenome.Hsapiens.UCSC.hg19</a> have to be already installed to run the following example.</div>
@@ -145,7 +145,7 @@ However, note that HiC-Pro can be run from aligned data. In this case, the input
 <div class="section" id="how-can-i-create-n-masked-genome-for-allele-specific-analysis">
 <h2>How can I create N-masked genome for allele-specific analysis ?<a class="headerlink" href="#how-can-i-create-n-masked-genome-for-allele-specific-analysis" title="Permalink to this headline">¶</a></h2>
 <p>The allele specific mode of HiC-Pro is based on a N-masked genome. Meaning that all SNPs information which can be use to distinguish parental haplotypes have to be masked. This masking can be performed in 3 steps:
-1. Extract relevant SNPs information. See the <a class="reference external" href="doc/UTILS.rst">extract_snps.py</a> utility for Mouse Sanger data. For Human data, you can use phasing data, or SNPs information available from public ressources, as the <a class="reference external" href="http://www.illumina.com/platinumgenomes/">Illumina Platinum Project</a>, the <a class="reference external" href="http://www.1000genomes.org/">1K Genome Project</a> or the <a class="reference external" href="https://www.broadinstitute.org/gatk/guide/article.php?id=1215">GATK resource bundle</a>.
+1. Extract relevant SNPs information. See the <a class="reference internal" href="UTILS.html#utils"><span>extract_snps.py</span></a> utility for Mouse Sanger data. For Human data, you can use phasing data, or SNPs information available from public ressources, as the <a class="reference external" href="http://www.illumina.com/platinumgenomes/">Illumina Platinum Project</a>, the <a class="reference external" href="http://www.1000genomes.org/">1K Genome Project</a> or the <a class="reference external" href="https://www.broadinstitute.org/gatk/guide/article.php?id=1215">GATK resource bundle</a>.
 2. Mask the fasta genome. To do so, simply use the bedtools <a class="reference external" href="http://bedtools.readthedocs.org/en/latest/content/tools/maskfasta.html">maskfasta</a> utility.
 3. Then, create your bowtie2 indexes from the masked fasta file.</p>
 </div>

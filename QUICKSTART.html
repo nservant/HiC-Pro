@@ -65,7 +65,7 @@
   </div>
     <div class="container">
   
-  <div class="section" id="hic-pro-quick-start-guide">
+  <span class="target" id="qs"></span><div class="section" id="hic-pro-quick-start-guide">
 <h1>HiC-Pro Quick Start Guide<a class="headerlink" href="#hic-pro-quick-start-guide" title="Permalink to this headline">¶</a></h1>
 <p>This page is just a quick start guide, please read the full <a class="reference external" href="http://nservant.github.io/HiC-Pro/">online manual</a> for more information !</p>
 <p>See NEWS for information about changes in this and previous versions</p>
@@ -77,7 +77,7 @@
 <div class="line">HiC-Pro was designed to process Hi-C data, from raw fastq files (paired-end Illumina data) to the normalized contact maps. Since version 2.6.1, HiC-Pro can analyse data from digestion protocols as well as data from protocols that do not require restriction enzyme such as DNase Hi-C.</div>
 <div class="line">The pipeline is flexible, scalable and optimized. It can operate either on a single laptop or on a computational cluster using the PBS-Torque scheduler. HiC-Pro is sequential and each step of the workflow can be run independantly.</div>
 <div class="line">HiC-Pro includes a fast implementatation of the ICE normalization method (see the <a class="reference external" href="https://github.com/hiclib/iced">iced</a> python library for more information).</div>
-<div class="line">In addition, HiC-Pro can use phasing data to build <a class="reference external" href="doc/AS.rst">allele specific contact maps</a>.</div>
+<div class="line">In addition, HiC-Pro can use phasing data to build <a class="reference internal" href="AS.html#as"><span>allele specific contact maps</span></a>.</div>
 </div>
 <p>If you use HiC-Pro, please cite :</p>
 <p>HiC-Pro: An optimized and flexible pipeline for Hi-C processing. <em>Servant N., Varoquaux N., Lajoie BR., Viara E., Chen CJ., Vert JP., Dekker J., Heard E., Barillot E.</em>. 2015. submitted</p>
@@ -136,7 +136,7 @@ make CONFIG_SYS=config-install.txt install
 <h2>Annotation Files<a class="headerlink" href="#annotation-files" title="Permalink to this headline">¶</a></h2>
 <p>In order to process the raw data, HiC-Pro requires three annotation files. Note that the pipeline is provided with some Human and Mouse annotation files.</p>
 <ol class="arabic simple">
-<li><strong>A BED file</strong> of the restriction fragments after digestion. This file depends both of the restriction enzyme and the reference genome. See the <a class="reference external" href="doc/FAQ.rst">FAQ</a> and the <a class="reference external" href="doc/UTILS.rst">HiC-Pro utilities</a> for details about how to generate this file. A few annotation files are provided with the HiC-Pro sources.</li>
+<li><strong>A BED file</strong> of the restriction fragments after digestion. This file depends both of the restriction enzyme and the reference genome. See the <a class="reference internal" href="FAQ.html#faq"><span>FAQ</span></a> and the <a class="reference internal" href="UTILS.html#utils"><span>HiC-Pro utilities</span></a> for details about how to generate this file. A few annotation files are provided with the HiC-Pro sources.</li>
 </ol>
 <div class="highlight-python"><div class="highlight"><pre>chr1   0       16007   HIC_chr1_1    0   +
 chr1   16007   24571   HIC_chr1_2    0   +
@@ -199,7 +199,7 @@ OPTIONS
 </pre></div>
 </div>
 <ol class="arabic simple">
-<li>Copy and edit the configuration file <em>&#8216;config-hicpro.txt&#8217;</em> in your local folder. See the <a class="reference external" href="MANUAL">manual</a> for details about the configuration file</li>
+<li>Copy and edit the configuration file <em>&#8216;config-hicpro.txt&#8217;</em> in your local folder. See the <a class="reference internal" href="MANUAL.html#manual"><span>manual</span></a> for details about the configuration file</li>
 <li>Put all input files in a rawdata folder. The input files have to be organized with a folder per sample.</li>
 <li>Run HiC-Pro</li>
 </ol>

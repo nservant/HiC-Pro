@@ -65,7 +65,7 @@
   </div>
     <div class="container">
   
-  <div class="section" id="hic-pro-manual">
+  <span class="target" id="manual"></span><div class="section" id="hic-pro-manual">
 <h1>HiC-Pro Manual<a class="headerlink" href="#hic-pro-manual" title="Permalink to this headline">¶</a></h1>
 <p>Modified - 09th September 2015
 Reference version - HiC-Pro 2.6.1</p>
@@ -111,29 +111,32 @@ Reference version - HiC-Pro 2.6.1</p>
 <col width="83%" />
 </colgroup>
 <thead valign="bottom">
-<tr class="row-odd"><th class="head" colspan="2">DATA AND READS ALIGNMENT OPTIONS</th>
+<tr class="row-odd"><th class="head" colspan="2">READS ALIGNMENT OPTIONS</th>
 </tr>
 </thead>
 <tbody valign="top">
-<tr class="row-even"><td>PAIR1_EXT</td>
+<tr class="row-even"><td>RAW_DIR</td>
+<td>Link to rawdata folder. The user usually not need to change this option. <em>Default: rawdata</em></td>
+</tr>
+<tr class="row-odd"><td>PAIR1_EXT</td>
 <td>Keyword for first mate detection. <em>Default:_R1</em></td>
 </tr>
-<tr class="row-odd"><td>PAIR2_EXT</td>
+<tr class="row-even"><td>PAIR2_EXT</td>
 <td>Keywoard for seconde mate detection. <em>Default:_R2</em></td>
 </tr>
-<tr class="row-even"><td>FORMAT</td>
+<tr class="row-odd"><td>FORMAT</td>
 <td>Sequencing qualities encoding. <em>Default: phred33</em></td>
 </tr>
-<tr class="row-odd"><td>MIN_MAPQ</td>
+<tr class="row-even"><td>MIN_MAPQ</td>
 <td>Minimum mapping quality. Reads with lower quality are discarded. <em>Default: 0</em></td>
 </tr>
-<tr class="row-even"><td>BOWTIE2_IDX_PATH</td>
+<tr class="row-odd"><td>BOWTIE2_IDX_PATH</td>
 <td>Path to bowtie2 indexes</td>
 </tr>
-<tr class="row-odd"><td>BOWTIE2_GLOBAL_OPTIONS</td>
+<tr class="row-even"><td>BOWTIE2_GLOBAL_OPTIONS</td>
 <td>bowtie2 options for mapping step1. <em>Default: &#8211;very-sensitive -L 30 &#8211;score-min L,-0.6,-0.2 &#8211;end-to-end &#8211;reorder</em></td>
 </tr>
-<tr class="row-even"><td>BOWTIE2_LOCAL_OPTIONS</td>
+<tr class="row-odd"><td>BOWTIE2_LOCAL_OPTIONS</td>
 <td>bowtie2 options for mapping step2. <em>Default: &#8211;very-sensitive -L 20 &#8211;score-min L,-0.6,-0.2 &#8211;end-to-end &#8211;reorder</em></td>
 </tr>
 </tbody>
@@ -145,7 +148,8 @@ Reference version - HiC-Pro 2.6.1</p>
 <col width="86%" />
 </colgroup>
 <thead valign="bottom">
-<tr class="row-odd"><th class="head" colspan="2">ANNOTATION FILES</th>
+<tr class="row-odd"><th class="head">ANNOTATION FILES</th>
+<th class="head">&nbsp;</th>
 </tr>
 </thead>
 <tbody valign="top">
@@ -154,6 +158,9 @@ Reference version - HiC-Pro 2.6.1</p>
 </tr>
 <tr class="row-odd"><td>GENOME_SIZE</td>
 <td>Chromsome size file. Loaded from the ANNOTATION folder in the HiC-Pro installation directory. <em>Default: chrom_hg19.sizes</em></td>
+</tr>
+<tr class="row-even"><td>[ALLELE_SPECIFIC_SNP]</td>
+<td>VCF file to SNPs which can be used to distinguish parental origin. See the <a class="reference internal" href="AS.html#as"><span>allele specific section</span></a> for more details</td>
 </tr>
 </tbody>
 </table>
@@ -165,11 +172,11 @@ Reference version - HiC-Pro 2.6.1</p>
 <col width="85%" />
 </colgroup>
 <thead valign="bottom">
-<tr class="row-odd"><th class="head" colspan="3">ALLLELE SPECIFIC ANALYSIS</th>
+<tr class="row-odd"><th class="head" colspan="3">ALLLELE SPECIFIC ANALYSIS |</th>
 </tr>
 </thead>
 <tbody valign="top">
-<tr class="row-even"><td colspan="3">[ALLELE_SPECIFIC_SNP]     | VCF file to SNPs which can be used to distinguish parental origin. See the <a class="reference external" href="AS.rst">allele specific section</a> for more details</td>
+<tr class="row-even"><td colspan="3">[ALLELE_SPECIFIC_SNP]     | VCF file to SNPs which can be used to distinguish parental origin. See the <a class="reference internal" href="AS.html#as"><span>allele specific section</span></a> for more details</td>
 </tr>
 </tbody>
 </table>
@@ -177,30 +184,28 @@ Reference version - HiC-Pro 2.6.1</p>
 <table border="1" class="docutils">
 <colgroup>
 <col width="14%" />
-<col width="86%" />
+<col width="0%" />
+<col width="2%" />
+<col width="84%" />
 </colgroup>
 <thead valign="bottom">
-<tr class="row-odd"><th class="head" colspan="2">DIGESTION Hi-C</th>
+<tr class="row-odd"><th class="head">DIGESTION Hi-C</th>
+<th class="head" colspan="3">&nbsp;</th>
 </tr>
 </thead>
 <tbody valign="top">
 <tr class="row-even"><td>[GENOME_FRAGMENT]</td>
-<td>BED file with restriction fragments. Full path or name of file available in the ANNOTATION folder. <em>Example: HindIII_resfrag_hg19.bed</em></td>
+<td colspan="3">BED file with restriction fragments. Full path or name of file available in the ANNOTATION folder. <em>Default: HindIII_resfrag_hg19.bed</em></td>
 </tr>
-<tr class="row-odd"><td>[LIGATION SITE]</td>
-<td>Ligation site sequence used for reads trimming. Depends on the fill in strategy. <em>Example: AAGCTAGCTT</em></td>
+<tr class="row-odd"><td colspan="4">[LIGATION SITE]       | Ligation site sequence used for reads trimming. Depends on the fill in strategy. <em>Example: AAGCTAGCTT</em></td>
 </tr>
-<tr class="row-even"><td>[MIN_FRAG_SIZE]</td>
-<td>Maximum size of restriction fragments to consider for the Hi-C processing. <em>Example: 100</em></td>
+<tr class="row-even"><td colspan="4">[MIN_FRAG_SIZE]       | Maximum size of restriction fragments to consider for the Hi-C processing. <em>Example: 100</em></td>
 </tr>
-<tr class="row-odd"><td>[MAX_FRAG_SIZE]</td>
-<td>Maximum size of restriction fragments to consider for the Hi-C processing. <em>Example: 100000</em></td>
+<tr class="row-odd"><td colspan="4">[MAX_FRAG_SIZE]       | Maximum size of restriction fragments to consider for the Hi-C processing. <em>Example: 100000</em></td>
 </tr>
-<tr class="row-even"><td>[MIN_INSERT_SIZE]</td>
-<td>Minimum sequenced insert size. Shorter 3C products are discarded. <em>Example: 100</em></td>
+<tr class="row-even"><td colspan="4">[MIN_INSERT_SIZE]     | Minimum sequenced insert size. Shorter 3C products are discarded. <em>Example: 100</em></td>
 </tr>
-<tr class="row-odd"><td>[MAX_INSERT_SIZE]</td>
-<td>Maximum sequenced insert size. Larger 3C products are discarded. <em>Example: 600</em></td>
+<tr class="row-odd"><td colspan="4">[MAX_INSERT_SIZE]     | Maximum sequenced insert size. Larger 3C products are discarded. <em>Example: 600</em></td>
 </tr>
 </tbody>
 </table>
@@ -260,8 +265,8 @@ Reference version - HiC-Pro 2.6.1</p>
 <hr class="docutils" />
 <table border="1" class="docutils">
 <colgroup>
-<col width="19%" />
-<col width="81%" />
+<col width="22%" />
+<col width="78%" />
 </colgroup>
 <thead valign="bottom">
 <tr class="row-odd"><th class="head" colspan="2">NORMALIZATION</th>
@@ -271,8 +276,14 @@ Reference version - HiC-Pro 2.6.1</p>
 <tr class="row-even"><td>MAX_ITER</td>
 <td>Maximum number of iteration for ICE normalization. <em>Default: 100</em></td>
 </tr>
-<tr class="row-odd"><td>SPARSE_FILTERING</td>
+<tr class="row-odd"><td>SPARSE_FILTERING - <strong>deprecated</strong></td>
 <td>Define which pourcentage of bins with high sparsity should be force to zero. <em>Default: 0.02</em></td>
+</tr>
+<tr class="row-even"><td>FILTER_LOW_COUNT_PERC</td>
+<td>Define which pourcentage of bins with low counts should be force to zero. <em>Default: 0.02</em>. Replace SPARSE_FILTERING</td>
+</tr>
+<tr class="row-odd"><td>FILTER_HIGH_COUNT_PERC</td>
+<td>Define which pourcentage of bins with low counts should be discarded before normalization. <em>Default: 0</em></td>
 </tr>
 <tr class="row-even"><td>EPS</td>
 <td>The relative increment in the results before declaring convergence. <em>Default: 0.1</em></td>
@@ -311,7 +322,7 @@ OPTIONS
 <div class="highlight-guess"><div class="highlight"><pre>MY_INSTALL_PATH/bin/HiC-Pro -i FULL_PATH_TO_RAW_DATA -o FULL_PATH_TO_OUTPUTS -c MY_LOCAL_CONFIG_FILE -s mapping -s quality_checks
 </pre></div>
 </div>
-<p>Note that in sequential mode, the INPUT argument depends on the analysis step. See te <a class="reference external" href="USER_CASES.rst">user&#8217;s cases</a> for more examples.</p>
+<p>Note that in sequential mode, the INPUT argument depends on the analysis step. See te <a class="reference internal" href="USER_CASES.html#usercases"><span>user&#8217;s cases</span></a> for more examples.</p>
 <table border="1" class="docutils">
 <colgroup>
 <col width="53%" />
@@ -386,7 +397,7 @@ OPTIONS
 <div class="section" id="browsing-the-results">
 <h2>Browsing the results<a class="headerlink" href="#browsing-the-results" title="Permalink to this headline">¶</a></h2>
 <p>All outputs follow the input organization, with one folder per sample.
-See the <a class="reference external" href="RESULTS.rst">Results section</a> for more information.</p>
+See the <a class="reference internal" href="RESULTS.html#res"><span>results</span></a> section for more information.</p>
 <ul class="simple">
 <li><em>bowtie_results</em></li>
 </ul>
