@@ -19,6 +19,7 @@ import sys
 import numpy as np
 
 RE_cutsite = {
+    "mboi": ["^GATC"],
     "dpnii": ["^GATC"],
     "bglii": ["A^GATCT"],
     "hindiii": ["A^AGCTT"]}

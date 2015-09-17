@@ -232,7 +232,7 @@ Browsing the results
 ====================
 
 All outputs follow the input organization, with one folder per sample.
-See the `Results section <RESULTS.rst>`_ for more information.
+See the :ref:`Results section <RESULTS>`. the `Results section <RESULTS.rst>`_ for more information.
 
 * *bowtie_results*
 
