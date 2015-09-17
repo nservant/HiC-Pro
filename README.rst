@@ -1,3 +1,5 @@
+.. _QS:
+
 .. Nicolas Servant
 .. HiC-Pro
 .. v2.5.0
@@ -21,7 +23,7 @@ What is HiC-Pro ?
 | HiC-Pro was designed to process Hi-C data, from raw fastq files (paired-end Illumina data) to the normalized contact maps. Since version 2.6.1, HiC-Pro can analyse data from digestion protocols as well as data from protocols that do not require restriction enzyme such as DNase Hi-C.
 | The pipeline is flexible, scalable and optimized. It can operate either on a single laptop or on a computational cluster using the PBS-Torque scheduler. HiC-Pro is sequential and each step of the workflow can be run independantly.
 | HiC-Pro includes a fast implementatation of the ICE normalization method (see the `iced <https://github.com/hiclib/iced>`_ python library for more information).
-| In addition, HiC-Pro can use phasing data to build `allele specific contact maps <doc/AS.rst>`_.
+| In addition, HiC-Pro can use phasing data to build :ref:`allele specific contact maps <AS>`.
 
 If you use HiC-Pro, please cite :
 
@@ -72,7 +74,7 @@ Annotation Files
 
 In order to process the raw data, HiC-Pro requires three annotation files. Note that the pipeline is provided with some Human and Mouse annotation files.
 
-1. **A BED file** of the restriction fragments after digestion. This file depends both of the restriction enzyme and the reference genome. See the `FAQ <doc/FAQ.rst>`_ and the `HiC-Pro utilities <doc/UTILS.rst>`_ for details about how to generate this file. A few annotation files are provided with the HiC-Pro sources.
+1. **A BED file** of the restriction fragments after digestion. This file depends both of the restriction enzyme and the reference genome. See the :ref:`FAQ <FAQ>` and the :ref:`HiC-Pro utilities <UTILS>` for details about how to generate this file. A few annotation files are provided with the HiC-Pro sources.
 
 ::
 
@@ -134,7 +136,7 @@ How to use it ?
    [-h|--help]: help
    [-v|--version]: version
 
-1. Copy and edit the configuration file *'config-hicpro.txt'* in your local folder. See the `manual <MANUAL>`_ for details about the configuration file
+1. Copy and edit the configuration file *'config-hicpro.txt'* in your local folder. See the :ref:`manual <MANUAL>` for details about the configuration file
 2. Put all input files in a rawdata folder. The input files have to be organized with a folder per sample.
 3. Run HiC-Pro
 

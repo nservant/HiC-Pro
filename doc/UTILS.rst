@@ -1,7 +1,7 @@
+..  _UTILS:
+
 HiC-Pro Utilities
 =================
-
-..  _UTILS:
 
 
 | HiC-Pro provides a couple of utilities which are not part of the main pipeline, but was designed to help the user to perform a couple of tasks.

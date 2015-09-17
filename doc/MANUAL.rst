@@ -1,7 +1,9 @@
+.. _MANUAL:
+
 .. Nicolas Servant
 .. HiC-Pro
-.. v2.3.1
-.. 15-15-02
+.. v2.6.1
+.. 15-09-02
 
 HiC-Pro Manual
 ******************
@@ -60,7 +62,7 @@ Setting the configuration file
 +-----------------------+---------------------------------------------------------------------------------------------------------------------------------------------------+
 | GENOME_SIZE           | Chromsome size file. Loaded from the ANNOTATION folder in the HiC-Pro installation directory. *Default: chrom_hg19.sizes*                         |
 +-----------------------+---------------------------------------------------------------------------------------------------------------------------------------------------+
-| [ALLELE_SPECIFIC_SNP] | VCF file to SNPs which can be used to distinguish parental origin. See the `allele specific section <AS.rst>`_ for more details                   |
+| [ALLELE_SPECIFIC_SNP] | VCF file to SNPs which can be used to distinguish parental origin. See the :ref:`allele specific section <AS>` for more details                   |
 +-----------------------+---------------------------------------------------------------------------------------------------------------------------------------------------+
 
 ------------
@@ -68,7 +70,7 @@ Setting the configuration file
 +---------------------------+---------------------------------------------------------------------------------------------------------------------------------------------------+
 | ALLLELE SPECIFIC ANALYSIS |                                                                                                                                                   |
 +=======================+=======================================================================================================================================================+
-| [ALLELE_SPECIFIC_SNP]     | VCF file to SNPs which can be used to distinguish parental origin. See the `allele specific section <AS.rst>`_ for more details                   |
+| [ALLELE_SPECIFIC_SNP]     | VCF file to SNPs which can be used to distinguish parental origin. See the :ref:`allele specific section <AS>` for more details                   |
 +---------------------------+---------------------------------------------------------------------------------------------------------------------------------------------------+
 
 ------------
@@ -175,7 +177,7 @@ As an exemple, if you want to only want to only align the sequencing reads and r
 
     	MY_INSTALL_PATH/bin/HiC-Pro -i FULL_PATH_TO_RAW_DATA -o FULL_PATH_TO_OUTPUTS -c MY_LOCAL_CONFIG_FILE -s mapping -s quality_checks
 
-Note that in sequential mode, the INPUT argument depends on the analysis step. See te `user's cases <USER_CASES.rst>`_ for more examples.
+Note that in sequential mode, the INPUT argument depends on the analysis step. See te :ref:`user's cases <USERCASES>` for more examples.
 
 +-----------------------+--------------------+
 | INPUT DATA TYPE IN STEPWISE MODE           |
@@ -211,7 +213,7 @@ The HiC-Pro workflow can be divided in five main steps presented below.
 | The next step is to separate the invalid ligation products from the valid pairs. Dangling end and self circles pairs are therefore excluded.
 | Only valid pairs involving two different restriction fragments are used to build the contact maps. Duplicated valid pairs associated to PCR artefacts are discarded.
 | The fragment assignment can be visualized through a BAM files of aliged pairs where each pair is flagged according to its classification.
-| In case of Hi-C protocols that do not require a restriction enzyme such as DNase Hi-C or micro Hi-C, the assignment to a restriction is not possible. If no GENOME_FRAGMENT file are specified, this step is ignored. Short range interactions can however still be discarded using the *MIN_CIS_DIST* parameter.
+| In case of Hi-C protocols that do not require a restriction enzyme such as DNase Hi-C or micro Hi-C, the assignment to a restriction is not possible. If no *GENOME_FRAGMENT* file are specified, this step is ignored. Short range interactions can however still be discarded using the *MIN_CIS_DIST* parameter.
 
 3. **Quality Controls**
 
@@ -232,7 +234,7 @@ Browsing the results
 ====================
 
 All outputs follow the input organization, with one folder per sample.
-See the :doc:`RES </RESULTS>` :ref:`Results section <RESULTS>`. the `Results section <RESULTS.rst>`_ for more information.
+See the :ref:`results <RES>` section for more information.
 
 * *bowtie_results*
 

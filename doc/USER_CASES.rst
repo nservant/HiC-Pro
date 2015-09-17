@@ -1,3 +1,5 @@
+..  _USERCASES:
+
 User cases
 ==========
 
@@ -55,6 +57,7 @@ Everything looks good, I can then create the contact maps and normalize them
 4. **Running HiC-Pro allele specific analysis**
 
 First set the ALLELE_SPECIFIC_SNP variable in the configuration file and check whether the N-masked genome is available. Then simply run HiC-Pro as usually.
+See the :ref:`allele specific <AS>` section for details.
 
 .. code-block:: guess
 

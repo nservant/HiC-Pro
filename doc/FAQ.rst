@@ -1,6 +1,7 @@
+.. _FAQ:
+
 FAQ
 ===
-
 
 HiC-Pro failed. How to find what's going wrong ?
 ------------------------------------------------
@@ -12,7 +13,7 @@ HiC-Pro failed. How to find what's going wrong ?
 How can I split my .fastq files into smaller files ?
 ----------------------------------------------------
 
-See the `HiC-Pro Utilities <UTILS.rst>`_ which is baed on the split unix command.
+See the :ref:`HiC-Pro Utilities <UTILS>` which is baed on the split unix command.
 For more information, see :code:`man split`
 
 
@@ -46,7 +47,7 @@ Another way to generate this file is, for instance, to use the R environment.
 * The restriction fragments file has to be generated according to the reference genome, and the restriction enzyme(s) used to generate the Hi-C data.
 
 | Since version 2.6.1, HiC-Pro proposes the utility *digest_genome.py* to generate this file using as input, the fasta file and the name(s) or sequence(s) of the restriction enzyme(s).
-| See the `HiC-Pro Utilities <UTILS.rst>`_ section for more details.
+| See the :ref:`HiC-Pro Utilities <UTILS>` section for more details.
 | Another way is to generate the list of restriction fragments is to use the `HiTC <http://bioconductor.org/packages/release/bioc/html/HiTC.html>`_ BioConductor package. 
 | Note that this method only works for the genomes which are already available in BioConductor and for one restriction enzyme. 
 | The packages `HiTC <http://bioconductor.org/packages/release/bioc/html/HiTC.html>`_, `rtracklayer <http://bioconductor.org/packages/release/bioc/html/rtracklayer.html>`_ and `BSgenome.Hsapiens.UCSC.hg19 <http://bioconductor.org/packages/release/data/annotation/html/BSgenome.Hsapiens.UCSC.hg19.html>`_ have to be already installed to run the following example.
@@ -89,7 +90,7 @@ How can I create N-masked genome for allele-specific analysis ?
 ---------------------------------------------------------------
 
 The allele specific mode of HiC-Pro is based on a N-masked genome. Meaning that all SNPs information which can be use to distinguish parental haplotypes have to be masked. This masking can be performed in 3 steps:
-1. Extract relevant SNPs information. See the `extract_snps.py <doc/UTILS.rst>`_ utility for Mouse Sanger data. For Human data, you can use phasing data, or SNPs information available from public ressources, as the `Illumina Platinum Project <http://www.illumina.com/platinumgenomes/>`_, the `1K Genome Project <http://www.1000genomes.org/>`_ or the `GATK resource bundle <https://www.broadinstitute.org/gatk/guide/article.php?id=1215>`_.
+1. Extract relevant SNPs information. See the :ref:`extract_snps.py <UTILS>` utility for Mouse Sanger data. For Human data, you can use phasing data, or SNPs information available from public ressources, as the `Illumina Platinum Project <http://www.illumina.com/platinumgenomes/>`_, the `1K Genome Project <http://www.1000genomes.org/>`_ or the `GATK resource bundle <https://www.broadinstitute.org/gatk/guide/article.php?id=1215>`_.
 2. Mask the fasta genome. To do so, simply use the bedtools `maskfasta <http://bedtools.readthedocs.org/en/latest/content/tools/maskfasta.html>`_ utility.
 3. Then, create your bowtie2 indexes from the masked fasta file.
 

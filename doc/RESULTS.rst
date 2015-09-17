@@ -1,4 +1,4 @@
-.. _RESULTS:
+.. _RES:
 
 
 HiC-Pro Results
