@@ -1,11 +1,12 @@
 #!/usr/bin/python
 
-## HiC-Pro
-## Copyright (c) 2015 Institut Curie                               
-## Author(s): Nicolas Servant, Eric Viara
-## Contact: nicolas.servant@curie.fr
-## This software is distributed without any guarantee under the terms of the BSD-3 licence.
-## See the LICENCE file for details
+# HiC-Pro
+# Copyleft 2015 Institut Curie
+# Author(s): Nicolas Servant, Eric Viara
+# Contact: nicolas.servant@curie.fr
+# This software is distributed without any guarantee under the terms of the
+# GNU General
+# Public License, either Version 2, June 1991 or Version 3, June 2007.
 
 """
 Script to keep only valid 3C products - DE and SC are removed
@@ -545,8 +546,7 @@ if __name__ == "__main__":
 
 
             if r1_resfrag is not None or r2_resfrag is not None:
-                
-   
+
                 interactionType = get_interaction_type(r1, r1_chrom, r1_resfrag, r2, r2_chrom, r2_resfrag, verbose)
                 dist = get_PE_fragment_size(r1, r2, r1_resfrag, r2_resfrag, interactionType)
                 cdist = get_cis_dist(r1, r2)

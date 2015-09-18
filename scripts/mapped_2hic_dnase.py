@@ -1,11 +1,12 @@
 #!/usr/bin/python
 
-## HiC-Pro
-## Copyright (c) 2015 Institut Curie                               
-## Author(s): Nicolas Servant, Eric Viara
-## Contact: nicolas.servant@curie.fr
-## This software is distributed without any guarantee under the terms of the BSD-3 licence.
-## See the LICENCE file for details
+# HiC-Pro
+# Copyleft 2015 Institut Curie
+# Author(s): Nicolas Servant, Eric Viara
+# Contact: nicolas.servant@curie.fr
+# This software is distributed without any guarantee under the terms of the
+# GNU General
+# Public License, either Version 2, June 1991 or Version 3, June 2007.
 
 """
 Script to keep only valid pairs when no restriction enzyme are used (i.e. DNAse or Micro-HiC)
@@ -130,30 +131,30 @@ def isIntraChrom(read1, read2):
         return False
 
 
-def get_pair_orientation(read1, read2):
-     """
-     Both reads are expected to be on the different restriction fragments
+def get_valid_orientation(read1, read2):
+    """
+    Both reads are expected to be on the different restriction fragments
 
-     Check the orientation of reads ->-> / <-<- / -><- / <-->
+    Check the orientation of reads ->-> / <-<- / -><- / <-->
 
-     read1 : [AlignedRead]
-     read2 : [AlignedRead]
+    read1 : [AlignedRead]
+    read2 : [AlignedRead]
 
-     """
-     # Get oriented reads
-     r1, r2 = get_ordered_reads(read1, read2)
+    """
+    # Get oriented reads
+    r1, r2 = get_ordered_reads(read1, read2)
 
-     direction = None
-     if isIntraChrom(r1, r2):
-         if get_read_strand(r1) == "+" and get_read_strand(r2) == "+":
-             direction = "FF"
-         elif get_read_strand(r1) == "-" and get_read_strand(r2) == "-":
-             direction = "RR"
-         elif get_read_strand(r1) == "+" and get_read_strand(r2) == "-":
-             direction = "FR"
-         elif get_read_strand(r1) == "-" and get_read_strand(r2) == "+":
-             direction = "RF"
-     return direction
+    direction = None
+    if get_read_strand(r1) == "+" and get_read_strand(r2) == "+":
+        direction = "FF"
+    elif get_read_strand(r1) == "-" and get_read_strand(r2) == "-":
+        direction = "RR"
+    elif get_read_strand(r1) == "+" and get_read_strand(r2) == "-":
+        direction = "FR"
+    elif get_read_strand(r1) == "-" and get_read_strand(r2) == "+":
+        direction = "RF"
+
+    return direction
 
 
 def get_cis_dist(read1, read2):
@@ -308,7 +309,7 @@ if __name__ == "__main__":
                 interactionType = "VI"
                 valid_counter += 1
                 cur_handler = handle_valid
-                validType = get_pair_orientation(r1, r2)
+                validType = get_valid_orientation(r1, r2)
                 if validType == "RR":
                     valid_counter_RR += 1
                 elif validType == "FF":
@@ -317,6 +318,11 @@ if __name__ == "__main__":
                     valid_counter_FR += 1
                 elif validType == "RF":
                     valid_counter_RF += 1
+                else:
+                    interactionType = "DUMP"
+                    dump_counter += 1
+                    cur_handler = handle_dump if allOutput else None
+
 
 
             # Split valid pairs based on XA tag

@@ -1,11 +1,6 @@
 #!/bin/bash
-
-## HiC-Pro
-## Copyright (c) 2015 Institut Curie                               
-## Author(s): Nicolas Servant, Eric Viara
-## Contact: nicolas.servant@curie.fr
-## This software is distributed without any guarantee under the terms of the BSD-3 licence.
-## See the LICENCE file for details
+## Nicolas Servant - 07/09/15
+##
 
 dir=$(dirname $0)
 

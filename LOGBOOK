@@ -7,6 +7,12 @@
 ##
 ################################################################################
 
+o Deal with reads with multiple RS sites
+
+o Any specificy of using a two RS protocol ?
+
+o Check the impact of reads ordering in pairs classification
+
 o Migth be interesting to bin at the restriction fragment level ? but ICE in this context need to be validated ...
 
 ################################################################################
