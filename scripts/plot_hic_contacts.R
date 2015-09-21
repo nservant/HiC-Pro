@@ -1,9 +1,9 @@
 ## HiC-Pro
-## Copyright (c) 2015 Institut Curie                               
+## Copyleft 2015 Institut Curie
 ## Author(s): Nicolas Servant
 ## Contact: nicolas.servant@curie.fr
-## This software is distributed without any guarantee under the terms of the BSD-3 licence.
-## See the LICENCE file for details
+## This software is distributed without any guarantee under the terms of the GNU General
+## Public License, either Version 2, June 1991 or Version 3, June 2007.
 
 ##
 ## Plot Valid Interaction Statistics
@@ -112,7 +112,7 @@ gp
 ####################################
 
 ## Get HiC stat files for all fastq files of a given sample
-mergestat <- list.files(path=hicDir, pattern=paste0("^[[:print:]]*.mergestat$"), full.names=TRUE)
+mergestat <- list.files(path=hicDir, pattern=paste0("^[[:print:]]*\\.mergestat$"), full.names=TRUE)
 print(mergestat)
 stopifnot(length(mergestat)>0)
 
@@ -126,7 +126,7 @@ ggsave(filename=file.path(picDir, paste0("plotHiCContactRanges_",sampleName,".pd
 
 
 ## Histogram of insert size
-allvalidpairs <- list.files(path=hicDir, pattern=paste0("^[[:print:]]*.validPairs$"), full.names=TRUE)
+allvalidpairs <- list.files(path=hicDir, pattern=paste0("^[[:print:]]*\\.validPairs$"), full.names=TRUE)
 stats_per_validpairs<- lapply(allvalidpairs, read.csv, sep="\t", as.is=TRUE, header=FALSE, row.names=1, nrow=100000)
 lv <- sapply(stats_per_validpairs, "[", 7)
 lv <- lapply(lv, function(x){as.numeric(x[which(x!="None" & ! is.na(x))])})

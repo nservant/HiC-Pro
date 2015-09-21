@@ -1,9 +1,10 @@
+## Nicolas Servant
 ## HiC-Pro
-## Copyright (c) 2015 Institut Curie                               
-## Author(s): Nicolas Servant
+## Copyleft 2015 Institut Curie
+## Author(s): Nicolas Servant, Eric Viara
 ## Contact: nicolas.servant@curie.fr
-## This software is distributed without any guarantee under the terms of the BSD-3 licence.
-## See the LICENCE file for details
+## This software is distributed without any guarantee under the terms of the GNU General
+## Public License, either Version 2, June 1991 or Version 3, June 2007.
 
 ##
 ## Plot mapping proportion
@@ -134,8 +135,8 @@ ploMapStat <- function(mat, sampleName="", tag="", legend=TRUE){
 ####################################
 
 ## Get Mapping stat files for all fastq files of a given sample
-allmapstat_r1 <- list.files(path=bwtDir, pattern=paste0("^[[:print:]]*",r1tag,"[[:print:]]*mapstat$"), full.names=TRUE)
-allmapstat_r2 <- list.files(path=bwtDir, pattern=paste0("^[[:print:]]*",r2tag,"[[:print:]]*mapstat$"), full.names=TRUE)
+allmapstat_r1 <- list.files(path=bwtDir, pattern=paste0("^[[:print:]]*",r1tag,"[[:print:]]*\\.mapstat$"), full.names=TRUE)
+allmapstat_r2 <- list.files(path=bwtDir, pattern=paste0("^[[:print:]]*",r2tag,"[[:print:]]*\\.mapstat$"), full.names=TRUE)
 stopifnot(length(allmapstat_r1)>0 && length(allmapstat_r2)>0)
 print(allmapstat_r1)
 print(allmapstat_r2)

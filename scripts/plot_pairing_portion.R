@@ -1,10 +1,9 @@
 ## HiC-Pro
-## Copyright (c) 2015 Institut Curie                               
-## Author(s): Nicolas Servant
+## Copyleft 2015 Institut Curie
+## Author(s): Nicolas Servant, Eric Viara
 ## Contact: nicolas.servant@curie.fr
-## This software is distributed without any guarantee under the terms of the BSD-3 licence.
-## See the LICENCE file for details
-
+## This software is distributed without any guarantee under the terms of the GNU General
+## Public License, either Version 2, June 1991 or Version 3, June 2007.
 
 ##
 ## Plot R1/R2 Pairing results
@@ -119,7 +118,7 @@ plotPairStat <- function(mat, xlab="", legend=TRUE){
 ####################################
 
 ## Get HiC stat files for all fastq files of a given sample
-allpairstat <- list.files(path=bwtDir, pattern=paste0("^[[:print:]]*pairstat$"), full.names=TRUE)
+allpairstat <- list.files(path=bwtDir, pattern=paste0("^[[:print:]]*\\.pairstat$"), full.names=TRUE)
 stopifnot(length(allpairstat)>0)
 
 ## Get statistics summary
