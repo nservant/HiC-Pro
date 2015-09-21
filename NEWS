@@ -15,6 +15,11 @@ SIGNIFICANT USER-VISIBLE CHANGES
 
    o New parameter MIN_CIS_DIST in order to discard all contacts below the specified distance. This is mainly used for DNase Hi-C to remove artefact which are likely to be self ligation product.
 
+
+BUG FIXES
+
+   o Fix bug in plot scale
+
 ***********************************
 CHANGES IN VERSION 2.6.0
 
