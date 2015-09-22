@@ -138,11 +138,11 @@ bowtie_pairing:  config_check
 	@echo "Pairing of R1 and R2 tags ..." 
 	$(SCRIPTS)/bowtie_pairing.sh -c $(CONFIG_FILE) >> $(LOGFILE)
 
-## Assign alignments to regions segmented by HindIII sites
+## Assign alignments to restriction fragments
 mapped_2hic_fragments:  config_check
 	@echo "--------------------------------------------"
 	@date 
-	@echo "Assign alignments to HindIII sites ..." 
+	@echo "Assign alignments to restriction fragments ..." 
 	$(SCRIPTS)/mapped_2hic_fragments.sh -c $(CONFIG_FILE) >> $(LOGFILE)
 
 ## Combine multiple BAM files from the same sample, and remove duplicates
