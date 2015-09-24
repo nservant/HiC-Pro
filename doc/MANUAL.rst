@@ -2,13 +2,13 @@
 
 .. Nicolas Servant
 .. HiC-Pro
-.. v2.6.1
+.. v2.7.0
 .. 15-09-02
 
 HiC-Pro Manual
 ******************
 Modified - 09th September 2015
-Reference version - HiC-Pro 2.6.1
+Reference version - HiC-Pro 2.7.0
 
 Setting the configuration file
 ==============================
@@ -153,7 +153,7 @@ Available steps are described in the help command.
   usage : HiC-Pro -i INPUT -o OUTPUT -c CONFIG [-s ANALYSIS_STEP] [-p] [-h] [-v]
   Use option -h|--help for more information
 
-  HiC-Pro 2.6.0
+  HiC-Pro 2.7.0
   ---------------
   OPTIONS
 
