@@ -81,7 +81,7 @@ do
 		INPUT_MATRIX=${IN_DIR}/${RES_FILE_NAME}/raw/${bsize}/${RES_FILE_NAME}_${bsize}.matrix
 		#ln -f -s ../../raw/${bsize}/${RES_FILE_NAME}_${bsize}_abs.bed ${NORM_DIR}/${bsize}/${RES_FILE_NAME}_${bsize}_abs.bed
 		#ln -f -s ../../raw/${bsize}/${RES_FILE_NAME}_${bsize}_ord.bed  ${NORM_DIR}/${bsize}/${RES_FILE_NAME}_${bsize}_ord.bed
-		${PYTHON_PATH}/python ${SCRIPTS}/ice --results_filename ${NORM_DIR}/${bsize}/${RES_FILE_NAME}_${bsize}_iced.matrix --filter_low_counts_perc ${FILTER_LOW_COUNT_PERC} --filter_low_counts_perc ${FILTER_HIGH_COUNT_PERC} --max_iter ${MAX_ITER} --eps ${EPS} --verbose 1 ${INPUT_MATRIX} > ${LDIR}/ice.log
+		${PYTHON_PATH}/python ${SCRIPTS}/ice --results_filename ${NORM_DIR}/${bsize}/${RES_FILE_NAME}_${bsize}_iced.matrix --filter_low_counts_perc ${FILTER_LOW_COUNT_PERC} --filter_high_counts_perc ${FILTER_HIGH_COUNT_PERC} --max_iter ${MAX_ITER} --eps ${EPS} --verbose 1 ${INPUT_MATRIX} > ${LDIR}/ice.log
  	    fi
 	done
     fi

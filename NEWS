@@ -1,7 +1,9 @@
 ***********************************
 CHANGES IN VERSION 2.7.1
 
+BUG FIXES
 
+   o Fix bug in ice normalization. FILTER_HIGH_COUNT_PERC were not considered in ice_norm.sh
 
 ***********************************
 CHANGES IN VERSION 2.7.0
