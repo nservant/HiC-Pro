@@ -1,6 +1,10 @@
 ***********************************
 CHANGES IN VERSION 2.7.1
 
+SIGNIFICANT USER-VISIBLE CHANGES
+
+   o New version of iced package 0.2.1
+
 BUG FIXES
 
    o Fix bug in ice normalization. FILTER_HIGH_COUNT_PERC were not considered in ice_norm.sh

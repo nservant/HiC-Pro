@@ -7,19 +7,36 @@
 ##
 ################################################################################
 
-o Deal with reads with multiple RS sites
-
-o Any specificy of using a two RS protocol ?
+o Deal with reads with multiple RS sites ?
 
 o Check the impact of reads ordering in pairs classification
 
 o Migth be interesting to bin at the restriction fragment level ? but ICE in this context need to be validated ...
+21-10-15 : beta version soon ready for fragment level contact maps
+
+o Update of HiC-Pro for capture-C data
+
+o Think about a docker version of HiC-Pro
 
 ################################################################################
 ##
 ## LOGBOOK
 ##
 ################################################################################
+
+##--------------------
+## 21-10-15
+##--------------------
+
+   o New version of iced normalization
+
+
+##--------------------
+## 30-09-15
+##--------------------
+
+   o Stable release v2.7.0
+   o Update manual
 
 ##--------------------
 ## 10-09-15
