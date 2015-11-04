@@ -96,8 +96,17 @@ done
 
 ## Add allele specific tag if specified
 if [[ ${ALLELE_SPECIFIC_SNP} != "" ]]; then
+    AS_FILE=`abspath $ALLELE_SPECIFIC_SNP`
+    if [[ ${AS_FILE} == "" || ! -f ${AS_FILE} ]]; then
+	AS_FILE=$ANNOT_DIR/${ALLELE_SPECIFIC_SNP}
+	if [[ ! -f $AS_FILE ]]; then
+	    echo "ALLELE_SPECIFIC_SNP not found. Cannot process alignment file"
+	    exit 1
+	fi
+    fi
+
     for r in $(get_paired_bam)
     do
-	tag_allele_spe $r ${ALLELE_SPECIFIC_SNP}
+	tag_allele_spe $r ${AS_FILE}
     done
 fi

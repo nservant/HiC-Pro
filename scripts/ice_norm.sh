@@ -69,6 +69,10 @@ do
 	NORM_DIR=${MAT_DIR}/${RES_FILE_NAME}/iced
 	for bsize in ${BIN_SIZE}
 	do
+	    if [[ $bsize == -1 ]]; then
+		bsize="rfbin"
+	    fi
+
 	    mkdir -p ${NORM_DIR}/${bsize}
 
 	    if [[ ! -z ${ALLELE_SPECIFIC_SNP} ]]; then

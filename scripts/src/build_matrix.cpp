@@ -4,12 +4,8 @@
 // Contact: nicolas.servant@curie.fr
 // This software is distributed without any guarantee under the terms of the BSD-3 License
 
-// g++ -std=c++0x -o build_matrix build_matrix.cpp
-//./build_matrix --binsize 10000 --chrsizes ../annotation/chrom.sizes --ifile ../hic_results/data/mAST-Rad21-WT-rep1/SRR941305.mm9.interaction --oprefix /tmp/zoo
-// ./build_matrix --binsize 10000 --chrsizes ../annotation/chrom.sizes --ifile ../../Hi-C_pipelintest_ev_all/hic_results/data/mAST-Rad21-WT-rep1/SRR941305.mm9.interaction --oprefix /tmp/zoo --chrA chr1:chr2 --chrB chr1:chr2:chr8:chr10
-
-
 #include <iostream>
+#include <iomanip>
 #include <fstream>
 #include <sstream>
 #include <unordered_map>
@@ -19,28 +15,211 @@
 #include <string.h>
 #include <assert.h>
 #include <math.h>
+#include <fcntl.h>
 #include <unistd.h>
 
 static const int SPARSE_FMT = 0x1;
 static const int BED_FMT = 0x2;
 static const char* prog;
+static bool progress = false;
+static bool detail_progress = false;
+static bool quiet = false;
+
+static bool NO_DICHO = getenv("NO_DICHO") != NULL;
 
 typedef unsigned int chrsize_t;
+
+const std::string VERSION = "1.2 [2015-10-20]";
+
+const static chrsize_t BIN_NOT_FOUND = (chrsize_t)-1;
+
+class AxisChromosome;
+
+static bool is_empty_line(const char* buffer)
+{
+  while (char c = *buffer++) {
+    if (c != ' ' || c != '\n' || c != '\t') {
+      return false;
+    }
+  }
+  return true;
+}
+
+static int bed_line_parse(char* buffer, char chr[], chrsize_t& start, chrsize_t& end, const std::string& bedfile, size_t line_num)
+{
+  if (sscanf(buffer, "%s %u %u", chr, &start, &end) != 3) {
+    std::cerr << "bed file \"" << bedfile << "\" at line #" << line_num << " format error\n";
+    return 1;
+  }
+  return 0;
+}
+
+struct Interval {
+  chrsize_t start;
+  chrsize_t end;
+
+  Interval(chrsize_t start = 0, chrsize_t end = 0) : start(start), end(end) { }
+};
+ 
+class ChrRegions {
+
+  std::vector<std::string> chr_v;
+  std::map<std::string, std::vector<Interval>* > intervals;
+
+public:
+  ChrRegions() { }
+
+  int readBedfile(const std::string& bedfile) {
+    std::ifstream ifs(bedfile.c_str());
+    if (ifs.bad() || ifs.fail()) {
+      std::cerr << prog << " cannot open bed file: " << bedfile << " for reading\n";
+      return 1;
+    }
+    char buffer[4096];
+    size_t line_num = 0;
+    chrsize_t lastend = 0;
+    char lastchr[2048] = {0};
+    while (!ifs.eof()) {
+      ifs.getline(buffer, sizeof(buffer)-1);
+      line_num++;
+      if (is_empty_line(buffer)) {
+	continue;
+      }
+      chrsize_t start = 0;
+      chrsize_t end = 0;
+      char chr[2048];
+      if (bed_line_parse(buffer, chr, start, end, bedfile, line_num)) {
+	return 1;
+      }
+      if (intervals.find(chr) == intervals.end()) {
+	intervals[chr] = new std::vector<Interval>();
+	chr_v.push_back(chr);
+      }
+      /*
+      if (lastend != 0 && !strcmp(lastchr, chr) && start != lastend) {
+	std::cerr << "warning: discontinuous segment for chromosome " << chr << " at position " << start << " " << end << std::endl;
+      }
+      */
+      if (*lastchr && strcmp(lastchr, chr)) {
+	lastend = 0;
+      }
+
+      if (lastend != 0 && start < lastend) {
+	std::cerr << "error: bedfile not sorted at line #" << line_num << std::endl;
+	exit(1);
+      }
+      strcpy(lastchr, chr);
+      lastend = end;
+      intervals[chr]->push_back(Interval(start, end));
+      if (progress && (line_num % 100000) == 0) {
+	std::cerr << '.' << std::flush;
+      }
+    }
+    if (progress) {
+      std::cerr << std::endl;
+    }
+    return 0;
+  }
+
+  void displayBed(std::ostream& ofs, const std::vector<AxisChromosome*>& axis_chr) const {
+    std::vector<std::string>::const_iterator begin = chr_v.begin();
+    std::vector<std::string>::const_iterator end = chr_v.end();
+    unsigned int num = 1;
+    while (begin != end) {
+      const std::string& chrname = *begin;
+      std::map<std::string, std::vector<Interval>* >::const_iterator iter = intervals.find(chrname);
+      assert(iter != intervals.end());
+      const std::vector<Interval>* itv_vect = (*iter).second;
+      std::vector<Interval>::const_iterator itv_begin = itv_vect->begin();
+      std::vector<Interval>::const_iterator itv_end = itv_vect->end();
+      while (itv_begin != itv_end) {
+	const Interval& itv = (*itv_begin);
+	ofs << chrname << '\t' << itv.start << '\t' << itv.end << '\t' << num << '\n';
+	if (progress && (num % 100000) == 0) {
+	  std::cerr << '.' << std::flush;
+	}
+	num++;
+	++itv_begin;
+      }
+      ++begin;
+    }
+    if (progress) {
+      std::cerr << std::endl;
+    }
+  }
+
+  const std::vector<Interval>* getIntervalsFromChr(const std::string& chr) const {
+    std::map<std::string, std::vector<Interval>* >::const_iterator iter = intervals.find(chr);
+    if (iter != intervals.end()) {
+      return (*iter).second;
+    }
+    return NULL;
+  }
+};
+
+class Dichotomic {
+
+  int min, max;
+  const std::vector<Interval>& intervals;
+
+public:
+  Dichotomic(const std::vector<Interval>& intervals) : intervals(intervals) {
+    //min = middle(intervals[0]);
+    //max = middle(intervals[intervals.size()-1]);
+    min = 0;
+    max = intervals.size()-1;
+  }
+
+  static chrsize_t middle(const Interval& itv) {
+    return (itv.start+1 + itv.end) / 2;
+  }
+
+  int find(chrsize_t value) {
+    int l = min;
+    int r = max;
+    int n = 0;
+    while (l <= r) {
+      n = (l + r) >> 1;
+      const Interval& itv = intervals[n];
+      if (value >= itv.start+1 && value <= itv.end) {
+	return n;
+      }
+
+      int x = middle(itv) - value;
+      
+      if (x < 0) {
+	l = n + 1;
+      } else {
+	r = n - 1;
+      }
+      //std::cout << "l: " << l << '\n';
+      //std::cout << "r: " << r << '\n';
+    }
+
+    return -1;
+  }
+};
+
 class Chromosome {
 
 private:
   static std::unordered_map<std::string, Chromosome*> chr_map;
-  void computeSizes(chrsize_t ori_binsize, chrsize_t step, bool binadjust);
+
+  void computeSizes(chrsize_t ori_binsize, chrsize_t step, bool binadjust, const ChrRegions* chr_regions);
 
   std::string name;
+
   chrsize_t chrsize;
+
   chrsize_t binsize;
   chrsize_t stepsize;
   chrsize_t bincount;
 
+  const ChrRegions* chr_regions;
+
 public:
-  Chromosome(const std::string& name, chrsize_t chrsize, chrsize_t ori_binsize, chrsize_t step, bool binadjust) : name(name), chrsize(chrsize) {
-    computeSizes(ori_binsize, step, binadjust);
+  Chromosome(const std::string& name, chrsize_t chrsize, chrsize_t ori_binsize, chrsize_t step, bool binadjust, const ChrRegions* chr_regions) : name(name), chrsize(chrsize), chr_regions(chr_regions) {
+    computeSizes(ori_binsize, step, binadjust, chr_regions);
     assert(chr_map.find(name) == chr_map.end());
     chr_map[name] = this;
   }
@@ -52,6 +231,8 @@ public:
   chrsize_t getBinsize() const {return binsize;}
   chrsize_t getStepsize() const {return stepsize;}
   chrsize_t getBincount() const {return bincount;}
+
+  const ChrRegions* getChrRegions() const {return chr_regions;}
 
   static chrsize_t getCount() {
     return chr_map.size();
@@ -76,7 +257,11 @@ public:
       binstart = binoffset;
     }
     binend = binstart + chr->getBincount();
-    std::cerr << "AxisChromosome: " << chr->getName() << " " << binstart << " " << binend << " " << chr->getBincount() << std::endl;
+    /*
+    if (verbose) {
+      std::cerr << "AxisChromosome: " << chr->getName() << " " << binstart << " " << binend << " " << chr->getBincount() << std::endl;
+    }
+    */
   }
 
   chrsize_t getBinstart() const {return binstart;}
@@ -88,6 +273,53 @@ public:
   chrsize_t getBincount() const {return chr->getBincount();}
 
   const Chromosome* getChromosome() const {return chr;}
+
+  chrsize_t assign_bin(const std::string& org, chrsize_t start) const {
+    const ChrRegions* chr_regions = chr->getChrRegions();
+    if (chr_regions != NULL) {
+      const std::vector<Interval>* intervals = chr_regions->getIntervalsFromChr(chr->getName());
+      assert(intervals != NULL);
+
+      if (!NO_DICHO) {
+	Dichotomic dicho(*intervals);
+	int where = dicho.find(start);
+	if (where < 0) {
+	  if (!quiet) {
+	    std::cerr << "warning: no bin at position " << chr->getName() << ":" << start << std::endl;
+	  }
+	  return BIN_NOT_FOUND;
+	}
+	return where + getBinstart();
+      }
+
+      std::vector<Interval>::const_iterator begin = intervals->begin();
+      std::vector<Interval>::const_iterator end = intervals->end();
+
+      chrsize_t binidx = 1;
+      while (begin != end) {
+	const Interval& itv = *begin;
+	if (start >= itv.start+1 && start <= itv.end) {
+	  break;
+	}
+	++binidx;
+	++begin;
+      }
+      
+      return binidx + getBinstart() - 1;
+    }
+
+    int loc = (int)start;
+    int binsize = getBinsize();
+    int stepsize = getStepsize();
+    int cur_binidx = 1 + ceil((double)(loc-binsize)/stepsize);
+    int cur_binbeg = stepsize * (cur_binidx-1)+1;
+    int cur_binend = cur_binbeg + binsize-1;
+    int chrsize = getChrsize();
+    if (cur_binend > chrsize) {
+      cur_binend = chrsize;
+    } 
+    return cur_binidx + getBinstart() - 1;
+  }
 };
 
 class Matrix {
@@ -98,6 +330,7 @@ class Matrix {
   std::unordered_map<std::string, AxisChromosome*> axis_chr_ord_map;
 
   std::map<chrsize_t, std::map<chrsize_t, chrsize_t> > mat;
+
   void addAxisChromosome(const std::vector<const Chromosome*>& chr_v, std::vector<AxisChromosome*>& axis_chr, std::unordered_map<std::string, AxisChromosome*>& axis_chr_map);
 
   const AxisChromosome* getAxisChromosome(const std::string& chrname, const std::unordered_map<std::string, AxisChromosome*>& axis_chr_map) const {
@@ -161,13 +394,35 @@ public:
   void displayMatrix(std::ostream& ofs) const {
     std::map<chrsize_t, std::map<chrsize_t, chrsize_t> >::const_iterator begin = mat.begin();
     std::map<chrsize_t, std::map<chrsize_t, chrsize_t> >::const_iterator end = mat.end();
+    size_t line_total = 0;
+    if (progress) {
+      while (begin != end) {
+	const std::map<chrsize_t, chrsize_t>& line = (*begin).second;
+	line_total += line.size();
+	++begin;
+      }
+      begin = mat.begin();
+    }
+
+    size_t line_cnt = 1;
+    if (progress) {
+      std::cerr << "\n=================\n";
+      std::cerr << " Dumping matrix\n";
+      std::cerr << "=================\n\n";
+    }
+    size_t modulo = line_total / 1000;
     while (begin != end) {
       chrsize_t abs = (*begin).first;
       const std::map<chrsize_t, chrsize_t>& line = (*begin).second;
       std::map<chrsize_t, chrsize_t>::const_iterator bb = line.begin();
       std::map<chrsize_t, chrsize_t>::const_iterator ee = line.end();
       while (bb != ee) {
+	if (progress && (line_cnt % modulo) == 0) {
+	  double percent = (double(line_cnt)/line_total)*100;
+	  std::cerr << "" << percent << "% " << line_cnt << " / " << line_total << std::endl;
+	}
 	ofs << abs << '\t' << (*bb).first << '\t' << (*bb).second << '\n';
+	line_cnt++;
 	++bb;
       }
       ++begin;
@@ -181,6 +436,9 @@ public:
   void displayYBed(std::ostream& ofs) const {
     displayBed(ofs, axis_chr_ord);
   }
+
+  const std::vector<AxisChromosome*>& getXAxisChromosomes() {return axis_chr_abs;}
+  const std::vector<AxisChromosome*>& getYAxisChromosomes() {return axis_chr_ord;}
 };
 
 void Matrix::addAxisChromosome(const std::vector<const Chromosome*>& chr_v, std::vector<AxisChromosome*>& axis_chr, std::unordered_map<std::string, AxisChromosome*>& axis_chr_map)
@@ -224,47 +482,59 @@ void Chromosome::adjustBinsize(chrsize_t ori_binsize, const chrsize_t step)
   stepsize = binsize / step;
 }
 
-void Chromosome::computeSizes(chrsize_t ori_binsize, chrsize_t step, bool binadjust)
+void Chromosome::computeSizes(chrsize_t ori_binsize, chrsize_t step, bool binadjust, const ChrRegions* chr_regions)
 {
-  if (chrsize < ori_binsize) {
-    binsize = chrsize;
-    stepsize = chrsize;
-    bincount = 1;
-  } else if (binadjust) {
-    adjustBinsize(ori_binsize, step);
+  if (NULL != chr_regions) {
+    const std::vector<Interval>* intervals = chr_regions->getIntervalsFromChr(name);
+    assert(intervals != NULL);
+    bincount = intervals->size();
+    /*
+    if (verbose) {
+      std::cerr << name << " bincount: " << bincount << std::endl;
+    }
+    */
   } else {
-    binsize = ori_binsize;
-    stepsize = (chrsize_t)floor(ori_binsize/step);
-    chrsize_t remainder = (chrsize - ori_binsize) % stepsize;
-    chrsize_t tmp_bincount = 1 + (chrsize_t)floor(chrsize-ori_binsize)/stepsize;
-    bincount = remainder > 0 ? tmp_bincount+1 : tmp_bincount;
+    if (chrsize < ori_binsize) {
+      binsize = chrsize;
+      stepsize = chrsize;
+      bincount = 1;
+    } else if (binadjust) {
+      adjustBinsize(ori_binsize, step);
+    } else {
+      binsize = ori_binsize;
+      stepsize = (chrsize_t)floor(ori_binsize/step);
+      chrsize_t remainder = (chrsize - ori_binsize) % stepsize;
+      chrsize_t tmp_bincount = 1 + (chrsize_t)floor(chrsize-ori_binsize)/stepsize;
+      bincount = remainder > 0 ? tmp_bincount+1 : tmp_bincount;
+    }
+    /*
+    if (verbose) {
+      std::cerr << name << " sizes: " << chrsize << " " << binsize << " " << stepsize << " " << bincount << std::endl;
+    }
+    */
   }
-  std::cerr << name << " sizes: " << chrsize << " " << binsize << " " << stepsize << " " << bincount << std::endl;
 }
 
 static int usage(int ret = 1)
 {
-  std::cerr << "usage: " << prog << " --binsize BINSIZE --chrsizes FILE --ifile FILE\n";
-  //  std::cerr << "       --oprefix PREFIX [--fmt sparse_bed|sparse_ind|expanded] [--bed-prefix PREFIX]\n";
+  std::cerr << "\nusage: " << prog << " --binsize BINSIZE|--binfile --chrsizes FILE --ifile FILE\n";
   std::cerr << "       --oprefix PREFIX [--binadjust] [--step STEP] [--binoffset OFFSET]\n";
-  std::cerr << "       [--matrix-format asis|upper|lower|complete][--chrA CHR... --chrB CHR...]\n";
-  std::cerr << "       [--legacy-data]\n";
+  std::cerr << "       [--matrix-format asis|upper|lower|complete][--chrA CHR... --chrB CHR...] [--quiet] [--progress] [--detail-progress]\n";
+  std::cerr << "\nusage: " << prog << " --version\n";
   std::cerr << "\nusage: " << prog << " --help\n";
   return ret;
 }
 
 static int help()
 {
-  // TBD: complete help
-  std::cerr << "\n";
   (void)usage();
   std::cerr << "\nOPTIONS\n\n";
+  std::cerr << "  --version              : display version\n";
   std::cerr << "  --binsize BINSIZE      : bin size\n";
+  std::cerr << "  --binfile BEDFILE      : bed file containing bins (chr start end)\n";
   std::cerr << "  --chrsizes FILE        : file containing chromosome sizes\n";
   std::cerr << "  --ifile FILE           : input interaction file\n";
   std::cerr << "  --oprefix PREFIX       : output prefix of generated files (matrix and bed)\n";
-  //  std::cerr << "  --fmt FORMAT             : \n";
-  //  std::cerr << "  --bed-prefix PREFIX      :\n";
   std::cerr << "  --binadjust            : [optional] adjust bin sizes, default is false\n";
   std::cerr << "  --step STEP            : [optional] step size, default is 1\n";
   std::cerr << "  --binoffset OFFSET     : [optional] starting bin offset, default is 1\n";
@@ -276,8 +546,9 @@ static int help()
   std::cerr << "                             input data must contain only one part (upper or lower) \n";
   std::cerr << "  --chrA CHR             : [optional] colon separated list of abscissa chromosomes; default is all chromosomes\n";
   std::cerr << "  --chrB CHR             : [optional] colon separated list of ordinate chromosomes; default is all chromosomes\n";
-  //  std::cerr << "  --organism ORGANISM      :\n";
-  std::cerr << "  --legacy-data          : [optional] use for compatibility mode for old format \n";
+  std::cerr << "  --quiet                : do not display any warning\n";
+  std::cerr << "  --progress             : display progress\n";
+  std::cerr << "  --detail-progress      : display detail progress (needs preliminary steps consuming time)\n";
   return -1;
 }
 
@@ -288,7 +559,7 @@ enum MatrixFormat {
   COMPLETE_MATRIX
 };
   
-static int get_options(int argc, char* argv[], chrsize_t& binsize, const char*& chrsize_file, const char*& ifile, const char*& oprefix, Format& format, std::string& bed_prefix, bool& binadjust, MatrixFormat& matrix_format, chrsize_t& step, bool& whole_genome, bool& public_data, int& binoffset, const char*& chrA, const char*& chrB)
+static int get_options(int argc, char* argv[], chrsize_t& binsize, const char*& binfile, const char*& chrsize_file, const char*& ifile, const char*& oprefix, Format& format, std::string& bed_prefix, bool& binadjust, MatrixFormat& matrix_format, chrsize_t& step, bool& whole_genome, int& binoffset, const char*& chrA, const char*& chrB)
 {
   prog = argv[0];
   for (int ac = 1; ac < argc; ++ac) {
@@ -296,6 +567,16 @@ static int get_options(int argc, char* argv[], chrsize_t& binsize, const char*& 
     if (*opt == '-') {
       if (!strcmp(opt, "--binadjust")) {
 	binadjust = true;
+      } else if (!strcmp(opt, "--version")) {
+	std::cout << "build_matrix version " << VERSION << "\n";
+	exit(0);
+      } else if (!strcmp(opt, "--progress")) {
+	progress = true;
+      } else if (!strcmp(opt, "--quiet")) {
+	quiet = true;
+      } else if (!strcmp(opt, "--detail-progress")) {
+	progress = true;
+	detail_progress = true;
       } else if (!strcmp(opt, "--matrix-format")) {
 	if (ac == argc-1) {
 	  return usage();
@@ -317,15 +598,16 @@ static int get_options(int argc, char* argv[], chrsize_t& binsize, const char*& 
 	  return usage();
 	}
 	step = atoi(argv[++ac]);
+      } else if (!strcmp(opt, "--binfile")) {
+	if (ac == argc-1) {
+	  return usage();
+	}
+	binfile = argv[++ac];
       } else if (!strcmp(opt, "--binsize")) {
 	if (ac == argc-1) {
 	  return usage();
 	}
 	binsize = atoi(argv[++ac]);
-      } else if (!strcmp(opt, "--public-data")) {
-	public_data = true;
-      } else if (!strcmp(opt, "--legacy-data")) {
-	public_data = false;
       } else if (!strcmp(opt, "--binoffset")) {
 	if (ac == argc-1) {
 	  return usage();
@@ -346,27 +628,6 @@ static int get_options(int argc, char* argv[], chrsize_t& binsize, const char*& 
 	  return usage();
 	}
 	chrsize_file = argv[++ac];
-	/*
-      } else if (!strcmp(opt, "--fmt")) {
-	if (ac == argc-1) {
-	  return usage();
-	}
-	const char* fmt = argv[++ac];
-	if (!strcasecmp(fmt, "sparse_bed")) {
-	  format = SPARSE_BED_FMT;
-	} else if (!strcasecmp(fmt, "sparse_ind")) {
-	  format = SPARSE_IND_FMT;
-	} else if (!strcasecmp(fmt, "expanded")) {
-	  format = EXPANDED_FMT;
-	} else {
-	  return usage();
-	}
-      } else if (!strcmp(opt, "--bed-prefix")) {
-	if (ac == argc-1) {
-	  return usage();
-	}
-	bed_prefix = argv[++ac];
-	*/
       } else if (!strcmp(opt, "--chrA")) {
 	if (ac == argc-1) {
 	  return usage();
@@ -382,7 +643,7 @@ static int get_options(int argc, char* argv[], chrsize_t& binsize, const char*& 
       } else if (!strcmp(opt, "--help")) {
 	return help();
       } else {
-	std::cerr << prog << ": unknown option " << opt << std::endl;
+	std::cerr << '\n' << prog << ": unknown option " << opt << std::endl;
 	return usage();
       }
     }
@@ -415,99 +676,7 @@ static void split_in_vect(const std::string& str, std::vector<const Chromosome*>
   }
 }
 
-static int build_matrix_init(Matrix& matrix, const char* ifile, std::ifstream& ifs, const std::string& oprefix, std::ofstream& matfs, std::ofstream& xbedfs, std::ofstream& ybedfs, const char* chrsize_file, bool whole_genome, const char* chrA, const char* chrB, chrsize_t ori_binsize, chrsize_t step, bool binadjust)
-{
-  ifs.open(ifile);
-  if (ifs.bad() || ifs.fail()) {
-    std::cerr << prog << " cannot open interaction file: " << ifile << " for reading\n";
-    return 1;
-  }
-
-  std::ifstream chrsizefs;
-  chrsizefs.open(chrsize_file);
-  if (chrsizefs.bad() || chrsizefs.fail()) {
-    std::cerr << prog << " cannot open chrsizes file: " << chrsize_file << " for reading\n";
-    return 1;
-  }
-
-  std::string matfile = oprefix + ".matrix";
-  matfs.open(matfile);
-  if (matfs.bad() || matfs.fail()) {
-    std::cerr << prog << " cannot open file: " << matfile << " for writing\n";
-    return 1;
-  }
-
-  std::string xbedfile = oprefix + "_abs.bed";
-  xbedfs.open(xbedfile);
-  if (xbedfs.bad() || xbedfs.fail()) {
-    std::cerr << prog << " cannot open file: " << xbedfile << " for writing\n";
-    return 1;
-  }
-
-  std::string ybedfile = oprefix + "_ord.bed";
-  if (whole_genome) {
-    std::string xbedlink;
-    size_t pos = xbedfile.rfind('/');
-    if (pos != std::string::npos) {
-      xbedlink = xbedfile.substr(pos+1);
-    } else {
-      xbedlink = xbedfile;
-    }
-    unlink(ybedfile.c_str());
-    if (symlink(xbedlink.c_str(), ybedfile.c_str())) {
-      std::cerr << prog << " cannot created link: " << ybedfile << "\n";
-      return 1;
-    }
-  } else {
-    ybedfs.open(ybedfile);
-    if (ybedfs.bad() || ybedfs.fail()) {
-      std::cerr << prog << " cannot open file: " << ybedfile << " for writing\n";
-      return 1;
-    }
-  }
-
-
-  std::vector<const Chromosome*> all_chr_v;
-  while (!chrsizefs.eof()) {
-    std::string buffer;
-    getline(chrsizefs, buffer);
-
-    chrsize_t chrsize;
-    /*
-    char name[256];
-    if (sscanf(buffer.c_str(), "%s %u", name, &chrsize) == 2) {
-      Chromosome* chromosome = new Chromosome(name, chrsize, ori_binsize, step, binadjust);
-      all_chr_v.push_back(chromosome);
-    }
-    */
-    std::istringstream istr(buffer);
-    std::string name;
-    istr >> name >> chrsize;
-    if (!istr.fail()) {
-      Chromosome* chromosome = new Chromosome(name, chrsize, ori_binsize, step, binadjust);
-      all_chr_v.push_back(chromosome);
-    }
-  }
-
-  chrsizefs.close();
-
-  if (chrA) {
-    assert(chrB != NULL);
-    std::vector<const Chromosome*> chrA_v;
-    std::vector<const Chromosome*> chrB_v;
-    split_in_vect(chrA, chrA_v);
-    split_in_vect(chrB, chrB_v);
-    matrix.addXAxisChromosome(chrA_v);
-    matrix.addYAxisChromosome(chrB_v);
-  } else {
-    matrix.addXAxisChromosome(all_chr_v);
-    matrix.addYAxisChromosome(all_chr_v);
-  }
-
-  return 0;
-}
-
-static int interaction_parse2(char* buffer, char*& lchr, chrsize_t& lstart, char*& rchr, chrsize_t& rstart)
+static int interaction_parse(char* buffer, char*& lchr, chrsize_t& lstart, char*& rchr, chrsize_t& rstart)
 {
   char c;
   char* str;
@@ -563,308 +732,238 @@ static int interaction_parse2(char* buffer, char*& lchr, chrsize_t& lstart, char
   return 0;
 }
 
-static int interaction_parse(const std::string& str, std::string& mark, std::string& org, std::string& chr, chrsize_t& start, int &dist)
+static char p_buffer[512000];
+
+static int build_matrix_init(Matrix& matrix, const char* ifile, std::ifstream& ifs, const std::string& oprefix, std::ofstream& matfs, std::ofstream& xbedfs, std::ofstream& ybedfs, const char* chrsize_file, bool whole_genome, const char* chrA, const char* chrB, chrsize_t ori_binsize, const char* binfile, chrsize_t step, bool binadjust, ChrRegions*& chr_regions, size_t& line_total)
 {
-  size_t lastpos = 0;
-  size_t pos = str.find('|', lastpos);
-  if (pos == std::string::npos) {
+  ifs.open(ifile);
+  if (ifs.bad() || ifs.fail()) {
+    std::cerr << prog << " cannot open interaction file: " << ifile << " for reading\n";
     return 1;
   }
-  //mark = str.substr(lastpos, pos);
 
-  lastpos = pos+1;
-  pos = str.find('|', lastpos);
-  if (pos == std::string::npos) {
+  if (detail_progress) {
+    if (progress) {
+      std::cerr << "\n======================================\n";
+      std::cerr << " Getting information for progress bar\n";
+      std::cerr << "======================================\n\n";
+    }
+    std::cerr << std::setprecision(2) << std::fixed;
+    int fd = open(ifile, O_RDONLY);
+    struct stat st;
+    assert(fstat(fd, &st) == 0);
+    assert(fd >= 0);
+    int nn;
+    int cnt = 1;
+    while ((nn = read(fd, p_buffer, sizeof(p_buffer))) > 0) {
+      const char *p = p_buffer;
+      while (nn-- > 0) {
+	if (*p++ == '\n') {
+	  line_total++;
+	}
+      }
+      if ((cnt % 200) == 0) {
+	std::cerr << '.' << std::flush;
+      }
+      cnt++;
+    }
+    std::cerr << std::endl;
+    close(fd);
+  }
+  
+  std::ifstream chrsizefs;
+  chrsizefs.open(chrsize_file);
+  if (chrsizefs.bad() || chrsizefs.fail()) {
+    std::cerr << prog << " cannot open chrsizes file: " << chrsize_file << " for reading\n";
     return 1;
   }
-  //org = str.substr(lastpos, pos-lastpos);
 
-  lastpos = pos+1;
-  pos = str.find(':', lastpos);
-  if (pos == std::string::npos) {
+  std::string matfile = oprefix + ".matrix";
+  matfs.open(matfile);
+  if (matfs.bad() || matfs.fail()) {
+    std::cerr << prog << " cannot open file: " << matfile << " for writing\n";
     return 1;
   }
-  chr = str.substr(lastpos, pos-lastpos);
 
-  lastpos = pos+1;
-  pos = str.find('-', lastpos);
-  if (pos == std::string::npos) {
+  std::string xbedfile = oprefix + "_abs.bed";
+  xbedfs.open(xbedfile);
+  if (xbedfs.bad() || xbedfs.fail()) {
+    std::cerr << prog << " cannot open file: " << xbedfile << " for writing\n";
     return 1;
   }
-  start = atoi(str.substr(lastpos, pos-lastpos).c_str());
 
-  lastpos = pos+1;
-  pos = str.find('@', lastpos);
-  if (pos == std::string::npos) {
-    return 1;
+  std::string ybedfile = oprefix + "_ord.bed";
+  if (whole_genome) {
+    std::string xbedlink;
+    size_t pos = xbedfile.rfind('/');
+    if (pos != std::string::npos) {
+      xbedlink = xbedfile.substr(pos+1);
+    } else {
+      xbedlink = xbedfile;
+    }
+    unlink(ybedfile.c_str());
+    if (symlink(xbedlink.c_str(), ybedfile.c_str())) {
+      std::cerr << prog << " cannot created link: " << ybedfile << "\n";
+      return 1;
+    }
+  } else {
+    ybedfs.open(ybedfile);
+    if (ybedfs.bad() || ybedfs.fail()) {
+      std::cerr << prog << " cannot open file: " << ybedfile << " for writing\n";
+      return 1;
+    }
   }
-  dist = atoi(str.substr(pos+1).c_str());
+
+  chr_regions = NULL;
+  if (NULL != binfile) {
+    chr_regions = new ChrRegions();
+    if (progress) {
+      std::cerr << "\n=================\n";
+      std::cerr << " Reading binfile\n";
+      std::cerr << "=================\n\n";
+    }
+    if (chr_regions->readBedfile(binfile)) {
+      return 1;
+    }
+  }
+
+  std::vector<const Chromosome*> all_chr_v;
+  while (!chrsizefs.eof()) {
+    std::string buffer;
+    getline(chrsizefs, buffer);
+
+    chrsize_t chrsize;
+    std::istringstream istr(buffer);
+    std::string name;
+    istr >> name >> chrsize;
+    if (!istr.fail()) {
+      Chromosome* chromosome = new Chromosome(name, chrsize, ori_binsize, step, binadjust, chr_regions);
+      all_chr_v.push_back(chromosome);
+    }
+  }
+
+  chrsizefs.close();
+
+  if (chrA) {
+    assert(chrB != NULL);
+    std::vector<const Chromosome*> chrA_v;
+    std::vector<const Chromosome*> chrB_v;
+    split_in_vect(chrA, chrA_v);
+    split_in_vect(chrB, chrB_v);
+    matrix.addXAxisChromosome(chrA_v);
+    matrix.addYAxisChromosome(chrB_v);
+  } else {
+    matrix.addXAxisChromosome(all_chr_v);
+    matrix.addYAxisChromosome(all_chr_v);
+  }
+
   return 0;
 }
 
-static void get_left_right(const char buffer[], char left[], char right[])
-{
-  const char* start = buffer;
-  for (;;) {
-    char c = *start;
-    if (c != ' ' && c != '\t') {
-      break;
-    }
-    start++;
-  }
-  const char* end = start+1;
-  for (;;) {
-    char c = *end;
-    if (c == ' ' || c == '\t' || !c) {
-      break;
-    }
-    end++;
-  }
-  size_t size = end-start;
-  strncpy(left, start, size);
-  left[size] = 0;
-  start = end + 1;
-  for (;;) {
-    char c = *start;
-    if (c != ' ' && c != '\t') {
-      break;
-    }
-    start++;
-  }
-  end = start+1;
-  for (;;) {
-    char c = *end;
-    if (c == ' ' || c == '\t' || !c) {
-      break;
-    }
-    end++;
-  }
-  size = end-start;
-  strncpy(right, start, size);
-  right[size] = 0;
-}
-
-#if 0
-static void adjust_binsize(const chrsize_t chrsize, const chrsize_t binsize, const chrsize_t step, chrsize_t& binsize_ret, chrsize_t& stepsize_ret, chrsize_t& bincount_ret)
-{
-  chrsize_t bincount = 1 + (chrsize_t)floor( (double)(chrsize-binsize) / (binsize/step));
-  //chrsize_t bincount = (chrsize_t)floor( (double)(chrsize) / (binsize/step));
-#if 1
-  // EV code
-  binsize_ret = chrsize / bincount;
-  stepsize_ret = binsize_ret / step;
-  bincount_ret = bincount;
-#else
-  // original code !
-  chrsize_t stepsize = (chrsize_t)floor(binsize/step);
-  chrsize_t cur_remainder = (chrsize-binsize) % stepsize;
-  chrsize_t binsize_mod = binsize+floor((double)cur_remainder/bincount);
-  chrsize_t stepsize_mod = floor((double)binsize_mod/step);
-  if (binsize == binsize_mod){
-    binsize_ret = binsize_mod;
-    stepsize_ret = stepsize_mod;
-    bincount_ret = bincount;
-    return;
-  }
-  adjust_binsize(chrsize, binsize_mod, step, binsize_ret, stepsize_ret, bincount_ret);
-#endif
-}
-
-static void get_sizes(const std::unordered_map<std::string, chrsize_t>& chrsize_map, std::unordered_map<std::string, chrsize_t>& binsize_map, std::unordered_map<std::string, chrsize_t>& stepsize_map, std::unordered_map<std::string, chrsize_t>& bincount_map, chrsize_t ori_binsize, chrsize_t step, bool binadjust)
-{
-  std::unordered_map<std::string, chrsize_t>::const_iterator begin = chrsize_map.begin();
-  std::unordered_map<std::string, chrsize_t>::const_iterator end = chrsize_map.end();
-  while (begin != end) {
-    const std::string& chr = (*begin).first;
-    chrsize_t chrsize = (*begin).second;
-    if (chrsize < ori_binsize) {
-      binsize_map[chr] = chrsize;
-      stepsize_map[chr] = chrsize;
-      bincount_map[chr] = 1;
-    } else if (binadjust) {
-      chrsize_t binsize, stepsize, bincount;
-      adjust_binsize(chrsize, ori_binsize, step, binsize, stepsize, bincount);
-      binsize_map[chr] = binsize;
-      stepsize_map[chr] = stepsize;
-      bincount_map[chr] = bincount;
-    } else {
-      binsize_map[chr] = ori_binsize;
-      chrsize_t stepsize = (chrsize_t)floor(ori_binsize/step);
-      stepsize_map[chr] = stepsize;
-      chrsize_t remainder = (chrsize - ori_binsize) % stepsize;
-      chrsize_t bincount = 1 + (chrsize_t)floor(chrsize-ori_binsize)/stepsize;
-      bincount_map[chr] = remainder > 0 ? bincount+1 : bincount;
-    }
-    std::cout << chr << " sizes: " << chrsize << " " << binsize_map[chr] << " " << stepsize_map[chr] << " " << bincount_map[chr] << '\n';
-    ++begin;
-  }
-  std::cout << std::endl;
-}
-#endif
-
-/*
-sub assign_bin{
-    my ($chr,$st,$dist,$genome)=@_;
-    my $loc=$st+$dist-1;
-    my $binsize=$chrm_bin_def{$chr}{"binsize"};
-    my $stepsize=$chrm_bin_def{$chr}{"stepsize"};
-    my $cur_binidx=1+ceil(($loc-$binsize)/$stepsize);
-    my $cur_binst=$stepsize*($cur_binidx-1)+1;
-    my $cur_binend=$cur_binst+$binsize-1;
-    $cur_binend=$chrm_size{$chr} if ($cur_binend>$chrm_size{$chr});
-    my $cur_hit="HIC_" . $chr . "_" . $cur_binidx . "|" . $genome . "|" . $chr . ":" . $cur_binst . "-" . $cur_binend;
-    return ($cur_hit,$cur_binidx);
-}
-*/
-
-// starting port
-
-static chrsize_t assign_bin(const std::string& org, const AxisChromosome* chr, chrsize_t start, int dist)
-{
-  int loc = start + dist-1;
-  int binsize = chr->getBinsize();
-  int stepsize = chr->getStepsize();
-  int cur_binidx = 1 + ceil((double)(loc-binsize)/stepsize);
-  int cur_binbeg = stepsize * (cur_binidx-1)+1;
-  int cur_binend = cur_binbeg + binsize-1;
-  int chrsize = chr->getChrsize();
-  if (cur_binend > chrsize) {
-    cur_binend = chrsize;
-  } 
-  return cur_binidx + chr->getBinstart() - 1; // warning: should depends on step... no actually, cur_binidx already depends on step
-}
-
-static bool is_empty_line(const char* buffer)
-{
-  while (char c = *buffer++) {
-    if (c != ' ' || c != '\n' || c != '\t') {
-      return false;
-    }
-  }
-  return true;
-}
-
-static int build_matrix(bool public_data, int binoffset, chrsize_t ori_binsize, const char* chrsize_file, const char* ifile, const char* oprefix, Format _dummy_format, const std::string& _dummy_bed_prefix, bool binadjust, MatrixFormat matrix_format, chrsize_t step, bool whole_genome, const char* chrA, const char* chrB)
+static int build_matrix(int binoffset, chrsize_t ori_binsize, const char* binfile, const char* chrsize_file, const char* ifile, const char* oprefix, Format _dummy_format, const std::string& _dummy_bed_prefix, bool binadjust, MatrixFormat matrix_format, chrsize_t step, bool whole_genome, const char* chrA, const char* chrB)
 {
   std::ifstream ifs;
   std::ofstream matfs, xbedfs, ybedfs;
 
   Matrix matrix(binoffset);
-  if (int ret = build_matrix_init(matrix, ifile, ifs, oprefix, matfs, xbedfs, ybedfs, chrsize_file, whole_genome, chrA, chrB, ori_binsize, step, binadjust)) {
+  ChrRegions *chr_regions = NULL;
+  size_t line_total = 0;
+  if (int ret = build_matrix_init(matrix, ifile, ifs, oprefix, matfs, xbedfs, ybedfs, chrsize_file, whole_genome, chrA, chrB, ori_binsize, binfile, step, binadjust, chr_regions, line_total)) {
     return ret;
   }
 
-  char buffer[4096];
+  if (progress) {
+    std::cerr << "\n=================\n";
+    std::cerr << " Building matrix\n";
+    std::cerr << "=================\n\n";
+  }
   size_t line_cnt = 1;
   size_t line_num = 0;
-  std::string lmark, rmark, lorg, rorg, lchr, rchr;
-  chrsize_t lstart, rstart;
-  if (public_data) {
+  char buffer[4096];
+  std::string lmark, rmark, lorg, rorg;
+  while (!ifs.eof()) {
+    ifs.getline(buffer, sizeof(buffer)-1);
+    line_num++;
+    if (is_empty_line(buffer)) {
+      continue;
+    }
+    chrsize_t lstart = 0;
+    chrsize_t rstart = 0;
     char* lchr = NULL;
     char* rchr = NULL;
-    while (!ifs.eof()) {
-      ifs.getline(buffer, sizeof(buffer)-1);
-      line_num++;
-      if (is_empty_line(buffer)) {
-	continue;
-      }
-      interaction_parse2(buffer, lchr, lstart, rchr, rstart);
-      const AxisChromosome* abs_chr = matrix.getXAxisChromosome(lchr);
-      if (!abs_chr) {
-	continue;
-      }
-      const AxisChromosome* ord_chr = matrix.getYAxisChromosome(rchr);
-      if (!ord_chr) {
-	continue;
-      }
-      chrsize_t abs_bin = assign_bin(lorg, abs_chr, lstart, 1);
-      chrsize_t ord_bin = assign_bin(rorg, ord_chr, rstart, 1);
-      switch(matrix_format) {
-
-      case ASIS_MATRIX:
-	matrix.add(abs_bin, ord_bin);
-	break;
-
-      case UPPER_MATRIX:
-	if (abs_bin < ord_bin) {
-	  matrix.add(abs_bin, ord_bin);
-	} else {
-	  matrix.add(ord_bin, abs_bin);
-	}
-	break;
-
-      case LOWER_MATRIX:
-	if (abs_bin > ord_bin) {
-	  matrix.add(abs_bin, ord_bin);
-	} else {
-	  matrix.add(ord_bin, abs_bin);
-	}
-	break;
-
-      case COMPLETE_MATRIX:
-	matrix.add(abs_bin, ord_bin);
-	if (abs_bin != ord_bin) {
-	  matrix.add(ord_bin, abs_bin);
-	}
-	break;
-      }
-      line_cnt++;
-      if ((line_cnt % 100000) == 0) {
-	std::cerr << line_cnt << std::endl;
-      }
+    interaction_parse(buffer, lchr, lstart, rchr, rstart);
+    const AxisChromosome* abs_chr = matrix.getXAxisChromosome(lchr);
+    if (!abs_chr) {
+      continue;
     }
-  } else {
-    // legacy format
-    int ldist, rdist;
-    char left[512];
-    char right[512];
-    while (!ifs.eof()) {
-      ifs.getline(buffer, sizeof(buffer)-1);
-      if (is_empty_line(buffer)) {
-	continue;
-      }
-      get_left_right(buffer, left, right);
-      line_num++;
-      if (interaction_parse(left, lmark, lorg, lchr, lstart, ldist)) {
-	std::cerr << "invalid line #" << line_num << " [" << buffer << "]\n";
-	continue;
-      }
-      if (ldist < 0) {
-	continue;
-      }
-      if (interaction_parse(right, rmark, rorg, rchr, rstart, rdist)) {
-	std::cerr << "invalid line #" << line_cnt << " [" << buffer << "]\n";
-	continue;
-      }
-      if (rdist < 0) {
-	continue;
-      }
+    const AxisChromosome* ord_chr = matrix.getYAxisChromosome(rchr);
+    if (!ord_chr) {
+      continue;
+    }
+    chrsize_t abs_bin = abs_chr->assign_bin(lorg, lstart);
+    if (abs_bin == BIN_NOT_FOUND) {
+      continue;
+    }
+    chrsize_t ord_bin = ord_chr->assign_bin(rorg, rstart);
+    if (ord_bin == BIN_NOT_FOUND) {
+      continue;
+    }
+    switch(matrix_format) {
 
-      const AxisChromosome* abs_chr = matrix.getXAxisChromosome(lchr);
-      if (!abs_chr) {
-	continue;
-      }
-      const AxisChromosome* ord_chr = matrix.getYAxisChromosome(rchr);
-      if (!ord_chr) {
-	continue;
-      }
-      chrsize_t abs_bin = assign_bin(lorg, abs_chr, lstart, ldist);
-      chrsize_t ord_bin = assign_bin(rorg, ord_chr, rstart, rdist);
+    case ASIS_MATRIX:
       matrix.add(abs_bin, ord_bin);
-      /*
-      if (symetric && abs_bin != ord_bin) {
+      break;
+
+    case UPPER_MATRIX:
+      if (abs_bin < ord_bin) {
+	matrix.add(abs_bin, ord_bin);
+      } else {
 	matrix.add(ord_bin, abs_bin);
       }
-      */
-      line_cnt++;
-      if ((line_cnt % 100000) == 0) {
+      break;
+
+    case LOWER_MATRIX:
+      if (abs_bin > ord_bin) {
+	matrix.add(abs_bin, ord_bin);
+      } else {
+	matrix.add(ord_bin, abs_bin);
+      }
+      break;
+
+    case COMPLETE_MATRIX:
+      matrix.add(abs_bin, ord_bin);
+      if (abs_bin != ord_bin) {
+	matrix.add(ord_bin, abs_bin);
+      }
+      break;
+    }
+    line_cnt++;
+    if (progress && (line_cnt % 100000) == 0) {
+      if (detail_progress) {
+	double percent = (double(line_cnt)/line_total)*100;
+	std::cerr << "" << percent << "% " << line_cnt << " / " << line_total << std::endl;
+      } else {
 	std::cerr << line_cnt << std::endl;
       }
     }
   }
-  matrix.displayXBed(xbedfs);
-  if (!whole_genome) {
-    matrix.displayYBed(ybedfs);
+
+  if (progress) {
+    std::cerr << "\n==================\n";
+    std::cerr << " Dumping bedfiles\n";
+    std::cerr << "==================\n\n";
+  }
+
+  if (NULL != chr_regions) {
+    chr_regions->displayBed(xbedfs, matrix.getXAxisChromosomes());
+    if (!whole_genome) {
+      chr_regions->displayBed(ybedfs, matrix.getYAxisChromosomes());
+    }
+  } else {
+    matrix.displayXBed(xbedfs);
+    if (!whole_genome) {
+      matrix.displayYBed(ybedfs);
+    }
   }
   matrix.displayMatrix(matfs);
   xbedfs.close();
@@ -884,30 +983,54 @@ int main(int argc, char* argv[])
   const char* chrA = NULL;
   const char* chrB = NULL;
   const char* chrsize_file = NULL;
+  const char* binfile = NULL;
   bool whole_genome = true;
-  bool public_data = true; // EV: 2015-01-21: default becomes true
   int binoffset = 1;
   std::string bed_prefix;
   Format format = SPARSE_BED_FMT;
 
-  if (int ret = get_options(argc, argv, binsize, chrsize_file, ifile, oprefix, format, bed_prefix, binadjust, matrix_format, step, whole_genome, public_data, binoffset, chrA, chrB)) {
+  if (int ret = get_options(argc, argv, binsize, binfile, chrsize_file, ifile, oprefix, format, bed_prefix, binadjust, matrix_format, step, whole_genome, binoffset, chrA, chrB)) {
     if (ret < 0) {
       return 0;
     }
     return ret;
   }
 
-  if (!binsize || !chrsize_file || !ifile || !oprefix) {
+  if (!binsize && !binfile) {
+    std::cerr << '\n';
+    std::cerr << prog << ": missing --binsize or --binfile option\n";
     return usage();
   }
 
-  if (whole_genome && (chrA || chrB)) { // should never happen
+  if (!chrsize_file) {
+    std::cerr << '\n';
+    std::cerr << prog << ": missing --chrsizes option\n";
+    return usage();
+  }
+
+  if (!ifile) {
+    std::cerr << '\n';
+    std::cerr << prog << ": missing --ifile option\n";
+    return usage();
+  }
+
+  if (!oprefix) {
+    std::cerr << '\n';
+    std::cerr << prog << ": missing --oprefix option\n";
     return usage();
   }
 
   if ((chrA && !chrB) || (!chrA && chrB)) {
+    std::cerr << '\n';
+    std::cerr << prog << ": options --chrA and --chrB must be set simultanously\n";
     return usage();
   }
 
-  return build_matrix(public_data, binoffset, binsize, chrsize_file, ifile, oprefix, format, bed_prefix, binadjust, matrix_format, step, whole_genome, chrA, chrB);
+  if (binfile && binsize) {
+    std::cerr << '\n';
+    std::cerr << prog << ": options --binfile and --binsize cannot be set simultanously\n";
+    return usage();
+  }
+
+  return build_matrix(binoffset, binsize, binfile, chrsize_file, ifile, oprefix, format, bed_prefix, binadjust, matrix_format, step, whole_genome, chrA, chrB);
 }

@@ -71,7 +71,7 @@ MAX_INSERT_SIZE =
 
 MIN_CIS_DIST =
 GET_ALL_INTERACTION_CLASSES = 1
-GET_PROCESS_SAM = 1
+GET_PROCESS_SAM = 0
 RM_SINGLETON = 1
 RM_MULTI = 1
 RM_DUP = 1
@@ -81,7 +81,6 @@ RM_DUP = 1
 #######################################################################
 
 BIN_SIZE = 20000 40000 150000 500000 1000000
-BIN_STEP = 1
 MATRIX_FORMAT = upper
 
 #######################################################################

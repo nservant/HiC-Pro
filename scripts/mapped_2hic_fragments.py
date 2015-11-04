@@ -348,8 +348,7 @@ def get_PE_fragment_size(read1, read2, resFrag1, resFrag2, interactionType):
     return fragmentsize
 
 
-def get_interaction_type(read1, read1_chrom, resfrag1, read2,
-                         read2_chrom, resfrag2, verbose):
+def get_interaction_type(read1,resfrag1, read2, resfrag2, verbose):
     """
     Returns the interaction type
 
@@ -363,10 +362,8 @@ def get_interaction_type(read1, read1_chrom, resfrag1, read2,
 
     ##
     read1 = the R1 read of the pair [AlignedRead]
-    read1_chrom = the chromosome of R1 read [character]
     resfrag1 = restrictin fragment overlapping the R1 read [interval]
     read2 = the R2 read of the pair [AlignedRead]
-    read2_chrom = the chromosome of R2 read [character]
     resfrag2 = restrictin fragment overlapping the R2 read [interval]
     verbose = verbose mode [logical]
 
@@ -546,8 +543,7 @@ if __name__ == "__main__":
 
 
             if r1_resfrag is not None or r2_resfrag is not None:
-
-                interactionType = get_interaction_type(r1, r1_chrom, r1_resfrag, r2, r2_chrom, r2_resfrag, verbose)
+                interactionType = get_interaction_type(r1, r1_resfrag, r2, r2_resfrag, verbose)
                 dist = get_PE_fragment_size(r1, r2, r1_resfrag, r2_resfrag, interactionType)
                 cdist = get_cis_dist(r1, r2)
                 #print r1.qname + "\t" + r1_chrom + "\t" + str(get_read_pos(r1)) + "\t" + r2_chrom + "\t" + str(get_read_pos(r2)) + "\t" + str(dist) + "\t" + str(htag) + "\n"
@@ -626,6 +622,11 @@ if __name__ == "__main__":
 
             if cur_handler is not None:
                 if not r1.is_unmapped and not r2.is_unmapped:
+                    ##reorient reads to ease duplicates removal
+                    r1, r2 = get_ordered_reads(r1, r2)
+                    r1_chrom = samfile.getrname(r1.tid)
+                    r2_chrom = samfile.getrname(r2.tid)
+
                     cur_handler.write(
                         r1.qname + "\t" +
                         r1_chrom + "\t" +
@@ -655,7 +656,7 @@ if __name__ == "__main__":
                         str(get_read_pos(r2)) + "\t" +
                         str(get_read_strand(r2)) + "\t" +
                         str(dist) + "\n")
-
+                    
                 if samOut:
                     r1.tags = r1.tags + [('CT', str(interactionType))]
                     r2.tags = r2.tags + [('CT', str(interactionType))]

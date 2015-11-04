@@ -8,8 +8,8 @@
 ## See the LICENCE file for details
 
 ##
-## assignRead2bins.sh
-## Launcher for assignRead2bins.pl script
+## build_raw_maps.sh
+## Launcher for build_matrix C++ code
 ##
 
 dir=$(dirname $0)
@@ -59,18 +59,34 @@ do
 	MATRIX_DIR=${MAPC_OUTPUT}/matrix/${RES_FILE_NAME}/raw
 	for bsize in ${BIN_SIZE}
 	do
+	    if [[ ${bsize} == -1 ]]; then
+		GENOME_FRAGMENT_FILE=`abspath $GENOME_FRAGMENT`
+		if [[ $GENOME_FRAGMENT == "" || ! -f $GENOME_FRAGMENT_FILE ]]; then
+		    GENOME_FRAGMENT_FILE=$ANNOT_DIR/$GENOME_FRAGMENT
+		    if [[ ! -f $GENOME_FRAGMENT_FILE ]]; then
+			echo "GENOME_FRAGMENT not found. Cannot generate fragment level Hi-C map"
+			exit 1
+		    fi
+		fi
+		bsize="rfbin"
+	    fi
+	    
 	    mkdir -p ${MATRIX_DIR}/${bsize}
 
 	    ## Build haplotype contact maps if specified
 	    if [[ ! -z ${ALLELE_SPECIFIC_SNP} ]]; then
-		#awk -F"\t" '$9~/1-0|0-1|1-1/{print}' ${DATA_DIR}/${RES_FILE_NAME}/${RES_FILE_NAME}_allValidPairs | ${SCRIPTS}/build_matrix --matrix-format ${MATRIX_FORMAT} --binsize ${bsize} --chrsizes $ANNOT_DIR/$GENOME_SIZE --ifile /dev/stdin --oprefix ${MATRIX_DIR}/${bsize}/${RES_FILE_NAME}_${bsize}_G1 2> ${LDIR}/build_raw_maps_G1.log
-		#awk -F"\t" '$9~/2-0|0-2|2-2/{print}' ${DATA_DIR}/${RES_FILE_NAME}/${RES_FILE_NAME}_allValidPairs | ${SCRIPTS}/build_matrix --matrix-format ${MATRIX_FORMAT} --binsize ${bsize} --chrsizes $ANNOT_DIR/$GENOME_SIZE --ifile /dev/stdin --oprefix ${MATRIX_DIR}/${bsize}/${RES_FILE_NAME}_${bsize}_G2 2> ${LDIR}/build_raw_maps_G2.log
 	    	cat ${DATA_DIR}/${RES_FILE_NAME}/${RES_FILE_NAME}_allValidPairs_G1 | ${SCRIPTS}/build_matrix --matrix-format ${MATRIX_FORMAT} --binsize ${bsize} --chrsizes $GENOME_SIZE_FILE --ifile /dev/stdin --oprefix ${MATRIX_DIR}/${bsize}/${RES_FILE_NAME}_${bsize}_G1 2> ${LDIR}/build_raw_maps_G1.log
 		cat ${DATA_DIR}/${RES_FILE_NAME}/${RES_FILE_NAME}_allValidPairs_G2 | ${SCRIPTS}/build_matrix --matrix-format ${MATRIX_FORMAT} --binsize ${bsize} --chrsizes $GENOME_SIZE_FILE --ifile /dev/stdin --oprefix ${MATRIX_DIR}/${bsize}/${RES_FILE_NAME}_${bsize}_G2 2> ${LDIR}/build_raw_maps_G2.log
 
 	    else
 		## Build normal diploid maps
-		cat ${DATA_DIR}/${RES_FILE_NAME}/${RES_FILE_NAME}_allValidPairs | ${SCRIPTS}/build_matrix --matrix-format ${MATRIX_FORMAT} --binsize ${bsize} --chrsizes $GENOME_SIZE_FILE --ifile /dev/stdin --oprefix ${MATRIX_DIR}/${bsize}/${RES_FILE_NAME}_${bsize} 2> ${LDIR}/build_raw_maps.log
+		## RS resolution
+		if [[ ${bsize} == "rfbin" ]]; then
+		    cat ${DATA_DIR}/${RES_FILE_NAME}/${RES_FILE_NAME}_allValidPairs | ${SCRIPTS}/build_matrix --binfile ${GENOME_FRAGMENT_FILE} --chrsizes $GENOME_SIZE_FILE --ifile /dev/stdin --oprefix ${MATRIX_DIR}/${bsize}/${RES_FILE_NAME}_${bsize} --matrix-format ${MATRIX_FORMAT} 2> ${LDIR}/build_raw_maps.log
+		## Bin resolution
+		else
+		    cat ${DATA_DIR}/${RES_FILE_NAME}/${RES_FILE_NAME}_allValidPairs | ${SCRIPTS}/build_matrix --binsize ${bsize} --chrsizes $GENOME_SIZE_FILE --ifile /dev/stdin --oprefix ${MATRIX_DIR}/${bsize}/${RES_FILE_NAME}_${bsize} --matrix-format ${MATRIX_FORMAT}  --progress 2> ${LDIR}/build_raw_maps.log
+		fi
 	    fi
 	done
     fi

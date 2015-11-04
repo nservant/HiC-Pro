@@ -1,9 +1,21 @@
 ***********************************
-CHANGES IN VERSION 2.7.1
+CHANGES IN VERSION 2.7.1b
+
+NEW FEATURES
+
+   o Can now generate raw contact maps at the restriction fragment resolution (build_matrix v1.2). To do so, specified a BIN_SIZE=-1. Note that in pratice ICE will be run on these matrices too although its assumption of the equal visibility across bins may require further exploration in the present case.
+
+   o New version of the iced package 0.2.1
 
 SIGNIFICANT USER-VISIBLE CHANGES
 
-   o New version of iced package 0.2.1
+   o Change default behavior of split_reads.py utility (output = "./", nreads=20e6)
+
+   o ALLELE_SPECIFIC_SNP file will be detected using the full absolute path or in the annotation folder
+
+   o R1 and R2 reads are now ordered by genomic position in the validPairs files. This might have an impact on the duplicates level
+
+   o BIN_STEP variable from the configuration file is now deprecated
 
 BUG FIXES
 

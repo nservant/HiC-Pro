@@ -10,8 +10,8 @@ import re
 
 parser = argparse.ArgumentParser()
 parser.add_argument("filename")
-parser.add_argument("--results_folder", "-r")
-parser.add_argument("--nreads", "-n", default=10000000)
+parser.add_argument("--results_folder", "-r", default="./")
+parser.add_argument("--nreads", "-n", default=20000000)
 args = parser.parse_args()
 
 filename = args.filename
