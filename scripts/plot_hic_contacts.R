@@ -75,7 +75,7 @@ plotDedup <- function(mat, sampleName="", legend=TRUE){
   gp <- ggplot(mat, aes(x=p, as.numeric(count), fill=as.character(lab))) +
     geom_bar(width=.7,stat="identity", colour="gray") +
       theme(axis.title=element_text(face="bold", size=6), axis.ticks = element_blank(), axis.text.y = element_text(size=5), axis.text.x = element_blank()) +
-          xlab(sampleName) + ylab("Reads Count")  +
+          xlab(sampleName) + ylab("Read Counts")  +
             geom_text(aes(x=p, y=as.numeric(pos), label=paste(perc,"%")),fontface="bold", size=2) +
                 ggtitle("Valid Pairs - duplicates and contact ranges") + theme(plot.title = element_text(lineheight=.8, face="bold", size=6))
 
@@ -99,7 +99,7 @@ plotDistanceHist <- function(mat, sampleName="", n=""){
      geom_bar(stat="identity", alpha=.5, color="darkgray", fill="blue4")+
       theme(axis.title=element_text(face="bold", size=6), axis.text.y = element_text(size=5), axis.text.x = element_text(size=5)) + 
       scale_x_continuous(breaks=c(seq(0, 500, by=50), seq(from = 600, to = 1500, by = 200), 1500), labels=c(seq(0, 500, by=50), seq(from = 600, to = 1500, by = 200), ">1500"))+
-      xlab(sampleName) + ylab(paste0("Reads Count - subset of ", n, " interactions")) +
+      xlab(sampleName) + ylab(paste0("Read Counts - subset of ", n, " interactions")) +
       ggtitle("Valid Pairs - Fragment size distribution") + theme(plot.title = element_text(lineheight=.8, face="bold", size=6))
 gp
 }

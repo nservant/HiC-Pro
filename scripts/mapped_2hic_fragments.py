@@ -123,17 +123,20 @@ def get_read_pos(read):
     read : list
         list of aligned reads
     """
-    # 5 end
-    # if (read.is_reverse):
-    #    pos = read.pos + read.alen + 1 # (50 - 5) + 1 # zero-based transformation
-    # else:
-    #    pos = read.pos
-
-    # Middle of the reads
     pos = read.pos + read.alen/2
 
     return pos
 
+
+def get_read_start(read):
+    """
+    Return the 5' end of the read
+    """
+    if read.is_reverse:
+        pos = read.pos + read.alen
+    else:
+        pos = read.pos
+    return pos
 
 def get_ordered_reads(read1, read2):
     """
@@ -225,11 +228,11 @@ def get_overlapping_restriction_fragment(resFrag, chrom, read):
     read = the read to intersect [AlignedRead]
 
     """
-    # Get 5' end
+    # Get read position (middle or 5' end)
     pos = get_read_pos(read)
     
     if chrom in resFrag.keys():
-        # Overlap with the 5' end of the read (zero-based)
+        # Overlap with the position of the read (zero-based)
         resfrag = resFrag[chrom].find(pos, pos+1)
         if len(resfrag) > 1:
             print "Warning : ", len(resfrag), " restriction fragments found for ", read.qname, "- skipped"
@@ -327,8 +330,9 @@ def get_PE_fragment_size(read1, read2, resFrag1, resFrag2, interactionType):
             rfrag1 = resFrag1
             rfrag2 = resFrag2
 
-        r1pos = get_read_pos(r1)
-        r2pos = get_read_pos(r2)
+        ## In this case used the read 3' end !
+        r1pos = get_read_start(r1)
+        r2pos = get_read_start(r2)
 
         if interactionType == "DE":
             fragmentsize = r2pos - r1pos
@@ -348,7 +352,8 @@ def get_PE_fragment_size(read1, read2, resFrag1, resFrag2, interactionType):
     return fragmentsize
 
 
-def get_interaction_type(read1,resfrag1, read2, resfrag2, verbose):
+def get_interaction_type(read1, read1_chrom, resfrag1, read2,
+                         read2_chrom, resfrag2, verbose):
     """
     Returns the interaction type
 
@@ -362,8 +367,10 @@ def get_interaction_type(read1,resfrag1, read2, resfrag2, verbose):
 
     ##
     read1 = the R1 read of the pair [AlignedRead]
+    read1_chrom = the chromosome of R1 read [character]
     resfrag1 = restrictin fragment overlapping the R1 read [interval]
     read2 = the R2 read of the pair [AlignedRead]
+    read2_chrom = the chromosome of R2 read [character]
     resfrag2 = restrictin fragment overlapping the R2 read [interval]
     verbose = verbose mode [logical]
 
@@ -543,7 +550,8 @@ if __name__ == "__main__":
 
 
             if r1_resfrag is not None or r2_resfrag is not None:
-                interactionType = get_interaction_type(r1, r1_resfrag, r2, r2_resfrag, verbose)
+
+                interactionType = get_interaction_type(r1, r1_chrom, r1_resfrag, r2, r2_chrom, r2_resfrag, verbose)
                 dist = get_PE_fragment_size(r1, r2, r1_resfrag, r2_resfrag, interactionType)
                 cdist = get_cis_dist(r1, r2)
                 #print r1.qname + "\t" + r1_chrom + "\t" + str(get_read_pos(r1)) + "\t" + r2_chrom + "\t" + str(get_read_pos(r2)) + "\t" + str(dist) + "\t" + str(htag) + "\n"
@@ -622,11 +630,6 @@ if __name__ == "__main__":
 
             if cur_handler is not None:
                 if not r1.is_unmapped and not r2.is_unmapped:
-                    ##reorient reads to ease duplicates removal
-                    r1, r2 = get_ordered_reads(r1, r2)
-                    r1_chrom = samfile.getrname(r1.tid)
-                    r2_chrom = samfile.getrname(r2.tid)
-
                     cur_handler.write(
                         r1.qname + "\t" +
                         r1_chrom + "\t" +
@@ -656,7 +659,7 @@ if __name__ == "__main__":
                         str(get_read_pos(r2)) + "\t" +
                         str(get_read_strand(r2)) + "\t" +
                         str(dist) + "\n")
-                    
+
                 if samOut:
                     r1.tags = r1.tags + [('CT', str(interactionType))]
                     r2.tags = r2.tags + [('CT', str(interactionType))]

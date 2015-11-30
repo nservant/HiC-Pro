@@ -96,10 +96,10 @@ plotPairStat <- function(mat, xlab="", legend=TRUE){
   gp <-ggplot(mat, aes(x=p, as.numeric(count), fill=as.character(lab))) +
     geom_bar(width=.7,stat="identity", colour="gray") + 
       theme(axis.title=element_text(face="bold", size=6), axis.ticks = element_blank(),  axis.text.y = element_text(size=5), axis.text.x = element_text(size=6))+
-        xlab(xlab) + ylab("Reads Count") +
+        xlab(xlab) + ylab("Read Counts") +
             scale_x_discrete(breaks=c("1", "2"), labels=c("All Pairs","Filtered Pairs"))+
               geom_text(aes(x=p, y=as.numeric(pos), label=paste(perc,"%")),fontface="bold", size=2) +
-                ggtitle("Statistics after reads pairing") + theme(plot.title = element_text(lineheight=.8, face="bold", size=6))
+                ggtitle("Statistics after read pairing") + theme(plot.title = element_text(lineheight=.8, face="bold", size=6))
 
   if (legend){
     scol <- mat$selcol

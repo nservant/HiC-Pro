@@ -106,7 +106,7 @@ ploMapStat <- function(mat, sampleName="", tag="", legend=TRUE){
   require(grid)
   
   sel.colours <- brewer.pal(6,"Blues")
-  tit <- "Statistics of Reads Alignment"
+  tit <- "Statistics of Read Alignments"
   if (tag != ""){
     tit <- paste0(tit," - ", tag," Tags")
   }
@@ -115,12 +115,12 @@ ploMapStat <- function(mat, sampleName="", tag="", legend=TRUE){
   gp <- ggplot(mat, aes(x=p, as.numeric(count), fill=as.character(lab))) +
     geom_bar(width=.7,stat="identity", colour="gray") +
       theme(axis.title=element_text(face="bold", size=6), axis.ticks = element_blank(), axis.text.y = element_text(size=5), axis.text.x = element_blank()) +
-          xlab(sampleName) + ylab("Reads Count")  +
+          xlab(sampleName) + ylab("Read Counts")  +
             geom_text(aes(x=p, y=as.numeric(pos), label=paste(perc,"%")),fontface="bold", size=2)+
                 ggtitle(tit) + theme(plot.title = element_text(lineheight=.8, face="bold", size=6))
 
   if (legend){
-    gp = gp + scale_fill_manual(values=c(sel.colours[2:4], "darkgray"), labels = c("Full reads mapping (%)",  "Trimmed reads Mapping (%)", "Aligned reads (%)", "Not aligned (%)")) + guides(fill=guide_legend(title="")) + theme(plot.margin=unit(x=c(1,0,0,0), units="cm"), legend.position="bottom", legend.margin=unit(.5,"cm"), legend.text=element_text(size=4))
+    gp = gp + scale_fill_manual(values=c(sel.colours[2:4], "darkgray"), labels = c("Full read mapping (%)",  "Trimmed read Mapping (%)", "Aligned reads (%)", "Not aligned (%)")) + guides(fill=guide_legend(title="")) + theme(plot.margin=unit(x=c(1,0,0,0), units="cm"), legend.position="bottom", legend.margin=unit(.5,"cm"), legend.text=element_text(size=4))
   }else{
     gp = gp + scale_fill_manual(values=c(sel.colours[2:4], "darkgray")) + theme(plot.margin=unit(c(1,0,1.9,0),"cm"))+ guides(fill=FALSE)
   }

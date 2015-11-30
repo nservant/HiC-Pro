@@ -3,11 +3,15 @@ CHANGES IN VERSION 2.7.1b
 
 NEW FEATURES
 
+   o Add new stepwise option "merge_persample". Migth be useful in some case to merge the different samples and remove the duplicates if specified in the config files. This step is also run in the "build_contact_map" steps, before generating the contact maps.
+
    o Can now generate raw contact maps at the restriction fragment resolution (build_matrix v1.2). To do so, specified a BIN_SIZE=-1. Note that in pratice ICE will be run on these matrices too although its assumption of the equal visibility across bins may require further exploration in the present case.
 
    o New version of the iced package 0.2.1
 
 SIGNIFICANT USER-VISIBLE CHANGES
+
+   o Change in the calculation of insert size distribution. The length of DNA fragment after ligation are now calculated using the read start. In the previous version, we used the middle of the read as starting point. The insert size was therefore shifted by a factor equal to the read length
 
    o Change default behavior of split_reads.py utility (output = "./", nreads=20e6)
 
@@ -17,7 +21,11 @@ SIGNIFICANT USER-VISIBLE CHANGES
 
    o BIN_STEP variable from the configuration file is now deprecated
 
+   o Update some graphical labels
+
 BUG FIXES
+
+   o Bug fix in C++ compilation. Add sys/stat.h inclusion
 
    o Fix bug in ice normalization. FILTER_HIGH_COUNT_PERC were not considered in ice_norm.sh
 

@@ -57,6 +57,7 @@ then
     ## Remove per sample steps
     if [[ $MAKE_OPTS != "" ]]; then 
 	make_target=$(echo $MAKE_OPTS | sed -e 's/,/ /g'); 
+	make_target=$(echo $make_target | sed -e 's/merge_persample//g');
 	make_target=$(echo $make_target | sed -e 's/build_contact_maps//g');
 	make_target=$(echo $make_target | sed -e 's/ice_norm//g');
         make_target=$(echo $make_target | sed -e 's/quality_checks//g');

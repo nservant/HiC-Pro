@@ -17,6 +17,8 @@
 #include <math.h>
 #include <fcntl.h>
 #include <unistd.h>
+#include <sys/stat.h>
+
 
 static const int SPARSE_FMT = 0x1;
 static const int BED_FMT = 0x2;

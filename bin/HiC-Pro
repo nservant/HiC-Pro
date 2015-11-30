@@ -30,7 +30,8 @@ function help {
     echo "      mapping: perform reads alignment"
     echo "      proc_hic: perform Hi-C filtering"
     echo "      quality_checks: run Hi-C quality control plots"
-    echo "      build_contact_maps: merge multiple inputs and build raw inter/intrachromosomal contact maps"
+    echo "      merge_persample: merge multiple inputs and remove duplicates if specified"
+    echo "      build_contact_maps: run merge_persample and build raw inter/intrachromosomal contact maps"
     echo "      ice_norm : run ICE normalization on contact maps"
     echo "   [-h|--help]: help"
     echo "   [-v|--version]: version"
@@ -156,9 +157,9 @@ fi
 ## Check step option
 #####################
 MAKE_OPTS=$(echo $MAKE_OPTS | sed -e 's/^ //')
-AVAILABLE_STEP_ARRAY=("mapping" "proc_hic" "quality_checks" "build_contact_maps" "ice_norm")
+AVAILABLE_STEP_ARRAY=("mapping" "proc_hic" "quality_checks" "merge_persample" "build_contact_maps" "ice_norm")
 NEED_BAM_STEP_ARRAY=("proc_hic")
-NEED_VALID_STEP_ARRAY=("build_contact_maps")
+NEED_VALID_STEP_ARRAY=("merge_persample" "build_contact_maps")
 NEED_MAT_STEP_ARRAY=("ice_norm")
 NEED_FASTQ_STEP_ARRAY=("mapping")
 NEED_ANY_STEP_ARRAY=("quality_checks")
