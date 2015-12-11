@@ -499,8 +499,7 @@ if __name__ == "__main__":
         handle_de = open(outputDir + '/' + baseReadsFile + '.DEPairs', 'w')
         handle_sc = open(outputDir + '/' + baseReadsFile + '.SCPairs', 'w')
         handle_dump = open(outputDir + '/' + baseReadsFile + '.DumpPairs', 'w')
-        handle_single = open(outputDir + '/' + baseReadsFile + '.SinglePairs',
-                             'w')
+        handle_single = open(outputDir + '/' + baseReadsFile + '.SinglePairs', 'w')
 
     # Read the BED file
     resFrag = load_restriction_fragment(fragmentFile, minFragSize, maxFragSize, verbose)
@@ -512,10 +511,8 @@ if __name__ == "__main__":
     samfile = pysam.Samfile(mappedReadsFile, "rb")
 
     if samOut:
-        handle_sam = open(
-            outputDir + '/' + baseReadsFile + '_interaction.sam', 'w')
-        handle_sam = pysam.Samfile(
-            outputDir + '/' + baseReadsFile + '_interaction.sam',
+        handle_sam = open(outputDir + '/' + baseReadsFile + '_interaction.sam', 'w')
+        handle_sam = pysam.Samfile(outputDir + '/' + baseReadsFile + '_interaction.sam',
             "wh", header=samfile.header)
 
     # Reads are 0-based too (for both SAM and BAM format)
@@ -630,6 +627,12 @@ if __name__ == "__main__":
 
             if cur_handler is not None:
                 if not r1.is_unmapped and not r2.is_unmapped:
+                    
+                    ##reorient reads to ease duplicates removal
+                    r1, r2 = get_ordered_reads(r1, r2)
+                    r1_chrom = samfile.getrname(r1.tid)
+                    r2_chrom = samfile.getrname(r2.tid)
+
                     cur_handler.write(
                         r1.qname + "\t" +
                         r1_chrom + "\t" +
