@@ -195,6 +195,7 @@ get_hic_files()
     local ext=$2
     if [ ! -z "$PBS_ARRAYID" ]; then TASKID=$PBS_ARRAYID; fi
     if [ ! -z "$SGE_TASK_ID" ]; then TASKID=$SGE_TASK_ID; fi
+    if [ ! -z "$SLURM_ARRAY_TASK_ID" ]; then TASKID=$SLURM_ARRAY_TASK_ID; fi
     if [ ! -z "$FASTQFILE" ]; then
 	if [ ! -z "$TASKID" ]; then
 	    local input_data_type=$(get_data_type)
