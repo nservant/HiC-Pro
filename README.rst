@@ -55,19 +55,21 @@ Bowtie >2.2.2 is strongly recommanded for allele specific analysis.
 | Note that if some of these dependencies are not installed (i.e. not detected in the $PATH), HiC-Pro will try to install them.
 | You can also edit the *config-install.txt* file and manually defined the paths to dependencies.
 
-+---------------+------------------------------------------------------------+
-| SYSTEM CONFIGURATION                                                       |
-+===============+============================================================+
-| PREFIX        | Installation path                                          |
-+---------------+------------------------------------------------------------+
-| BOWTIE2_PATH  | Full path the bowtie2 installation directory               |
-+---------------+------------------------------------------------------------+
-| SAMTOOLS_PATH | Full path to the samtools installation directory (>0.1.19) |
-+---------------+------------------------------------------------------------+
-| R_PATH        | Full path to the R installation directory                  |
-+---------------+------------------------------------------------------------+
-| PYTHON_PATH   | Full path to the python installation directory (>2.7)      |
-+---------------+------------------------------------------------------------+
++---------------+------------------------------------------------------------------------+
+| SYSTEM CONFIGURATION                                                                   |
++===============+========================================================================+
+| PREFIX        | Installation path                                                      |
++---------------+------------------------------------------------------------------------+
+| BOWTIE2_PATH  | Full path the bowtie2 installation directory                           |
++---------------+------------------------------------------------------------------------+
+| SAMTOOLS_PATH | Full path to the samtools installation directory (>0.1.19)             |
++---------------+------------------------------------------------------------------------+
+| R_PATH        | Full path to the R installation directory                              |
++---------------+------------------------------------------------------------------------+
+| PYTHON_PATH   | Full path to the python installation directory (>2.7)                  |
++---------------+------------------------------------------------------------------------+
+| CLUSTER_SYS   | Scheduler to use for cluster submission. Must be TORQUE, SGE or SLURM  |
++---------------+------------------------------------------------------------------------+
 
 
 Annotation Files
@@ -127,7 +129,7 @@ How to use it ?
    -i|--input INPUT : input data folder; Must contains a folder per sample with input files
    -o|--output OUTPUT : output folder
    -c|--conf CONFIG : configuration file for Hi-C processing
-   [-p|--parallel] : if specified run HiC-Pro in PBS/Torque mode
+   [-p|--parallel] : if specified run HiC-Pro on a cluster
    [-s|--step ANALYSIS_STEP] : run only a subset of the HiC-Pro workflow; if not specified the complete workflow is run
       mapping: perform reads alignment
       proc_hic: perform Hi-C filtering
@@ -148,7 +150,7 @@ How to use it ?
     MY_INSTALL_PATH/bin/HiC-Pro -i FULL_PATH_TO_RAW_DATA -o FULL_PATH_TO_OUTPUTS -c MY_LOCAL_CONFIG_FILE
 
 
-* **Using a cluster (PBS)**
+* **Using a cluster (TORQUE/SGE/SLURM)**
 
 .. code-block:: guess
 

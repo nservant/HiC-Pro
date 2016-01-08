@@ -8,7 +8,7 @@
 HiC-Pro Manual
 ******************
 Modified - 09th September 2015
-Reference version - HiC-Pro 2.7.0
+Reference version - HiC-Pro 2.7.2
 
 Setting the configuration file
 ==============================
@@ -16,19 +16,19 @@ Setting the configuration file
 1. Copy and edit the configuration file *'config-hicpro.txt'* in your local folder. The '[]' options are optional and can be undefined.
 
 +----------------+----------------------------------------+
-| SET UP SYSTEM AND PBS/TORQUE MODE                       |
+| SET UP SYSTEM AND CLUSTER MODE                          |
 +================+========================================+
 | N_CPU          | Number of CPU allows per job           |
 +----------------+----------------------------------------+
 | LOGFILE        | Name of the main log file              |
 +----------------+----------------------------------------+
-| [PBS_SUFFIX]   | Name of PBS/Torque job on the custer   |
+| [JOB_NAME  ]   | Name of the job on the custer          |
 +----------------+----------------------------------------+
-| [PBS_MEM]      | Memory (RAM) required per job          |
+| [JOB_MEM]      | Memory (RAM) required per job          |
 +----------------+----------------------------------------+
-| [PBS_WALLTIME] | WallTime allows per job                |
+| [JOB_WALLTIME] | WallTime allows per job                |
 +----------------+----------------------------------------+
-| [PBS_MAIL]     | User mail for PBS/Torque report        |
+| [JOB_MAIL]     | User mail for PBS/Torque report        |
 +----------------+----------------------------------------+
 
 ------------
@@ -160,7 +160,7 @@ Available steps are described in the help command.
    -i|--input INPUT : input data folder; Must contains a folder per sample with input files
    -o|--output OUTPUT : output folder
    -c|--conf CONFIG : configuration file for Hi-C processing
-   [-p|--parallel] : if specified run HiC-Pro in PBS/Torque mode
+   [-p|--parallel] : if specified run HiC-Pro on a cluster
    [-s|--step ANALYSIS_STEP] : run only a subset of the HiC-Pro workflow; if not specified the complete workflow is run
       mapping: perform reads alignment
       proc_hic: perform Hi-C filtering
