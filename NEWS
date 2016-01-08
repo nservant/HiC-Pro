@@ -1,5 +1,19 @@
+
 ***********************************
-CHANGES IN VERSION 2.7.1b
+CHANGES IN VERSION 2.7.2b
+
+NEW FEATURES
+
+   o Add support for the SGE scheduler thanks to Guipeng Li !
+
+SIGNIFICANT USER-VISIBLE CHANGES
+
+   o be careful - configuration files for installing and running HiC-Pro have been updated to manage multiple scheduler !
+
+
+
+***********************************
+CHANGES IN VERSION 2.7.1
 
 NEW FEATURES
 

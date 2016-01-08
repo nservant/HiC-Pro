@@ -370,6 +370,23 @@ echo "SCRIPTS = ${install_dir}/scripts" >> config-system.txt
 echo "SOURCES = ${install_dir}/scripts/src" >> config-system.txt
 echo "ANNOT_DIR = ${install_dir}/annotation" >> config-system.txt
 
+## deal with scheduler system
+if [ -z "$CLUSTER_SYS" ]; then 
+    echo -e "$RED""Warning : Scheduler system not defined - Default is Torque/PBS""$NORMAL"
+    CLUSTER_SYS="TORQUE"; 
+fi
+if [ $CLUSTER_SYS == "TORQUE" ]; then 
+    #ln -s scripts/make_torque_scripts.sh scripts/make_cluster_scripts.sh
+    echo "CLUSTER_SCRIPT = ${install_dir}/scripts/make_torque_script.sh" >> config-system.txt
+    echo -e "$BLUE""Configuration for TORQUE/PBS system.""$NORMAL"
+elif [ $CLUSTER_SYS == "SGE" ]; then 
+    #ln -s scripts/make_sge_scripts.sh scripts/make_cluster_scripts.sh
+    echo "CLUSTER_SCRIPT = ${install_dir}/scripts/make_sge_script.sh" >> config-system.txt
+    echo -e "$BLUE""Configuration for SGE system.""$NORMAL"
+else
+    die "$CLUSTER_SYS unknown. Only 'TORQUE' and 'SGE' system are supported for now. Please change the CLUSTER_SYS variable and re-run the installation process. Exit."
+fi
+
 ## check rights in PREFIX folder
 if [[ -z $PREFIX ]]; then PREFIX=/local/bin; fi
 if [ ! -w $PREFIX ]; then

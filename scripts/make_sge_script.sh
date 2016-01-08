@@ -2,13 +2,13 @@
 
 ## HiC-Pro
 ## Copyright (c) 2015 Institut Curie                               
-## Author(s): Nicolas Servant, Eric Viara
+## Author(s): Guipeng Li, Nicolas Servant 
 ## Contact: nicolas.servant@curie.fr
 ## This software is distributed without any guarantee under the terms of the BSD-3 licence.
 ## See the LICENCE file for details
 
 ##
-## Create PBS Torque files
+## Create SGE files
 ##
 
 dir=$(dirname $0)
@@ -64,30 +64,31 @@ then
     fi
  
     ## step 1 - parallel
-    torque_script=HiCPro_step1_${JOB_NAME}.sh
+    sge_script=HiCPro_step1_${JOB_NAME}.sh
     PPN=$(( ${N_CPU} * 2))
-    cat > ${torque_script} <<EOF
+    cat > ${sge_script} <<EOF
 #!/bin/bash
-#PBS -l nodes=1:ppn=${PPN},mem=${JOB_MEM},walltime=${JOB_WALLTIME}
-#PBS -M ${JOB_MAIL}
-#PBS -m ae
-#PBS -j eo
-#PBS -N HiCpro_s1_${JOB_NAME}
-#PBS -q ${JOB_QUEUE}
-#PBS -V
-#PBS -t 1-$count
+#$ -l h_vmem=${JOB_MEM}
+#$ -l h_rt=${JOB_WALLTIME}
+#$ -M ${JOB_MAIL}
+#$ -m ae
+#$ -j y
+#$ -N HiCpro_s1_${JOB_NAME}
+##$ -q ${JOB_QUEUE}
+#$ -V
+#$ -t 1-$count
+#$ -pe shm ${PPN}
+#$ -cwd
 
-cd \$PBS_O_WORKDIR
-
-FASTQFILE=\$PBS_O_WORKDIR/$inputfile; export FASTQFILE
+FASTQFILE=$inputfile; export FASTQFILE
 make --file ${SCRIPTS}/Makefile CONFIG_FILE=${conf_file} CONFIG_SYS=${INSTALL_PATH}/config-system.txt $make_target 2>&1
 EOF
     
-    chmod +x ${torque_script}
+    chmod +x ${sge_script}
 
     ## User message
-    echo "The following command will launch the parallel workflow through $count torque jobs:"
-    echo qsub ${torque_script}
+    echo "The following command will launch the parallel workflow through $count sge jobs:"
+    echo qsub ${sge_script}
 fi    
 
 
@@ -103,25 +104,26 @@ then
 	make_target=$(echo $make_target | sed -e 's/proc_hic//g');
     fi
 
-    torque_script_s2=HiCPro_step2_${JOB_NAME}.sh
-    cat > ${torque_script_s2} <<EOF
+    sge_script_s2=HiCPro_step2_${JOB_NAME}.sh
+    cat > ${sge_script_s2} <<EOF
 #!/bin/bash
-#PBS -l nodes=1:ppn=1,mem=${JOB_MEM},walltime=${JOB_WALLTIME}
-#PBS -M ${JOB_MAIL}
-#PBS -m ae
-#PBS -j eo
-#PBS -N HiCpro_s2_${JOB_NAME}
-#PBS -q ${JOB_QUEUE}
-#PBS -V
+#$ -l h_vmem=${JOB_MEM}
+#$ -l h_rt=${JOB_WALLTIME}
+#$ -M ${JOB_MAIL}
+#$ -m ae
+#$ -j y
+#$ -N HiCpro_s2_${JOB_SUFFIX}
+##$ -q ${JOB_QUEUE}
+#$ -V
+#$ -cwd
 
-cd \$PBS_O_WORKDIR
 make --file ${SCRIPTS}/Makefile CONFIG_FILE=${conf_file} CONFIG_SYS=${INSTALL_PATH}/config-system.txt $make_target 2>&1
 EOF
     
-    chmod +x ${torque_script_s2}
+    chmod +x ${sge_script_s2}
 
     ## User message
     echo "The following command will merge the processed data and run the remaining steps per sample:"
-    echo qsub ${torque_script_s2}
+    echo qsub ${sge_script_s2}
 fi
 

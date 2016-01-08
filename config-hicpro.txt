@@ -11,16 +11,16 @@ MAPC_OUTPUT = hic_results
 RAW_DIR = rawdata
 
 #######################################################################
-## SYSTEM - PBS - Start Editing Here !!
+## SYSTEM AND SCHEDULER - Start Editing Here !!
 #######################################################################
 N_CPU = 2
 LOGFILE = hicpro.log
 
-PBS_SUFFIX = 
-PBS_MEM = 
-PBS_WALLTIME = 
-PBS_QUEUE = 
-PBS_MAIL = 
+JOB_NAME = 
+JOB_MEM = 
+JOB_WALLTIME = 
+JOB_QUEUE = 
+JOB_MAIL = 
 
 #########################################################################
 ## Data

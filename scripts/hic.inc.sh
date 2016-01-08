@@ -193,10 +193,12 @@ get_hic_files()
 {
     local idir=$1
     local ext=$2
+    if [ ! -z "$PBS_ARRAYID" ]; then TASKID=$PBS_ARRAYID; fi
+    if [ ! -z "$SGE_TASK_ID" ]; then TASKID=$SGE_TASK_ID; fi
     if [ ! -z "$FASTQFILE" ]; then
-	if [ ! -z "$PBS_ARRAYID" ]; then
+	if [ ! -z "$TASKID" ]; then
 	    local input_data_type=$(get_data_type)
-	    cat $FASTQFILE | filter_rawdir | filter_pairs | awk "NR == $PBS_ARRAYID {printf(\"%s/%s${ext}\n\", \"$idir\", gensub(\".${input_data_type}(.gz)*\", \"\", \$1));}"
+	    cat $FASTQFILE | filter_rawdir | filter_pairs | awk "NR == $TASKID {printf(\"%s/%s${ext}\n\", \"$idir\", gensub(\".${input_data_type}(.gz)*\", \"\", \$1));}"
 	    return
 	fi
 	local list=

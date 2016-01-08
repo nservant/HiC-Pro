@@ -48,11 +48,11 @@ else
 include $(CONFIG_SYS)
 endif
 
-make_torque_script: config_check init
+make_cluster_script: config_check init
 ifdef MAKE_OPTS
-	@$(SCRIPTS)/make_torque_script.sh -c $(CONFIG_FILE) -s $(MAKE_OPTS)
+	@$(CLUSTER_SCRIPT) -c $(CONFIG_FILE) -s $(MAKE_OPTS)
 else
-	@$(SCRIPTS)/make_torque_script.sh -c $(CONFIG_FILE)
+	@$(CLUSTER_SCRIPT) -c $(CONFIG_FILE)
 endif
 
 clean:
