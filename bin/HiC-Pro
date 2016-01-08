@@ -25,7 +25,7 @@ function help {
     echo "   -i|--input INPUT : input data folder; Must contains a folder per sample with input files"
     echo "   -o|--output OUTPUT : output folder"
     echo "   -c|--conf CONFIG : configuration file for Hi-C processing"
-    echo "   [-p|--parallel] : if specified run $SOFT in PBS/Torque mode"
+    echo "   [-p|--parallel] : if specified run $SOFT on a cluster"
     echo "   [-s|--step ANALYSIS_STEP] : run only a subset of the $SOFT workflow; if not specified the complete workflow is run"
     echo "      mapping: perform reads alignment"
     echo "      proc_hic: perform Hi-C filtering"
@@ -55,7 +55,7 @@ then
     exit
 fi
 
-PBS=0
+CLUSTER=0
 MAKE_OPTS=""
 INPUT=""
 OUTPUT=""
@@ -82,7 +82,7 @@ do
 	o) OUTPUT=$OPTARG;;
 	c) CONF=$OPTARG;;
 	s) MAKE_OPTS="$MAKE_OPTS $OPTARG";;
-	p) PBS=1 ;;
+	p) CLUSTER=1 ;;
 	v) version ;;
 	h) help ;;
 	\?)
@@ -266,7 +266,7 @@ cd $OUTPUT
 ## Run HiC-Pro
 ###################
 echo
-if [ $PBS == 0 ]; then
+if [ $CLUSTER == 0 ]; then
     echo "Run HiC-Pro "${VERSION}
     make --file $SCRIPTS_PATH/Makefile CONFIG_FILE=$CONF CONFIG_SYS=$INSTALL_PATH"/config-system.txt" init 2>&1
     make --file $SCRIPTS_PATH/Makefile CONFIG_FILE=$CONF CONFIG_SYS=$INSTALL_PATH"/config-system.txt" $MAKE_OPTS 2>&1
@@ -275,10 +275,10 @@ else
     if [[ $MAKE_OPTS != "" ]] 
     then	
 	MAKE_OPTS=$(echo $MAKE_OPTS | sed -e 's/ /,/g')
-	make --file $SCRIPTS_PATH/Makefile CONFIG_FILE=$CONF CONFIG_SYS=${INSTALL_PATH}/config-system.txt MAKE_OPTS=$MAKE_OPTS make_torque_script 2>&1
+	make --file $SCRIPTS_PATH/Makefile CONFIG_FILE=$CONF CONFIG_SYS=${INSTALL_PATH}/config-system.txt MAKE_OPTS=$MAKE_OPTS make_cluster_script 2>&1
 
     else
-    	make --file $SCRIPTS_PATH/Makefile CONFIG_FILE=$CONF CONFIG_SYS=${INSTALL_PATH}/config-system.txt make_torque_script 2>&1
+    	make --file $SCRIPTS_PATH/Makefile CONFIG_FILE=$CONF CONFIG_SYS=${INSTALL_PATH}/config-system.txt make_cluster_script 2>&1
     fi
 fi
 
