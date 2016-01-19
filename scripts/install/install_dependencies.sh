@@ -383,8 +383,12 @@ elif [ $CLUSTER_SYS == "SGE" ]; then
     #ln -s scripts/make_sge_scripts.sh scripts/make_cluster_scripts.sh
     echo "CLUSTER_SCRIPT = ${install_dir}/scripts/make_sge_script.sh" >> config-system.txt
     echo -e "$BLUE""Configuration for SGE system.""$NORMAL"
+elif [ $CLUSTER_SYS == "SLURM" ]; then 
+    #ln -s scripts/make_sge_scripts.sh scripts/make_cluster_scripts.sh
+    echo "CLUSTER_SCRIPT = ${install_dir}/scripts/make_slurm_script.sh" >> config-system.txt
+    echo -e "$BLUE""Configuration for SLURM system.""$NORMAL"
 else
-    die "$CLUSTER_SYS unknown. Only 'TORQUE' and 'SGE' system are supported for now. Please change the CLUSTER_SYS variable and re-run the installation process. Exit."
+    die "$CLUSTER_SYS unknown. 'TORQUE/SGE/SLURM' systems are currently supported for now. Please change the CLUSTER_SYS variable and re-run the installation process. Exit."
 fi
 
 ## check rights in PREFIX folder
