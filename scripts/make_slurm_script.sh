@@ -71,7 +71,7 @@ then
 #SBATCH -N 1
 #SBATCH -n ${PPN}
 #SBATCH -t ${JOB_WALLTIME}
-#SBATCH -mem-per-cpu=${JOB_MEM}
+#SBATCH --mem-per-cpu=${JOB_MEM}
 #SBATCH -p ${JOB_QUEUE}
 
 #SBATCH --mail-user=${JOB_MAIL}
@@ -118,7 +118,6 @@ then
 #SBATCH --mail-type=end
 #SBATCH --job-name=HiCpro_s1_${JOB_NAME}
 #SBATCH --export=ALL
-#SBATCH --array=1-$count
 
 cd \$SLURM_SUBMIT_DIR
 
