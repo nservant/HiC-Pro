@@ -31,20 +31,21 @@ Others have to be installed before starting the installation :
 
 1 - Edit the config-install.txt file and set the paths. If not set, the dependencies will be sought in the $PATH and defined using the 'which' command.
 
-+---------------+------------------------------------------------------------+
-| SYSTEM CONFIGURATION                                                       |
-+===============+============================================================+
-| PREFIX        | Installation path - default /usr/bin                       |
-+---------------+------------------------------------------------------------+
-| BOWTIE2_PATH  | Full path the bowtie2 installation directory               |
-+---------------+------------------------------------------------------------+
-| SAMTOOLS_PATH | Full path to the samtools installation directory (>0.1.18) |
-+---------------+------------------------------------------------------------+
-| R_PATH        | Full path to the R installation directory                  |
-+---------------+------------------------------------------------------------+
-| PYTHON_PATH   | Full path to the python installation directory (2.7.0)     |
-+---------------+------------------------------------------------------------+
-
++---------------+------------------------------------------------------------------------+
+| SYSTEM CONFIGURATION                                                                   |
++===============+========================================================================+
+| PREFIX        | Installation path                                                      |
++---------------+------------------------------------------------------------------------+
+| BOWTIE2_PATH  | Full path the bowtie2 installation directory                           |
++---------------+------------------------------------------------------------------------+
+| SAMTOOLS_PATH | Full path to the samtools installation directory (>0.1.19)             |
++---------------+------------------------------------------------------------------------+
+| R_PATH        | Full path to the R installation directory                              |
++---------------+------------------------------------------------------------------------+
+| PYTHON_PATH   | Full path to the python installation directory (>2.7)                  |
++---------------+------------------------------------------------------------------------+
+| CLUSTER_SYS   | Scheduler to use for cluster submission. Must be TORQUE, SGE or SLURM  |
++---------------+------------------------------------------------------------------------+
 
 2 - make CONFIG_SYS=config-install.txt install
 

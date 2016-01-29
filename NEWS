@@ -1,3 +1,14 @@
+***********************************
+CHANGES IN VERSION 2.7.3b
+
+NEW FEATURES
+
+BUG FIXES
+
+   o Update samtools sort for compatibility with version >1.1
+
+SIGNIFICANT USER-VISIBLE CHANGES
+
 
 ***********************************
 CHANGES IN VERSION 2.7.2b
