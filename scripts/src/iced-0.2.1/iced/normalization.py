@@ -91,7 +91,9 @@ def ICE_normalization(X, SS=None, max_iter=3000, eps=1e-4, copy=True,
         else:
             X /= dbias * dbias.T
 
+        bias *= np.sqrt(X.mean() / mean)
         X *= mean / X.mean()
+
         if old_dbias is not None and np.abs(old_dbias - dbias).sum() < eps:
             if verbose > 1:
                 print("break at iteration %d" % (it,))
@@ -101,9 +103,6 @@ def ICE_normalization(X, SS=None, max_iter=3000, eps=1e-4, copy=True,
             print('ICE at iteration %d %s' %
                   (it, np.abs(old_dbias - dbias).sum()))
 
-        # Rescaling X so that the  mean always stays the same.
-        # XXX should probably do this properly, ie rescale the bias such that
-        # the total scaling of the contact counts don't change.
         old_dbias = dbias.copy()
     if output_bias:
         return X, bias

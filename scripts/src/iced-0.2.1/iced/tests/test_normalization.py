@@ -1,7 +1,6 @@
 import numpy as np
 from scipy import sparse
 from numpy.testing import assert_array_almost_equal
-
 import nose
 
 from iced.normalization import ICE_normalization
@@ -17,6 +16,10 @@ def test_ICE_normalization():
     normed = normed_X.sum(axis=1)
     assert_array_almost_equal(normed / normed.mean(), np.ones((len(X), )),
                               decimal=0)
+
+    normed_X, bias = ICE_normalization(X, eps=1e-10, max_iter=100000,
+                                       output_bias=True)
+    assert_array_almost_equal(normed_X, X / (bias.T * bias), 6)
 
 
 def test_sparse_ICE_normalization():

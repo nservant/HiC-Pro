@@ -6,7 +6,8 @@ DISTNAME = 'iced'
 DESCRIPTION = 'ICE normalization'
 MAINTAINER = 'Nelle Varoquaux'
 MAINTAINER_EMAIL = 'nelle.varoquaux@gmail.com'
-VERSION = '0.2.1-git'
+VERSION = '0.2.0'
+VERSION = '0.2.1'
 
 
 def configuration(parent_package='', top_path=None):
