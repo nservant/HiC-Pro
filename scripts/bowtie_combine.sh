@@ -35,7 +35,7 @@ mapping_combine()
     local sample_dir="$1"
     local file="$2"
     local prefix=$(echo ${sample_dir}/$(basename $file) | sed -e 's/.bwt2glob.bam//')
-
+    local tmp_prefix=$(basename $prefix)
     echo ${prefix} >> ${LOGFILE}
 
     mkdir -p ${BOWTIE2_FINAL_OUTPUT_DIR}/${sample_dir}    
@@ -47,7 +47,7 @@ mapping_combine()
 	exec_cmd $cmd
 
         ## Sort merge file. In theory, should be perform by "merge -n", but do not work in some cases ... depending on read name ?
-	cmd="${SAMTOOLS_PATH}/samtools sort -@ ${N_CPU} -n ${BOWTIE2_FINAL_OUTPUT_DIR}/${prefix}.bwt2merged.bam -T ${TMP_DIR}/$prefix -o ${BOWTIE2_FINAL_OUTPUT_DIR}/${prefix}.bwt2merged.sorted.bam"
+	cmd="${SAMTOOLS_PATH}/samtools sort -@ ${N_CPU} -n ${BOWTIE2_FINAL_OUTPUT_DIR}/${prefix}.bwt2merged.bam -T ${TMP_DIR}/$tmp_prefix -o ${BOWTIE2_FINAL_OUTPUT_DIR}/${prefix}.bwt2merged.sorted.bam"
         exec_cmd $cmd
     
 	cmd="mv ${BOWTIE2_FINAL_OUTPUT_DIR}/${prefix}.bwt2merged.sorted.bam ${BOWTIE2_FINAL_OUTPUT_DIR}/${prefix}.bwt2merged.bam"
