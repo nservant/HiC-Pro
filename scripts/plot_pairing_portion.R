@@ -25,11 +25,14 @@ if (la > 0){
 getPairMat <- function(x, x.perc, rmMulti=0, rmSingle=0){
   require(RColorBrewer)
 
+  n.plots <- 4
   notreported.lab <- c("Low_qual_pairs")
   if (rmMulti == 1){
-      notreported.lab <- c(notreported.lab, "Multiple_pairs_alignments")
+    n.plots <- n.plots + 1
+    notreported.lab <- c(notreported.lab, "Multiple_pairs_alignments")
   }
   if (rmSingle == 1){
+    n.plots <- n.plots + 1
     notreported.lab <- c(notreported.lab, "Pairs_with_Singleton")
   }
   
@@ -51,7 +54,7 @@ getPairMat <- function(x, x.perc, rmMulti=0, rmSingle=0){
   x.perc <- round(x.perc, 1)
   
   ## multiple plots
-  p <- rep(1, 6)
+  p <- rep(1, n.plots)
   names(p) <- c(reported.lab, allnotreported.lab, un.lab, notreported.lab)
   p[notreported.lab] <- 2
 
