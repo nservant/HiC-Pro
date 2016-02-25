@@ -3,6 +3,10 @@ CHANGES IN VERSION 2.7.3b
 
 BUG FIXES
 
+   o Bug fixed if space in the configuration file
+
+   o Bug fixed in plot_pairing_portion.R (pull request M. Blum)
+
    o Update samtools sort for compatibility with version >1.1
 
 SIGNIFICANT USER-VISIBLE CHANGES
