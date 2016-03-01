@@ -53,7 +53,7 @@ fi
 ## Paralelle Implementation
 if [[ $MAKE_OPTS == "" || $MAKE_OPTS == *"mapping"* || $MAKE_OPTS == *"proc_hic"* ]]
 then
-    make_target="all_qsub"
+    make_target="all_sub"
     ## Remove per sample steps
     if [[ $MAKE_OPTS != "" ]]; then 
 	make_target=$(echo $MAKE_OPTS | sed -e 's/,/ /g'); 

@@ -2,13 +2,15 @@
 
 ## HiC-Pro
 ## Copyright (c) 2015 Institut Curie                               
-## Author(s): Nicolas Servant
+## Author(s): Guipeng Li, Nicolas Servant 
 ## Contact: nicolas.servant@curie.fr
 ## This software is distributed without any guarantee under the terms of the BSD-3 licence.
 ## See the LICENCE file for details
 
+## Adapted for LSF (specifically, the PMACS HPC Cluster); asrini@upenn.edu 2016-02-29
+
 ##
-## Create SLURM Torque files
+## Create LSF files
 ##
 
 dir=$(dirname $0)
@@ -60,35 +62,33 @@ then
 	make_target=$(echo $make_target | sed -e 's/merge_persample//g');
 	make_target=$(echo $make_target | sed -e 's/build_contact_maps//g');
 	make_target=$(echo $make_target | sed -e 's/ice_norm//g');
-        make_target=$(echo $make_target | sed -e 's/quality_checks//g');
+    make_target=$(echo $make_target | sed -e 's/quality_checks//g');
     fi
  
     ## step 1 - parallel
-    torque_script=HiCPro_step1_${JOB_NAME}.sh
+    lsf_script=HiCPro_step1_${JOB_NAME}.sh
     PPN=$(( ${N_CPU} * 2))
-    cat > ${torque_script} <<EOF
+    cat > ${lsf_script} <<EOF
 #!/bin/bash
-#SBATCH -N 1
-#SBATCH -n ${PPN}
-#SBATCH -t ${JOB_WALLTIME}
-#SBATCH --mem-per-cpu=${JOB_MEM}
-#SBATCH -p ${JOB_QUEUE}
+#BSUB -M ${JOB_MEM}
+#BSUB -W ${JOB_WALLTIME}
+#BSUB -N 
+#BSUB -u ${JOB_MAIL}
+#BSUB -J HiCpro_s1_${JOB_NAME}[1-$count]
+#BSUB -e HiCpro_s1_${JOB_NAME}.%J.e
+#BSUB -o HiCpro_s1_${JOB_NAME}.%J.o
+##$ -q ${JOB_QUEUE}
+#BSUB -n ${PPN}
 
-#SBATCH --mail-user=${JOB_MAIL}
-#SBATCH --mail-type=end
-#SBATCH --job-name=HiCpro_s1_${JOB_NAME}
-#SBATCH --export=ALL
-#SBATCH --array=1-$count
-
-FASTQFILE=\$SLURM_SUBMIT_DIR/$inputfile; export FASTQFILE
+FASTQFILE=$inputfile; export FASTQFILE
 make --file ${SCRIPTS}/Makefile CONFIG_FILE=${conf_file} CONFIG_SYS=${INSTALL_PATH}/config-system.txt $make_target 2>&1
 EOF
     
-    chmod +x ${torque_script}
+    chmod +x ${lsf_script}
 
     ## User message
-    echo "The following command will launch the parallel workflow through $count torque jobs:"
-    echo sbatch ${torque_script}
+    echo "The following command will launch the parallel workflow through $count lsf jobs:"
+    echo "bsub < ${lsf_script}"
 fi    
 
 
@@ -104,30 +104,26 @@ then
 	make_target=$(echo $make_target | sed -e 's/proc_hic//g');
     fi
 
-    torque_script_s2=HiCPro_step2_${JOB_NAME}.sh
-    cat > ${torque_script_s2} <<EOF
+    lsf_script_s2=HiCPro_step2_${JOB_NAME}.sh
+    cat > ${lsf_script_s2} <<EOF
 #!/bin/bash
-
-#SBATCH -N 1
-#SBATCH -n 1
-#SBATCH -t ${JOB_WALLTIME}
-#SBATCH -mem-per-cpu=${JOB_MEM}
-#SBATCH -p ${JOB_QUEUE}
-
-#SBATCH --mail-user=${JOB_MAIL}
-#SBATCH --mail-type=end
-#SBATCH --job-name=HiCpro_s1_${JOB_NAME}
-#SBATCH --export=ALL
-
-cd \$SLURM_SUBMIT_DIR
+#BSUB -M ${JOB_MEM}
+#BSUB -W ${JOB_WALLTIME}
+#BSUB -N 
+#BSUB -u ${JOB_MAIL}
+#BSUB -J HiCpro_s2_${JOB_SUFFIX}
+#BSUB -e HiCpro_s2_${JOB_SUFFIX}.%J.e
+#BSUB -o HiCpro_s2_${JOB_SUFFIX}.%J.o
+##BSUB -q ${JOB_QUEUE}
+#BSUB -n ${PPN}
 
 make --file ${SCRIPTS}/Makefile CONFIG_FILE=${conf_file} CONFIG_SYS=${INSTALL_PATH}/config-system.txt $make_target 2>&1
 EOF
     
-    chmod +x ${torque_script_s2}
+    chmod +x ${lsf_script_s2}
 
     ## User message
     echo "The following command will merge the processed data and run the remaining steps per sample:"
-    echo sbatch ${torque_script_s2}
+    echo "bsub < ${lsf_script_s2}"
 fi
 

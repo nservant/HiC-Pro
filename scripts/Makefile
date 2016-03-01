@@ -14,7 +14,7 @@ undsc := _
 all : init mapping proc_hic merge_persample hic_qc build_raw_maps ice_norm
 
 ## paralell
-all_qsub : init mapping proc_hic
+all_sub : init mapping proc_hic
 
 init : configure 
 

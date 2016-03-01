@@ -1,5 +1,13 @@
 ***********************************
-CHANGES IN VERSION 2.7.3
+CHANGES IN VERSION 2.7.4b
+
+NEW FEATURES
+
+    o Support for LSF scheduler thanks to J. Phlipps-Cremins
+
+
+***********************************
+CHANGES IN VERSION 2.7.3b
 
 BUG FIXES
 
@@ -22,9 +30,9 @@ NEW FEATURES
 
    o HiC-Pro is now compatible with the HiCPlotter viewer (see https://github.com/kcakdemir/HiCPlotter)
 
-   o Add support for the SLURM scheduler thanks to Anthony D'Ippolito !
+   o Add support for the SLURM scheduler thanks to A. D'Ippolito !
 
-   o Add support for the SGE scheduler thanks to Guipeng Li !
+   o Add support for the SGE scheduler thanks to G. Li !
 
 SIGNIFICANT USER-VISIBLE CHANGES
 
