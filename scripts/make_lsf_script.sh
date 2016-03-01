@@ -77,7 +77,7 @@ then
 #BSUB -J HiCpro_s1_${JOB_NAME}[1-$count]
 #BSUB -e HiCpro_s1_${JOB_NAME}.%J.e
 #BSUB -o HiCpro_s1_${JOB_NAME}.%J.o
-##$ -q ${JOB_QUEUE}
+#BSUB -q ${JOB_QUEUE}
 #BSUB -n ${PPN}
 
 FASTQFILE=$inputfile; export FASTQFILE
@@ -114,7 +114,7 @@ then
 #BSUB -J HiCpro_s2_${JOB_SUFFIX}
 #BSUB -e HiCpro_s2_${JOB_SUFFIX}.%J.e
 #BSUB -o HiCpro_s2_${JOB_SUFFIX}.%J.o
-##BSUB -q ${JOB_QUEUE}
+#BSUB -q ${JOB_QUEUE}
 #BSUB -n ${PPN}
 
 make --file ${SCRIPTS}/Makefile CONFIG_FILE=${conf_file} CONFIG_SYS=${INSTALL_PATH}/config-system.txt $make_target 2>&1
