@@ -1,4 +1,4 @@
-#!/usr/bin/python
+#!/usr/bin/env python
 
 # HiC-Pro
 # Copyleft 2015 Institut Curie
