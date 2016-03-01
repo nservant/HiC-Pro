@@ -11,7 +11,7 @@ BUG FIXES
 
 SIGNIFICANT USER-VISIBLE CHANGES
 
-   o Update python access in utils
+   o Update python access in utils (pull request D. Vanichkina)
 
    o Update iced version (0.2.1 official release)
 
