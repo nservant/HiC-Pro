@@ -1,4 +1,4 @@
-#!/usr/bin/python
+#!/usr/bin/env python
 # Author(s): Nicolas Servant
 # Contact: nicolas.servant@curie.fr
 # This software is distributed without any guarantee under the terms of the GNU General 
