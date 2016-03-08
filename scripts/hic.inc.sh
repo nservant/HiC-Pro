@@ -111,14 +111,6 @@ add_ext()
     fi
 }
 
-set_ext()
-{
-    local file=$1
-    local ext=$2
-    file=$(echo $file | sed -e "s/\.fastq$//")
-    echo ${file}${ext}
-}
-
 add_fastq()
 {
     add_ext $1 $2
@@ -169,11 +161,21 @@ get_data_type()
 # function called by get_hic_files, using "local" variables of get_hic_files
 #
 
+set_ext2fastq()
+{
+    local file=$1
+    local ext=$2
+    file=$(echo $file | sed -e "s/\.fastq$//" -e "s/\.fastq.gz$//")
+    echo ${file}${ext}
+}
+
 get_hic_files_build_list()
 {
-    local file=$idir/$(set_ext $fastq $ext)
-    if [ ! -r $file ]; then
-	echo "HiC get_hic_file: unreadable file: $file" >&2
+    echo $fastq
+    local file=$idir/$(set_ext2fastq $fastq $ext)
+    echo $file
+    if [[ ! -r ${file} && ! -r ${file}.gz ]]; then
+    	echo "HiC get_hic_file: unreadable file: $file" >&2
     else
 	if [ ! -z "$list" ]; then
 	    list="$list
@@ -196,6 +198,7 @@ get_hic_files()
     if [ ! -z "$PBS_ARRAYID" ]; then TASKID=$PBS_ARRAYID; fi
     if [ ! -z "$SGE_TASK_ID" ]; then TASKID=$SGE_TASK_ID; fi
     if [ ! -z "$SLURM_ARRAY_TASK_ID" ]; then TASKID=$SLURM_ARRAY_TASK_ID; fi
+    if [ ! -z "$LSB_JOBINDEX" ]; then TASKID=$LSB_JOBINDEX; fi
     if [ ! -z "$FASTQFILE" ]; then
 	if [ ! -z "$TASKID" ]; then
 	    local input_data_type=$(get_data_type)

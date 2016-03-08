@@ -5,6 +5,9 @@ NEW FEATURES
 
     o Support for LSF scheduler thanks to J. Phlipps-Cremins
 
+BUG FIXES
+
+    o Fix bug when fastq.gz files are processed without parallel mode but using a cluster
 
 ***********************************
 CHANGES IN VERSION 2.7.3b
