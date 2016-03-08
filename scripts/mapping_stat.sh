@@ -30,7 +30,7 @@ do
 	(-c) conf_file=$2; shift;;
 	(-i) input_dir=$2; shift;;
 	(-o) output_dir=$2; shift;;
-	(-l) mode=local; shift;;
+##	(-l) mode=local; shift;;
 	(-h) usage;;
 	(--) shift; break;;
 	(-*) echo "$0: error - unrecognized option $1" 1>&2; exit 1;;
@@ -69,15 +69,15 @@ mapping_stat(){
     echo -e "local\t$lmap_reads"
 }
 
-for r in $(get_aln_for_stats ${mode})
+for r in $(get_global_aln_for_stats ${mode})
 do
     R1=$r
     R2=$(echo $r | get_R2)
     sample_dir=$(get_sample_dir ${r})
 
-    R_STAT1=$(get_stat_file $mode $R1)
-    R_STAT2=$(get_stat_file $mode $R2)
-    
+    R_STAT1=$(get_stat_file $R1)
+    R_STAT2=$(get_stat_file $R2)
+
     mapping_stat $sample_dir $R1 > $R_STAT1 &
     mapping_stat $sample_dir $R2 > $R_STAT2 &
 

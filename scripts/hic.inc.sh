@@ -171,19 +171,17 @@ set_ext2fastq()
 
 get_hic_files_build_list()
 {
-    echo $fastq
     local file=$idir/$(set_ext2fastq $fastq $ext)
-    echo $file
-    if [[ ! -r ${file} && ! -r ${file}.gz ]]; then
-    	echo "HiC get_hic_file: unreadable file: $file" >&2
-    else
-	if [ ! -z "$list" ]; then
-	    list="$list
+#    if [[ ! -r ${file} && ! -r ${file}.gz ]]; then
+#    	echo "HiC get_hic_file: unreadable file: $file" >&2
+#    else
+    if [ ! -z "$list" ]; then
+	list="$list
 $file"
-	else
-	    list=$file
-	fi
+    else
+	list=$file
     fi
+    ##fi
 }
 
 filter_rawdir()
@@ -257,20 +255,20 @@ get_local_aln_for_stats()
     get_hic_files ${BOWTIE2_LOCAL_OUTPUT_DIR} _${REFERENCE_GENOME}.bwt2glob.unmap_bwt2loc.bam
 }
 
-get_aln_for_stats()
-{
-    local mode=$1
-    if [ "$mode" = local ]; then
-	get_local_aln_for_stats
-    else
-	get_global_aln_for_stats
-    fi
-}
+#get_aln_for_stats()
+#{
+#    local mode=$1
+#    if [ "$mode" = local ]; then
+#	get_local_aln_for_stats
+#    else
+#	get_global_aln_for_stats
+#    fi
+#}
 
 get_stat_file()
 {
-    local mode=$1
-    local file=$2
+    #local mode=$1
+    local file=$1
     local sample_dir=$(get_sample_dir ${file})
     local prefix=$(echo ${sample_dir}/$(basename $file) | sed -e 's/.bwt2glob.bam//')
 
@@ -305,3 +303,4 @@ get_paired_bam()
 {
     get_hic_files ${BOWTIE2_FINAL_OUTPUT_DIR} _${REFERENCE_GENOME}.bwt2pairs.bam | get_R1 | sed -e "s/${PAIR1_EXT}//" -e "s/_${REFERENCE_GENOME}.bwt2merged//"
 }
+
