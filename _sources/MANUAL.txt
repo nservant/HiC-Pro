@@ -1,10 +1,14 @@
+.. _MANUAL:
+
 .. Nicolas Servant
 .. HiC-Pro
-.. v2.3.1
-.. 15-15-02
+.. v2.7.0
+.. 15-09-02
 
 HiC-Pro Manual
 ******************
+Modified - 09th September 2015
+Reference version - HiC-Pro 2.7.2
 
 Setting the configuration file
 ==============================
@@ -12,19 +16,19 @@ Setting the configuration file
 1. Copy and edit the configuration file *'config-hicpro.txt'* in your local folder. The '[]' options are optional and can be undefined.
 
 +----------------+----------------------------------------+
-| SET UP SYSTEM AND PBS/TORQUE MODE                       |
+| SET UP SYSTEM AND CLUSTER MODE                          |
 +================+========================================+
 | N_CPU          | Number of CPU allows per job           |
 +----------------+----------------------------------------+
 | LOGFILE        | Name of the main log file              |
 +----------------+----------------------------------------+
-| [PBS_SUFFIX]   | Name of PBS/Torque job on the custer   |
+| [JOB_NAME  ]   | Name of the job on the custer          |
 +----------------+----------------------------------------+
-| [PBS_MEM]      | Memory (RAM) required per job          |
+| [JOB_MEM]      | Memory (RAM) required per job          |
 +----------------+----------------------------------------+
-| [PBS_WALLTIME] | WallTime allows per job                |
+| [JOB_WALLTIME] | WallTime allows per job                |
 +----------------+----------------------------------------+
-| [PBS_MAIL]     | User mail for PBS/Torque report        |
+| [JOB_MAIL]     | User mail for PBS/Torque report        |
 +----------------+----------------------------------------+
 
 ------------
@@ -42,8 +46,6 @@ Setting the configuration file
 +------------------------+---------------------------------------------------------------------------------------------------------------------+
 | MIN_MAPQ               | Minimum mapping quality. Reads with lower quality are discarded. *Default: 0*                                       |
 +------------------------+---------------------------------------------------------------------------------------------------------------------+
-| LIGATION SITE          | Ligation site sequence used for reads trimming. Depends on the fill in strategy. *Default: AAGCTAGCTT*              |
-+------------------------+---------------------------------------------------------------------------------------------------------------------+ 
 | BOWTIE2_IDX_PATH       | Path to bowtie2 indexes                                                                                             |
 +------------------------+---------------------------------------------------------------------------------------------------------------------+
 | BOWTIE2_GLOBAL_OPTIONS | bowtie2 options for mapping step1. *Default: --very-sensitive -L 30 --score-min L,-0.6,-0.2 --end-to-end --reorder* |
@@ -58,21 +60,43 @@ Setting the configuration file
 +=======================+===================================================================================================================================================+
 | REFERENCE_GENOME      | Reference genome prefix used for genome indexes. *Default: hg19*                                                                                  |
 +-----------------------+---------------------------------------------------------------------------------------------------------------------------------------------------+
-| GENOME_FRAGMENT       | BED file with restriction fragments. Full path or name of file available in the ANNOTATION folder. *Default: HindIII_resfrag_hg19.bed*            |
-+-----------------------+---------------------------------------------------------------------------------------------------------------------------------------------------+
 | GENOME_SIZE           | Chromsome size file. Loaded from the ANNOTATION folder in the HiC-Pro installation directory. *Default: chrom_hg19.sizes*                         |
 +-----------------------+---------------------------------------------------------------------------------------------------------------------------------------------------+
-| [ALLELE_SPECIFIC_SNP] | VCF file to SNPs which can be used to distinguish parental origin. See the `allele specific section <AS.rst>`_ for more details                   |
+| [ALLELE_SPECIFIC_SNP] | VCF file to SNPs which can be used to distinguish parental origin. See the :ref:`allele specific section <AS>` for more details                   |
 +-----------------------+---------------------------------------------------------------------------------------------------------------------------------------------------+
+
+------------
+
++---------------------------+---------------------------------------------------------------------------------------------------------------------------------------------------+
+| ALLLELE SPECIFIC ANALYSIS |                                                                                                                                                   |
++=======================+=======================================================================================================================================================+
+| [ALLELE_SPECIFIC_SNP]     | VCF file to SNPs which can be used to distinguish parental origin. See the :ref:`allele specific section <AS>` for more details                   |
++---------------------------+---------------------------------------------------------------------------------------------------------------------------------------------------+
+
+------------
+
++-----------------------+---------------------------------------------------------------------------------------------------------------------------------------------------+
+| DIGESTION Hi-C        |                                                                                                                                                   |
++=======================+===================================================================================================================================================+
+| [GENOME_FRAGMENT]     | BED file with restriction fragments. Full path or name of file available in the ANNOTATION folder. *Default: HindIII_resfrag_hg19.bed*            |
++-----------------------+---------------------------------------------------------------------------------------------------------------------------------------------------+
+| [LIGATION SITE]       | Ligation site sequence used for reads trimming. Depends on the fill in strategy. *Example: AAGCTAGCTT*                                            |
++------------------------+--------------------------------------------------------------------------------------------------------------------------------------------------+ 
+| [MIN_FRAG_SIZE]       | Maximum size of restriction fragments to consider for the Hi-C processing. *Example: 100*                                                         | 
++------------------------+--------------------------------------------------------------------------------------------------------------------------------------------------+ 
+| [MAX_FRAG_SIZE]       | Maximum size of restriction fragments to consider for the Hi-C processing. *Example: 100000*                                                      |
++------------------------+--------------------------------------------------------------------------------------------------------------------------------------------------+ 
+| [MIN_INSERT_SIZE]     | Minimum sequenced insert size. Shorter 3C products are discarded. *Example: 100*                                                                  |
++-----------------------------+---------------------------------------------------------------------------------------------------------------------------------------------+
+| [MAX_INSERT_SIZE]     | Maximum sequenced insert size. Larger 3C products are discarded. *Example: 600*                                                                   |
++-----------------------------+---------------------------------------------------------------------------------------------------------------------------------------------+
 
 ------------
 
 +-----------------------------+-------------------------------------------------------------------------------------------------------------------------+
 | Hi-C PROCESSING                                                                                                                                       |
 +=============================+=========================================================================================================================+
-| [MIN_INSERT_SIZE]           | Minimum sequenced insert size. Shorter 3C products are discarded                                                        |
-+-----------------------------+-------------------------------------------------------------------------------------------------------------------------+
-| [MAX_INSERT_SIZE]           | Maximum sequenced insert size. Larger 3C products are discarded                                                         |
+| [MIN_CIS_DIST]              | Filter short range contact below the specified distance. Mainly useful for DNase Hi-C. *Example: 1000*                  |
 +-----------------------------+-------------------------------------------------------------------------------------------------------------------------+
 | GET_ALL_INTERACTION_CLASSES | Create output files with all classes of 3C products. *Default: 0*                                                       |
 +-----------------------------+-------------------------------------------------------------------------------------------------------------------------+
@@ -84,20 +108,38 @@ Setting the configuration file
 +-----------------------------+-------------------------------------------------------------------------------------------------------------------------+
 | RM_DUP                      | Remove duplicated reads' pairs. *Default: 1*                                                                            |
 +-----------------------------+-------------------------------------------------------------------------------------------------------------------------+
+
+------------
+
++-----------------------------+-------------------------------------------------------------------------------------------------------------------------+
+| GENOME-WIDE CONTACT MAPS                                                                                                                              |
++=============================+=========================================================================================================================+
 | BIN_SIZE                    | Resolution of contact maps to generate (space separated). *Default: 20000 40000 150000 500000 1000000*                  |
 +-----------------------------+-------------------------------------------------------------------------------------------------------------------------+
 | BIN_STEP                    | Binning step size in ‘n’ coverage _i.e._ window step. *Default: 1*                                                      |
 +-----------------------------+-------------------------------------------------------------------------------------------------------------------------+
 | MATRIX_FORMAT               | Output matrix format. Must be complete, asis, upper or lower. *Default: upper*                                          |
 +-----------------------------+-------------------------------------------------------------------------------------------------------------------------+
-| MAX_ITER                    | Maximum number of iteration for ICE normalization. *Default: 100*                                                       |
-+-----------------------------+-------------------------------------------------------------------------------------------------------------------------+
-| SPARSE_FILTERING            | Define which pourcentage of bins with high sparsity should be force to zero. *Default: 0.02*                            |
-+-----------------------------+-------------------------------------------------------------------------------------------------------------------------+
-| EPS                         | The relative increment in the results before declaring convergence. *Default: 0.1*                                      |
-+-----------------------------+-------------------------------------------------------------------------------------------------------------------------+
 
-------------                                                                                                                                                              
+------------
+
++-----------------------------------+-------------------------------------------------------------------------------------------------------------------------+
+| NORMALIZATION                                                                                                                                               |
++===================================+=========================================================================================================================+
+| MAX_ITER                          | Maximum number of iteration for ICE normalization. *Default: 100*                                                       |
++-----------------------------------+-------------------------------------------------------------------------------------------------------------------------+
+| SPARSE_FILTERING - **deprecated** | Define which pourcentage of bins with high sparsity should be force to zero. *Default: 0.02*                            |
++-----------------------------------+-------------------------------------------------------------------------------------------------------------------------+
+| FILTER_LOW_COUNT_PERC             | Define which pourcentage of bins with low counts should be force to zero. *Default: 0.02*. Replace SPARSE_FILTERING     |
++-----------------------------------+-------------------------------------------------------------------------------------------------------------------------+
+| FILTER_HIGH_COUNT_PERC            | Define which pourcentage of bins with low counts should be discarded before normalization. *Default: 0*                 |
++-----------------------------------+-------------------------------------------------------------------------------------------------------------------------+
+| EPS                               | The relative increment in the results before declaring convergence. *Default: 0.1*                                      |
++-----------------------------------+-------------------------------------------------------------------------------------------------------------------------+
+
+------------           
+
+                                                                                                                                                   
 
 Run HiC-Pro in sequential mode
 ==============================
@@ -111,14 +153,14 @@ Available steps are described in the help command.
   usage : HiC-Pro -i INPUT -o OUTPUT -c CONFIG [-s ANALYSIS_STEP] [-p] [-h] [-v]
   Use option -h|--help for more information
 
-  HiC-Pro 3.0.0
+  HiC-Pro 2.7.0
   ---------------
   OPTIONS
 
    -i|--input INPUT : input data folder; Must contains a folder per sample with input files
    -o|--output OUTPUT : output folder
    -c|--conf CONFIG : configuration file for Hi-C processing
-   [-p|--parallel] : if specified run HiC-Pro in PBS/Torque mode
+   [-p|--parallel] : if specified run HiC-Pro on a cluster
    [-s|--step ANALYSIS_STEP] : run only a subset of the HiC-Pro workflow; if not specified the complete workflow is run
       mapping: perform reads alignment
       proc_hic: perform Hi-C filtering
@@ -135,7 +177,7 @@ As an exemple, if you want to only want to only align the sequencing reads and r
 
     	MY_INSTALL_PATH/bin/HiC-Pro -i FULL_PATH_TO_RAW_DATA -o FULL_PATH_TO_OUTPUTS -c MY_LOCAL_CONFIG_FILE -s mapping -s quality_checks
 
-Note that in sequential mode, the INPUT argument depends on the analysis step. See te `user's cases <USER_CASES.rst>`_ for more examples.
+Note that in sequential mode, the INPUT argument depends on the analysis step. See te :ref:`user's cases <USERCASES>` for more examples.
 
 +-----------------------+--------------------+
 | INPUT DATA TYPE IN STEPWISE MODE           |
@@ -163,7 +205,7 @@ The HiC-Pro workflow can be divided in five main steps presented below.
 
 1. **Reads Mapping**
 
-| Each mate is independantly aligned on the reference genome. The mapping is performed in two steps. First, the reads are aligned using an end-to-end aligner. Second, reads spanning the ligation junction are trimmmed from their 3' end, and aligned back on the genome. Aligned reads for both fragment mates are then paired in a single paired-end BAM file. Singletons and multi-hits can be discarded according the confirguration parameters.
+| Each mate is independantly aligned on the reference genome. The mapping is performed in two steps. First, the reads are aligned using an end-to-end aligner. Second, reads spanning the ligation junction are trimmmed from their 3' end, and aligned back on the genome. Aligned reads for both fragment mates are then paired in a single paired-end BAM file. Singletons and multi-hits can be discarded according the confirguration parameters. Note that if if the *LIGATION_SITE* parameter in the not defined, HiC-Pro will skip the second step of mapping.
 
 2. **Fragment assignment and filtering**
 
@@ -171,6 +213,7 @@ The HiC-Pro workflow can be divided in five main steps presented below.
 | The next step is to separate the invalid ligation products from the valid pairs. Dangling end and self circles pairs are therefore excluded.
 | Only valid pairs involving two different restriction fragments are used to build the contact maps. Duplicated valid pairs associated to PCR artefacts are discarded.
 | The fragment assignment can be visualized through a BAM files of aliged pairs where each pair is flagged according to its classification.
+| In case of Hi-C protocols that do not require a restriction enzyme such as DNase Hi-C or micro Hi-C, the assignment to a restriction is not possible. If no *GENOME_FRAGMENT* file are specified, this step is ignored. Short range interactions can however still be discarded using the *MIN_CIS_DIST* parameter.
 
 3. **Quality Controls**
 
@@ -191,7 +234,7 @@ Browsing the results
 ====================
 
 All outputs follow the input organization, with one folder per sample.
-See the `Results section <RESULTS.rst>`_ for more information.
+See the :ref:`results <RES>` section for more information.
 
 * *bowtie_results*
 

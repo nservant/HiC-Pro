@@ -55,7 +55,7 @@
 
 
   </head>
-  <body role="document"><div class="navbar">
+  <body><div class="navbar">
     <a class="navbar-brand" href="index.html">
       
     </a>
@@ -80,14 +80,14 @@
 <div class="line">Usually, a high fraction of reads is expected to be aligned on the genome (80-90%). Among them, we usually observed a few percent (around 10%) of step 2 aligned reads. Those reads are chimeric fragments for which we detect a ligation junction. An abnormal level of chimeric reads can reflect a ligation issue during the library preparation.</div>
 </div>
 <div class="figure">
-<a class="reference internal image-reference" href="_images/hicpro_mappingstat_IMR90rep1.png"><img alt="_images/hicpro_mappingstat_IMR90rep1.png" src="_images/hicpro_mappingstat_IMR90rep1.png" /></a>
+<a class="reference internal image-reference" href="_images/hicpro_mappingstat_IMR90rep1.png"><img alt="_images/hicpro_mappingstat_IMR90rep1.png" src="_images/hicpro_mappingstat_IMR90rep1.png" style="width: 903.2px; height: 472.0px;" /></a>
 </div>
 <div class="line-block">
 <div class="line">Once R1 and R2 reads are aligned on the genome, HiC-Pro reconstruct the pairs information. The pairing statistics are summarized in the plot below and available in the <em>&#8216;.pairstat&#8217;</em> files. The combined pairing statistics per sample are available in the <em>&#8216;SAMPLE_NAME.mpairstat&#8217;</em> file.</div>
 <div class="line">The fraction of singleton or multi-hits depends on the genome complexity and the fraction of unmapped reads. The fraction of singleton is usually close to the sum of unmapped R1 and R2 reads, as it is unlikely that both mates from the same pair were unmapped.</div>
 </div>
 <div class="figure">
-<a class="reference internal image-reference" href="_images/hicpro_pairingstat_IMR90rep1.png"><img alt="_images/hicpro_pairingstat_IMR90rep1.png" src="_images/hicpro_pairingstat_IMR90rep1.png" /></a>
+<a class="reference internal image-reference" href="_images/hicpro_pairingstat_IMR90rep1.png"><img alt="_images/hicpro_pairingstat_IMR90rep1.png" src="_images/hicpro_pairingstat_IMR90rep1.png" style="width: 631.2px; height: 612.0px;" /></a>
 </div>
 </div>
 <div class="section" id="list-of-valid-interaction-products">
@@ -100,7 +100,7 @@
 <div class="line">In the context of Hi-C protocol without restriction enzyme, this analysis step is skipped. The aligned pairs are therefore directly used to generate the contact maps. A filter of the short range contact (typically &lt;1kb) is recommanded as this pairs are likely to be self ligation products.</div>
 </div>
 <div class="figure">
-<a class="reference internal image-reference" href="_images/hicpro_filteringstat_IMR90rep1.png"><img alt="_images/hicpro_filteringstat_IMR90rep1.png" src="_images/hicpro_filteringstat_IMR90rep1.png" /></a>
+<a class="reference internal image-reference" href="_images/hicpro_filteringstat_IMR90rep1.png"><img alt="_images/hicpro_filteringstat_IMR90rep1.png" src="_images/hicpro_filteringstat_IMR90rep1.png" style="width: 615.2px; height: 599.2px;" /></a>
 </div>
 <div class="line-block">
 <div class="line">In case of allele specific analysis, an additional statistics file <em>&#8216;assplit.stat&#8217;</em> is available with the fraction of read pairs assigned to the parental genomes. Note that allele specific assignment is also available from the <em>&#8216;.RSstat&#8217;</em> files. Statistics from the <em>&#8216;assplit.stat&#8217;</em> are usually different from the ones in the <em>&#8216;.RSstat&#8217;</em> as they are calculated on the valid pairs after duplicates removal, whereas statistics on the <em>&#8216;.RSstat&#8217;</em> files are calculated for each read chunck before duplicates removal.</div>
@@ -114,10 +114,10 @@
 <div class="line">Finally, an important metric is to look at the fraction of intra and inter-chromosomal interactions, as well as long range (&gt;20kb) versus short range (&lt;20kb) intra-chromosomal interactions.</div>
 </div>
 <div class="figure">
-<a class="reference internal image-reference" href="_images/hicpro_contactstat_IMR90rep1.png"><img alt="_images/hicpro_contactstat_IMR90rep1.png" src="_images/hicpro_contactstat_IMR90rep1.png" /></a>
+<a class="reference internal image-reference" href="_images/hicpro_contactstat_IMR90rep1.png"><img alt="_images/hicpro_contactstat_IMR90rep1.png" src="_images/hicpro_contactstat_IMR90rep1.png" style="width: 830.4px; height: 760.0px;" /></a>
 </div>
 <div class="figure">
-<a class="reference internal image-reference" href="_images/hicpro_fragsize_IMR90rep1.png"><img alt="_images/hicpro_fragsize_IMR90rep1.png" src="_images/hicpro_fragsize_IMR90rep1.png" /></a>
+<a class="reference internal image-reference" href="_images/hicpro_fragsize_IMR90rep1.png"><img alt="_images/hicpro_fragsize_IMR90rep1.png" src="_images/hicpro_fragsize_IMR90rep1.png" style="width: 463.5px; height: 328.0px;" /></a>
 </div>
 <div class="line-block">
 <div class="line">The contact maps are then available in the <em>hic_results/matrix</em> folder. Raw contact maps are in the <em>raw</em> folder and normalized contact maps in the <em>iced</em> folder.</div>
@@ -147,7 +147,7 @@ B   C   24
     </p>
     <p>
         &copy; Copyright 2015, Nicolas Servant.<br/>
-      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.3.1.<br/>
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.2.2.<br/>
     </p>
 </footer>
   </body>
