@@ -18,4 +18,6 @@ Contents:
    UTILS
    USER_CASES
    FAQ
+   ERRORS
+
 

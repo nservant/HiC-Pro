@@ -55,27 +55,28 @@ Bowtie >2.2.2 is strongly recommanded for allele specific analysis.
 | Note that if some of these dependencies are not installed (i.e. not detected in the $PATH), HiC-Pro will try to install them.
 | You can also edit the *config-install.txt* file and manually defined the paths to dependencies.
 
-+---------------+------------------------------------------------------------------------+
-| SYSTEM CONFIGURATION                                                                   |
-+===============+========================================================================+
-| PREFIX        | Installation path                                                      |
-+---------------+------------------------------------------------------------------------+
-| BOWTIE2_PATH  | Full path the bowtie2 installation directory                           |
-+---------------+------------------------------------------------------------------------+
-| SAMTOOLS_PATH | Full path to the samtools installation directory (>0.1.19)             |
-+---------------+------------------------------------------------------------------------+
-| R_PATH        | Full path to the R installation directory                              |
-+---------------+------------------------------------------------------------------------+
-| PYTHON_PATH   | Full path to the python installation directory (>2.7)                  |
-+---------------+------------------------------------------------------------------------+
-| CLUSTER_SYS   | Scheduler to use for cluster submission. Must be TORQUE, SGE or SLURM  |
-+---------------+------------------------------------------------------------------------+
++---------------+-----------------------------------------------------------------------------+
+| SYSTEM CONFIGURATION                                                                        |
++===============+=============================================================================+
+| PREFIX        | Path to installation folder                                                           |
++---------------+-----------------------------------------------------------------------------+
+| BOWTIE2_PATH  | Full path the bowtie2 installation directory                                |
++---------------+-----------------------------------------------------------------------------+
+| SAMTOOLS_PATH | Full path to the samtools installation directory (>0.1.19)                  |
++---------------+-----------------------------------------------------------------------------+
+| R_PATH        | Full path to the R installation directory                                   |
++---------------+-----------------------------------------------------------------------------+
+| PYTHON_PATH   | Full path to the python installation directory (>2.7)                       |
++---------------+-----------------------------------------------------------------------------+
+| CLUSTER_SYS   | Scheduler to use for cluster submission. Must be TORQUE, SGE, SLURM or LSF  |
++---------------+-----------------------------------------------------------------------------+
 
 
 Annotation Files
 ================
 
 In order to process the raw data, HiC-Pro requires three annotation files. Note that the pipeline is provided with some Human and Mouse annotation files.
+Please be sure that the chromosome names are the same than the ones used in your bowtie indexes !
 
 1. **A BED file** of the restriction fragments after digestion. This file depends both of the restriction enzyme and the reference genome. See the :ref:`FAQ <FAQ>` and the :ref:`HiC-Pro utilities <UTILS>` for details about how to generate this file. A few annotation files are provided with the HiC-Pro sources.
 
@@ -150,7 +151,7 @@ How to use it ?
     MY_INSTALL_PATH/bin/HiC-Pro -i FULL_PATH_TO_RAW_DATA -o FULL_PATH_TO_OUTPUTS -c MY_LOCAL_CONFIG_FILE
 
 
-* **Using a cluster (TORQUE/SGE/SLURM)**
+* **Using a cluster (TORQUE/SGE/SLURM/LSF)**
 
 .. code-block:: guess
 
@@ -193,10 +194,12 @@ Small fastq files (2M reads) extracted from the Dixon et al. 2012 paper are avai
 .. code-block:: guess
 
    ## Get the data. Will download a test_data folder and a configuration file
-   wget -r -nH --cut-dirs=2 --no-parent --reject="index.html*" https://zerkalo.curie.fr/partage/HiC-Pro/
+   wget https://zerkalo.curie.fr/partage/HiC-Pro/HiCPro_testdata.tar.gz && tar -zxvf HiCPro_testdata.tar.gz
+
+   ## Edit the configuration file and set the path to Human bowtie2 indexes
 
    ## Run HiC-Pro
-   time HICPRO_INSTALL_DIR/bin/HiC-Pro -i test_data -o HiC_Pro_v2.4.0_test -c config_test.txt
+   time HICPRO_INSTALL_DIR/bin/HiC-Pro -i test_data -o HiC_Pro_latest_test -c config_test_latest.txt
    Run HiC-Pro
    --------------------------------------------
    lundi 2 mars 2015, 17:00:36 (UTC+0100)

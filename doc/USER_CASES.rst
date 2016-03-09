@@ -18,7 +18,7 @@ Let's defined a few variables
    HiC-Pro -i ${TEST_DATA} -o ${RES_PREFIX}_1 -c config_test.txt
 
 
-2. **Running HiC-Pro on a cluster with PBS**
+2. **Running HiC-Pro on a cluster with PBS/TORQUE**
 
 .. code-block:: guess
 
