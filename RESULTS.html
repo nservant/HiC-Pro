@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+  
+    <title>HiC-Pro: An optimized and flexible pipeline for Hi-C processing. &mdash; HiC-Pro 2.3.1 documentation</title>
+  <!-- htmltitle is before nature.css - we use this hack to load bootstrap first -->
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="stylesheet"
+        href="_static/css/bootstrap.min.css"
+	media="screen" />
+    <script src="_static/js/jquery.js"
+          type="text/javascript"></script>
+  <script src="_static/js/bootstrap.min.js"
+          type="text/javascript"></script>
+
+
+    
+    <link rel="stylesheet" href="_static/basic.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     '2.3.1',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <link rel="top" title="HiC-Pro 2.3.1 documentation" href="index.html" />
+    <link rel="next" title="HiC-Pro Utilities" href="UTILS.html" />
+    <link rel="prev" title="Allele specific analysis" href="AS.html" />
+<meta charset='utf-8'>
+<meta http-equiv='X-UA-Compatible' content='IE=edge,chrome=1'>
+<meta name='viewport'
+      content='width=device-width, initial-scale=1.0, maximum-scale=1'>
+<meta name="apple-mobile-web-app-capable" content="yes">
+<link rel="stylesheet"
+        href="_static/css/jhepc.css"
+         media="screen" />
+  <link href='http://fonts.googleapis.com/css?family=PT+Serif'
+        rel='stylesheet' type='text/css'>
+  <link href='http://fonts.googleapis.com/css?family=PT+Sans'
+        rel='stylesheet' type='text/css'>
+  <link href='http://fonts.googleapis.com/css?family=PT+Sans+Narrow'
+        rel='stylesheet' type='text/css'>
+
+
+
+  </head>
+  <body role="document"><div class="navbar">
+    <a class="navbar-brand" href="index.html">
+      
+    </a>
+    <ul class="nav navbar-nav">
+
+    </ul>
+  </div>
+    <div class="container">
+  
+  <div class="section" id="hic-pro-results">
+<span id="res"></span><h1>HiC-Pro Results<a class="headerlink" href="#hic-pro-results" title="Permalink to this headline">¶</a></h1>
+<div class="line-block">
+<div class="line">Results presented in this section come from the analysis of the IMR90 replicate 1 sample from Dixon et al (2012).</div>
+<div class="line">It is important to note that in parallele mode, HiC-Pro will generate statistics file for each reads chunck. Then, when all chuncks are merged, statistics files are also combined in a single stat file available in the same directory.</div>
+</div>
+<div class="section" id="mapping-results">
+<h2>Mapping results<a class="headerlink" href="#mapping-results" title="Permalink to this headline">¶</a></h2>
+<div class="line-block">
+<div class="line">The <em>bowtie_results</em> folder contains the results of the reads mapping. The results of first mapping step are available in the <em>bwt2_glob</em> folder, and the seconnd step in the <em>bwt2_loc</em> folder. Final BAM files, reads pairing, and mapping statistics are available on the <em>bwt2</em> folder.</div>
+<div class="line">The read mapping statistics are represented as a barplot of the fraction of aligned R1 and R2 reads. The first bar represents the overall mapped reads fraction, and the second bar distinguish both mapping steps.</div>
+<div class="line">Mapping statistics are available in the <em>&#8216;.mapstat&#8217;</em> files. The total mapping statistics per sample are available in the <em>&#8216;SAMPLE_NAME.mmapstat&#8217;</em> file.</div>
+<div class="line">Usually, a high fraction of reads is expected to be aligned on the genome (80-90%). Among them, we usually observed a few percent (around 10%) of step 2 aligned reads. Those reads are chimeric fragments for which we detect a ligation junction. An abnormal level of chimeric reads can reflect a ligation issue during the library preparation.</div>
+</div>
+<div class="figure">
+<a class="reference internal image-reference" href="_images/hicpro_mappingstat_IMR90rep1.png"><img alt="_images/hicpro_mappingstat_IMR90rep1.png" src="_images/hicpro_mappingstat_IMR90rep1.png" /></a>
+</div>
+<div class="line-block">
+<div class="line">Once R1 and R2 reads are aligned on the genome, HiC-Pro reconstruct the pairs information. The pairing statistics are summarized in the plot below and available in the <em>&#8216;.pairstat&#8217;</em> files. The combined pairing statistics per sample are available in the <em>&#8216;SAMPLE_NAME.mpairstat&#8217;</em> file.</div>
+<div class="line">The fraction of singleton or multi-hits depends on the genome complexity and the fraction of unmapped reads. The fraction of singleton is usually close to the sum of unmapped R1 and R2 reads, as it is unlikely that both mates from the same pair were unmapped.</div>
+</div>
+<div class="figure">
+<a class="reference internal image-reference" href="_images/hicpro_pairingstat_IMR90rep1.png"><img alt="_images/hicpro_pairingstat_IMR90rep1.png" src="_images/hicpro_pairingstat_IMR90rep1.png" /></a>
+</div>
+</div>
+<div class="section" id="list-of-valid-interaction-products">
+<h2>List of valid interaction products<a class="headerlink" href="#list-of-valid-interaction-products" title="Permalink to this headline">¶</a></h2>
+<div class="line-block">
+<div class="line">The <em>hic_results</em> folder contains all Hi-C processed data, and is further divided in several sub-folders.</div>
+<div class="line">The <em>hic_results/data</em> folder is used to store the valid interaction products (<em>&#8216;.validPairs&#8217;</em>), as well as other statisics files.</div>
+<div class="line">Statistics about read pairs filtering are available in the <em>&#8216;.RSstat&#8217;</em> files, and combined in the <em>&#8216;SAMPLE_NAME.mRSstat&#8217;</em> file.</div>
+<div class="line">The ligation efficiency can be assessed using the filtering of valid and invalid pairs. As the ligation is a random process, 25% of each valid ligation class is expected. In the same way, a high level of dangling-end or self-circle read pairs is associated with a low quality experiment, and reveals a problem during the digestion, fill-in or ligation steps.</div>
+<div class="line">In the context of Hi-C protocol without restriction enzyme, this analysis step is skipped. The aligned pairs are therefore directly used to generate the contact maps. A filter of the short range contact (typically &lt;1kb) is recommanded as this pairs are likely to be self ligation products.</div>
+</div>
+<div class="figure">
+<a class="reference internal image-reference" href="_images/hicpro_filteringstat_IMR90rep1.png"><img alt="_images/hicpro_filteringstat_IMR90rep1.png" src="_images/hicpro_filteringstat_IMR90rep1.png" /></a>
+</div>
+<div class="line-block">
+<div class="line">In case of allele specific analysis, an additional statistics file <em>&#8216;assplit.stat&#8217;</em> is available with the fraction of read pairs assigned to the parental genomes. Note that allele specific assignment is also available from the <em>&#8216;.RSstat&#8217;</em> files. Statistics from the <em>&#8216;assplit.stat&#8217;</em> are usually different from the ones in the <em>&#8216;.RSstat&#8217;</em> as they are calculated on the valid pairs after duplicates removal, whereas statistics on the <em>&#8216;.RSstat&#8217;</em> files are calculated for each read chunck before duplicates removal.</div>
+</div>
+</div>
+<div class="section" id="intra-and-inter-chromosomal-contact-maps">
+<h2>Intra and inter-chromosomal contact maps<a class="headerlink" href="#intra-and-inter-chromosomal-contact-maps" title="Permalink to this headline">¶</a></h2>
+<div class="line-block">
+<div class="line">Additional quality controls such as fragment size distribution can be extracted from the list of valid interaction products. We usually expect to see a distribution centered around 300 pb which correspond to the paired-end insert size commonly used.</div>
+<div class="line">The fraction of dplicates is also presented. A high level of duplication indicates a poor molecular complexity and a potential PCR bias.</div>
+<div class="line">Finally, an important metric is to look at the fraction of intra and inter-chromosomal interactions, as well as long range (&gt;20kb) versus short range (&lt;20kb) intra-chromosomal interactions.</div>
+</div>
+<div class="figure">
+<a class="reference internal image-reference" href="_images/hicpro_contactstat_IMR90rep1.png"><img alt="_images/hicpro_contactstat_IMR90rep1.png" src="_images/hicpro_contactstat_IMR90rep1.png" /></a>
+</div>
+<div class="figure">
+<a class="reference internal image-reference" href="_images/hicpro_fragsize_IMR90rep1.png"><img alt="_images/hicpro_fragsize_IMR90rep1.png" src="_images/hicpro_fragsize_IMR90rep1.png" /></a>
+</div>
+<div class="line-block">
+<div class="line">The contact maps are then available in the <em>hic_results/matrix</em> folder. Raw contact maps are in the <em>raw</em> folder and normalized contact maps in the <em>iced</em> folder.</div>
+<div class="line">The contact maps are generated for all specified resolution (see cnfiguration file)</div>
+<div class="line">A contact map is defined by :</div>
+</div>
+<ul class="simple">
+<li>A list of genomic intervals related to the specified resolution (BED format).</li>
+<li>A matrix, stored as standard triplet sparse format (i.e. list format). Based on the observation that a contact map is symmetric and usually sparse, only non-zero values are stored for half of the matrix. The user can specified if the <em>&#8216;upper&#8217;</em>, <em>&#8216;lower&#8217;</em> or <em>&#8216;complete&#8217;</em> matrix has to be stored. The <em>&#8216;asis&#8217;</em> option allows to store the contacts as they are observed from the valid pairs files.</li>
+</ul>
+<div class="highlight-python"><div class="highlight"><pre>A   B   10
+A   C   23
+B   C   24
+(...)
+</pre></div>
+</div>
+<p>This format is memory efficient, and is compatible with other analysis softwares such as the <a class="reference external" href="http://bioconductor.org/packages/release/bioc/html/HiTC.html">HiTC Bioconductor package</a>.</p>
+</div>
+</div>
+
+
+    </div>
+<footer class="footer">
+    <p class="pull-right">
+      <a href="#">Back to top</a>
+      
+    </p>
+    <p>
+        &copy; Copyright 2015, Nicolas Servant.<br/>
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.3.1.<br/>
+    </p>
+</footer>
+  </body>
+</html>
