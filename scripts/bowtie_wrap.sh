@@ -130,8 +130,19 @@ fi
 if [[ ${MODE} == 'global' ]]; then
     for r in $(get_fastq_for_bowtie_global)
     do
+	wasrun=1
        	R1=$r
 	R2=$(echo $r | get_R2)
+	
+	echo "-----------"
+	echo $R1
+	echo $R2
+	echo "-------------"
+
+	if [[ ! -e $R1 || ! -e $R2 ]]; then
+	    echo "error - input files not found." >&2
+	    exit 1
+	fi
 	
 	sample_dir=$(get_sample_dir $r)
 	prefix1=$(basename ${R1} | sed -e 's/.fastq\(.gz\)*//')
@@ -144,10 +155,15 @@ if [[ ${MODE} == 'global' ]]; then
 
 	wait $pid1 $pid2 || die "Error in Bowtie alignment"
     done
+    if [[ $wasrun != 1 ]]; then
+	echo "Nothing to align ! Please check input files and R1/R2 extension." >&2
+	exit 1
+    fi
 elif [[ ${MODE} == 'local' ]]; then
     if [[ ! -z $LIGATION_SITE ]]; then
 	for r in $(get_fastq_for_bowtie_local)
 	do
+	    wasrun=1
 	    R1=$r
 	    R2=$(echo $r | get_R2)
 	    sample_dir=$(get_sample_dir $r)
@@ -161,6 +177,10 @@ elif [[ ${MODE} == 'local' ]]; then
 	    
 	    wait $pid1 $pid2 || die "Error in Bowtie alignment"
 	done
+	if [[ $wasrun != 1 ]]; then
+	    echo "Nothing to align ! Please check input files and R1/R2 extension." >&2
+	    exit 1
+	fi
     fi
 else
     die "Error: Unknown mapping mode !"

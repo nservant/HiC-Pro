@@ -50,6 +50,8 @@ then
     count=$(cat $inputfile | wc -l)
 fi
 
+if [[ $count == 0 ]]; then echo "$0: error - no input files detected. Please check the PAIR1_EXT/PAIR2_EXT and the rawdata folder." >&2; exit 1; fi
+
 ## Paralelle Implementation
 if [[ $MAKE_OPTS == "" || $MAKE_OPTS == *"mapping"* || $MAKE_OPTS == *"proc_hic"* ]]
 then

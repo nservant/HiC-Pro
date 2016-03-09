@@ -27,13 +27,16 @@ getPairMat <- function(x, x.perc, rmMulti=0, rmSingle=0){
 
   n.plots <- 4
   notreported.lab <- c("Low_qual_pairs")
-  if (rmMulti == 1){
-    n.plots <- n.plots + 1
-    notreported.lab <- c(notreported.lab, "Multiple_pairs_alignments")
-  }
-  if (rmSingle == 1){
-    n.plots <- n.plots + 1
-    notreported.lab <- c(notreported.lab, "Pairs_with_Singleton")
+  ## Remove multi pairs
+  if (rmMulti == 1 && rmSingle ==1){
+    n.plots <- n.plots + 2
+    notreported.lab <- c(notreported.lab, "Multiple_pairs_alignments", "Pairs_with_singleton")
+  }else if (rmMulti == 1 && rmSingle == 0){
+      n.plots <- n.plots + 2
+      notreported.lab <- c(notreported.lab, "Multiple_pairs_alignments", "Multiple_singleton_alignments")
+  }else if (rmMulti == 0 && rmSingle == 1){
+      n.plots <- n.plots + 1
+      notreported.lab <- c(notreported.lab, "Pairs_with_singleton")
   }
   
   reported.lab <- "Reported_pairs"
@@ -48,6 +51,9 @@ getPairMat <- function(x, x.perc, rmMulti=0, rmSingle=0){
   x.perc[allnotreported.lab] <- round(n.notreported_pairs/x["Total_pairs_processed"]*100,1)
 
   ## Check
+  print (x[un.lab])
+  print (x[reported.lab])
+  print(x[allnotreported.lab])
   stopifnot(x[un.lab]+x[reported.lab]+x[allnotreported.lab]==x["Total_pairs_processed"])
     
   ## Get percentage
@@ -55,6 +61,8 @@ getPairMat <- function(x, x.perc, rmMulti=0, rmSingle=0){
   
   ## multiple plots
   p <- rep(1, n.plots)
+  print(p)
+  print(c(reported.lab, allnotreported.lab, un.lab, notreported.lab))
   names(p) <- c(reported.lab, allnotreported.lab, un.lab, notreported.lab)
   p[notreported.lab] <- 2
 

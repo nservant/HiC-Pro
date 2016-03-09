@@ -227,7 +227,7 @@ get_sample_dir()
 
 get_fastq_for_bowtie_global()
 {
-    get_hic_files $RAW_DIR .fastq
+    get_hic_files $RAW_DIR .fastq | grep "$PAIR1_EXT"
 }
 
 get_fastq_for_bowtie_local()
