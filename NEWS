@@ -7,11 +7,14 @@ NEW FEATURES
 
 SIGNIFICANT USER-VISIBLE CHANGES
 
+    o Update singleton reporting in pairing mode (pull request N. Varoquaux, F. Ai)
+
     o Additional checks on input files to report more "user-friendly" errors
 
 BUG FIXES
 
     o Fix bugs in singleton and multiple hits reporting
+
     o Fix bug when fastq.gz files are processed without parallel mode but using a cluster
 
 ***********************************
