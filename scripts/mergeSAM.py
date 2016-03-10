@@ -10,6 +10,8 @@
 
 """
 Script to pair 2 SAM/BAM files into one PE BAM
+- On 03/05/16 Ferhat made changes starting from ~/bin/HiC-Pro_2.7.2b/scripts/mergeSAM.py 
+to make singletons possible to be reported
 """
 
 import getopt
@@ -200,7 +202,11 @@ if __name__ == "__main__":
     multi_pairs_counter = 0
     uniq_pairs_counter = 0
     unmapped_pairs_counter = 0 
-    lowq_pairs_counter = 0 
+    lowq_pairs_counter = 0
+    multi_singles_counter = 0
+    uniq_singles_counter = 0
+    lowq_singles_counter = 0
+
     #local_counter = 0
     paired_reads_counter = 0
     singleton_counter = 0
@@ -236,24 +242,49 @@ if __name__ == "__main__":
                     unmapped_pairs_counter += 1
                     continue
 
-                 ## singleton
-                if  r1.is_unmapped == True or r2.is_unmapped == True:
+                ## both mapped
+                elif r1.is_unmapped == False and r2.is_unmapped == False:
+                     ## quality
+                    if mapq != None and (r1.mapping_quality < int(mapq) or r2.mapping_quality < int(mapq)):
+                        lowq_pairs_counter += 1
+                        continue
+                 
+                     ## Unique mapping
+                    if is_unique_bowtie2(r1) == True and is_unique_bowtie2(r2) == True:
+                        uniq_pairs_counter += 1
+                    else:
+                        multi_pairs_counter += 1
+                        if report_multi == False:
+                            continue
+		# one end mapped, other is not
+                else:
                     singleton_counter += 1
                     if report_single == False:
                         continue
-                     
-                 ## quality
-                if mapq != None and (r1.mapping_quality < int(mapq) or r2.mapping_quality < int(mapq)):
-                    lowq_pairs_counter += 1
-                    continue
-                 
-                 ## Unique mapping
-                if is_unique_bowtie2(r1) == True and is_unique_bowtie2(r2) == True:
-                    uniq_pairs_counter += 1
-                else:
-                    multi_pairs_counter += 1
-                    if report_multi == False:
-                        continue
+                    if r1.is_unmapped == False:  ## first end is mapped, second is not
+                         ## quality
+                        if mapq != None and (r1.mapping_quality < int(mapq)): 
+                            lowq_singles_counter += 1
+                            continue
+                         ## Unique mapping
+                        if is_unique_bowtie2(r1) == True:
+                            uniq_singles_counter += 1
+                        else:
+                            multi_singles_counter += 1
+                            if report_multi == False:
+                                continue
+                    else:  ## second end is mapped, first is not
+                         ## quality
+                        if mapq != None and (r2.mapping_quality < int(mapq)): 
+                            lowq_singles_counter += 1
+                            continue
+                         ## Unique mapping
+                        if is_unique_bowtie2(r2) == True:
+                            uniq_singles_counter += 1
+                        else:
+                            multi_singles_counter += 1
+                            if report_multi == False:
+                                continue
 
                 tot_pairs_counter += 1          
                 (r1, r2) = sam_flag(r1,r2, hr1, hr2)
@@ -279,15 +310,17 @@ if __name__ == "__main__":
             
         handle_stat.write("Total_pairs_processed\t" + str(reads_counter) + "\t" + str(round(float(reads_counter)/float(reads_counter)*100,3)) + "\n")
         handle_stat.write("Unmapped_pairs\t" + str(unmapped_pairs_counter) + "\t" + str(round(float(unmapped_pairs_counter)/float(reads_counter)*100,3)) + "\n")
-        handle_stat.write("Pairs_with_Singleton\t" + str(singleton_counter) + "\t" + str(round(float(singleton_counter)/float(reads_counter)*100,3)) + "\n")
         handle_stat.write("Low_qual_pairs\t" + str(lowq_pairs_counter) + "\t" + str(round(float(lowq_pairs_counter)/float(reads_counter)*100,3)) + "\n")
         handle_stat.write("Unique_paired_alignments\t" + str(uniq_pairs_counter) + "\t" + str(round(float(uniq_pairs_counter)/float(reads_counter)*100,3)) + "\n")
         handle_stat.write("Multiple_pairs_alignments\t" + str(multi_pairs_counter) + "\t" + str(round(float(multi_pairs_counter)/float(reads_counter)*100,3)) + "\n")
-        #handle_stat.write("Local_alignments\t" + str(local_counter) + "\t" + str(round(float(local_counter)/float(reads_counter)*100,3)) + "\n")
+        handle_stat.write("Pairs_with_singleton\t" + str(singleton_counter) + "\t" + str(round(float(singleton_counter)/float(reads_counter)*100,3)) + "\n")  
+        handle_stat.write("Low_qual_singleton\t" + str(lowq_singles_counter) + "\t" + str(round(float(lowq_singles_counter)/float(reads_counter)*100,3)) + "\n")
+        handle_stat.write("Unique_singleton_alignments\t" + str(uniq_singles_counter) + "\t" + str(round(float(uniq_singles_counter)/float(reads_counter)*100,3)) + "\n")
+        handle_stat.write("Multiple_singleton_alignments\t" + str(multi_singles_counter) + "\t" + str(round(float(multi_singles_counter)/float(reads_counter)*100,3)) + "\n")
         handle_stat.write("Reported_pairs\t" + str(tot_pairs_counter) + "\t" + str(round(float(tot_pairs_counter)/float(reads_counter)*100,3)) + "\n")
-        
         handle_stat.close()
 
     hr1.close()
     hr2.close()
     outfile.close()
+
