@@ -238,13 +238,22 @@ See the :ref:`results <RES>` section for more information.
 
 * *bowtie_results*
 
-The *bowtie_results* folder contains the results of the reads mapping. The results of first mapping step are available in the *bwt2_glob* folder, and the seconnd step in the *bwt2_loc* folder. Final BAM files, reads pairing, and mapping statistics are available on the *bwt2* folder.
+The *bowtie_results* folder contains the results of the reads mapping. The results of first mapping step are available in the *bwt2_glob* folder, and the seconnd step in the *bwt2_loc* folder. Final BAM files, reads pairing, and mapping statistics are available on the *bwt2* folder. Note that once HiC-Pro has been run, all files in *bwt2_glob* or *bwt2_loc* folders can be removed. These files take a significant amount of disk space and are not useful anymore.
 
 * *hic_results*
 
 | This folder contains all Hi-C processed data, and is further divided in several sub-folders.
 | The *data* folder is used to store the valid interaction products (*.validPairs*), as well as other statisics files.
+
+| The *validPairs* are stored using a simple tab-delimited text format ;
+| read name / chr_reads1 / pos_reads1 / strand_reads1 / chr_reads2 / pos_reads2 / strand_reads2 / fragment_size [/ allele_specific_tag]
+| One *validPairs* file is generated per reads chunck. These files are then merged in the *allValidPairs*, and duplicates are removed if specified in the configuration file.
+
 | The contact maps are then available in the *matrix* folder. The *matrix* folder is organized with *raw* and *iced* contact maps for all resolutions.
+| Contact maps are stored as a triplet sparse format ;
+| bin_i / bin_j / counts_ij
+| Only no zero values are stored. BED file described the genomic bins are also generated. Note that *abs* and *ord* files are identical in the context of Hi-C data as the contact maps are symmetric.
+
 | Finally, the *pic* folder contains graphical outputs of the quality control checks.
 
 

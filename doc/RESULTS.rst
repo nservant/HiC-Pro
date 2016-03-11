@@ -30,7 +30,12 @@ List of valid interaction products
 ----------------------------------
 
 | The *hic_results* folder contains all Hi-C processed data, and is further divided in several sub-folders.
+
 | The *hic_results/data* folder is used to store the valid interaction products (*'.validPairs'*), as well as other statisics files.
+| The *validPairs* are stored using a simple tab-delimited text format ;
+| read name / chr_reads1 / pos_reads1 / strand_reads1 / chr_reads2 / pos_reads2 / strand_reads2 / fragment_size [/ allele_specific_tag]
+| One *validPairs* file is generated per reads chunck. These files are then merged in the *allValidPairs*, and duplicates are removed if specified in the configuration file.
+
 | Statistics about read pairs filtering are available in the *'.RSstat'* files, and combined in the *'SAMPLE_NAME.mRSstat'* file.
 | The ligation efficiency can be assessed using the filtering of valid and invalid pairs. As the ligation is a random process, 25% of each valid ligation class is expected. In the same way, a high level of dangling-end or self-circle read pairs is associated with a low quality experiment, and reveals a problem during the digestion, fill-in or ligation steps. 
 | In the context of Hi-C protocol without restriction enzyme, this analysis step is skipped. The aligned pairs are therefore directly used to generate the contact maps. A filter of the short range contact (typically <1kb) is recommanded as this pairs are likely to be self ligation products.
@@ -69,7 +74,7 @@ Intra and inter-chromosomal contact maps
    (...)
 
 
-This format is memory efficient, and is compatible with other analysis softwares such as the `HiTC Bioconductor package <http://bioconductor.org/packages/release/bioc/html/HiTC.html>`_.
+This format is memory efficient, and is compatible with other analysis softwares such as the `HiTC Bioconductor package <http://bioconductor.org/packages/release/bioc/html/HiTC.html>`_ or the `HiCPlotter software <https://github.com/kcakdemir/HiCPlotter>`_.
 
 
 
