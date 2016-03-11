@@ -55,7 +55,7 @@
 
 
   </head>
-  <body><div class="navbar">
+  <body role="document"><div class="navbar">
     <a class="navbar-brand" href="index.html">
       
     </a>
@@ -69,7 +69,7 @@
 <span id="as"></span><h1>Allele specific analysis<a class="headerlink" href="#allele-specific-analysis" title="Permalink to this headline">¶</a></h1>
 <div class="line-block">
 <div class="line">If the ALLELE_SPECIFIC_SNP option is defined in the configuration file, HiC-Pro will run the allele specific mode.</div>
-<div class="line">The ALLELE_SPECIFIC_SNP option must contain the path to a VCF file with SNPs information. The <a class="reference internal" href="UTILS.html#utils"><em>extract_snps.py</em></a> utility can be used to generate such file.</div>
+<div class="line">The ALLELE_SPECIFIC_SNP option must contain the path to a VCF file with SNPs information. The <a class="reference internal" href="UTILS.html#utils"><span>extract_snps.py</span></a> utility can be used to generate such file.</div>
 <div class="line">This utility was first design to extract relevant information from VCF file provided by the <a class="reference external" href="http://www.sanger.ac.uk/resources/mouse/genomes/">Mouse Sanger database</a>. It aims at generating a VCF file of the F1 individual based on its parental genotype. For instance using <em>extract_snps.py</em> with <em>-r CASTEiJ</em> and <em>-a 129S1</em> will generate a VCF file with all F1 heterogyzote SNPs which can be used to distinguish <em>CASTEiJ</em> and <em>129S1</em> alleles.</div>
 <div class="line">The idea is therefore to have a VCF will maternal/paternal haplotypes encoded as the reference/alternative SNPs information.</div>
 <div class="line">Phasing data, such as the ones available from the <a class="reference external" href="http://www.illumina.com/platinumgenomes/">Illumina Platinum Project</a> can be simply used as is.</div>
@@ -78,7 +78,7 @@
 <h2>Allele specific mapping<a class="headerlink" href="#allele-specific-mapping" title="Permalink to this headline">¶</a></h2>
 <div class="line-block">
 <div class="line">In allele-specific mode, the sequencing reads are first aligned on a masked reference genome for which all polymorphic sites were first N-masked.</div>
-<div class="line">In the current version, <strong>this is the user responsability to generate this genome and to provide the bowtie2 indexes to HiC-Pro.</strong> Example of how to generate such reference genome is discribed in the <a class="reference internal" href="FAQ.html#faq"><em>FAQ</em></a> section.</div>
+<div class="line">In the current version, <strong>this is the user responsability to generate this genome and to provide the bowtie2 indexes to HiC-Pro.</strong> Example of how to generate such reference genome is discribed in the <a class="reference internal" href="FAQ.html#faq"><span>FAQ</span></a> section.</div>
 <div class="line">This masking strategy avoid systematic bias toward the reference allele, compared to standard mapping where reads with the reference allele are more likely to be mapped than the reads with non-reference alleles.</div>
 </div>
 </div>
@@ -114,7 +114,7 @@
     </p>
     <p>
         &copy; Copyright 2015, Nicolas Servant.<br/>
-      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.2.2.<br/>
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.3.1.<br/>
     </p>
 </footer>
   </body>
