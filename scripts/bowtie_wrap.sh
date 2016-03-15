@@ -139,10 +139,10 @@ if [[ ${MODE} == 'global' ]]; then
 	echo $R2
 	echo "-------------"
 
-	if [[ ! -e $R1 || ! -e $R2 ]]; then
-	    echo "error - input files not found." >&2
-	    exit 1
-	fi
+	#if [[ ! -e $R1 || ! -e $R2 ]]; then
+	#    echo "error - input files not found." >&2
+	#    exit 1
+	#fi
 	
 	sample_dir=$(get_sample_dir $r)
 	prefix1=$(basename ${R1} | sed -e 's/.fastq\(.gz\)*//')

@@ -85,7 +85,8 @@ do
 		    cat ${DATA_DIR}/${RES_FILE_NAME}/${RES_FILE_NAME}_allValidPairs | ${SCRIPTS}/build_matrix --binfile ${GENOME_FRAGMENT_FILE} --chrsizes $GENOME_SIZE_FILE --ifile /dev/stdin --oprefix ${MATRIX_DIR}/${bsize}/${RES_FILE_NAME}_${bsize} --matrix-format ${MATRIX_FORMAT} 2> ${LDIR}/build_raw_maps.log
 		## Bin resolution
 		else
-		    cat ${DATA_DIR}/${RES_FILE_NAME}/${RES_FILE_NAME}_allValidPairs | ${SCRIPTS}/build_matrix --binsize ${bsize} --chrsizes $GENOME_SIZE_FILE --ifile /dev/stdin --oprefix ${MATRIX_DIR}/${bsize}/${RES_FILE_NAME}_${bsize} --matrix-format ${MATRIX_FORMAT}  --progress 2> ${LDIR}/build_raw_maps.log
+		    echo " cat ${DATA_DIR}/${RES_FILE_NAME}/${RES_FILE_NAME}_allValidPairs | ${SCRIPTS}/build_matrix --binsize ${bsize} --chrsizes $GENOME_SIZE_FILE --ifile /dev/stdin --oprefix ${MATRIX_DIR}/${bsize}/${RES_FILE_NAME}_${bsize} --matrix-format ${MATRIX_FORMAT} 2> ${LDIR}/build_raw_maps.log"
+		    cat ${DATA_DIR}/${RES_FILE_NAME}/${RES_FILE_NAME}_allValidPairs | ${SCRIPTS}/build_matrix --binsize ${bsize} --chrsizes $GENOME_SIZE_FILE --ifile /dev/stdin --oprefix ${MATRIX_DIR}/${bsize}/${RES_FILE_NAME}_${bsize} --matrix-format ${MATRIX_FORMAT} 2> ${LDIR}/build_raw_maps.log
 		fi
 	    fi
 	done
