@@ -1,3 +1,10 @@
+***********************************
+CHANGES IN VERSION 2.7.5
+
+BUG FIXES
+
+   o Fix bug in hic_inc.sh for numeric comparison
+
 
 ***********************************
 CHANGES IN VERSION 2.7.4
