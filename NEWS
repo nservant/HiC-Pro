@@ -1,10 +1,17 @@
 ***********************************
 CHANGES IN VERSION 2.7.5
 
+NEW FEATURES
+
+   o New utils : hicpro2juicebox. HiC-Pro results can now be converted in Juicebox input for visualization (A. Barrera, N. Servant)
+
+SIGNIFICANT USER-VISIBLE CHANGES
+
+   o validPairs output format was updated for Juicebox compatibility. New columns were added with restriction fragment names and mapping quality
+
 BUG FIXES
 
    o Fix bug in hic_inc.sh for numeric comparison
-
 
 ***********************************
 CHANGES IN VERSION 2.7.4
@@ -15,7 +22,7 @@ NEW FEATURES
 
 SIGNIFICANT USER-VISIBLE CHANGES
 
-    o Update singleton reporting in pairing mode (pull request N. Varoquaux, F. Ai)
+    o Update singleton reporting in pairing mode (pull request N. Varoquaux, F. Ay)
 
     o Additional checks on input files to report more "user-friendly" errors
 
@@ -56,8 +63,6 @@ NEW FEATURES
 SIGNIFICANT USER-VISIBLE CHANGES
 
    o be careful - configuration files for installing and running HiC-Pro have been updated to manage multiple schedulers !
-
-
 
 ***********************************
 CHANGES IN VERSION 2.7.1

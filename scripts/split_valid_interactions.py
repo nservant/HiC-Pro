@@ -102,7 +102,7 @@ if __name__ == "__main__":
 
             vp_counter +=1
             h = line.rstrip().split("\t")
-            haplotype = h[8].split("-")
+            haplotype = h[len(h)-1].split("-") ## always last column
 
             r1as = int(haplotype[0])
             r2as = int(haplotype[1])

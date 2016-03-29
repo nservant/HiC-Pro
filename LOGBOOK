@@ -7,6 +7,14 @@
 ##
 ################################################################################
 
+o manual - stepwise explanation + read name in FAQ
+
+o EV - update error tracking
+
+o EV - update sort -V
+
+o EV - bug in build_maps
+
 o Deal with reads with multiple RS sites ?
 
 o Check the impact of reads ordering in pairs classification
@@ -23,6 +31,12 @@ o Think about a docker version of HiC-Pro
 ## LOGBOOK
 ##
 ################################################################################
+
+##--------------------
+## 21-03-16
+##--------------------
+
+   o Change validPairs format for Juicebox compatibility
 
 ##--------------------
 ## 08-01-16
