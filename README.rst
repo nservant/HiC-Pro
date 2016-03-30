@@ -21,7 +21,7 @@ What is HiC-Pro ?
 =================
 
 | HiC-Pro was designed to process Hi-C data, from raw fastq files (paired-end Illumina data) to the normalized contact maps. Since version 2.7.0, HiC-Pro can analyse data from digestion protocols as well as data from protocols that do not require restriction enzyme such as DNase Hi-C.
-| The pipeline is flexible, scalable and optimized. It can operate either on a single laptop or on a computational cluster using the PBS-Torque scheduler. HiC-Pro is sequential and each step of the workflow can be run independantly.
+| The pipeline is flexible, scalable and optimized. It can operate either on a single laptop or on a computational cluster. HiC-Pro is sequential and each step of the workflow can be run independantly.
 | HiC-Pro includes a fast implementatation of the ICE normalization method (see the `iced <https://github.com/hiclib/iced>`_ python library for more information).
 | In addition, HiC-Pro can use phasing data to build :ref:`allele specific contact maps <AS>`.
 

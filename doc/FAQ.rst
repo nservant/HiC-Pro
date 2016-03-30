@@ -131,6 +131,8 @@ Here is a small example of how to use HiCPlotter.
    ## Plot the chrX at 150Kb resolution
    python HiCPlotter.py -f hic_results/matrix/sample1/iced/150000/sample1_150000_iced.matrix -o Exemple -r 150000 -tri 1 -bed hic_results/matrix/sample1/raw/150000/sample1_150000_ord.bed -n Test -chr chrX -ptr 1
 
+Since version 2.7.6 HiC-Pro should be compatible with the Juicebox viewer. See the hicpro2juicebox utility to generate Juicebox input file from the list of valid interactions.
+
 How much disk space is require for running HiC-Pro
 --------------------------------------------------
 
@@ -138,4 +140,3 @@ How much disk space is require for running HiC-Pro
 | The main part of this disk space is required for the mapping only, as HiC-Pro will map R1 and R2 independantly, in two steps. And then, merge the R1 and R2 alignments at the pairing step. So for 1 sample (R1 + R2 input files), 8 intermediate BAM files are generated.
 | The final matrix files are not that big, and the triplet format used by HiC-Pro is very efficient.
 | Therefore, a good habit would be to remove mapping files after running HiC-Pro.
-
