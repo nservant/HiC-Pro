@@ -1,5 +1,5 @@
 ***********************************
-CHANGES IN VERSION 2.7.5
+CHANGES IN VERSION 2.7.5b
 
 NEW FEATURES
 
@@ -12,6 +12,8 @@ SIGNIFICANT USER-VISIBLE CHANGES
 BUG FIXES
 
    o Fix bug in hic_inc.sh for numeric comparison
+
+   o Fix bug in bam/sam extension removal
 
 ***********************************
 CHANGES IN VERSION 2.7.4
