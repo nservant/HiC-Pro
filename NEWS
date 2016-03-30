@@ -5,6 +5,8 @@ NEW FEATURES
 
    o New utils : hicpro2juicebox. HiC-Pro results can now be converted in Juicebox input for visualization (A. Barrera, N. Servant)
 
+   o New utils : make_viewpoints.py. Allow to generate viewpoint from the list of valid interaction products. Initially developed for capture-C analysis
+
 SIGNIFICANT USER-VISIBLE CHANGES
 
    o validPairs output format was updated for Juicebox compatibility. New columns were added with restriction fragment names and mapping quality
