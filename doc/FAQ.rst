@@ -131,7 +131,7 @@ Here is a small example of how to use HiCPlotter.
    ## Plot the chrX at 150Kb resolution
    python HiCPlotter.py -f hic_results/matrix/sample1/iced/150000/sample1_150000_iced.matrix -o Exemple -r 150000 -tri 1 -bed hic_results/matrix/sample1/raw/150000/sample1_150000_ord.bed -n Test -chr chrX -ptr 1
 
-Since version 2.7.6 HiC-Pro should be compatible with the Juicebox viewer. See the hicpro2juicebox utility to generate Juicebox input file from the list of valid interactions.
+Since version 2.7.6 HiC-Pro is compatible with the Juicebox viewer. See the hicpro2juicebox utility to generate Juicebox input file from the list of valid interactions.
 
 How much disk space is require for running HiC-Pro
 --------------------------------------------------

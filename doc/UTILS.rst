@@ -41,7 +41,7 @@ or **How can I extract SNPs information from phasing data ?**
 
 
 
-2- digest_genome.py
+3- digest_genome.py
 -------------------
 or **How can I generate the list of restriction fragments after genome digestion ?**
 
@@ -64,4 +64,34 @@ or **How can I generate the list of restriction fragments after genome digestion
 
 
 
+4- make_viewpoints.py
+---------------------
+or **How can I generate a BED profile from a given viewpoints ?**
+
+| The make_viewpoints.py script was initially designed in the context of capture-C data.
+| For a given anchor (i.e. capture site), it allows to generate a track file with all interacting fragments.
+| Regions around the capture are usually excluded from the profile ('-e' parameter)
+
+.. code-block:: bash
+
+   ## Generate a viewpoints from capture site
+   HICPRO_PATH/bin/utils/make_viewpoints -i hicpro_res/hic_results/data/dixon_2M/dixon_2M_allValidPairs  -f HICPRO_PATH/data_info/HindIII_resfrag_hg19.bed -t mycapture.bed -e 1000 -d -v > capture.bedgraph
+
+
+4- hicpro2juicebox.sh
+---------------------
+or **How can I generate load my HiC-Pro data into Juicebox visualization software ?**
+
+| The hicpro2juicebox.sh utility allows to generate input file for Juicebox.
+| It can be use both for restriction fragment Hi-C or Dnase Hi-C by specifying the -f FRAGMENT_FILE option. Note that in this case, it is advice to use the HiC-Pro annotation file, as the fragment name is expected to be HiC_CHROMOSOME_FRAGMENTNUMBER.
+| This utility requires HiC-Pro version 2.7.6 or later, and the installation of Juicebox command line tools (https://github.com/theaidenlab/juicebox)
+
+
+.. code-block:: bash
+
+   ## Convert HiC-Pro output to Juicebox input
+   HICPRO_PATH/bin/utils/hicpro2juicebox.sh -i hicpro_res/hic_results/data/dixon_2M/dixon_2M_allValidPairs -g hg19 -j /usr/local/juicebox/juicebox_clt_1.4.jar
+
+   ## Convert HiC-Pro output to Juicebox input up to restriction fragment resolution
+   HICPRO_PATH/bin/utils/hicpro2juicebox.sh -i hicpro_res/hic_results/data/dixon_2M/dixon_2M_allValidPairs -g hg19 -j /usr/local/juicebox/juicebox_clt_1.4.jar -f  HICPRO_PATH/data_info/HindIII_resfrag_hg19.bed
 

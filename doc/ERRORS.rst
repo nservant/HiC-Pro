@@ -24,5 +24,5 @@ HiC-Pro is based on the pysam python library. Old pysam version does not support
 Error in Paring of R1 and R2 tags
 -------------------------------------------------------------------------------
 
-Reads from the R1 and R2 input files should be have the name.
-BAM files generated before the pairing step should be sorted by name, as the pairing is done line by line.
+| Reads from the R1 and R2 input files should be have the name.
+| BAM files generated before the pairing step should be sorted by name, as the pairing is done line by line.
