@@ -407,7 +407,7 @@ if __name__ == "__main__":
  
     # Write stats file
     if report:
-        handle_stat = open(re.sub(r'.bam|.sam', '.allelstat', output), 'w')
+        handle_stat = open(re.sub(r'\.bam$|\.sam$', '.allelstat', output), 'w')
         handle_stat.write("## " + __file__ + "\n")
         handle_stat.write("## ibam=" + mappedReadsFile + "\n")
         handle_stat.write("## snpFile=" + snpFile + "\n")

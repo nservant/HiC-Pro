@@ -490,7 +490,7 @@ if __name__ == "__main__":
     CF_ascounter = 0
 
     baseReadsFile = os.path.basename(mappedReadsFile)
-    baseReadsFile = re.sub(r'.bam|.sam', '', baseReadsFile)
+    baseReadsFile = re.sub(r'\.bam$|\.sam$', '', baseReadsFile)
 
     # Open handlers for output files
     handle_valid = open(outputDir + '/' + baseReadsFile + '.validPairs', 'w')

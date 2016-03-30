@@ -298,14 +298,14 @@ if __name__ == "__main__":
                 outfile.write(r2)
 
             else:
-                print "Forward and reverse reads not paired. Check that BAM files are sorted."
+                print "Forward and reverse reads not paired. Check that BAM files have the same read names and are sorted."
                 sys.exit(1)
 
     if stat:
         if output == '-':
             statfile = "pairing.stat"
         else:
-            statfile = re.sub('.bam', '.pairstat', output)
+            statfile = re.sub('\.bam$', '.pairstat', output)
         handle_stat = open(statfile, 'w')
             
         handle_stat.write("Total_pairs_processed\t" + str(reads_counter) + "\t" + str(round(float(reads_counter)/float(reads_counter)*100,3)) + "\n")

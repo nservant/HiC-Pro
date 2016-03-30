@@ -249,7 +249,7 @@ if __name__ == "__main__":
     CF_ascounter = 0
 
     baseReadsFile = os.path.basename(mappedReadsFile)
-    baseReadsFile = re.sub(r'.bam|.sam', '', baseReadsFile)
+    baseReadsFile = re.sub(r'\.bam$|\.sam$', '', baseReadsFile)
 
     # Open handlers for output files
     handle_valid = open(outputDir + '/' + baseReadsFile + '.validPairs', 'w')
@@ -355,35 +355,55 @@ if __name__ == "__main__":
        
             if cur_handler is not None:
                 if not r1.is_unmapped and not r2.is_unmapped:
+                    
+                    ##reorient reads to ease duplicates removal
+                    or1, or2 = get_ordered_reads(r1, r2)
+                    or1_chrom = samfile.getrname(or1.tid)
+                    or2_chrom = samfile.getrname(or2.tid)
+
                     cur_handler.write(
-                        r1.qname + "\t" +
-                        r1_chrom + "\t" +
-                        str(get_read_pos(r1)) + "\t" +
-                        str(get_read_strand(r1)) + "\t" +
-                        r2_chrom + "\t" +
-                        str(get_read_pos(r2)) + "\t" +
-                        str(get_read_strand(r2)) + "\t" +
-                        "NA" + "\t" + str(htag) + "\n")
+                        or1.qname + "\t" +
+                        or1_chrom + "\t" +
+                        str(get_read_pos(or1)) + "\t" +
+                        str(get_read_strand(or1)) + "\t" +
+                        or2_chrom + "\t" +
+                        str(get_read_pos(or2)) + "\t" +
+                        str(get_read_strand(or2)) + "\t" +
+                        "NA" + "\t" + ##dist 
+                        "NA" + "\t" + ##resfrag1
+                        "NA" + "\t" + ##resfrag2
+                        str(or1.mapping_quality) + "\t" + 
+                        str(or2.mapping_quality) + "\t" + 
+                        str(htag) + "\n")
+                
                 elif r2.is_unmapped:
                     cur_handler.write(
-                        r1.qname + "\t" +
-                        r1_chrom + "\t" +
-                        str(get_read_pos(r1)) + "\t" +
-                        str(get_read_strand(r1)) + "\t" +
+                        or1.qname + "\t" +
+                        or1_chrom + "\t" +
+                        str(get_read_pos(or1)) + "\t" +
+                        str(get_read_strand(or1)) + "\t" +
                         "+" + "\t" +
                         "0" + "\t" +
                         "*" + "\t" +
-                        "NA" + "\n")
+                        "NA" + "\t" + 
+                        "NA" + "\t" +
+                        "NA" + "\t" +
+                        str(or1.mapping_quality) + "\t" + 
+                        str(or2.mapping_quality) + "\n")
                 else:
                     cur_handler.write(
-                        r1.qname + "\t" +
+                        or1.qname + "\t" +
                         "*" + "\t" +
                         "0" + "\t" +
                         "*" + "\t" +
-                        r2_chrom + "\t" +
-                        str(get_read_pos(r2)) + "\t" +
-                        str(get_read_strand(r2)) + "\t" +
-                        "NA" + "\n")
+                        or2_chrom + "\t" +
+                        str(get_read_pos(or2)) + "\t" +
+                        str(get_read_strand(or2)) + "\t" +
+                        "NA" + "\t" +
+                        "NA" + "\t" +
+                        "NA" + "\t" +
+                        str(or1.mapping_quality) + "\t" + 
+                        str(or2.mapping_quality) + "\n")
 
             if (reads_counter % 100000 == 0 and verbose):
                 print "##", reads_counter
@@ -423,6 +443,4 @@ if __name__ == "__main__":
 
     handle_stat.close()
 
-    #if samOut:
-    #    samfile.close()
 
