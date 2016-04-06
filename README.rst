@@ -30,7 +30,7 @@ If you use HiC-Pro, please cite :
 HiC-Pro: An optimized and flexible pipeline for Hi-C processing. *Servant N., Varoquaux N., Lajoie BR., Viara E., Chen CJ., Vert JP., Dekker J., Heard E., Barillot E.* Genome Biology 2015, 16:259 doi:10.1186/s13059-015-0831-x
 `http://www.genomebiology.com/2015/16/1/259 <http://www.genomebiology.com/2015/16/1/259>`_
 
-For any question about HiC-Pro, please contact nicolas.servant@curie.fr
+For any question about HiC-Pro, please contact nicolas.servant@curie.fr or use the `HiC-Pro forum <https://groups.google.com/forum/#!forum/hic-pro>`_ !
 
 How to install it ?
 ===================
