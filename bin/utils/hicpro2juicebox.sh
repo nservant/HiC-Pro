@@ -30,6 +30,7 @@ function help {
     echo "   [-r|--resfrag] RESFRAG : restriction fragment file used by HiC-Pro"
     echo "   [-t|--temp] TEMP : path to tmp folder. Default is current path"
     echo "   [-o|--out] OUT : output path. Default is current path"
+    echo "   [-c|--chr] CHR : write chromosome name with the 'chr' extension. This depend of the reference genome used by juicebox"
     echo "   [-h|--help]: help"
     exit;
 }
@@ -51,6 +52,7 @@ for arg in "$@"; do
       "--resfrag") set -- "$@" "-r" ;;
       "--temp")   set -- "$@" "-t" ;;
       "--out")   set -- "$@" "-o" ;;
+      "--chr") set -- "$@" "-c" ;;
       "--help")   set -- "$@" "-h" ;;
        *)        set -- "$@" "$arg"
   esac
@@ -62,8 +64,9 @@ GENOME=""
 JUICEBOXJAR=""
 TEMP="./tmp"
 OUT="./"
+CHRNAME=0
 
-while getopts ":i:r:g:j:t:o:h" OPT
+while getopts ":i:r:g:j:t:o:ch" OPT
 do
     case $OPT in
 	i) VALIDPAIRS=$OPTARG;;
@@ -72,6 +75,7 @@ do
 	r) RESFRAG=$OPTARG;;
 	t) TEMP=$OPTARG;;
 	o) OUT=$OPTARG;;
+	c) CHRNAME=1;;
 	h) help ;;
 	\?)
 	    echo "Invalid option: -$OPTARG" >&2
@@ -115,10 +119,17 @@ if [[ ! -z $RESFRAG ]]; then
     
 ## The “pre” command needs the contact map to be sorted by chromosome and grouped so that all reads for one chromosome (let’s say, chr1) appear in the same column.
 ## Also, chromosomes should not have the ‘chr” substring and the strand is coded as 0 for positive and anything else for negative (in practice, 1).
-    awk '$2=="chrM"{$2="chrMT"}$5=="chrM"{$5="chrMT"}{$4=$4!="+"; $7=$7!="+"; sub(/chr/, "", $2); sub(/chr/, "", $5); split($9, frag1, "_"); split($10, frag2, "_"); } $2<=$5{print $1, $4, $2, $3, frag1[3], $7, $5, $6, frag2[3], $11, $12 }$5<$2{ print $1, $7, $5, $6, frag2[3], $4, $2, $3, frag1[3], $12, $11 }' $VALIDPAIRS | sort -k3,3d  -k7,7d -S 90 > ${TEMP}/$$_allValidPairs.pre_juicebox_sorted
-
+    if [[ $CHRNAME -eq 0 ]];then
+	awk '$2=="chrM"{$2="chrMT"}$5=="chrM"{$5="chrMT"}{$4=$4!="+"; $7=$7!="+"; sub(/chr/, "", $2); sub(/chr/, "", $5); split($9, frag1, "_"); split($10, frag2, "_"); } $2<=$5{print $1, $4, $2, $3, frag1[3], $7, $5, $6, frag2[3], $11, $12 }$5<$2{ print $1, $7, $5, $6, frag2[3], $4, $2, $3, frag1[3], $12, $11 }' $VALIDPAIRS | sort -k3,3d  -k7,7d -S 90 > ${TEMP}/$$_allValidPairs.pre_juicebox_sorted
+    else
+	awk '$2=="chrM"{$2="chrMT"}$5=="chrM"{$5="chrMT"}{$4=$4!="+"; $7=$7!="+"; sub(/chr/, "", $2); sub(/chr/, "", $5); split($9, frag1, "_"); split($10, frag2, "_"); } $2<=$5{print $1, $4, "chr"$2, $3, frag1[3], $7, "chr"$5, $6, frag2[3], $11, $12 }$5<$2{ print $1, $7, "chr"$5, $6, frag2[3], $4, "chr"$2, $3, frag1[3], $12, $11}' $VALIDPAIRS | sort -k3,3d  -k7,7d -S 90 > ${TEMP}/$$_allValidPairs.pre_juicebox_sorted
+    fi
 else
-    awk '$2=="chrM"{$2="chrMT"}$5=="chrM"{$5="chrMT"}{$4=$4!="+"; $7=$7!="+"; sub(/chr/, "", $2); sub(/chr/, "", $5)} $2<=$5{print $1, $4, $2, $3, 0, $7, $5, $6, 1, $11, $12 }$5<$2{ print $1, $7, $5, $6, 0, $4, $2, $3, 1, $12, $11 }' $VALIDPAIRS | sort -k3,3d  -k7,7d -S 90 > ${TEMP}/$$_allValidPairs.pre_juicebox_sorted
+    if [[ $CHRNAME -eq 0 ]];then
+	awk '$2=="chrM"{$2="chrMT"}$5=="chrM"{$5="chrMT"}{$4=$4!="+"; $7=$7!="+"; sub(/chr/, "", $2); sub(/chr/, "", $5)} $2<=$5{print $1, $4, $2, $3, 0, $7, $5, $6, 1, $11, $12 }$5<$2{ print $1, $7, $5, $6, 0, $4, $2, $3, 1, $12, $11 }' $VALIDPAIRS | sort -k3,3d  -k7,7d -S 90 > ${TEMP}/$$_allValidPairs.pre_juicebox_sorted
+    else
+	awk '$2=="chrM"{$2="chrMT"}$5=="chrM"{$5="chrMT"}{$4=$4!="+"; $7=$7!="+"; sub(/chr/, "", $2); sub(/chr/, "", $5)} $2<=$5{print $1, $4, "chr"$2, $3, 0, $7, "chr"$5, $6, 1, $11, $12 }$5<$2{ print $1, $7,"chr"$5, $6, 0, $4, "chr"$2, $3, 1, $12, $11 }' $VALIDPAIRS | sort -k3,3d  -k7,7d -S 90 > ${TEMP}/$$_allValidPairs.pre_juicebox_sorted
+    fi
 fi
 
 echo -e "Running Juicebox ..."
