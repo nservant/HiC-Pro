@@ -3,6 +3,8 @@ CHANGES IN VERSION 2.7.7
 
 NEW FEATURES
 
+   o New utility : sparseToDense.py - Convert a sparse symmetric matrix file in dense format for further analysis
+
    o Pull request from J. Brayet for installation process
 
 SIGNIFICANT USER-VISIBLE CHANGES
