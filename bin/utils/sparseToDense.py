@@ -76,7 +76,7 @@ def load_lengths(filename):
     -------
     lengths : the lengths of each chromosomes
     """
-    data = open_with(filename)
+    data = open_with_pandas_read_csv(filename)
     lengths = [(data[:, 0] == i).sum() for i in np.unique(data[:, 0])]
     return np.array(lengths)
 
@@ -100,6 +100,8 @@ if __name__ == "__main__":
         lengths = load_lengths(args.lengths)
     else:
         lengths = None
+
+    print lengths
 
     counts = load_counts(args.filename, lengths=lengths)
     counts = counts.toarray()
