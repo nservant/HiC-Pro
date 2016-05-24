@@ -7,7 +7,13 @@
 ##
 ################################################################################
 
-o manual - stepwise explanation + read name in FAQ
+o remove re-ligation products
+
+o sparseTodense.py
+
+o update qsub in step2 for paralleization per sample
+
+o doc - stepwise explanation + read name in FAQ
 
 o EV - update error tracking
 
@@ -18,9 +24,6 @@ o EV - bug in build_maps
 o Deal with reads with multiple RS sites ?
 
 o Check the impact of reads ordering in pairs classification
-
-o Migth be interesting to bin at the restriction fragment level ? but ICE in this context need to be validated ...
-21-10-15 : beta version soon ready for fragment level contact maps
 
 o Update of HiC-Pro for capture-C data
 
