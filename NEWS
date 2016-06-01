@@ -8,6 +8,8 @@ NEW FEATURES
    o Pull request from J. Brayet for installation process
 
 SIGNIFICANT USER-VISIBLE CHANGES
+   
+   o Pull request NV - udpate iced version. Note that this version of iced rescales automatically the normalized matrix such that the total number of counts is identical to the original matrix.
 
    o Add -c option in hicpro2juicebox.sh utils to write the "chr" prefix before the chromosome name. The use of "chr" depends on the reference genome of juicebox.
 
