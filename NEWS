@@ -8,6 +8,10 @@ NEW FEATURES
    o Pull request from J. Brayet for installation process
 
 SIGNIFICANT USER-VISIBLE CHANGES
+
+   o Update of the manual
+
+   o Check python module version during installation
    
    o Pull request NV - udpate iced version. Note that this version of iced rescales automatically the normalized matrix such that the total number of counts is identical to the original matrix.
 
