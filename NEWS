@@ -17,7 +17,6 @@ SIGNIFICANT USER-VISIBLE CHANGES
 
    o Add -c option in hicpro2juicebox.sh utils to write the "chr" prefix before the chromosome name. The use of "chr" depends on the reference genome of juicebox.
 
-
 ***********************************
 CHANGES IN VERSION 2.7.6
 
