@@ -19,11 +19,14 @@ Others have to be installed before starting the installation :
 
 - R http://www.r-project.org/
 - Python libraries :
---- bx-python - https://pypi.python.org/pypi/bx-python
---- numpy - http://www.scipy.org/scipylib/download.html
---- scipy - http://www.scipy.org/scipylib/download.html
+--- bx-python (>=0.5.0) - https://pypi.python.org/pypi/bx-python
+--- numpy (>=1.8.2) - http://www.scipy.org/scipylib/download.html
+--- scipy (>=0.15.1) - http://www.scipy.org/scipylib/download.html
+--- pysam (>=0.8.3) - https://github.com/pysam-developers/pysam
 --- argparse if python <= 2.6
 
+Note that the iced module is also required (https://github.com/hiclib/iced). 
+Iced is part of the HiC-Pro source code, but can also be installed independantly (>=2.2)
 
 ##
 ## Install HiC-Pro

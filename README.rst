@@ -38,7 +38,7 @@ How to install it ?
 The HiC-Pro pipeline requires the following dependencies :
 
 * The `bowtie2 <http://bowtie-bio.sourceforge.net/bowtie2/index.shtml>`_ mapper
-* Python (>2.7) with *pysam*, *bx*, *numpy*, and *scipy* libraries
+* Python (>2.7) with *pysam (>=0.8.3)*, *bx(>=0.5.0)*, *numpy(>=1.8.2)*, and *scipy(>=0.15.1)* libraries
 * R with the *RColorBrewer* and *ggplot2* packages
 * g++ compiler
 * Samtools (>0.1.19)
@@ -199,52 +199,56 @@ Small fastq files (2M reads) extracted from the Dixon et al. 2012 paper are avai
    ## Edit the configuration file and set the path to Human bowtie2 indexes
 
    ## Run HiC-Pro
-   time HICPRO_INSTALL_DIR/bin/HiC-Pro -i test_data -o HiC_Pro_latest_test -c config_test_latest.txt
-   Run HiC-Pro
+
+   time HICPRO_INSTALL_DIR/bin/HiC-Pro -c config_test_latest.txt -i test_data -o hicpro_latest_test
+
+   Run HiC-Pro 2.7.7
    --------------------------------------------
-   lundi 2 mars 2015, 17:00:36 (UTC+0100)
-   Bowtie2 global alignment ...
-   bowtie_wrap.sh -c /bioinfo/users/nservant/projects_dev/HiC-Pro/config_test.txt -u >> hicpro_IRM90_rep1_split.log
+   mercredi 15 juin 2016, 20:44:23 (UTC+0200)
+   Bowtie2 alignment step1 ...
+   /home/nservant/Apps/HiC-Pro_2.7.7/scripts/bowtie_wrap.sh -c /home/nservant/projects_dev/HiC-Pro/config_test_latest.txt -u >> hicpro.log
    --------------------------------------------
-   lundi 2 mars 2015, 17:01:25 (UTC+0100)
-   Bowtie2 local alignment ...
-   bowtie_wrap.sh -c /bioinfo/users/nservant/projects_dev/HiC-Pro/config_test.txt -l >> hicpro_IRM90_rep1_split.log
+   mercredi 15 juin 2016, 20:44:59 (UTC+0200)
+   Bowtie2 alignment step2 ...
+   /home/nservant/Apps/HiC-Pro_2.7.7/scripts/bowtie_wrap.sh -c /home/nservant/projects_dev/HiC-Pro/config_test_latest.txt -l >> hicpro.log
    --------------------------------------------
-   lundi 2 mars 2015, 17:01:41 (UTC+0100)
+   mercredi 15 juin 2016, 20:45:17 (UTC+0200)
    Combine both alignment ...
-   bowtie_combine.sh -c /bioinfo/users/nservant/projects_dev/HiC-Pro/config_test.txt >> hicpro_IRM90_rep1_split.log
+   /home/nservant/Apps/HiC-Pro_2.7.7/scripts/bowtie_combine.sh -c /home/nservant/projects_dev/HiC-Pro/config_test_latest.txt >> hicpro.log
    --------------------------------------------
-   lundi 2 mars 2015, 17:01:52 (UTC+0100)
+   mercredi 15 juin 2016, 20:45:21 (UTC+0200)
    Bowtie2 mapping statistics for R1 and R2 tags ...
-   mapping_stat.sh -c /bioinfo/users/nservant/projects_dev/HiC-Pro/config_test.txt >> hicpro_IRM90_rep1_split.log
+   /home/nservant/Apps/HiC-Pro_2.7.7/scripts/mapping_stat.sh -c /home/nservant/projects_dev/HiC-Pro/config_test_latest.txt >> hicpro.log
    --------------------------------------------
-   lundi 2 mars 2015, 17:01:53 (UTC+0100)
+   mercredi 15 juin 2016, 20:45:22 (UTC+0200)
    Pairing of R1 and R2 tags ...
-   bowtie_pairing.sh -c /bioinfo/users/nservant/projects_dev/HiC-Pro/config_test.txt >> hicpro_IRM90_rep1_split.log
+   /home/nservant/Apps/HiC-Pro_2.7.7/scripts/bowtie_pairing.sh -c /home/nservant/projects_dev/HiC-Pro/config_test_latest.txt >> hicpro.log
    --------------------------------------------
-   lundi 2 mars 2015, 17:02:22 (UTC+0100)
-   Assign alignments to HindIII sites ...
-   mapped_2hic_fragments.sh -c /bioinfo/users/nservant/projects_dev/HiC-Pro/config_test.txt >> hicpro_IRM90_rep1_split.log
+   mercredi 15 juin 2016, 20:45:30 (UTC+0200)
+   Assign alignments to restriction fragments ...
+   /home/nservant/Apps/HiC-Pro_2.7.7/scripts/mapped_2hic_fragments.sh -c /home/nservant/projects_dev/HiC-Pro/config_test_latest.txt >> hicpro.log
    --------------------------------------------
-   lundi 2 mars 2015, 17:03:49 (UTC+0100)
+   mercredi 15 juin 2016, 20:46:08 (UTC+0200)
    Merge multiple files from the same sample ...
-   merge_valid_interactions.sh -c /bioinfo/users/nservant/projects_dev/HiC-Pro/config_test.txt >> hicpro_IRM90_rep1_split.log
+   /home/nservant/Apps/HiC-Pro_2.7.7/scripts/merge_valid_interactions.sh -c /home/nservant/projects_dev/HiC-Pro/config_test_latest.txt >> hicpro.log
    --------------------------------------------
-   lundi 2 mars 2015, 17:03:49 (UTC+0100)
-   Make plots per sample ...
-   make_plots.sh -c /bioinfo/users/nservant/projects_dev/HiC-Pro/config_test.txt >> hicpro_IRM90_rep1_split.log
+   mercredi 15 juin 2016, 20:46:09 (UTC+0200)
+   Merge stat files per sample ...
+   /home/nservant/Apps/HiC-Pro_2.7.7/scripts/merge_stats.sh -c /home/nservant/projects_dev/HiC-Pro/config_test_latest.txt >> hicpro.log
    --------------------------------------------
-   lundi 2 mars 2015, 17:03:55 (UTC+0100)
+   mercredi 15 juin 2016, 20:46:09 (UTC+0200)
+   Run quality checks for all samples ...
+   /home/nservant/Apps/HiC-Pro_2.7.7/scripts/make_plots.sh -c /home/nservant/projects_dev/HiC-Pro/config_test_latest.txt -p "all" >> hicpro.log
+   --------------------------------------------
+   mercredi 15 juin 2016, 20:46:22 (UTC+0200)
    Generate binned matrix files ...
-   build_raw_maps.sh -c /bioinfo/users/nservant/projects_dev/HiC-Pro/config_test.txt 2> logs/build_raw_maps.log
+   /home/nservant/Apps/HiC-Pro_2.7.7/scripts/build_raw_maps.sh -c /home/nservant/projects_dev/HiC-Pro/config_test_latest.txt
    --------------------------------------------
-   lundi 2 mars 2015, 17:03:57 (UTC+0100)
+   mercredi 15 juin 2016, 20:46:23 (UTC+0200)
    Run ICE Normalization ...
-   normContactMaps.sh -c /bioinfo/users/nservant/projects_dev/HiC-Pro/config_test.txt >> hicpro_IRM90_rep1_split.log 
+   /home/nservant/Apps/HiC-Pro_2.7.7/scripts/ice_norm.sh -c /home/nservant/projects_dev/HiC-Pro/config_test_latest.txt >> hicpro.log 
 
-   real	3m23.902s
-   user	5m22.956s
-   sys	0m40.243s
-
-   ## All results are available in HiC_Pro_v2.4.0_test
+   real	2m6.366s
+   user	3m24.493s
+   sys	0m33.151s
 
