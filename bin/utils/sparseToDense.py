@@ -36,6 +36,9 @@ if __name__ == "__main__":
     counts = counts + counts.T
     counts[np.diag_indices_from(counts)] /= 2
 
+    ## rounds matrix
+    counts = np.round(counts, 3)
+
     if args.di is True:
         bins = load_bed(args.bins)
         if len(bins) != len(counts):
@@ -49,4 +52,4 @@ if __name__ == "__main__":
     else:
         output_name = args.output
 
-    np.savetxt(output_name, counts, '%s')
+    np.savetxt(output_name, counts, '%s', delimiter="\t")
