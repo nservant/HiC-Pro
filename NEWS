@@ -9,6 +9,8 @@ NEW FEATURES
 
 SIGNIFICANT USER-VISIBLE CHANGES
 
+   o Update of the hicpro2juicebox.sh utils. -g option now requires the chromosome size files from HiC-Pro. This version now works for any organism.
+
    o Update of the manual
 
    o Check python module version during installation
