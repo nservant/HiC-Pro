@@ -3,6 +3,8 @@ CHANGES IN VERSION 2.7.7
 
 NEW FEATURES
 
+   o Religation are not discarding and considered as invalid pairs. Religation are defined as FR read pairs involving contiguous restriction fragments
+
    o New utility : sparseToDense.py - Convert a sparse symmetric matrix file in dense format for further analysis
 
    o Pull request from J. Brayet for installation process

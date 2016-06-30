@@ -25,7 +25,7 @@ if (la > 0){
 getHiCMat <- function(x){
   require(RColorBrewer)
   
-  invalid.lab <- intersect(names(x), c("Self_Cycle_pairs", "Dangling_end_pairs", "Single-end_pairs", "Dumped_pairs"))
+  invalid.lab <- intersect(names(x), c("Self_Cycle_pairs", "Dangling_end_pairs", "Religation_pairs", "Single-end_pairs", "Dumped_pairs"))
   valid.lab <- intersect(names(x), c("Valid_interaction_pairs_FF", "Valid_interaction_pairs_RR", "Valid_interaction_pairs_RF", "Valid_interaction_pairs_FR"))
   x <- x[c("Valid_interaction_pairs", valid.lab, invalid.lab)]
   
