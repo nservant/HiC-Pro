@@ -132,6 +132,6 @@ else
 fi
 
 ## Clean
-/bin/rm -f ${TEMP}/$$_resfrag.juicebox ${TEMP}/$$_allValidPairs.pre_juicebox_sorted
+#/bin/rm -f ${TEMP}/$$_resfrag.juicebox ${TEMP}/$$_allValidPairs.pre_juicebox_sorted
 
 echo "done !"

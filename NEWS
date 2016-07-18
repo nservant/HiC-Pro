@@ -1,9 +1,18 @@
 ***********************************
-CHANGES IN VERSION 2.7.7
+CHANGES IN VERSION 2.7.8
 
 NEW FEATURES
 
    o Religation are not discarding and considered as invalid pairs. Religation are defined as FR read pairs involving contiguous restriction fragments
+
+SIGNIFICANT USER-VISIBLE CHANGES
+
+   o Clean hicpro2juicebox.sh utils
+
+***********************************
+CHANGES IN VERSION 2.7.7
+
+NEW FEATURES
 
    o New utility : sparseToDense.py - Convert a sparse symmetric matrix file in dense format for further analysis
 
@@ -11,15 +20,15 @@ NEW FEATURES
 
 SIGNIFICANT USER-VISIBLE CHANGES
 
-   o Update of the hicpro2juicebox.sh utils. -g option now requires the chromosome size files from HiC-Pro. This version now works for any organism.
+   o Update of the hicpro2juicebox.sh utils. -g option now requires the chromosome size files from HiC-Pro. This version now works for any organism
 
    o Update of the manual
 
    o Check python module version during installation
    
-   o Pull request NV - udpate iced version. Note that this version of iced rescales automatically the normalized matrix such that the total number of counts is identical to the original matrix.
+   o Pull request NV - udpate iced version. Note that this version of iced rescales automatically the normalized matrix such that the total number of counts is identical to the original matrix
 
-   o Add -c option in hicpro2juicebox.sh utils to write the "chr" prefix before the chromosome name. The use of "chr" depends on the reference genome of juicebox.
+   o Add -c option in hicpro2juicebox.sh utils to write the "chr" prefix before the chromosome name. The use of "chr" depends on the reference genome of juicebox
 
 ***********************************
 CHANGES IN VERSION 2.7.6

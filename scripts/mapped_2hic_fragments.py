@@ -247,11 +247,40 @@ def get_overlapping_restriction_fragment(resFrag, chrom, read):
         return None
 
 
+def are_contiguous_fragments(frag1, frag2, chr1, chr2):
+    '''
+    Compare fragment positions to check if they are contiguous
+    '''
+    ret = False
+    if chr1 == chr2:
+        if int(frag1.start) < int(frag2.start):
+            d = int(frag2.start) - int(frag1.end)
+        else:
+            d = int(frag1.start) - int(frag2.end)
+            
+        if d == 0:
+            ret = True
+    
+    return ret
+
+def is_religation(read1, read2, frag1, frag2):
+    """
+    Reads are expected to map adjacent fragments
+    Check the orientation of reads -><-
+
+    """
+    ret=False
+    if are_contiguous_fragments(frag1, frag2, read1.tid, read2.tid):
+        if get_read_strand(r1) == "+" and get_read_strand(r2) == "-":
+            ret=True
+    return ret
+
+
 def is_self_circle(read1, read2):
     """
     Both reads are expected to be on the same restriction fragments
-
     Check the orientation of reads <-->
+
     read1 : [AlignedRead]
     read2 : [AlignedRead]
     """
@@ -284,7 +313,6 @@ def is_dangling_end(read1, read2):
 def get_valid_orientation(read1, read2):
     """
     Both reads are expected to be on the different restriction fragments
-
     Check the orientation of reads ->-> / <-<- / -><- / <-->
 
     read1 : [AlignedRead]
@@ -318,6 +346,7 @@ def get_PE_fragment_size(read1, read2, resFrag1, resFrag2, interactionType):
     interactionType : Type of interaction from get_interaction_type() [str]
 
     """
+
     fragmentsize = None
 
     # Get oriented reads
@@ -330,11 +359,11 @@ def get_PE_fragment_size(read1, read2, resFrag1, resFrag2, interactionType):
             rfrag1 = resFrag1
             rfrag2 = resFrag2
 
-        ## In this case used the read 3' end !
+        ## In this case use the read 3' end !
         r1pos = get_read_start(r1)
         r2pos = get_read_start(r2)
 
-        if interactionType == "DE":
+        if interactionType == "DE" or interactionType == "RE":
             fragmentsize = r2pos - r1pos
         elif interactionType == "SC":
             fragmentsize = (r1pos - rfrag1.start) + (rfrag2.end - r2pos)
@@ -363,6 +392,7 @@ def get_interaction_type(read1, read1_chrom, resfrag1, read2,
     - Interaction
     - Self circle
     - Dangling end
+    - Religation
     - Unknown
 
     ##
@@ -375,6 +405,7 @@ def get_interaction_type(read1, read1_chrom, resfrag1, read2,
     verbose = verbose mode [logical]
 
     """
+
     # If returned InteractionType=None -> Same restriction fragment
     # and same strand = Dump
     interactionType = None
@@ -388,6 +419,8 @@ def get_interaction_type(read1, read1_chrom, resfrag1, read2,
             # Dangling_end -> <-
             elif is_dangling_end(read1, read2):
                 interactionType = "DE"
+        elif is_religation(read1, read2, resfrag1, resfrag2):
+            interactionType = "RE"
         else:
             interactionType = "VI"
     elif r1.is_unmapped or r2.is_unmapped:
@@ -468,6 +501,7 @@ if __name__ == "__main__":
     # Initialize variables
     reads_counter = 0
     de_counter = 0
+    re_counter = 0
     sc_counter = 0
     valid_counter = 0
     valid_counter_FF = 0
@@ -497,6 +531,7 @@ if __name__ == "__main__":
 
     if allOutput:
         handle_de = open(outputDir + '/' + baseReadsFile + '.DEPairs', 'w')
+        handle_re = open(outputDir + '/' + baseReadsFile + '.REPairs', 'w')
         handle_sc = open(outputDir + '/' + baseReadsFile + '.SCPairs', 'w')
         handle_dump = open(outputDir + '/' + baseReadsFile + '.DumpPairs', 'w')
         handle_single = open(outputDir + '/' + baseReadsFile + '.SinglePairs', 'w')
@@ -545,9 +580,7 @@ if __name__ == "__main__":
                 r2_resfrag = None
                 r2_chrom = None
 
-
             if r1_resfrag is not None or r2_resfrag is not None:
-
                 interactionType = get_interaction_type(r1, r1_chrom, r1_resfrag, r2, r2_chrom, r2_resfrag, verbose)
                 dist = get_PE_fragment_size(r1, r2, r1_resfrag, r2_resfrag, interactionType)
                 cdist = get_cis_dist(r1, r2)
@@ -607,6 +640,10 @@ if __name__ == "__main__":
                 elif interactionType == "DE":
                     de_counter += 1
                     cur_handler = handle_de if allOutput else None
+
+                elif interactionType == "RE":
+                    re_counter += 1
+                    cur_handler = handle_re if allOutput else None
 
                 elif interactionType == "SC":
                     sc_counter += 1
@@ -692,13 +729,13 @@ if __name__ == "__main__":
                         or2_fragname + "\t" +
                         str(or1.mapping_quality) + "\t" + 
                         str(or2.mapping_quality) + "\n")
+                
                 ## Keep initial order    
                 if samOut:
                     r1.tags = r1.tags + [('CT', str(interactionType))]
                     r2.tags = r2.tags + [('CT', str(interactionType))]
                     handle_sam.write(r1)
                     handle_sam.write(r2)
-                                   
 
             if (reads_counter % 100000 == 0 and verbose):
                 print "##", reads_counter
@@ -707,6 +744,7 @@ if __name__ == "__main__":
     handle_valid.close()
     if allOutput:
         handle_de.close()
+        handle_re.close()
         handle_sc.close()
         handle_dump.close()
         handle_single.close()
@@ -724,6 +762,7 @@ if __name__ == "__main__":
     handle_stat.write(
         "Valid_interaction_pairs_FR\t" + str(valid_counter_FR) + "\n")
     handle_stat.write("Dangling_end_pairs\t" + str(de_counter) + "\n")
+    handle_stat.write("Religation_pairs\t" + str(re_counter) + "\n")
     handle_stat.write("Self_Cycle_pairs\t" + str(sc_counter) + "\n")
     handle_stat.write("Single-end_pairs\t" + str(single_counter) + "\n")
     handle_stat.write("Dumped_pairs\t" + str(dump_counter) + "\n")
