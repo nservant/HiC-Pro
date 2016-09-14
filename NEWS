@@ -11,6 +11,10 @@ SIGNIFICANT USER-VISIBLE CHANGES
 
    o Clean hicpro2juicebox.sh utils
 
+BUG FIXES
+
+   o Update script allowing to check the python version
+
 ***********************************
 CHANGES IN VERSION 2.7.7
 
