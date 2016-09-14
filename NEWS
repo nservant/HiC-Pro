@@ -7,6 +7,8 @@ NEW FEATURES
 
 SIGNIFICANT USER-VISIBLE CHANGES
 
+   o Update of sparseTodense utils. It now provides a ---perchr option to generate intrachromosomal dense contact maps
+
    o Clean hicpro2juicebox.sh utils
 
 ***********************************
