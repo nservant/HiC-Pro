@@ -11,7 +11,9 @@ import re
 
 def vcmp(version1, version2):
     def normalize(v):
+        ## 0.18.0.dev0+609facc
         v = re.sub(r'((\.)?dev).*$','', v)
+        ## 0.8.4pre0
         v = re.sub(r'((\.)?pre).*$','', v)
         return [int(x) for x in re.sub(r'(\.0+).*$','', v).split(".")]
     return cmp(normalize(version1), normalize(version2))
