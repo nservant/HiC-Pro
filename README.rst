@@ -44,6 +44,7 @@ The HiC-Pro pipeline requires the following dependencies :
 * Samtools (>0.1.19)
 
 Bowtie >2.2.2 is strongly recommanded for allele specific analysis.  
+
 To install HiC-Pro (>2.7.8):
 
 .. code-block:: guess
