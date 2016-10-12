@@ -43,24 +43,26 @@ The HiC-Pro pipeline requires the following dependencies :
 * g++ compiler
 * Samtools (>0.1.19)
 
-Bowtie >2.2.2 is strongly recommanded for allele specific analysis.
-| To install HiC-Pro (>2.7.8):
+Bowtie >2.2.2 is strongly recommanded for allele specific analysis.  
+To install HiC-Pro (>2.7.8):
 
 .. code-block:: guess
 
   tar -zxvf HiC-Pro-master.tar.gz
   cd HiC-Pro-master
-  ## Edith config-install.txt file if necessary
+  ## Edit config-install.txt file if necessary
   make configure
   make install
 
 | For HiC-Pro version <2.7.8, the following process can be used
 
 .. code-block:: guess
+
   tar -zxvf HiC-Pro-master.tar.gz
   cd HiC-Pro-master
   ## Edit config-install.txt file if necessary
   make CONFIG_SYS=config-install.txt install
+
 
 | Note that if some of these dependencies are not installed (i.e. not detected in the $PATH), HiC-Pro will try to install them.
 | You can also edit the *config-install.txt* file and manually defined the paths to dependencies.
