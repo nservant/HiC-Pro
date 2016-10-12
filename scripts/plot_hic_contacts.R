@@ -36,7 +36,7 @@ getContactsStatMat <- function(x){
   cis_sr <- x["cis_shortRange",1]
   cis_lr <-  x["cis_longRange",1]
   trans_inter <- x["trans_interaction",1]
-  stopifnot(cis_sr+cis_lr==cis_inter)
+  stopifnot(sum(c(cis_sr,cis_lr), na.rm=TRUE)==cis_inter)
 
   count <- c(rmdup, ndup, trans_inter, cis_sr, cis_lr)
 
