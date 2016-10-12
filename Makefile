@@ -9,8 +9,8 @@
 
 MK_PATH = $(shell dirname $(abspath $(lastword $(MAKEFILE_LIST))))
 
-SCRIPTS=$(MK_PATH)/scripts
-SOURCES=$(SCRIPTS)/src
+INST_SCRIPTS=$(MK_PATH)/scripts
+INST_SOURCES=$(INST_SCRIPTS)/src
 CONFIGURE_OUT=$(wildcard ./config-system.txt)
 CONFIG_SYS=$(wildcard ./config-install.txt)
 
@@ -45,15 +45,15 @@ endif
 ######################################
 
 ## Build C++ code
-mapbuilder: $(SOURCES)/build_matrix.cpp
-	(g++ -Wall -O2 -std=c++0x -o build_matrix ${SOURCES}/build_matrix.cpp; mv build_matrix ${SCRIPTS})
+mapbuilder: $(INST_SOURCES)/build_matrix.cpp
+	(g++ -Wall -O2 -std=c++0x -o build_matrix ${INST_SOURCES}/build_matrix.cpp; mv build_matrix ${INST_SCRIPTS})
 
-readstrimming: $(SOURCES)/cutsite_trimming.cpp
-	(g++ -Wall -O2 -std=c++0x -o cutsite_trimming ${SOURCES}/cutsite_trimming.cpp; mv cutsite_trimming ${SCRIPTS})
+readstrimming: $(INST_SOURCES)/cutsite_trimming.cpp
+	(g++ -Wall -O2 -std=c++0x -o cutsite_trimming ${INST_SOURCES}/cutsite_trimming.cpp; mv cutsite_trimming ${INST_SCRIPTS})
 
 ## Build Python lib
-iced: $(SOURCES)/ice_mod
-	(cp $(SOURCES)/ice_mod/iced/scripts/ice ${SCRIPTS}; cd $(SOURCES)/ice_mod/; ${PYTHON_PATH}/python setup.py install --user;)
+iced: $(INST_SOURCES)/ice_mod
+	(cp $(INST_SOURCES)/ice_mod/iced/scripts/ice ${INST_SCRIPTS}; cd $(INST_SOURCES)/ice_mod/; ${PYTHON_PATH}/python setup.py install --user;)
 
 test: config_check
 	@echo ${PYTHON_PATH}
