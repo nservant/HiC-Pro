@@ -46,7 +46,7 @@ BOWTIE2_LOCAL_OPTIONS =  --very-sensitive -L 20 --score-min L,-0.6,-0.2 --end-to
 
 REFERENCE_GENOME = hg19
 GENOME_SIZE = chrom_hg19.sizes
-
+CAPTURE_TARGET =
 
 #######################################################################
 ## Allele specific analysis

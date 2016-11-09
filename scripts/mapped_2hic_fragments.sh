@@ -25,9 +25,9 @@ GENOME_FRAGMENT_FILE=`abspath $GENOME_FRAGMENT`
 if [[ $GENOME_FRAGMENT == "" || ! -f $GENOME_FRAGMENT_FILE ]]; then
     GENOME_FRAGMENT_FILE=$ANNOT_DIR/$GENOME_FRAGMENT
     if [[ ! -f $GENOME_FRAGMENT_FILE ]]; then
-	MODE="DNAse"
+	##MODE="DNAse"
 	GENOME_FRAGMENT_FILE=""
-	echo "GENOME_FRAGMENT not found. Runing DNAse Hi-C mode"
+	die "GENOME_FRAGMENT not found. The file $GENOME_FRAGMENT_FILE does not exist ?"
     fi
 fi
 

@@ -68,6 +68,14 @@ do
 	nbf=$(find -L ${IN_DIR}/${RES_FILE_NAME} -maxdepth 1 -name "*.validPairs" | wc -l)
 	if [[ $nbf == 0 ]]; then die "Error : no valid interaction files found in ${DATA_DIR}/${RES_FILE_NAME}."; fi
 
+	
+	## On Target
+        if [[ ! -z ${CAPTURE_TARGET} ]]; then
+	    echo "## Select valid interactions from capture target ..." >> ${LDIR}/merge_valid_interactions.log
+	    ${SCRIPTS}/onTarget.py -i ${DATA_DIR}/${RES_FILE_NAME}/${RES_FILE_NAME}_allValidPairs -t ${CAPTURE_TARGET} -v 1> ${DATA_DIR}/${RES_FILE_NAME}/${RES_FILE_NAME}_allValidPairs_ontarget 2>>${LDIR}/merge_valid_interactions.log
+	    mv ${DATA_DIR}/${RES_FILE_NAME}/${RES_FILE_NAME}_allValidPairs_ontarget ${DATA_DIR}/${RES_FILE_NAME}/${RES_FILE_NAME}_allValidPairs
+	fi
+
 	if [[ ${RM_DUP} == 0 ]]
 	then
 	    cat ${IN_DIR}/${RES_FILE_NAME}/*.validPairs > ${DATA_DIR}/${RES_FILE_NAME}/${RES_FILE_NAME}_allValidPairs
@@ -86,7 +94,6 @@ do
 	echo -e "valid_interaction_rmdup\t"$allcount_rmdup >> ${DATA_DIR}/${RES_FILE_NAME}/${RES_FILE_NAME}_allValidPairs.mergestat
 	awk '$2 == $5{cis=cis+1; d=$6>$3?$6-$3:$3-$6; if (d<=20000){sr=sr+1}else{lr=lr+1}} $2!=$5{trans=trans+1}END{print "trans_interaction\t"trans"\ncis_interaction\t"cis"\ncis_shortRange\t"sr"\ncis_longRange\t"lr}' ${DATA_DIR}/${RES_FILE_NAME}/${RES_FILE_NAME}_allValidPairs >> ${DATA_DIR}/${RES_FILE_NAME}/${RES_FILE_NAME}_allValidPairs.mergestat
 	
-
 	## Split valid interaction per haplotype
 	if [[ ! -z ${ALLELE_SPECIFIC_SNP} ]]; then
 	    echo "## Split valid interactions for allele specific maps ..." >> ${LDIR}/merge_valid_interactions.log
