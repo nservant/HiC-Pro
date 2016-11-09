@@ -72,7 +72,7 @@ do
 	## On Target
         if [[ ! -z ${CAPTURE_TARGET} ]]; then
 	    echo "## Select valid interactions from capture target ..." >> ${LDIR}/merge_valid_interactions.log
-	    ${SCRIPTS}/onTarget.py -i ${DATA_DIR}/${RES_FILE_NAME}/${RES_FILE_NAME}_allValidPairs -t ${CAPTURE_TARGET} -v 1> ${DATA_DIR}/${RES_FILE_NAME}/${RES_FILE_NAME}_allValidPairs_ontarget 2>>${LDIR}/merge_valid_interactions.log
+	    ${SCRIPTS}/onTarget.py -i ${DATA_DIR}/${RES_FILE_NAME}/${RES_FILE_NAME}_allValidPairs -t ${CAPTURE_TARGET} -p -v 1> ${DATA_DIR}/${RES_FILE_NAME}/${RES_FILE_NAME}_allValidPairs_ontarget 2>>${LDIR}/merge_valid_interactions.log
 	    mv ${DATA_DIR}/${RES_FILE_NAME}/${RES_FILE_NAME}_allValidPairs_ontarget ${DATA_DIR}/${RES_FILE_NAME}/${RES_FILE_NAME}_allValidPairs
 	fi
 
