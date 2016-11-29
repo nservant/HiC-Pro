@@ -7,6 +7,8 @@ NEW FEATURES
 
 SIGNIFICANT USER-VISIBLE CHANGES
 
+   u Update iced version (-> 0.3.0)
+
    o Exit with an error if the restriction fragment file is set but not found. In the previous version, HiC-Pro automatically switched to DNAse mode.
 
 BUG FIXES
