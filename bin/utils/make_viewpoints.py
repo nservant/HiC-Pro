@@ -80,7 +80,7 @@ def load_BED(in_file, exclusionSize=0, verbose=False):
             start = int(start)  # + 1
             end = int(end)
             name = name.strip()
-            if chromosome in x.keys():
+            if chromosome in x:
                 tree = x[chromosome]
                 tree.add_interval(Interval(start, end, value={'name': name}))
             else:
@@ -89,7 +89,7 @@ def load_BED(in_file, exclusionSize=0, verbose=False):
                 x[chromosome] = tree             
             ## Exclusion regions
             if exclusionSize > 0:
-                if chromosome in x_ex.keys():
+                if chromosome in x_ex:
                     tree_ex = x_ex[chromosome]
                     tree_ex.add_interval(Interval(start - int(exclusionSize), start, value={'name': str(name) + "_up"}))
                     tree_ex.add_interval(Interval(end, end + int(exclusionSize), value={'name': str(name) + "_dwn"}))
@@ -113,7 +113,7 @@ def get_overlapping_fragment(frag, chrom, pos, quiet=False):
     read = the read to intersect [AlignedRead]
 
     """
-    if chrom in frag.keys():
+    if chrom in frag:
         # Overlap with the start of the read (zero-based)
         ifrag = frag[chrom].find(int(pos), int(pos+1))
         if len(ifrag) > 1:

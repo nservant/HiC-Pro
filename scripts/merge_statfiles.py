@@ -106,7 +106,7 @@ if __name__ == "__main__":
                 for line in f:
                     if not line.startswith("#"):
                         lsp = line.strip().split("\t")
-                        if lsp[0] in template.keys():
+                        if lsp[0] in template:
                             for i in xrange(1, len(lsp)):
                                 if isinstance(num(lsp[i]), int):
                                     template[lsp[0]][i-1] += num(lsp[i])

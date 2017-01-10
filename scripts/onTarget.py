@@ -70,7 +70,7 @@ def load_bed(in_file, verbose=False):
         end = int(end)
         fragl = abs(end - start)
         
-        if chromosome in intervals.keys():
+        if chromosome in intervals:
             tree = intervals[chromosome]
             tree.add_interval(Interval(start, end))
         else:
@@ -142,9 +142,9 @@ if __name__ == "__main__":
             
             res1 = []
             res2 = []
-            if chr1 in targetInter.keys() :
+            if chr1 in targetInter:
                 res1 = targetInter[chr1].find(pos1, pos1+1)
-            if chr2 in targetInter.keys() :
+            if chr2 in targetInter:
                 res2 = targetInter[chr2].find(pos2, pos2+1)
             
             if paired:

@@ -36,6 +36,7 @@ parser.add_argument("--max_iter", "-m", default=100, type=int,
 parser.add_argument("--eps", "-e", default=0.1, type=float,
                     help="Precision")
 parser.add_argument("--dense", "-d", default=False, action="store_true")
+parser.add_argument("--getbias", "-b", default=False, help="Output the bias vector")
 parser.add_argument("--verbose", "-v", default=False)
 
 
@@ -61,6 +62,7 @@ elif args.filter_low_counts_perc is not None:
     filter_low_counts_perc = args.filter_low_counts_perc
 
 if args.verbose:
+    print("Using iced version %s" % iced.__version__)
     print "Loading files..."
 
 # Loads file as i, j, counts
@@ -85,9 +87,9 @@ if args.filter_high_counts_perc != 0:
         percentage=args.filter_high_counts_perc,
         copy=False)
 
-counts = iced.normalization.ICE_normalization(
+counts, bias = iced.normalization.ICE_normalization(
     counts, max_iter=args.max_iter, copy=False,
-    verbose=args.verbose, eps=args.eps)
+    verbose=args.verbose, eps=args.eps, output_bias=True)
 
 if args.results_filename is None:
     results_filename = ".".join(
@@ -100,3 +102,6 @@ counts = sparse.coo_matrix(counts)
 if args.verbose:
     print "Writing results..."
 savetxt(results_filename, counts.col, counts.row, counts.data)
+
+if args.getbias:
+    np.savetxt(results_filename + ".biases", bias)

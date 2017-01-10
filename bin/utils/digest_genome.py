@@ -108,7 +108,7 @@ if __name__ == "__main__":
     sequences = []
     offset = []
     for cs in cutsites:
-        if cs.lower() in RE_cutsite.keys():
+        if cs.lower() in RE_cutsite:
             cseq = ''.join(RE_cutsite[cs.lower()])
         else:
             cseq = cs

@@ -13,6 +13,7 @@ Script to keep only valid 3C products - DE and SC are removed
 Output is : readname / 
 """
 
+import time
 import getopt
 import sys
 import os
@@ -57,6 +58,17 @@ def get_args():
         usage()
         sys.exit(-1)
     return opts
+
+
+def timing(function, *args):
+    """
+    Run a fonction and eturn the run time and the result of the function
+    If the function requires arguments, those can be passed in
+    """
+    startTime = time.time()
+    result = function(*args)
+    print '%s function took %0.3f ms' % (function.func_name, (time.time() - startTime) * 1000)
+    return result
 
 
 def get_read_strand(read):
@@ -206,7 +218,7 @@ def load_restriction_fragment(in_file, minfragsize=None, maxfragsize=None, verbo
             print "Warning : fragment ", name, " [", fragl,"] outside of range. Discarded"  
             continue
        
-        if chromosome in resFrag.keys():
+        if chromosome in resFrag:
             tree = resFrag[chromosome]
             tree.add_interval(Interval(start, end, value={'name': name}))
         else:
@@ -231,7 +243,7 @@ def get_overlapping_restriction_fragment(resFrag, chrom, read):
     # Get read position (middle or 5' end)
     pos = get_read_pos(read)
     
-    if chrom in resFrag.keys():
+    if chrom in resFrag:
         # Overlap with the position of the read (zero-based)
         resfrag = resFrag[chrom].find(pos, pos+1)
         if len(resfrag) > 1:
@@ -537,9 +549,8 @@ if __name__ == "__main__":
         handle_single = open(outputDir + '/' + baseReadsFile + '.SinglePairs', 'w')
 
     # Read the BED file
-    resFrag = load_restriction_fragment(fragmentFile, minFragSize, maxFragSize, verbose)
-    print resFrag.keys()
-    
+    resFrag = timing(load_restriction_fragment, fragmentFile, minFragSize, maxFragSize, verbose)
+     
     # Read the SAM/BAM file
     if verbose:
         print "## Opening SAM/BAM file '", mappedReadsFile, "'..."
