@@ -7,13 +7,13 @@
 ##
 ################################################################################
 
-o remove re-ligation products
-
-o sparseTodense.py
+o export iced bias and increase default parameter for filtering
 
 o update qsub in step2 for paralleization per sample
 
 o doc - stepwise explanation + read name in FAQ
+
+o doc - more user case for each type of Hi-C protocol
 
 o EV - update error tracking
 
