@@ -1,15 +1,27 @@
 ***********************************
-CHANGES IN VERSION 2.7.9
+CHANGES IN VERSION 2.8.0
 
 NEW FEATURES
-
-   o Update for capture Hi-C. New variable CAPTURE_TARGET allowing to restrict the analysis to the captured region(s)
 
    o Return bias vector after IC normalization
 
 SIGNIFICANT USER-VISIBLE CHANGES
 
    o Update iced version (-> 0.4.0). This version includes a major changes on matrix filtering before iced normalization
+
+BUG FIXES
+
+
+***********************************
+CHANGES IN VERSION 2.7.9
+
+NEW FEATURES
+
+   o Update for capture Hi-C. New variable CAPTURE_TARGET allowing to restrict the analysis to the captured region(s)
+
+SIGNIFICANT USER-VISIBLE CHANGES
+
+   o Update iced version (-> 0.3.0)
 
    o Exit with an error if the restriction fragment file is set but not found. In the previous version, HiC-Pro automatically switched to DNAse mode.
 
