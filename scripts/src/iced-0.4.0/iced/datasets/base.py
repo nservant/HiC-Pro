@@ -4,7 +4,7 @@ from os.path import join, expanduser, exists
 from os.path import dirname
 import shutil
 
-from iced import io
+from .. import io
 
 # authors: Nelle Varoquaux <nelle.varoquaux@gmail.com>
 

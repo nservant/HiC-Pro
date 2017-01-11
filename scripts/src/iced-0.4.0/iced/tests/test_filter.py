@@ -22,6 +22,20 @@ def test_filter_low_counts():
     assert_array_equal(X_filtered, X_filtered_true)
 
 
+def test_filter_low_counts_with_weros():
+    X = 10 * np.ones((100, 100))
+    X[0, :] = 0
+    X[:, 0] = 0
+    X[1, :] = 1
+    X[:, 1] = 1
+
+    X_filtered_true = X.copy()
+    X_filtered_true[X != 10] = np.nan
+    X_filtered = filter_low_counts(X, remove_all_zeros_loci=True,
+                                   sparsity=False)
+    assert_array_equal(X_filtered, X_filtered_true)
+
+
 def test_sparse_filter_low_counts():
     X = 10 * np.ones((100, 100))
     X[0, :] = 1

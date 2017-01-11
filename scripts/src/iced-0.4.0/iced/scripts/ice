@@ -31,12 +31,16 @@ parser.add_argument("--filter_high_counts_perc",
                     type=float,
                     default=0,
                     help="Percentage of reads to filter out")
+parser.add_argument("--remove-all-zeros-loci", default=False,
+                    action="store_true",
+                    help="If provided, all non-interacting loci will be "
+                         "removed prior to the filtering strategy chosen.")
 parser.add_argument("--max_iter", "-m", default=100, type=int,
                     help="Maximum number of iterations")
 parser.add_argument("--eps", "-e", default=0.1, type=float,
                     help="Precision")
 parser.add_argument("--dense", "-d", default=False, action="store_true")
-parser.add_argument("--getbias", "-b", default=False, help="Output the bias vector")
+parser.add_argument("--output-bias", "-b", default=False, help="Output the bias vector")
 parser.add_argument("--verbose", "-v", default=False)
 
 
@@ -80,6 +84,7 @@ if args.verbose:
 if filter_low_counts_perc != 0:
     counts = iced.filter.filter_low_counts(counts,
                                            percentage=filter_low_counts_perc,
+                                           remove_all_zeros_loci=args.remove_all_zeros_loci,
                                            copy=False, sparsity=False)
 if args.filter_high_counts_perc != 0:
     counts = iced.filter.filter_high_counts(
@@ -103,5 +108,5 @@ if args.verbose:
     print "Writing results..."
 savetxt(results_filename, counts.col, counts.row, counts.data)
 
-if args.getbias:
+if args.output_bias:
     np.savetxt(results_filename + ".biases", bias)

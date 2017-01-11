@@ -9,7 +9,7 @@ NEW FEATURES
 
 SIGNIFICANT USER-VISIBLE CHANGES
 
-   o Update iced version (-> 0.3.0)
+   o Update iced version (-> 0.4.0). This version includes a major changes on matrix filtering before iced normalization
 
    o Exit with an error if the restriction fragment file is set but not found. In the previous version, HiC-Pro automatically switched to DNAse mode.
 

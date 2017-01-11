@@ -64,9 +64,11 @@ def ICE_normalization(X, SS=None, max_iter=3000, eps=1e-4, copy=True,
 
     m = X.shape[0]
     is_symetric_or_tri(X)
-    old_dbias = None
+    old_bias = None
     bias = np.ones((m, 1))
     _is_tri = is_tri(X)
+    if verbose:
+        print("Matrix is triangular superior")
 
     if total_counts is None:
         total_counts = X.sum()
@@ -106,16 +108,16 @@ def ICE_normalization(X, SS=None, max_iter=3000, eps=1e-4, copy=True,
         bias *= np.sqrt(X.sum() / total_counts)
         X *= total_counts / X.sum()
 
-        if old_dbias is not None and np.abs(old_dbias - dbias).sum() < eps:
+        if old_bias is not None and np.abs(old_bias - bias).sum() < eps:
             if verbose > 1:
                 print("break at iteration %d" % (it,))
             break
 
-        if verbose > 1 and old_dbias is not None:
+        if verbose > 1 and old_bias is not None:
             print('ICE at iteration %d %s' %
-                  (it, np.abs(old_dbias - dbias).sum()))
+                  (it, np.abs(old_bias - bias).sum()))
 
-        old_dbias = dbias.copy()
+        old_bias = bias.copy()
     # Now that we are finished with the bias estimation, set all biases
     # corresponding to filtered rows to np.nan
     if sparse.issparse(X):
