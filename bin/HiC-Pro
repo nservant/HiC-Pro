@@ -6,6 +6,7 @@
 ## Contact: nicolas.servant@curie.fr
 ## This software is distributed without any guarantee under the terms of the GNU General
 ## Public License, either Version 2, June 1991 or Version 3, June 2007.
+
                                                                    
 SOFT="HiC-Pro"
 VERSION="2.8.0_devel"
