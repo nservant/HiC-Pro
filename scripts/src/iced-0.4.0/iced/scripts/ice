@@ -85,7 +85,7 @@ if filter_low_counts_perc != 0:
     counts = iced.filter.filter_low_counts(counts,
                                            percentage=filter_low_counts_perc,
                                            remove_all_zeros_loci=args.remove_all_zeros_loci,
-                                           copy=False, sparsity=False)
+                                           copy=False, sparsity=False, verbose=args.verbose)
 if args.filter_high_counts_perc != 0:
     counts = iced.filter.filter_high_counts(
         counts,
