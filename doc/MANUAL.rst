@@ -62,7 +62,7 @@ Setting the configuration file
 +-----------------------+-----------------------------------------------------------------------------------------------------------------------------------+
 | GENOME_SIZE           | Chromsome size file. Loaded from the ANNOTATION folder in the HiC-Pro installation directory. *Default: chrom_hg19.sizes*         |
 +-----------------------+-----------------------------------------------------------------------------------------------------------------------------------+
-| CAPTURE_BED           | BED file of target regions to focus on (mainly used for capture Hi-C data                                                         |
+| [CAPTURE_BED]         | BED file of target regions to focus on (mainly used for capture Hi-C data                                                         |
 +-----------------------+-----------------------------------------------------------------------------------------------------------------------------------+
 | [ALLELE_SPECIFIC_SNP] | VCF file to SNPs which can be used to distinguish parental origin. See the :ref:`allele specific section <AS>` for more details   |
 +-----------------------+-----------------------------------------------------------------------------------------------------------------------------------+

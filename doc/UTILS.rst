@@ -123,6 +123,7 @@ Convert HiC-Pro output to Fit-Hi-C input (Ay et al. 2014)
 
 .. code-block:: bash
 
+  ## TODO !
   ## Whith IC bias vector
   HICPRO_PATH/bin/utils/hicpro2fithic.py 
 
