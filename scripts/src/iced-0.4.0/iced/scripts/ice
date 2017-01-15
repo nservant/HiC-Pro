@@ -72,16 +72,14 @@ if args.verbose:
 # Loads file as i, j, counts
 i, j, data = loadtxt(filename).T
 
-## zero-based data
+
+# Detecting whether the file is 0 or 1 based.
 if min(i.min(), j.min()) == 0:
-    if args.vecbose:
-        print "Detecting zero-based data ..."
+    index_base = 0
     N = max(i.max(), j.max()) + 1
     counts = sparse.coo_matrix((data, (i, j)), shape=(N, N), dtype=float)
 else:
-## one-based data
-    if args.verbose:
-            print "Detecting one-based data ..."
+    index_base = 1
     N = max(i.max(), j.max())
     counts = sparse.coo_matrix((data, (i - 1, j - 1)), shape=(N, N), dtype=float)
 
@@ -119,12 +117,8 @@ counts = sparse.coo_matrix(counts)
 if args.verbose:
     print "Writing results..."
 
-## Results are now zero based - save as one based
-if min(i.min(), j.min()) == 0:
-    savetxt(results_filename, counts.col, counts.row, counts.data)
-else:
-    savetxt(results_filename, counts.col + 1, counts.row + 1, counts.data)
-
+savetxt(
+    results_filename, counts.col + index_base, counts.row + index_base, counts.data)
 
 if args.output_bias:
     np.savetxt(results_filename + ".biases", bias)
