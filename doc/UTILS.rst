@@ -95,3 +95,38 @@ or **How can I generate load my HiC-Pro data into Juicebox visualization softwar
    ## Convert HiC-Pro output to Juicebox input up to restriction fragment resolution
    HICPRO_PATH/bin/utils/hicpro2juicebox.sh -i hicpro_res/hic_results/data/dixon_2M/dixon_2M_allValidPairs -g hg19 -j /usr/local/juicebox/juicebox_clt_1.4.jar -f  HICPRO_PATH/data_info/HindIII_resfrag_hg19.bed
 
+5- sparseToDense.py
+-------------------
+or **How can I convert HiC-Pro output into dense format ?**
+
+ALlows to convert data in sparse symmetric format into dense matrices. This convertion can be useful for downstream analysis such as TADs calling using the directionaly index method (Dixon et al. 2012). The utility can also be used to extract intra-chromosomal maps at dense format.
+
+.. code-block:: bash
+
+  ## Convert to dense format
+  HICPRO_PATH/bin/utils/sparseToDense.py -b hic_results/matrix/dixon_2M/raw/1000000/dixon_2M_1000000_abs.bed hic_results/matrix/dixon_2M/iced/1000000/dixon_2M_1000000_iced.matrix 
+
+  ## Convert todense format per chromosome
+  HICPRO_PATH/bin/utils/sparseToDense.py -b hic_results/matrix/dixon_2M/raw/1000000/dixon_2M_1000000_abs.bed hic_results/matrix/dixon_2M/iced/1000000/dixon_2M_1000000_iced.matrix --perchr
+
+
+  ## Convert into TADs caller input from Dixon et al.
+  HICPRO_PATH/bin/utils/sparseToDense.py -b hic_results/matrix/dixon_2M/raw/1000000/dixon_2M_1000000_abs.bed hic_results/matrix/dixon_2M/iced/1000000/dixon_2M_1000000_iced.matrix --perchr --di
+
+
+6- hicpro2fithic.py
+-------------------
+or **How can I use Fit-Hi-C after HiC-Pro processing ?**
+
+
+Convert HiC-Pro output to Fit-Hi-C input (Ay et al. 2014)
+
+.. code-block:: bash
+
+  ## Whith IC bias vector
+  HICPRO_PATH/bin/utils/hicpro2fithic.py 
+
+  ## Whithout IC bias vector
+  HICPRO_PATH/bin/utils/hicpro2fithic.py
+
+

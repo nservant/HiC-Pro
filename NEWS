@@ -9,6 +9,8 @@ SIGNIFICANT USER-VISIBLE CHANGES
 
    o Update iced version (-> 0.4.0). This version includes a major changes on matrix filtering before iced normalization
 
+   o sparseToDense.py utils. Create output file in the current folder by default
+
 BUG FIXES
 
 

@@ -2,6 +2,7 @@
 
 import sys
 import numpy as np
+import os
 from iced import io
 from scipy import sparse
 
@@ -90,7 +91,8 @@ if __name__ == "__main__":
 
         ## Output name for save
         if args.output is None:
-            output_name = args.filename.replace(".matrix", "_dense.matrix")
+            output_name = os.path.basename(args.filename)
+            output_name = output_name.replace(".matrix", "_dense.matrix")
         else:
             output_name = args.output
         
