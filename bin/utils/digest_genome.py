@@ -94,7 +94,7 @@ if __name__ == "__main__":
                         dest='res_sites',
                         nargs='+',
                         help=("The cutting position has to be specified using "
-                              "'^'. For instance, -r A^GATCT for HindIII "
+                              "'^'. For instance, -r A^AGCTT for HindIII "
                               "digestion. Several restriction enzyme can be "
                               "specified."))
     parser.add_argument('-o', '--out', default=None)
