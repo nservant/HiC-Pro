@@ -22,10 +22,11 @@ CONF=$conf_file . $dir/hic.inc.sh
 MODE="RS"
 GENOME_FRAGMENT_FILE=`abspath $GENOME_FRAGMENT`
 
-if [[ $GENOME_FRAGMENT == "" || ! -f $GENOME_FRAGMENT_FILE ]]; then
+if [[ $GENOME_FRAGMENT == "" ]]; then
+    MODE="DNAse"
+elif [[ ! -f $GENOME_FRAGMENT_FILE ]]; then
     GENOME_FRAGMENT_FILE=$ANNOT_DIR/$GENOME_FRAGMENT
     if [[ ! -f $GENOME_FRAGMENT_FILE ]]; then
-	##MODE="DNAse"
 	GENOME_FRAGMENT_FILE=""
 	die "GENOME_FRAGMENT not found. The file $GENOME_FRAGMENT_FILE does not exist ?"
     fi
@@ -58,7 +59,7 @@ do
     
      if [[ $MODE == "DNAse" ]]; then
 	cmd="${PYTHON_PATH}/python ${SCRIPTS}/mapped_2hic_dnase.py ${opts} -r ${r} -o ${datadir}"
-	exec_cmd $cmd > ${LDIR}/mapped_2hic_dnase.log 2>&1
+	exec_cmd $cmd > ${LDIR}/mapped_2hic_fragments.log 2>&1
     else
 	cmd="${PYTHON_PATH}/python ${SCRIPTS}/mapped_2hic_fragments.py ${opts} -f ${GENOME_FRAGMENT_FILE} -r ${r} -o ${datadir}"
         exec_cmd $cmd > ${LDIR}/mapped_2hic_fragments.log 2>&1
