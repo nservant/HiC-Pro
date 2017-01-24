@@ -5,6 +5,8 @@ NEW FEATURES
 
    o Return bias vector after IC normalization
 
+   o New utils hicpro2fithic.py to convert HiC-Pro output into fitHiC input
+
 SIGNIFICANT USER-VISIBLE CHANGES
 
    o Update iced version (-> 0.4.0). This version includes a major changes on matrix filtering before iced normalization

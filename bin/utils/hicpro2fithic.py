@@ -1,7 +1,12 @@
+#! usr/bin/env python
+
 import argparse
 import math
+import os
+
 # Created by Arya Kaul - 1/12/2017
 # Modified by Ferhat Ay - 1/13/2017
+# Modified by Nicolas Servant - 1/23/2017
 
 def outputfithicform(bedPath, matrixPath, intCPath, fragMapPath, biasVectorPath=None, biasVectorOutput=None):
     print "Loading matrix file..."
@@ -77,4 +82,20 @@ def main():
     outputfithicform('raw/1000000/hIMR90_HindIII_r1_1000000_abs.bed', 'raw/1000000/hIMR90_HindIII_r1_1000000.matrix', 'fithic.interactionCounts', 'fithic.fragmentMappability','hicpro.biases','fithic.biases')
 
 if __name__=="__main__":
-    main()
+
+    parser = argparse.ArgumentParser()
+    parser.add_argument("-i", "--matrix", help="Input matrix file with raw contact frequencies.",  required=True)
+    parser.add_argument("-b", "--bed", help="BED file with bins coordinates.",  required=True)
+    parser.add_argument("-s", "--bias", help="The bias file provided after IC normalization.", default=None)
+    parser.add_argument("-o", "--output", help="Output path", default="./")
+
+    args = parser.parse_args()
+
+    icounts_output = os.path.join(args.output + "/fithic.interactionCounts")
+    fragmap_output = os.path.join(args.output + "/fithic.fragmentMappability")
+    bias_output = None
+
+    if args.bias is not None:
+        bias_output = os.path.join(args.output + "/fithic.biases")
+
+    outputfithicform(args.bed, args.matrix, icounts_output, fragmap_output, arg.bias, bias_output)
