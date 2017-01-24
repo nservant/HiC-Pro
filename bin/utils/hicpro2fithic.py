@@ -98,4 +98,4 @@ if __name__=="__main__":
     if args.bias is not None:
         bias_output = os.path.join(args.output + "/fithic.biases")
 
-    outputfithicform(args.bed, args.matrix, icounts_output, fragmap_output, arg.bias, bias_output)
+    outputfithicform(args.bed, args.matrix, icounts_output, fragmap_output, args.bias, bias_output)
