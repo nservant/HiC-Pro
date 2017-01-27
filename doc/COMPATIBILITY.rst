@@ -1,6 +1,6 @@
 .. _COMPATIBILITY:
 
-COMPATIBILITY WITH OTHER SOFTWARE
+Compatibility with other software
 =================================
 
 | HiC-Pro is designed to process Hi-C data from .fastq files to normalized contact matrices. Additional software or methods should then be used to perform downstream analysis. We therefore decided to propose several utilities to increase the compatibility of HiC-Pro with other tools. Most of the scripts presented below were developed by HiC-Pro users or collaborators. Many thanks to them for sharing their work with us, and do not hesitate the contact us with many new ideas !
