@@ -17,6 +17,7 @@ Contents:
    RESULTS
    UTILS
    USER_CASES
+   COMPATIBILITY
    FAQ
    ERRORS
 

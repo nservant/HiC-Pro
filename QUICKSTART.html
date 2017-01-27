@@ -55,7 +55,7 @@
 
 
   </head>
-  <body role="document"><div class="navbar">
+  <body><div class="navbar">
     <a class="navbar-brand" href="index.html">
       
     </a>
@@ -74,31 +74,42 @@
 <div class="section" id="what-is-hic-pro">
 <h2>What is HiC-Pro ?<a class="headerlink" href="#what-is-hic-pro" title="Permalink to this headline">¶</a></h2>
 <div class="line-block">
-<div class="line">HiC-Pro was designed to process Hi-C data, from raw fastq files (paired-end Illumina data) to the normalized contact maps. Since version 2.7.0, HiC-Pro can analyse data from digestion protocols as well as data from protocols that do not require restriction enzyme such as DNase Hi-C.</div>
-<div class="line">The pipeline is flexible, scalable and optimized. It can operate either on a single laptop or on a computational cluster using the PBS-Torque scheduler. HiC-Pro is sequential and each step of the workflow can be run independantly.</div>
-<div class="line">HiC-Pro includes a fast implementatation of the ICE normalization method (see the <a class="reference external" href="https://github.com/hiclib/iced">iced</a> python library for more information).</div>
-<div class="line">In addition, HiC-Pro can use phasing data to build <a class="reference internal" href="AS.html#as"><span>allele specific contact maps</span></a>.</div>
+<div class="line">HiC-Pro was designed to process Hi-C data, from raw fastq files (paired-end Illumina data) to the normalized contact maps. Since version 2.7.0, HiC-Pro supports the main Hi-C protocols, including digestion protocols as well as protocols that do not require restriction enzyme such as DNase Hi-C. In practice, HiC-Pro can be used to process dilution Hi-C, in situ Hi-C, DNase Hi-C, Micro-C, capture-C, capture Hi-C or HiChip data.</div>
+<div class="line">The pipeline is flexible, scalable and optimized. It can operate either on a single laptop or on a computational cluster. HiC-Pro is sequential and each step of the workflow can be run independantly.</div>
+<div class="line">HiC-Pro includes a fast implementatation of the iterative correction method (see the <a class="reference external" href="https://github.com/hiclib/iced">iced</a> python library for more information).</div>
+<div class="line">In addition, HiC-Pro can use phasing data to build <a class="reference internal" href="AS.html#as"><em>allele specific contact maps</em></a>.</div>
 </div>
 <p>If you use HiC-Pro, please cite :</p>
 <p>HiC-Pro: An optimized and flexible pipeline for Hi-C processing. <em>Servant N., Varoquaux N., Lajoie BR., Viara E., Chen CJ., Vert JP., Dekker J., Heard E., Barillot E.</em> Genome Biology 2015, 16:259 doi:10.1186/s13059-015-0831-x
 <a class="reference external" href="http://www.genomebiology.com/2015/16/1/259">http://www.genomebiology.com/2015/16/1/259</a></p>
-<p>For any question about HiC-Pro, please contact <a class="reference external" href="mailto:nicolas&#46;servant&#37;&#52;&#48;curie&#46;fr">nicolas<span>&#46;</span>servant<span>&#64;</span>curie<span>&#46;</span>fr</a></p>
+<p>For any question about HiC-Pro, please contact <a class="reference external" href="mailto:nicolas&#46;servant&#37;&#52;&#48;curie&#46;fr">nicolas<span>&#46;</span>servant<span>&#64;</span>curie<span>&#46;</span>fr</a> or use the <a class="reference external" href="https://groups.google.com/forum/#!forum/hic-pro">HiC-Pro forum</a> !</p>
 </div>
 <div class="section" id="how-to-install-it">
 <h2>How to install it ?<a class="headerlink" href="#how-to-install-it" title="Permalink to this headline">¶</a></h2>
 <p>The HiC-Pro pipeline requires the following dependencies :</p>
 <ul class="simple">
 <li>The <a class="reference external" href="http://bowtie-bio.sourceforge.net/bowtie2/index.shtml">bowtie2</a> mapper</li>
-<li>Python (&gt;2.7) with <em>pysam</em>, <em>bx</em>, <em>numpy</em>, and <em>scipy</em> libraries</li>
+<li>Python (&gt;2.7) with <em>pysam (&gt;=0.8.3)</em>, <em>bx(&gt;=0.5.0)</em>, <em>numpy(&gt;=1.8.2)</em>, and <em>scipy(&gt;=0.15.1)</em> libraries</li>
 <li>R with the <em>RColorBrewer</em> and <em>ggplot2</em> packages</li>
 <li>g++ compiler</li>
 <li>Samtools (&gt;0.1.19)</li>
 </ul>
-<p>Bowtie &gt;2.2.2 is strongly recommanded for allele specific analysis.
-| To install HiC-Pro:</p>
-<div class="highlight-guess"><div class="highlight"><pre>tar -zxvf HiC-Pro-master.tar.gz
-cd HiC-Pro-master
-make CONFIG_SYS=config-install.txt install
+<p>Bowtie &gt;2.2.2 is strongly recommanded for allele specific analysis.</p>
+<p>To install HiC-Pro (&gt;=2.7.8):</p>
+<div class="highlight-guess"><div class="highlight"><pre><span class="n">tar</span> <span class="o">-</span><span class="n">zxvf</span> <span class="n">HiC</span><span class="o">-</span><span class="n">Pro</span><span class="o">-</span><span class="n">master</span><span class="p">.</span><span class="n">tar</span><span class="p">.</span><span class="n">gz</span>
+<span class="n">cd</span> <span class="n">HiC</span><span class="o">-</span><span class="n">Pro</span><span class="o">-</span><span class="n">master</span>
+<span class="cp">## Edit config-install.txt file if necessary</span>
+<span class="n">make</span> <span class="n">configure</span>
+<span class="n">make</span> <span class="n">install</span>
+</pre></div>
+</div>
+<div class="line-block">
+<div class="line">For older version (&lt;2.7.8), the following process can be used</div>
+</div>
+<div class="highlight-guess"><div class="highlight"><pre><span class="n">tar</span> <span class="o">-</span><span class="n">zxvf</span> <span class="n">HiC</span><span class="o">-</span><span class="n">Pro</span><span class="o">-</span><span class="n">master</span><span class="p">.</span><span class="n">tar</span><span class="p">.</span><span class="n">gz</span>
+<span class="n">cd</span> <span class="n">HiC</span><span class="o">-</span><span class="n">Pro</span><span class="o">-</span><span class="n">master</span>
+<span class="cp">## Edit config-install.txt file if necessary</span>
+<span class="n">make</span> <span class="n">CONFIG_SYS</span><span class="o">=</span><span class="n">config</span><span class="o">-</span><span class="n">install</span><span class="p">.</span><span class="n">txt</span> <span class="n">install</span>
 </pre></div>
 </div>
 <div class="line-block">
@@ -141,7 +152,7 @@ make CONFIG_SYS=config-install.txt install
 <p>In order to process the raw data, HiC-Pro requires three annotation files. Note that the pipeline is provided with some Human and Mouse annotation files.
 Please be sure that the chromosome names are the same than the ones used in your bowtie indexes !</p>
 <ol class="arabic simple">
-<li><strong>A BED file</strong> of the restriction fragments after digestion. This file depends both of the restriction enzyme and the reference genome. See the <a class="reference internal" href="FAQ.html#faq"><span>FAQ</span></a> and the <a class="reference internal" href="UTILS.html#utils"><span>HiC-Pro utilities</span></a> for details about how to generate this file. A few annotation files are provided with the HiC-Pro sources.</li>
+<li><strong>A BED file</strong> of the restriction fragments after digestion. This file depends both of the restriction enzyme and the reference genome. See the <a class="reference internal" href="FAQ.html#faq"><em>FAQ</em></a> and the <a class="reference internal" href="UTILS.html#utils"><em>HiC-Pro utilities</em></a> for details about how to generate this file. A few annotation files are provided with the HiC-Pro sources.</li>
 </ol>
 <div class="highlight-python"><div class="highlight"><pre>chr1   0       16007   HIC_chr1_1    0   +
 chr1   16007   24571   HIC_chr1_2    0   +
@@ -181,121 +192,126 @@ chr10   135534747
 <ol class="arabic simple" start="0">
 <li>First have a look at the help message !</li>
 </ol>
-<div class="highlight-guess"><div class="highlight"><pre>HiC-Pro --help
-usage : HiC-Pro -i INPUT -o OUTPUT -c CONFIG [-s ANALYSIS_STEP] [-p] [-h] [-v]
-Use option -h|--help for more information
+<div class="highlight-guess"><div class="highlight"><pre><span class="n">HiC</span><span class="o">-</span><span class="n">Pro</span> <span class="o">--</span><span class="n">help</span>
+<span class="n">usage</span> <span class="o">:</span> <span class="n">HiC</span><span class="o">-</span><span class="n">Pro</span> <span class="o">-</span><span class="n">i</span> <span class="n">INPUT</span> <span class="o">-</span><span class="n">o</span> <span class="n">OUTPUT</span> <span class="o">-</span><span class="n">c</span> <span class="n">CONFIG</span> <span class="p">[</span><span class="o">-</span><span class="n">s</span> <span class="n">ANALYSIS_STEP</span><span class="p">]</span> <span class="p">[</span><span class="o">-</span><span class="n">p</span><span class="p">]</span> <span class="p">[</span><span class="o">-</span><span class="n">h</span><span class="p">]</span> <span class="p">[</span><span class="o">-</span><span class="n">v</span><span class="p">]</span>
+<span class="n">Use</span> <span class="n">option</span> <span class="o">-</span><span class="n">h</span><span class="o">|--</span><span class="n">help</span> <span class="k">for</span> <span class="n">more</span> <span class="n">information</span>
 
-HiC-Pro 2.7.0
----------------
-OPTIONS
+<span class="n">HiC</span><span class="o">-</span><span class="n">Pro</span> <span class="mf">2.7.0</span>
+<span class="o">---------------</span>
+<span class="n">OPTIONS</span>
 
- -i|--input INPUT : input data folder; Must contains a folder per sample with input files
- -o|--output OUTPUT : output folder
- -c|--conf CONFIG : configuration file for Hi-C processing
- [-p|--parallel] : if specified run HiC-Pro on a cluster
- [-s|--step ANALYSIS_STEP] : run only a subset of the HiC-Pro workflow; if not specified the complete workflow is run
-    mapping: perform reads alignment
-    proc_hic: perform Hi-C filtering
-    quality_checks: run Hi-C quality control plots
-    build_contact_maps: build raw inter/intrachromosomal contact maps
-    ice_norm: run ICE normalization on contact maps
- [-h|--help]: help
- [-v|--version]: version
+ <span class="o">-</span><span class="n">i</span><span class="o">|--</span><span class="n">input</span> <span class="n">INPUT</span> <span class="o">:</span> <span class="n">input</span> <span class="n">data</span> <span class="n">folder</span><span class="p">;</span> <span class="n">Must</span> <span class="n">contains</span> <span class="n">a</span> <span class="n">folder</span> <span class="n">per</span> <span class="n">sample</span> <span class="n">with</span> <span class="n">input</span> <span class="n">files</span>
+ <span class="o">-</span><span class="n">o</span><span class="o">|--</span><span class="n">output</span> <span class="n">OUTPUT</span> <span class="o">:</span> <span class="n">output</span> <span class="n">folder</span>
+ <span class="o">-</span><span class="n">c</span><span class="o">|--</span><span class="n">conf</span> <span class="n">CONFIG</span> <span class="o">:</span> <span class="n">configuration</span> <span class="n">file</span> <span class="k">for</span> <span class="n">Hi</span><span class="o">-</span><span class="n">C</span> <span class="n">processing</span>
+ <span class="p">[</span><span class="o">-</span><span class="n">p</span><span class="o">|--</span><span class="n">parallel</span><span class="p">]</span> <span class="o">:</span> <span class="k">if</span> <span class="n">specified</span> <span class="n">run</span> <span class="n">HiC</span><span class="o">-</span><span class="n">Pro</span> <span class="n">on</span> <span class="n">a</span> <span class="n">cluster</span>
+ <span class="p">[</span><span class="o">-</span><span class="n">s</span><span class="o">|--</span><span class="n">step</span> <span class="n">ANALYSIS_STEP</span><span class="p">]</span> <span class="o">:</span> <span class="n">run</span> <span class="n">only</span> <span class="n">a</span> <span class="n">subset</span> <span class="n">of</span> <span class="n">the</span> <span class="n">HiC</span><span class="o">-</span><span class="n">Pro</span> <span class="n">workflow</span><span class="p">;</span> <span class="k">if</span> <span class="n">not</span> <span class="n">specified</span> <span class="n">the</span> <span class="n">complete</span> <span class="n">workflow</span> <span class="n">is</span> <span class="n">run</span>
+    <span class="nl">mapping:</span> <span class="n">perform</span> <span class="n">reads</span> <span class="n">alignment</span>
+    <span class="nl">proc_hic:</span> <span class="n">perform</span> <span class="n">Hi</span><span class="o">-</span><span class="n">C</span> <span class="n">filtering</span>
+    <span class="nl">quality_checks:</span> <span class="n">run</span> <span class="n">Hi</span><span class="o">-</span><span class="n">C</span> <span class="n">quality</span> <span class="n">control</span> <span class="n">plots</span>
+    <span class="nl">build_contact_maps:</span> <span class="n">build</span> <span class="n">raw</span> <span class="n">inter</span><span class="o">/</span><span class="n">intrachromosomal</span> <span class="n">contact</span> <span class="n">maps</span>
+    <span class="nl">ice_norm:</span> <span class="n">run</span> <span class="n">ICE</span> <span class="n">normalization</span> <span class="n">on</span> <span class="n">contact</span> <span class="n">maps</span>
+ <span class="p">[</span><span class="o">-</span><span class="n">h</span><span class="o">|--</span><span class="n">help</span><span class="p">]</span><span class="o">:</span> <span class="n">help</span>
+ <span class="p">[</span><span class="o">-</span><span class="n">v</span><span class="o">|--</span><span class="n">version</span><span class="p">]</span><span class="o">:</span> <span class="n">version</span>
 </pre></div>
 </div>
 <ol class="arabic simple">
-<li>Copy and edit the configuration file <em>&#8216;config-hicpro.txt&#8217;</em> in your local folder. See the <a class="reference internal" href="MANUAL.html#manual"><span>manual</span></a> for details about the configuration file</li>
+<li>Copy and edit the configuration file <em>&#8216;config-hicpro.txt&#8217;</em> in your local folder. See the <a class="reference internal" href="MANUAL.html#manual"><em>manual</em></a> for details about the configuration file</li>
 <li>Put all input files in a rawdata folder. The input files have to be organized with a folder per sample.</li>
 <li>Run HiC-Pro</li>
 </ol>
 <ul class="simple">
 <li><strong>On your laptop</strong></li>
 </ul>
-<div class="highlight-guess"><div class="highlight"><pre>MY_INSTALL_PATH/bin/HiC-Pro -i FULL_PATH_TO_RAW_DATA -o FULL_PATH_TO_OUTPUTS -c MY_LOCAL_CONFIG_FILE
+<div class="highlight-guess"><div class="highlight"><pre><span class="n">MY_INSTALL_PATH</span><span class="o">/</span><span class="n">bin</span><span class="o">/</span><span class="n">HiC</span><span class="o">-</span><span class="n">Pro</span> <span class="o">-</span><span class="n">i</span> <span class="n">FULL_PATH_TO_RAW_DATA</span> <span class="o">-</span><span class="n">o</span> <span class="n">FULL_PATH_TO_OUTPUTS</span> <span class="o">-</span><span class="n">c</span> <span class="n">MY_LOCAL_CONFIG_FILE</span>
 </pre></div>
 </div>
 <ul class="simple">
 <li><strong>Using a cluster (TORQUE/SGE/SLURM/LSF)</strong></li>
 </ul>
-<div class="highlight-guess"><div class="highlight"><pre>MY_INSTALL_PATH/bin/HiC-Pro -i FULL_PATH_TO_RAW_DATA -o FULL_PATH_TO_OUTPUTS -c MY_LOCAL_CONFIG_FILE -p
+<div class="highlight-guess"><div class="highlight"><pre><span class="n">MY_INSTALL_PATH</span><span class="o">/</span><span class="n">bin</span><span class="o">/</span><span class="n">HiC</span><span class="o">-</span><span class="n">Pro</span> <span class="o">-</span><span class="n">i</span> <span class="n">FULL_PATH_TO_RAW_DATA</span> <span class="o">-</span><span class="n">o</span> <span class="n">FULL_PATH_TO_OUTPUTS</span> <span class="o">-</span><span class="n">c</span> <span class="n">MY_LOCAL_CONFIG_FILE</span> <span class="o">-</span><span class="n">p</span>
 </pre></div>
 </div>
 <p>You will get the following message :</p>
-<div class="highlight-guess"><div class="highlight"><pre>Please run HiC-Pro in two steps :
-1- The following command will launch the parallel workflow through 12 torque jobs:
-qsub HiCPro_step1.sh
-2- The second command will merge all outputs to generate the contact maps:
-qsub HiCPro_step2.sh
+<div class="highlight-guess"><div class="highlight"><pre><span class="n">Please</span> <span class="n">run</span> <span class="n">HiC</span><span class="o">-</span><span class="n">Pro</span> <span class="n">in</span> <span class="n">two</span> <span class="n">steps</span> <span class="o">:</span>
+<span class="mi">1</span><span class="o">-</span> <span class="n">The</span> <span class="n">following</span> <span class="n">command</span> <span class="n">will</span> <span class="n">launch</span> <span class="n">the</span> <span class="n">parallel</span> <span class="n">workflow</span> <span class="n">through</span> <span class="mi">12</span> <span class="n">torque</span> <span class="n">jobs</span><span class="o">:</span>
+<span class="n">qsub</span> <span class="n">HiCPro_step1</span><span class="p">.</span><span class="n">sh</span>
+<span class="mi">2</span><span class="o">-</span> <span class="n">The</span> <span class="n">second</span> <span class="n">command</span> <span class="n">will</span> <span class="n">merge</span> <span class="n">all</span> <span class="n">outputs</span> <span class="n">to</span> <span class="n">generate</span> <span class="n">the</span> <span class="n">contact</span> <span class="n">maps</span><span class="o">:</span>
+<span class="n">qsub</span> <span class="n">HiCPro_step2</span><span class="p">.</span><span class="n">sh</span>
 </pre></div>
 </div>
 <p>Execute the displayed command from the output folder:</p>
-<div class="highlight-guess"><div class="highlight"><pre>qsub HiCPro_step1.sh
-774410[].torque.curie.fr
+<div class="highlight-guess"><div class="highlight"><pre><span class="n">qsub</span> <span class="n">HiCPro_step1</span><span class="p">.</span><span class="n">sh</span>
+<span class="mi">774410</span><span class="p">[].</span><span class="n">torque</span><span class="p">.</span><span class="n">curie</span><span class="p">.</span><span class="n">fr</span>
 </pre></div>
 </div>
 <p>Then wait for the torque mails... :)
 Once executed succesfully (may take several hours), then type:</p>
-<div class="highlight-guess"><div class="highlight"><pre>qsub HiCPro_step2.sh
+<div class="highlight-guess"><div class="highlight"><pre><span class="n">qsub</span> <span class="n">HiCPro_step2</span><span class="p">.</span><span class="n">sh</span>
 </pre></div>
 </div>
 </div>
 <div class="section" id="test-dataset">
 <h2>Test Dataset<a class="headerlink" href="#test-dataset" title="Permalink to this headline">¶</a></h2>
-<p>Small fastq files (2M reads) extracted from the Dixon et al. 2012 paper are available for test.</p>
-<div class="highlight-guess"><div class="highlight"><pre>## Get the data. Will download a test_data folder and a configuration file
-wget https://zerkalo.curie.fr/partage/HiC-Pro/HiCPro_testdata.tar.gz &amp;&amp; tar -zxvf HiCPro_testdata.tar.gz
+<p>The test dataset and associated results are available at <a class="reference external" href="https://zerkalo.curie.fr/partage/HiC-Pro/">https://zerkalo.curie.fr/partage/HiC-Pro/</a>.
+Small fastq files (2M reads) extracted from the Dixon et al. 2012 paper are available for test.</p>
+<div class="highlight-guess"><div class="highlight"><pre><span class="cp">## Get the data. Will download a test_data folder and a configuration file</span>
+<span class="n">wget</span> <span class="n">https</span><span class="o">:</span><span class="c1">//zerkalo.curie.fr/partage/HiC-Pro/HiCPro_testdata.tar.gz &amp;&amp; tar -zxvf HiCPro_testdata.tar.gz</span>
 
-## Edit the configuration file and set the path to Human bowtie2 indexes
+<span class="cp">## Edit the configuration file and set the path to Human bowtie2 indexes</span>
 
-## Run HiC-Pro
-time HICPRO_INSTALL_DIR/bin/HiC-Pro -i test_data -o HiC_Pro_latest_test -c config_test_latest.txt
-Run HiC-Pro
---------------------------------------------
-lundi 2 mars 2015, 17:00:36 (UTC+0100)
-Bowtie2 global alignment ...
-bowtie_wrap.sh -c /bioinfo/users/nservant/projects_dev/HiC-Pro/config_test.txt -u &gt;&gt; hicpro_IRM90_rep1_split.log
---------------------------------------------
-lundi 2 mars 2015, 17:01:25 (UTC+0100)
-Bowtie2 local alignment ...
-bowtie_wrap.sh -c /bioinfo/users/nservant/projects_dev/HiC-Pro/config_test.txt -l &gt;&gt; hicpro_IRM90_rep1_split.log
---------------------------------------------
-lundi 2 mars 2015, 17:01:41 (UTC+0100)
-Combine both alignment ...
-bowtie_combine.sh -c /bioinfo/users/nservant/projects_dev/HiC-Pro/config_test.txt &gt;&gt; hicpro_IRM90_rep1_split.log
---------------------------------------------
-lundi 2 mars 2015, 17:01:52 (UTC+0100)
-Bowtie2 mapping statistics for R1 and R2 tags ...
-mapping_stat.sh -c /bioinfo/users/nservant/projects_dev/HiC-Pro/config_test.txt &gt;&gt; hicpro_IRM90_rep1_split.log
---------------------------------------------
-lundi 2 mars 2015, 17:01:53 (UTC+0100)
-Pairing of R1 and R2 tags ...
-bowtie_pairing.sh -c /bioinfo/users/nservant/projects_dev/HiC-Pro/config_test.txt &gt;&gt; hicpro_IRM90_rep1_split.log
---------------------------------------------
-lundi 2 mars 2015, 17:02:22 (UTC+0100)
-Assign alignments to HindIII sites ...
-mapped_2hic_fragments.sh -c /bioinfo/users/nservant/projects_dev/HiC-Pro/config_test.txt &gt;&gt; hicpro_IRM90_rep1_split.log
---------------------------------------------
-lundi 2 mars 2015, 17:03:49 (UTC+0100)
-Merge multiple files from the same sample ...
-merge_valid_interactions.sh -c /bioinfo/users/nservant/projects_dev/HiC-Pro/config_test.txt &gt;&gt; hicpro_IRM90_rep1_split.log
---------------------------------------------
-lundi 2 mars 2015, 17:03:49 (UTC+0100)
-Make plots per sample ...
-make_plots.sh -c /bioinfo/users/nservant/projects_dev/HiC-Pro/config_test.txt &gt;&gt; hicpro_IRM90_rep1_split.log
---------------------------------------------
-lundi 2 mars 2015, 17:03:55 (UTC+0100)
-Generate binned matrix files ...
-build_raw_maps.sh -c /bioinfo/users/nservant/projects_dev/HiC-Pro/config_test.txt 2&gt; logs/build_raw_maps.log
---------------------------------------------
-lundi 2 mars 2015, 17:03:57 (UTC+0100)
-Run ICE Normalization ...
-normContactMaps.sh -c /bioinfo/users/nservant/projects_dev/HiC-Pro/config_test.txt &gt;&gt; hicpro_IRM90_rep1_split.log
+<span class="cp">## Run HiC-Pro</span>
 
-real 3m23.902s
-user 5m22.956s
-sys  0m40.243s
+<span class="n">time</span> <span class="n">HICPRO_INSTALL_DIR</span><span class="o">/</span><span class="n">bin</span><span class="o">/</span><span class="n">HiC</span><span class="o">-</span><span class="n">Pro</span> <span class="o">-</span><span class="n">c</span> <span class="n">config_test_latest</span><span class="p">.</span><span class="n">txt</span> <span class="o">-</span><span class="n">i</span> <span class="n">test_data</span> <span class="o">-</span><span class="n">o</span> <span class="n">hicpro_latest_test</span>
 
-## All results are available in HiC_Pro_v2.4.0_test
+<span class="n">Run</span> <span class="n">HiC</span><span class="o">-</span><span class="n">Pro</span> <span class="mf">2.7.7</span>
+<span class="o">--------------------------------------------</span>
+<span class="n">mercredi</span> <span class="mi">15</span> <span class="n">juin</span> <span class="mi">2016</span><span class="p">,</span> <span class="mi">20</span><span class="o">:</span><span class="mi">44</span><span class="o">:</span><span class="mi">23</span> <span class="p">(</span><span class="n">UTC</span><span class="o">+</span><span class="mo">0200</span><span class="p">)</span>
+<span class="n">Bowtie2</span> <span class="n">alignment</span> <span class="n">step1</span> <span class="p">...</span>
+<span class="o">/</span><span class="n">home</span><span class="o">/</span><span class="n">nservant</span><span class="o">/</span><span class="n">Apps</span><span class="o">/</span><span class="n">HiC</span><span class="o">-</span><span class="n">Pro_2</span><span class="mf">.7.7</span><span class="o">/</span><span class="n">scripts</span><span class="o">/</span><span class="n">bowtie_wrap</span><span class="p">.</span><span class="n">sh</span> <span class="o">-</span><span class="n">c</span> <span class="o">/</span><span class="n">home</span><span class="o">/</span><span class="n">nservant</span><span class="o">/</span><span class="n">projects_dev</span><span class="o">/</span><span class="n">HiC</span><span class="o">-</span><span class="n">Pro</span><span class="o">/</span><span class="n">config_test_latest</span><span class="p">.</span><span class="n">txt</span> <span class="o">-</span><span class="n">u</span> <span class="o">&gt;&gt;</span> <span class="n">hicpro</span><span class="p">.</span><span class="n">log</span>
+<span class="o">--------------------------------------------</span>
+<span class="n">mercredi</span> <span class="mi">15</span> <span class="n">juin</span> <span class="mi">2016</span><span class="p">,</span> <span class="mi">20</span><span class="o">:</span><span class="mi">44</span><span class="o">:</span><span class="mi">59</span> <span class="p">(</span><span class="n">UTC</span><span class="o">+</span><span class="mo">0200</span><span class="p">)</span>
+<span class="n">Bowtie2</span> <span class="n">alignment</span> <span class="n">step2</span> <span class="p">...</span>
+<span class="o">/</span><span class="n">home</span><span class="o">/</span><span class="n">nservant</span><span class="o">/</span><span class="n">Apps</span><span class="o">/</span><span class="n">HiC</span><span class="o">-</span><span class="n">Pro_2</span><span class="mf">.7.7</span><span class="o">/</span><span class="n">scripts</span><span class="o">/</span><span class="n">bowtie_wrap</span><span class="p">.</span><span class="n">sh</span> <span class="o">-</span><span class="n">c</span> <span class="o">/</span><span class="n">home</span><span class="o">/</span><span class="n">nservant</span><span class="o">/</span><span class="n">projects_dev</span><span class="o">/</span><span class="n">HiC</span><span class="o">-</span><span class="n">Pro</span><span class="o">/</span><span class="n">config_test_latest</span><span class="p">.</span><span class="n">txt</span> <span class="o">-</span><span class="n">l</span> <span class="o">&gt;&gt;</span> <span class="n">hicpro</span><span class="p">.</span><span class="n">log</span>
+<span class="o">--------------------------------------------</span>
+<span class="n">mercredi</span> <span class="mi">15</span> <span class="n">juin</span> <span class="mi">2016</span><span class="p">,</span> <span class="mi">20</span><span class="o">:</span><span class="mi">45</span><span class="o">:</span><span class="mi">17</span> <span class="p">(</span><span class="n">UTC</span><span class="o">+</span><span class="mo">0200</span><span class="p">)</span>
+<span class="n">Combine</span> <span class="n">both</span> <span class="n">alignment</span> <span class="p">...</span>
+<span class="o">/</span><span class="n">home</span><span class="o">/</span><span class="n">nservant</span><span class="o">/</span><span class="n">Apps</span><span class="o">/</span><span class="n">HiC</span><span class="o">-</span><span class="n">Pro_2</span><span class="mf">.7.7</span><span class="o">/</span><span class="n">scripts</span><span class="o">/</span><span class="n">bowtie_combine</span><span class="p">.</span><span class="n">sh</span> <span class="o">-</span><span class="n">c</span> <span class="o">/</span><span class="n">home</span><span class="o">/</span><span class="n">nservant</span><span class="o">/</span><span class="n">projects_dev</span><span class="o">/</span><span class="n">HiC</span><span class="o">-</span><span class="n">Pro</span><span class="o">/</span><span class="n">config_test_latest</span><span class="p">.</span><span class="n">txt</span> <span class="o">&gt;&gt;</span> <span class="n">hicpro</span><span class="p">.</span><span class="n">log</span>
+<span class="o">--------------------------------------------</span>
+<span class="n">mercredi</span> <span class="mi">15</span> <span class="n">juin</span> <span class="mi">2016</span><span class="p">,</span> <span class="mi">20</span><span class="o">:</span><span class="mi">45</span><span class="o">:</span><span class="mi">21</span> <span class="p">(</span><span class="n">UTC</span><span class="o">+</span><span class="mo">0200</span><span class="p">)</span>
+<span class="n">Bowtie2</span> <span class="n">mapping</span> <span class="n">statistics</span> <span class="k">for</span> <span class="n">R1</span> <span class="n">and</span> <span class="n">R2</span> <span class="n">tags</span> <span class="p">...</span>
+<span class="o">/</span><span class="n">home</span><span class="o">/</span><span class="n">nservant</span><span class="o">/</span><span class="n">Apps</span><span class="o">/</span><span class="n">HiC</span><span class="o">-</span><span class="n">Pro_2</span><span class="mf">.7.7</span><span class="o">/</span><span class="n">scripts</span><span class="o">/</span><span class="n">mapping_stat</span><span class="p">.</span><span class="n">sh</span> <span class="o">-</span><span class="n">c</span> <span class="o">/</span><span class="n">home</span><span class="o">/</span><span class="n">nservant</span><span class="o">/</span><span class="n">projects_dev</span><span class="o">/</span><span class="n">HiC</span><span class="o">-</span><span class="n">Pro</span><span class="o">/</span><span class="n">config_test_latest</span><span class="p">.</span><span class="n">txt</span> <span class="o">&gt;&gt;</span> <span class="n">hicpro</span><span class="p">.</span><span class="n">log</span>
+<span class="o">--------------------------------------------</span>
+<span class="n">mercredi</span> <span class="mi">15</span> <span class="n">juin</span> <span class="mi">2016</span><span class="p">,</span> <span class="mi">20</span><span class="o">:</span><span class="mi">45</span><span class="o">:</span><span class="mi">22</span> <span class="p">(</span><span class="n">UTC</span><span class="o">+</span><span class="mo">0200</span><span class="p">)</span>
+<span class="n">Pairing</span> <span class="n">of</span> <span class="n">R1</span> <span class="n">and</span> <span class="n">R2</span> <span class="n">tags</span> <span class="p">...</span>
+<span class="o">/</span><span class="n">home</span><span class="o">/</span><span class="n">nservant</span><span class="o">/</span><span class="n">Apps</span><span class="o">/</span><span class="n">HiC</span><span class="o">-</span><span class="n">Pro_2</span><span class="mf">.7.7</span><span class="o">/</span><span class="n">scripts</span><span class="o">/</span><span class="n">bowtie_pairing</span><span class="p">.</span><span class="n">sh</span> <span class="o">-</span><span class="n">c</span> <span class="o">/</span><span class="n">home</span><span class="o">/</span><span class="n">nservant</span><span class="o">/</span><span class="n">projects_dev</span><span class="o">/</span><span class="n">HiC</span><span class="o">-</span><span class="n">Pro</span><span class="o">/</span><span class="n">config_test_latest</span><span class="p">.</span><span class="n">txt</span> <span class="o">&gt;&gt;</span> <span class="n">hicpro</span><span class="p">.</span><span class="n">log</span>
+<span class="o">--------------------------------------------</span>
+<span class="n">mercredi</span> <span class="mi">15</span> <span class="n">juin</span> <span class="mi">2016</span><span class="p">,</span> <span class="mi">20</span><span class="o">:</span><span class="mi">45</span><span class="o">:</span><span class="mi">30</span> <span class="p">(</span><span class="n">UTC</span><span class="o">+</span><span class="mo">0200</span><span class="p">)</span>
+<span class="n">Assign</span> <span class="n">alignments</span> <span class="n">to</span> <span class="n">restriction</span> <span class="n">fragments</span> <span class="p">...</span>
+<span class="o">/</span><span class="n">home</span><span class="o">/</span><span class="n">nservant</span><span class="o">/</span><span class="n">Apps</span><span class="o">/</span><span class="n">HiC</span><span class="o">-</span><span class="n">Pro_2</span><span class="mf">.7.7</span><span class="o">/</span><span class="n">scripts</span><span class="o">/</span><span class="n">mapped_2hic_fragments</span><span class="p">.</span><span class="n">sh</span> <span class="o">-</span><span class="n">c</span> <span class="o">/</span><span class="n">home</span><span class="o">/</span><span class="n">nservant</span><span class="o">/</span><span class="n">projects_dev</span><span class="o">/</span><span class="n">HiC</span><span class="o">-</span><span class="n">Pro</span><span class="o">/</span><span class="n">config_test_latest</span><span class="p">.</span><span class="n">txt</span> <span class="o">&gt;&gt;</span> <span class="n">hicpro</span><span class="p">.</span><span class="n">log</span>
+<span class="o">--------------------------------------------</span>
+<span class="n">mercredi</span> <span class="mi">15</span> <span class="n">juin</span> <span class="mi">2016</span><span class="p">,</span> <span class="mi">20</span><span class="o">:</span><span class="mi">46</span><span class="o">:</span><span class="mi">08</span> <span class="p">(</span><span class="n">UTC</span><span class="o">+</span><span class="mo">0200</span><span class="p">)</span>
+<span class="n">Merge</span> <span class="n">multiple</span> <span class="n">files</span> <span class="n">from</span> <span class="n">the</span> <span class="n">same</span> <span class="n">sample</span> <span class="p">...</span>
+<span class="o">/</span><span class="n">home</span><span class="o">/</span><span class="n">nservant</span><span class="o">/</span><span class="n">Apps</span><span class="o">/</span><span class="n">HiC</span><span class="o">-</span><span class="n">Pro_2</span><span class="mf">.7.7</span><span class="o">/</span><span class="n">scripts</span><span class="o">/</span><span class="n">merge_valid_interactions</span><span class="p">.</span><span class="n">sh</span> <span class="o">-</span><span class="n">c</span> <span class="o">/</span><span class="n">home</span><span class="o">/</span><span class="n">nservant</span><span class="o">/</span><span class="n">projects_dev</span><span class="o">/</span><span class="n">HiC</span><span class="o">-</span><span class="n">Pro</span><span class="o">/</span><span class="n">config_test_latest</span><span class="p">.</span><span class="n">txt</span> <span class="o">&gt;&gt;</span> <span class="n">hicpro</span><span class="p">.</span><span class="n">log</span>
+<span class="o">--------------------------------------------</span>
+<span class="n">mercredi</span> <span class="mi">15</span> <span class="n">juin</span> <span class="mi">2016</span><span class="p">,</span> <span class="mi">20</span><span class="o">:</span><span class="mi">46</span><span class="o">:</span><span class="mi">09</span> <span class="p">(</span><span class="n">UTC</span><span class="o">+</span><span class="mo">0200</span><span class="p">)</span>
+<span class="n">Merge</span> <span class="n">stat</span> <span class="n">files</span> <span class="n">per</span> <span class="n">sample</span> <span class="p">...</span>
+<span class="o">/</span><span class="n">home</span><span class="o">/</span><span class="n">nservant</span><span class="o">/</span><span class="n">Apps</span><span class="o">/</span><span class="n">HiC</span><span class="o">-</span><span class="n">Pro_2</span><span class="mf">.7.7</span><span class="o">/</span><span class="n">scripts</span><span class="o">/</span><span class="n">merge_stats</span><span class="p">.</span><span class="n">sh</span> <span class="o">-</span><span class="n">c</span> <span class="o">/</span><span class="n">home</span><span class="o">/</span><span class="n">nservant</span><span class="o">/</span><span class="n">projects_dev</span><span class="o">/</span><span class="n">HiC</span><span class="o">-</span><span class="n">Pro</span><span class="o">/</span><span class="n">config_test_latest</span><span class="p">.</span><span class="n">txt</span> <span class="o">&gt;&gt;</span> <span class="n">hicpro</span><span class="p">.</span><span class="n">log</span>
+<span class="o">--------------------------------------------</span>
+<span class="n">mercredi</span> <span class="mi">15</span> <span class="n">juin</span> <span class="mi">2016</span><span class="p">,</span> <span class="mi">20</span><span class="o">:</span><span class="mi">46</span><span class="o">:</span><span class="mi">09</span> <span class="p">(</span><span class="n">UTC</span><span class="o">+</span><span class="mo">0200</span><span class="p">)</span>
+<span class="n">Run</span> <span class="n">quality</span> <span class="n">checks</span> <span class="k">for</span> <span class="n">all</span> <span class="n">samples</span> <span class="p">...</span>
+<span class="o">/</span><span class="n">home</span><span class="o">/</span><span class="n">nservant</span><span class="o">/</span><span class="n">Apps</span><span class="o">/</span><span class="n">HiC</span><span class="o">-</span><span class="n">Pro_2</span><span class="mf">.7.7</span><span class="o">/</span><span class="n">scripts</span><span class="o">/</span><span class="n">make_plots</span><span class="p">.</span><span class="n">sh</span> <span class="o">-</span><span class="n">c</span> <span class="o">/</span><span class="n">home</span><span class="o">/</span><span class="n">nservant</span><span class="o">/</span><span class="n">projects_dev</span><span class="o">/</span><span class="n">HiC</span><span class="o">-</span><span class="n">Pro</span><span class="o">/</span><span class="n">config_test_latest</span><span class="p">.</span><span class="n">txt</span> <span class="o">-</span><span class="n">p</span> <span class="s">&quot;all&quot;</span> <span class="o">&gt;&gt;</span> <span class="n">hicpro</span><span class="p">.</span><span class="n">log</span>
+<span class="o">--------------------------------------------</span>
+<span class="n">mercredi</span> <span class="mi">15</span> <span class="n">juin</span> <span class="mi">2016</span><span class="p">,</span> <span class="mi">20</span><span class="o">:</span><span class="mi">46</span><span class="o">:</span><span class="mi">22</span> <span class="p">(</span><span class="n">UTC</span><span class="o">+</span><span class="mo">0200</span><span class="p">)</span>
+<span class="n">Generate</span> <span class="n">binned</span> <span class="n">matrix</span> <span class="n">files</span> <span class="p">...</span>
+<span class="o">/</span><span class="n">home</span><span class="o">/</span><span class="n">nservant</span><span class="o">/</span><span class="n">Apps</span><span class="o">/</span><span class="n">HiC</span><span class="o">-</span><span class="n">Pro_2</span><span class="mf">.7.7</span><span class="o">/</span><span class="n">scripts</span><span class="o">/</span><span class="n">build_raw_maps</span><span class="p">.</span><span class="n">sh</span> <span class="o">-</span><span class="n">c</span> <span class="o">/</span><span class="n">home</span><span class="o">/</span><span class="n">nservant</span><span class="o">/</span><span class="n">projects_dev</span><span class="o">/</span><span class="n">HiC</span><span class="o">-</span><span class="n">Pro</span><span class="o">/</span><span class="n">config_test_latest</span><span class="p">.</span><span class="n">txt</span>
+<span class="o">--------------------------------------------</span>
+<span class="n">mercredi</span> <span class="mi">15</span> <span class="n">juin</span> <span class="mi">2016</span><span class="p">,</span> <span class="mi">20</span><span class="o">:</span><span class="mi">46</span><span class="o">:</span><span class="mi">23</span> <span class="p">(</span><span class="n">UTC</span><span class="o">+</span><span class="mo">0200</span><span class="p">)</span>
+<span class="n">Run</span> <span class="n">ICE</span> <span class="n">Normalization</span> <span class="p">...</span>
+<span class="o">/</span><span class="n">home</span><span class="o">/</span><span class="n">nservant</span><span class="o">/</span><span class="n">Apps</span><span class="o">/</span><span class="n">HiC</span><span class="o">-</span><span class="n">Pro_2</span><span class="mf">.7.7</span><span class="o">/</span><span class="n">scripts</span><span class="o">/</span><span class="n">ice_norm</span><span class="p">.</span><span class="n">sh</span> <span class="o">-</span><span class="n">c</span> <span class="o">/</span><span class="n">home</span><span class="o">/</span><span class="n">nservant</span><span class="o">/</span><span class="n">projects_dev</span><span class="o">/</span><span class="n">HiC</span><span class="o">-</span><span class="n">Pro</span><span class="o">/</span><span class="n">config_test_latest</span><span class="p">.</span><span class="n">txt</span> <span class="o">&gt;&gt;</span> <span class="n">hicpro</span><span class="p">.</span><span class="n">log</span>
+
+<span class="n">real</span> <span class="mi">2</span><span class="n">m6</span><span class="mf">.366</span><span class="n">s</span>
+<span class="n">user</span> <span class="mi">3</span><span class="n">m24</span><span class="mf">.493</span><span class="n">s</span>
+<span class="n">sys</span>  <span class="mi">0</span><span class="n">m33</span><span class="mf">.151</span><span class="n">s</span>
 </pre></div>
 </div>
 </div>
@@ -310,7 +326,7 @@ sys  0m40.243s
     </p>
     <p>
         &copy; Copyright 2015, Nicolas Servant.<br/>
-      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.3.1.<br/>
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.2.2.<br/>
     </p>
 </footer>
   </body>
