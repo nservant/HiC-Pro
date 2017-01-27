@@ -118,16 +118,12 @@ ALlows to convert data in sparse symmetric format into dense matrices. This conv
 -------------------
 or **How can I use Fit-Hi-C after HiC-Pro processing ?**
 
-
 Convert HiC-Pro output to Fit-Hi-C input (Ay et al. 2014)
 
 .. code-block:: bash
 
-  ## TODO !
   ## Whith IC bias vector
-  HICPRO_PATH/bin/utils/hicpro2fithic.py 
+  HICPRO_PATH/bin/utils/hicpro2fithic.py -i hic_results/matrix/dixon_2M/raw/1000000/dixon_2M_1000000.matrix -b hic_results/matrix/dixon_2M/raw/1000000/dixon_2M_1000000_abs.bed -s hic_results/matrix/dixon_2M/iced/1000000/dixon_2M_1000000_iced.matrix.biases
 
-  ## Whithout IC bias vector
-  HICPRO_PATH/bin/utils/hicpro2fithic.py
 
 
