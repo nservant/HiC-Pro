@@ -1,6 +1,6 @@
 import sys
 
-DEPENDENCIES = ['numpy', 'scipy', 'sklearn']
+DEPENDENCIES = ['numpy', 'scipy', 'pandas']
 
 
 def print_package_version(package_name, indent='  '):
@@ -13,6 +13,7 @@ def print_package_version(package_name, indent='  '):
         provenance_info = 'not installed'
 
     print('{0}{1}: {2}'.format(indent, package_name, provenance_info))
+
 
 if __name__ == '__main__':
     print('=' * 120)

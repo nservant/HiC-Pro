@@ -6,8 +6,8 @@
 
 # License: 3-clause BSD
 
-# Travis clone scikit-learn/scikit-learn repository in to a local repository.
-# We use a cached directory with three scikit-learn repositories (one for each
+# Travis clone hiclib/iced repository in to a local repository.
+# We use a cached directory with three iced repositories (one for each
 # matrix entry) from which we pull from local Travis repository. This allows
 # us to keep build artefact for gcc + cython, and gain time
 
@@ -102,9 +102,9 @@ fi
 rsync -av --exclude '.git/' --exclude='testvenv/' \
       $TRAVIS_BUILD_DIR $CACHED_BUILD_DIR
 
-cd $CACHED_BUILD_DIR/scikit-learn
+cd $CACHED_BUILD_DIR/iced
 
-# Build scikit-learn in the install.sh script to collapse the verbose
+# Build iced in the install.sh script to collapse the verbose
 # build output in the travis output when it succeeds.
 python --version
 python -c "import numpy; print('numpy %s' % numpy.__version__)"

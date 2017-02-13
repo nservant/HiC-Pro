@@ -6,8 +6,8 @@
 .. _Travis: https://travis-ci.org/hiclib/iced
 
 .. |Coveralls| image::
-   https://coveralls.io/repos/hiclib/iced/badge.svg?branch=master&service=github
-.. _Coveralls: https://coveralls.io/r/hiclib/iced
+   https://coveralls.io/repos/github/hiclib/iced/badge.svg?branch=master
+.. _Coveralls: https://coveralls.io/r/hiclib/iced?branch=master
 
 
 iced
@@ -21,4 +21,4 @@ Depends on
 python >= 2.6
 numpy >= 0.17
 scipy >= 0.13
-
+pandas

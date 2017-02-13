@@ -1,3 +1,12 @@
+"""
+=================================
+Extracting parts of a contact map
+=================================
+
+This examples shows how to use a mask to plot only the inter or the intra
+contact map.
+
+"""
 import numpy as np
 import matplotlib.pyplot as plt
 from matplotlib import colors
@@ -6,13 +15,6 @@ from iced import datasets
 from iced.utils import get_intra_mask
 from iced.utils import get_inter_mask
 
-"""
-Extracting parts of a contact map.
-
-This examples shows how to use a mask to plot only the inter or the intra
-contact map.
-
-"""
 
 # Loading a sample dataset
 counts, lengths = datasets.load_sample_yeast()

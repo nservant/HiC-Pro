@@ -179,7 +179,7 @@ pseudoxml:
 	@echo "Build finished. The pseudo-XML files are in $(BUILDDIR)/pseudoxml."
 
 deploy:
-	rsync -avz _build/html/ nvaroquaux@cbio.ensmp.fr:public_html/iced/dev/
+	rsync -avz _build/html/ nvaroquaux@ssh.cbio.ensmp.fr:public_html/iced/dev/
 
 deploy-release:
 	rsync -avz _build/html/ nvaroquaux@cbio.ensmp.fr:public_html/iced/

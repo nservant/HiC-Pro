@@ -1,16 +1,18 @@
+"""
+=================================
+Extracting parts of a contact map
+=================================
+
+This example shows how to extract contact counts associated to some chromosomes
+of the contact maps. Here, we extract chromosomes 1, 4 and 5 of the budding
+yeasts contact map
+"""
 import matplotlib.pyplot as plt
 from matplotlib import colors
 
 from iced import datasets
 from iced.utils import extract_sub_contact_map
 
-"""
-Extracting parts of a contact map.
-
-This example shows how to extract contact counts associated to some chromosomes
-of the contact maps. Here, we extract chromosomes 1, 4 and 5 of the budding
-yeasts contact map
-"""
 
 # Loading a sample dataset
 counts, lengths = datasets.load_sample_yeast()
