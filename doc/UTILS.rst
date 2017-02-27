@@ -34,10 +34,10 @@ or **How can I extract SNPs information from phasing data ?**
 .. code-block:: bash
 
    ## Extract SNPs information for CASTEiJ/129S1 cross
-   HICPRO_PATH/bin/utils/split_reads.py -i mgp.v2.snps.annot.reformat.vcf -r CASTEij -a 129S1 > snps_CASTEiJ_129S1.vcf
+   HICPRO_PATH/bin/utils/extract_snps.py -i mgp.v2.snps.annot.reformat.vcf -r CASTEij -a 129S1 > snps_CASTEiJ_129S1.vcf
 
    ## Extract SNPs information for C57_b6/FVB_NJ
-   HICPRO_PATH/bin/utils/split_reads.py -i mgp.v2.snps.annot.reformat.vcf -a FVB_NJ > snps_CASTEiJ_129S1.vcf
+   HICPRO_PATH/bin/utils/extract_snps.py -i mgp.v2.snps.annot.reformat.vcf -a FVB_NJ > snps_C57b6_FVBNJ.vcf
 
 
 
