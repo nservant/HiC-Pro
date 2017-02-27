@@ -93,10 +93,10 @@ HICPRO_PATH/bin/utils/split_reads.py --results_folder OUTPUT --nreads READS_NB I
 <div class="line">This script is able to extract informative and high quality SNPs (-f option) which can be then used in allele specific analysis to distinguish parental origin.</div>
 </div>
 <div class="highlight-bash"><div class="highlight"><pre><span class="c">## Extract SNPs information for CASTEiJ/129S1 cross</span>
-HICPRO_PATH/bin/utils/split_reads.py -i mgp.v2.snps.annot.reformat.vcf -r CASTEij -a 129S1 &gt; snps_CASTEiJ_129S1.vcf
+HICPRO_PATH/bin/utils/extract_snps.py -i mgp.v2.snps.annot.reformat.vcf -r CASTEij -a 129S1 &gt; snps_CASTEiJ_129S1.vcf
 
 <span class="c">## Extract SNPs information for C57_b6/FVB_NJ</span>
-HICPRO_PATH/bin/utils/split_reads.py -i mgp.v2.snps.annot.reformat.vcf -a FVB_NJ &gt; snps_CASTEiJ_129S1.vcf
+HICPRO_PATH/bin/utils/extract_snps.py -i mgp.v2.snps.annot.reformat.vcf -a FVB_NJ &gt; snps_C57bl6_FVBNJ.vcf
 </pre></div>
 </div>
 </div>
