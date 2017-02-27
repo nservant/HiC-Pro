@@ -55,7 +55,7 @@
 
 
   </head>
-  <body role="document"><div class="navbar">
+  <body><div class="navbar">
     <a class="navbar-brand" href="index.html">
       
     </a>
@@ -101,7 +101,7 @@ HICPRO_PATH/bin/utils/extract_snps.py -i mgp.v2.snps.annot.reformat.vcf -a FVB_N
 </div>
 </div>
 <div class="section" id="digest-genome-py">
-<h2>2- digest_genome.py<a class="headerlink" href="#digest-genome-py" title="Permalink to this headline">¶</a></h2>
+<h2>3- digest_genome.py<a class="headerlink" href="#digest-genome-py" title="Permalink to this headline">¶</a></h2>
 <p>or <strong>How can I generate the list of restriction fragments after genome digestion ?</strong></p>
 <div class="line-block">
 <div class="line">Digest the reference genome by the provided restriction enzymes(s) and generate a BED file with the list of restriction fragments after digestion.</div>
@@ -121,6 +121,60 @@ HICPRO_PATH/bin/utils/digest_genome.py -r hindiii dpnii -o mm9_hindiii_dpnii.bed
 </pre></div>
 </div>
 </div>
+<div class="section" id="make-viewpoints-py">
+<h2>4- make_viewpoints.py<a class="headerlink" href="#make-viewpoints-py" title="Permalink to this headline">¶</a></h2>
+<p>or <strong>How can I generate a BED profile from a given viewpoints ?</strong></p>
+<div class="line-block">
+<div class="line">The make_viewpoints.py script was initially designed in the context of capture-C data.</div>
+<div class="line">For a given anchor (i.e. capture site), it allows to generate a track file with all interacting fragments.</div>
+<div class="line">Regions around the capture are usually excluded from the profile (&#8216;-e&#8217; parameter)</div>
+</div>
+<div class="highlight-bash"><div class="highlight"><pre><span class="c">## Generate a viewpoints from capture site</span>
+HICPRO_PATH/bin/utils/make_viewpoints -i hicpro_res/hic_results/data/dixon_2M/dixon_2M_allValidPairs  -f HICPRO_PATH/data_info/HindIII_resfrag_hg19.bed -t mycapture.bed -e 1000 -d -v &gt; capture.bedgraph
+</pre></div>
+</div>
+</div>
+<div class="section" id="hicpro2juicebox-sh">
+<h2>4- hicpro2juicebox.sh<a class="headerlink" href="#hicpro2juicebox-sh" title="Permalink to this headline">¶</a></h2>
+<p>or <strong>How can I generate load my HiC-Pro data into Juicebox visualization software ?</strong></p>
+<div class="line-block">
+<div class="line">The hicpro2juicebox.sh utility allows to generate input file for Juicebox.</div>
+<div class="line">It can be use both for restriction fragment Hi-C or Dnase Hi-C by specifying the -f FRAGMENT_FILE option. Note that in this case, it is advice to use the HiC-Pro annotation file, as the fragment name is expected to be HiC_CHROMOSOME_FRAGMENTNUMBER.</div>
+<div class="line">This utility requires HiC-Pro version 2.7.6 or later, and the installation of Juicebox command line tools (<a class="reference external" href="https://github.com/theaidenlab/juicebox">https://github.com/theaidenlab/juicebox</a>)</div>
+</div>
+<div class="highlight-bash"><div class="highlight"><pre><span class="c">## Convert HiC-Pro output to Juicebox input</span>
+HICPRO_PATH/bin/utils/hicpro2juicebox.sh -i hicpro_res/hic_results/data/dixon_2M/dixon_2M_allValidPairs -g hg19 -j /usr/local/juicebox/juicebox_clt_1.4.jar
+
+<span class="c">## Convert HiC-Pro output to Juicebox input up to restriction fragment resolution</span>
+HICPRO_PATH/bin/utils/hicpro2juicebox.sh -i hicpro_res/hic_results/data/dixon_2M/dixon_2M_allValidPairs -g hg19 -j /usr/local/juicebox/juicebox_clt_1.4.jar -f  HICPRO_PATH/data_info/HindIII_resfrag_hg19.bed
+</pre></div>
+</div>
+</div>
+<div class="section" id="sparsetodense-py">
+<h2>5- sparseToDense.py<a class="headerlink" href="#sparsetodense-py" title="Permalink to this headline">¶</a></h2>
+<p>or <strong>How can I convert HiC-Pro output into dense format ?</strong></p>
+<p>ALlows to convert data in sparse symmetric format into dense matrices. This convertion can be useful for downstream analysis such as TADs calling using the directionaly index method (Dixon et al. 2012). The utility can also be used to extract intra-chromosomal maps at dense format.</p>
+<div class="highlight-bash"><div class="highlight"><pre><span class="c">## Convert to dense format</span>
+HICPRO_PATH/bin/utils/sparseToDense.py -b hic_results/matrix/dixon_2M/raw/1000000/dixon_2M_1000000_abs.bed hic_results/matrix/dixon_2M/iced/1000000/dixon_2M_1000000_iced.matrix
+
+<span class="c">## Convert todense format per chromosome</span>
+HICPRO_PATH/bin/utils/sparseToDense.py -b hic_results/matrix/dixon_2M/raw/1000000/dixon_2M_1000000_abs.bed hic_results/matrix/dixon_2M/iced/1000000/dixon_2M_1000000_iced.matrix --perchr
+
+
+<span class="c">## Convert into TADs caller input from Dixon et al.</span>
+HICPRO_PATH/bin/utils/sparseToDense.py -b hic_results/matrix/dixon_2M/raw/1000000/dixon_2M_1000000_abs.bed hic_results/matrix/dixon_2M/iced/1000000/dixon_2M_1000000_iced.matrix --perchr --di
+</pre></div>
+</div>
+</div>
+<div class="section" id="hicpro2fithic-py">
+<h2>6- hicpro2fithic.py<a class="headerlink" href="#hicpro2fithic-py" title="Permalink to this headline">¶</a></h2>
+<p>or <strong>How can I use Fit-Hi-C after HiC-Pro processing ?</strong></p>
+<p>Convert HiC-Pro output to Fit-Hi-C input (Ay et al. 2014)</p>
+<div class="highlight-bash"><div class="highlight"><pre><span class="c">## Whith IC bias vector</span>
+HICPRO_PATH/bin/utils/hicpro2fithic.py -i hic_results/matrix/dixon_2M/raw/1000000/dixon_2M_1000000.matrix -b hic_results/matrix/dixon_2M/raw/1000000/dixon_2M_1000000_abs.bed -s hic_results/matrix/dixon_2M/iced/1000000/dixon_2M_1000000_iced.matrix.biases
+</pre></div>
+</div>
+</div>
 </div>
 
 
@@ -132,7 +186,7 @@ HICPRO_PATH/bin/utils/digest_genome.py -r hindiii dpnii -o mm9_hindiii_dpnii.bed
     </p>
     <p>
         &copy; Copyright 2015, Nicolas Servant.<br/>
-      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.3.1.<br/>
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.2.2.<br/>
     </p>
 </footer>
   </body>
