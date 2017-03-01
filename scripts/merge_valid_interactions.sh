@@ -37,7 +37,7 @@ CONF=$conf_file . $dir/hic.inc.sh
 
 ################### Define Input Directory ###################
 input_data_type=$(get_data_type)
-if [[ $input_data_type == "valid" || $input_data_type == "allvalid"]]
+if [[ $input_data_type == "valid" || $input_data_type == "allvalid" ]]
 then
     IN_DIR=${RAW_DIR}
 else
