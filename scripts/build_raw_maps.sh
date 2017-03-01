@@ -33,9 +33,20 @@ done
 #read_config $ncrna_conf
 CONF=$conf_file . $dir/hic.inc.sh
 
-################### Define Variables ###################
+################### Define Input Directory ###################                                                                                                                                                 
+input_data_type=$(get_data_type)
 
-DATA_DIR=${MAPC_OUTPUT}/data/
+if [[ $input_data_type == "allvalid" ]]
+then
+    DATA_DIR=${RAW_DIR}
+else
+    DATA_DIR=${MAPC_OUTPUT}/data/
+fi
+
+nbf=$(find -L ${DATA_DIR} -mindepth 1 | wc -l)
+if [[ $nbf == 0 ]]; then die "Error : empty ${DATA_DIR} folder."; fi
+
+################### Define Variables ###################
 
 GENOME_SIZE_FILE=`abspath $GENOME_SIZE`
 if [[ ! -e $GENOME_SIZE_FILE ]]; then
