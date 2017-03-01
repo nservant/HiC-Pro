@@ -138,23 +138,23 @@ filter_pairs()
 
 get_data_type()
 {
-    ## return the highest possible input files
+    ## return the highest possible input files type
     nb_fq=$(find -L $RAW_DIR -mindepth 2 -maxdepth 2 -name "*.fastq" -o -name "*.fastq.gz" | wc -l)
     nb_bam=$(find -L $RAW_DIR -mindepth 2 -maxdepth 2 -name "*.bam" -o -name "*.sam" | wc -l)
     nb_vpairs=$(find -L $RAW_DIR -mindepth 2 -maxdepth 2 -name "*.validPairs" | wc -l)
     nb_allvpairs=$(find -L $RAW_DIR -mindepth 2 -maxdepth 2 -name "*_allValidPairs" | wc -l)
     nb_mat=$(find -L $RAW_DIR -mindepth 2 -maxdepth 4 -name "*.matrix" | wc -l)
 
-    if (( $nb_fq > 0 )); then
-        INPUT_DATA_TYPE="fastq"
+    if (( $nb_mat > 0 )); then
+        INPUT_DATA_TYPE="mat"
     elif (( $nb_allvpairs > 0 )); then
         INPUT_DATA_TYPE="allvalid"
     elif (( $nb_vpairs > 0 )); then
         INPUT_DATA_TYPE="valid"
-    elif (( $nb_mat > 0 )); then
-        INPUT_DATA_TYPE="mat"
     elif (( $nb_bam > 0 )); then
         INPUT_DATA_TYPE="bam"
+    elif (( $nb_fq > 0 )); then
+        INPUT_DATA_TYPE="fastq"
     else
 	die "Error in input type.'.fastq|.bam|.validPairs|_allValidPairs|.matrix' files are expected."
     fi
