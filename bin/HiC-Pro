@@ -28,12 +28,12 @@ function help {
     echo "   -c|--conf CONFIG : configuration file for Hi-C processing"
     echo "   [-p|--parallel] : if specified run $SOFT on a cluster"
     echo "   [-s|--step ANALYSIS_STEP] : run only a subset of the $SOFT workflow; if not specified the complete workflow is run"
-    echo "      mapping: perform reads alignment"
-    echo "      proc_hic: perform Hi-C filtering"
+    echo "      mapping: perform reads alignment - require fast files"
+    echo "      proc_hic: perform Hi-C filtering - require BAM files"
     echo "      quality_checks: run Hi-C quality control plots"
-    echo "      merge_persample: merge multiple inputs and remove duplicates if specified"
-    echo "      build_contact_maps: run merge_persample and build raw inter/intrachromosomal contact maps"
-    echo "      ice_norm : run ICE normalization on contact maps"
+    echo "      merge_persample: merge multiple inputs and remove duplicates if specified - require .validPairs files"
+    echo "      build_contact_maps: Build raw inter/intrachromosomal contact maps - require _allValidPairs files"
+    echo "      ice_norm : run ICE normalization on contact maps - require .matrix files"
     echo "   [-h|--help]: help"
     echo "   [-v|--version]: version"
     exit;
@@ -160,13 +160,15 @@ fi
 MAKE_OPTS=$(echo $MAKE_OPTS | sed -e 's/^ //')
 AVAILABLE_STEP_ARRAY=("mapping" "proc_hic" "quality_checks" "merge_persample" "build_contact_maps" "ice_norm")
 NEED_BAM_STEP_ARRAY=("proc_hic")
-NEED_VALID_STEP_ARRAY=("merge_persample" "build_contact_maps")
+NEED_VALID_STEP_ARRAY=("merge_persample")
+NEED_ALLVALID_STEP_ARRAY=("build_contact_maps")
 NEED_MAT_STEP_ARRAY=("ice_norm")
 NEED_FASTQ_STEP_ARRAY=("mapping")
 NEED_ANY_STEP_ARRAY=("quality_checks")
 
 NEED_BAM=0
 NEED_VALID=0
+NEED_ALLVALID=0
 NEED_MAT=0
 NEED_FASTQ=0
 NEED_ANY=0
@@ -188,7 +190,11 @@ if [[ $MAKE_OPTS != "" ]]; then
 	for i in ${NEED_VALID_STEP_ARRAY[@]}; do
             if [[ "$i" == "$s" ]]; then NEED_VALID=1; fi
         done
-    
+
+	for i in ${NEED_ALLVALID_STEP_ARRAY[@]}; do
+            if [[ "$i" == "$s" ]]; then NEED_ALLVALID=1; fi
+        done
+
 	for i in ${NEED_MAT_STEP_ARRAY[@]}; do
             if [[ "$i" == "$s" ]]; then NEED_MAT=1; fi
         done
@@ -227,6 +233,11 @@ elif [[ $NEED_VALID == 1 ]]; then
     nbin=$(find -L $INPUT -mindepth 2 -maxdepth 2 -name "*.validPairs" | wc -l)
     if [ $nbin == 0 ]; then
         die "Error: Directory Hierarchy of rawdata '$INPUT' is not correct. No '.validPairs' files detected"
+    fi
+elif [[ $NEED_ALLVALID == 1 ]]; then
+    nbin=$(find -L $INPUT -mindepth 2 -maxdepth 2 -name "*_allValidPairs" | wc -l)
+    if [ $nbin == 0 ]; then
+        die "Error: Directory Hierarchy of rawdata '$INPUT' is not correct. No '_allValidPairs' files detected"
     fi
 elif [[ $NEED_MAT == 1 ]]; then
     nbin=$(find -L $INPUT -mindepth 2 -maxdepth 4 -name "*.matrix" | wc -l)

@@ -5,6 +5,10 @@ NEW FEATURES
 
 SIGNIFICANT USER-VISIBLE CHANGES
 
+   o The -s build_contact_maps option now  directly creates matrix files from .allValidPairs file. It does not merge the .validPairs anymore. Please use -s merge_persample to merge .validPairs files and remove duplicates.
+
+   o Update manual and correct errors
+
 BUG FIXES
 
 ***********************************

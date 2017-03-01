@@ -29,7 +29,7 @@ merge_persample: merge_valid_interactions merge_allstat
 
 quality_checks : hic_qc
 
-build_contact_maps: merge_persample build_raw_maps
+build_contact_maps: build_raw_maps
 
 
 ######################################
