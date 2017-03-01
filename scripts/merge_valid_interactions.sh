@@ -37,7 +37,7 @@ CONF=$conf_file . $dir/hic.inc.sh
 
 ################### Define Input Directory ###################
 input_data_type=$(get_data_type)
-if [[ $input_data_type == "valid" ]]
+if [[ $input_data_type == "valid" || $input_data_type == "allvalid"]]
 then
     IN_DIR=${RAW_DIR}
 else
@@ -60,7 +60,7 @@ do
     LDIR=${LOGS_DIR}/${RES_FILE_NAME}
     mkdir -p ${LDIR}
 
-    echo "## Merge valid interactions for ${RES_FILE_NAME}..." > ${LDIR}/merge_valid_interactions.log    
+    echo "## Merge valid interactions for ${RES_FILE_NAME} - ${input_data_type} - ${IN_DIR}..." > ${LDIR}/merge_valid_interactions.log    
   
     if [ -d ${IN_DIR}/${RES_FILE_NAME} ]; then
 
