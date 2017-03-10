@@ -42,6 +42,7 @@ The HiC-Pro pipeline requires the following dependencies :
 * R with the *RColorBrewer* and *ggplot2* packages
 * g++ compiler
 * Samtools (>1.0)
+* Unix sort (which support -V option) is required ! For Mac OS user, please install the GNU core utilities !
 
 Bowtie >2.2.2 is strongly recommanded for allele specific analysis.  
 
