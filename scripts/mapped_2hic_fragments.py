@@ -157,7 +157,16 @@ def get_ordered_reads(read1, read2):
 
     The sequencing is usually not oriented. Reorient the reads so that r1 is
     always before r2.
-   
+    Sequencing is always performed from 5' to 3' end
+    So in unstranded case, we can have
+
+    1              2
+    --->           --->
+    ==========  or =========
+         <----          <---
+             2             1
+
+    Reordering the reads allow to always be in the first case
     read1 = [AlignedRead]
     read2 = [AlignedRead]
     """
@@ -283,6 +292,7 @@ def is_religation(read1, read2, frag1, frag2):
     """
     ret=False
     if are_contiguous_fragments(frag1, frag2, read1.tid, read2.tid):
+        r1, r2 = get_ordered_reads(read1, read2)
         if get_read_strand(r1) == "+" and get_read_strand(r2) == "-":
             ret=True
     return ret
@@ -422,7 +432,7 @@ def get_interaction_type(read1, read1_chrom, resfrag1, read2,
     # and same strand = Dump
     interactionType = None
  
-    if not r1.is_unmapped and not r2.is_unmapped and resfrag1 is not None and resfrag2 is not None:
+    if not read1.is_unmapped and not read2.is_unmapped and resfrag1 is not None and resfrag2 is not None:
         # same restriction fragment
         if resfrag1 == resfrag2:
             # Self_circle <- ->
