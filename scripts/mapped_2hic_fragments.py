@@ -292,9 +292,9 @@ def is_religation(read1, read2, frag1, frag2):
     """
     ret=False
     if are_contiguous_fragments(frag1, frag2, read1.tid, read2.tid):
-        r1, r2 = get_ordered_reads(read1, read2)
-        if get_read_strand(r1) == "+" and get_read_strand(r2) == "-":
-            ret=True
+        #r1, r2 = get_ordered_reads(read1, read2)
+        #if get_read_strand(r1) == "+" and get_read_strand(r2) == "-":
+        ret=True
     return ret
 
 
