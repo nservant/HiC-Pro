@@ -285,9 +285,9 @@ which samtools > /dev/null
 if [ $? = "0" ]; then
         
     samver=`samtools 2>&1 | grep Version | cut -d" " -f2`
-    vercomp $samver "0.1.19"
+    vercomp $samver "1.0"
     if [[ $? == 2 ]]; then
-	echo -e "$RED""samtools v0.1.19 or higher is needed [$samver detected].""NORMAL"
+	echo -e "$RED""samtools v1.0 or higher is needed [$samver detected].""NORMAL"
 	exit 1;
     fi
 

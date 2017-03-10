@@ -41,7 +41,7 @@ The HiC-Pro pipeline requires the following dependencies :
 * Python (>2.7) with *pysam (>=0.8.3)*, *bx(>=0.5.0)*, *numpy(>=1.8.2)*, and *scipy(>=0.15.1)* libraries
 * R with the *RColorBrewer* and *ggplot2* packages
 * g++ compiler
-* Samtools (>0.1.19)
+* Samtools (>1.0)
 
 Bowtie >2.2.2 is strongly recommanded for allele specific analysis.  
 

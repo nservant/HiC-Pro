@@ -7,17 +7,17 @@
 ##
 ################################################################################
 
-o export iced bias and increase default parameter for filtering
+o look at pull request
+
+o bug in plot using R3.1.2 and ggplot 2.2.1
+
+o Bug with sort -T for some OS
 
 o update qsub in step2 for paralleization per sample
 
-o doc - stepwise explanation + read name in FAQ
-
-o doc - more user case for each type of Hi-C protocol
-
 o EV - update error tracking
 
-o EV - update sort -V
+o EV - update sort -V - Add a unix sort in the requirement !
 
 o EV - bug in build_maps
 

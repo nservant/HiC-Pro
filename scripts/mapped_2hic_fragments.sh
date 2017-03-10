@@ -66,11 +66,9 @@ do
      fi
     ## Valid pairs are already sorted
     outVALID=`basename ${r} | sed -e 's/.bam$/.validPairs/'`
-    #outSAM=`basename ${r} | sed -e 's/.bam$/_interaction.sam/'`
-    #sortBAM=`basename ${r} | sed -e 's/.bam$/_interaction/'`
-    
+     
     echo "## Sorting valid interaction file ..." >> ${LDIR}/mapped_2hic_fragments.log 2>&1
-    sort -k2,2V -k3,3n -k5,5V -k6,6n -T ${TMP_DIR} -o ${datadir}/${outVALID} ${datadir}/${outVALID} 
+    LANG=en TMPDIR=${TMP_DIR} sort -k2,2V -k3,3n -k5,5V -k6,6n -o ${datadir}/${outVALID} ${datadir}/${outVALID} 
 done
 
 
