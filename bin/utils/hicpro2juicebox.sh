@@ -115,7 +115,7 @@ if [[ ! -z $RESFRAG ]]; then
     
     ## The “pre” command needs the contact map to be sorted by chromosome and grouped so that all reads for one chromosome (let’s say, chr1) appear in the same column.
     ## Also, chromosomes should not have the ‘chr” substring and the strand is coded as 0 for positive and anything else for negative (in practice, 1).
-    awk '{$4=$4!="+"; $7=$7!="+"; split($9, frag1, "_"); split($10, frag2, "_"); } $2<=$5{print $1, $4, $2, $3, frag1[3], $7, $5, $6, frag2[3], $11, $12 }$5<$2{ print $1, $7, $5, $6, frag2[3], $4, $2, $3, frag1[3], $12, $11}' $VALIDPAIRS | sort -k3,3d  -k7,7d -S 90 > ${TEMP}/$$_allValidPairs.pre_juicebox_sorted
+    awk '{$4=$4!="+"; $7=$7!="+"; n1=split($9, frag1, "_"); n2=split($10, frag2, "_"); } $2<=$5{print $1, $4, $2, $3, frag1[n1], $7, $5, $6, frag2[n2], $11, $12 }$5<$2{ print $1, $7, $5, $6, frag2[3], $4, $2, $3, frag1[3], $12, $11}' $VALIDPAIRS | sort -k3,3d  -k7,7d -S 90 > ${TEMP}/$$_allValidPairs.pre_juicebox_sorted
 else
     awk '{$4=$4!="+"; $7=$7!="+"} $2<=$5{print $1, $4, $2, $3, 0, $7, $5, $6, 1, $11, $12 }$5<$2{ print $1, $7, $5, $6, 0, $4, $2, $3, 1, $12, $11 }' $VALIDPAIRS | sort -k3,3d  -k7,7d -S 90 > ${TEMP}/$$_allValidPairs.pre_juicebox_sorted
 fi
@@ -132,6 +132,6 @@ else
 fi
 
 ## Clean
-#/bin/rm -f ${TEMP}/$$_resfrag.juicebox ${TEMP}/$$_allValidPairs.pre_juicebox_sorted
+/bin/rm -f ${TEMP}/$$_resfrag.juicebox ${TEMP}/$$_allValidPairs.pre_juicebox_sorted
 
 echo "done !"

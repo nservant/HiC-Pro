@@ -13,6 +13,8 @@ SIGNIFICANT USER-VISIBLE CHANGES
 
 BUG FIXES
 
+   o Fix bug in hicpro2juicebox when chromosome names have "_"
+
    o Fix a bug in detection of religation events
 
    o Fix some issue with sort -T. This option is no longer used and replaced by setting the TMPDIR variable
