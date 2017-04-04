@@ -7,11 +7,13 @@
 ##
 ################################################################################
 
+o HiCUP compare
+
+o Assign reads using its 5' end ...
+
 o look at pull request
 
 o bug in plot using R3.1.2 and ggplot 2.2.1
-
-o Bug with sort -T for some OS
 
 o update qsub in step2 for paralleization per sample
 
