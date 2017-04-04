@@ -11,6 +11,8 @@ o HiCUP compare
 
 o Assign reads using its 5' end ...
 
+o bug in samtools
+
 o look at pull request
 
 o bug in plot using R3.1.2 and ggplot 2.2.1
