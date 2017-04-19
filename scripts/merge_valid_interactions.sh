@@ -92,7 +92,7 @@ do
        ## On Target                                                                                                                                                      
         if [[ ! -z ${CAPTURE_TARGET} ]]; then
             echo "## Select valid interactions from capture target ..." >> ${LDIR}/merge_valid_interactions.log
-            ${SCRIPTS}/onTarget.py -i ${DATA_DIR}/${RES_FILE_NAME}/${RES_FILE_NAME}_allValidPairs -t ${CAPTURE_TARGET} -p -v 1> ${DATA_DIR}/${RES_FILE_NAME}/${RES_FILE_NAME}_allValidPairs_ontarget 2>>${LDIR}/merge_valid_interactions.log
+            ${PYTHON_PATH}/python ${SCRIPTS}/onTarget.py -i ${DATA_DIR}/${RES_FILE_NAME}/${RES_FILE_NAME}_allValidPairs -t ${CAPTURE_TARGET} -p -v 1> ${DATA_DIR}/${RES_FILE_NAME}/${RES_FILE_NAME}_allValidPairs_ontarget 2>>${LDIR}/merge_valid_interactions.log
             mv ${DATA_DIR}/${RES_FILE_NAME}/${RES_FILE_NAME}_allValidPairs_ontarget ${DATA_DIR}/${RES_FILE_NAME}/${RES_FILE_NAME}_allValidPairs
             allcount_ontarget=$(cat ${DATA_DIR}/${RES_FILE_NAME}/${RES_FILE_NAME}_allValidPairs | wc -l)
 	    echo -e "valid_interaction_ontarget\t"$allcount_ontarget >> ${DATA_DIR}/${RES_FILE_NAME}/${RES_FILE_NAME}_allValidPairs.mergestat
@@ -101,7 +101,7 @@ do
 	## Allele specific analysis
 	if [[ ! -z ${ALLELE_SPECIFIC_SNP} ]]; then
 	    echo "## Split valid interactions for allele specific maps ..." >> ${LDIR}/merge_valid_interactions.log
-	    ${SCRIPTS}/split_valid_interactions.py -i ${DATA_DIR}/${RES_FILE_NAME}/${RES_FILE_NAME}_allValidPairs -v >> ${LDIR}/merge_valid_interactions.log
+	    ${PYTHON_PATH}/python ${SCRIPTS}/split_valid_interactions.py -i ${DATA_DIR}/${RES_FILE_NAME}/${RES_FILE_NAME}_allValidPairs -v >> ${LDIR}/merge_valid_interactions.log
 	fi
     fi
     wait

@@ -12,6 +12,8 @@ SIGNIFICANT USER-VISIBLE CHANGES
    o Update manual and correct errors
 
 BUG FIXES
+   
+   o Fix python path in merge_valid_interaction.sh
 
    o Fix bug in hicpro2juicebox when chromosome names have "_"
 
