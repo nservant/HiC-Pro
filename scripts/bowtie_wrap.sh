@@ -95,6 +95,7 @@ local_align()
 	exit -1
     fi
 
+    mkdir -p ${BOWTIE2_GLOBAL_TRIMMED_OUTPUT_DIR}/${sample_dir}
     mkdir -p ${BOWTIE2_LOCAL_OUTPUT_DIR}/${sample_dir}
     
     ## Logs
