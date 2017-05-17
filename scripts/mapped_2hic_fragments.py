@@ -381,7 +381,7 @@ def get_PE_fragment_size(read1, read2, resFrag1, resFrag2, interactionType):
             rfrag1 = resFrag1
             rfrag2 = resFrag2
 
-        ## In this case use the read 3' end !
+        ## In this case use the read start !
         r1pos = get_read_start(r1)
         r2pos = get_read_start(r2)
 

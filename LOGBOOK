@@ -7,6 +7,12 @@
 ##
 ################################################################################
 
+o Error if sample dir is named 'fastq'
+
+o Add a way to load paired BAM file
+
+o New graph for Dumped pairs (see. Angelo's idea on the forum)
+
 o HiCUP compare
 
 o Assign reads using its 5' end ...

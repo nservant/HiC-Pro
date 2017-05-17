@@ -111,7 +111,7 @@ then
 #SBATCH -N 1
 #SBATCH -n 1
 #SBATCH -t ${JOB_WALLTIME}
-#SBATCH -mem-per-cpu=${JOB_MEM}
+#SBATCH --mem-per-cpu=${JOB_MEM}
 #SBATCH -p ${JOB_QUEUE}
 
 #SBATCH --mail-user=${JOB_MAIL}
