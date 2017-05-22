@@ -2,8 +2,8 @@
 ## Copyleft 2015,2016 Institut Curie
 ## Author(s): Nicolas Servant
 ## Contact: nicolas.servant@curie.fr
-## This software is distributed without any guarantee under the terms of the GNU General
-## Public License, either Version 2, June 1991 or Version 3, June 2007. 
+## This software is distributed without any guarantee under the terms of the BSD-3 Licence
+
 
 ## DO NOT EDIT THE REST OF THIS FILE!!
 
