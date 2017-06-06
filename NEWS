@@ -5,6 +5,8 @@ NEW FEATURES
 
 SIGNIFICANT USER-VISIBLE CHANGES
 
+   o Update hicpro2fithic.py script. New '-r' option to set up the data resolution (F. Ay)
+
    o samtools >1.0 is now required
 
    o The -s build_contact_maps option now  directly creates matrix files from .allValidPairs file. It does not merge the .validPairs anymore. Please use -s merge_persample to merge .validPairs files and remove duplicates.
