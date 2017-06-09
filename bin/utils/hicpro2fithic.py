@@ -3,11 +3,13 @@
 import argparse
 import math
 import os
+import gzip
 
 # Created by Arya Kaul - 1/12/2017
 # Modified by Ferhat Ay - 1/13/2017
 # Modified by Nicolas Servant - 1/23/2017
 # Modified by Ferhat Ay - 6/5/2017 - added resolution (-r <res>) argument to avoid some problems with inferring it from the first entry of bedFile
+# Modified by Ferhat Ay - 6/7/2017 - hitCount to ints, and gzip output 
 
 
 def outputfithicform(bedPath, matrixPath, intCPath, fragMapPath, biasVectorPath=None, biasVectorOutput=None,res=0):
@@ -27,7 +29,7 @@ def outputfithicform(bedPath, matrixPath, intCPath, fragMapPath, biasVectorPath=
 
 	lineCount=0
 	with open(matrixPath, 'r') as matrixFile:
-		with open(intCPath, 'w') as interactionCountsFile:
+		with gzip.open(intCPath, 'w') as interactionCountsFile:
 			for lines in matrixFile:
 				line = lines.rstrip().split()
 				i = int(line[0])
@@ -35,15 +37,18 @@ def outputfithicform(bedPath, matrixPath, intCPath, fragMapPath, biasVectorPath=
 				cc = float(line[2]) # this can be float or int
 				fragDic[i][3] += cc
 				fragDic[j][3] += cc
-				interactionCountsFile.write(str(fragDic[i][0])+'\t'+str(fragDic[i][2])+'\t'+str(fragDic[j][0])+'\t'+str(fragDic[j][2])+'\t'+str(cc)+"\n")
+				if cc==int(cc): cc=int(cc) # make sure to convert to integer if it ends with ".0"
+				interactionCountsFile.write(str(fragDic[i][0])+'\t'+str(fragDic[i][2])+'\t'+\
+					str(fragDic[j][0])+'\t'+str(fragDic[j][2])+'\t'+str(cc)+"\n")
 				lineCount+=1
 				if lineCount%1000000==0: print "%d million lines read" % int(lineCount/1000000)
 
-	with open(fragMapPath, 'w') as fragmentMappabilityFile:
+	with gzip.open(fragMapPath, 'w') as fragmentMappabilityFile:
 		for indices in sorted(fragDic): # sorted so that we start with the smallest index
 			toWrite = 0
 			if fragDic[indices][3]> 0: toWrite=1 
-			fragmentMappabilityFile.write(str(fragDic[indices][0])+'\t'+str(fragDic[indices][1])+'\t'+str(fragDic[indices][2])+'\t'+str(fragDic[indices][3])+'\t'+str(toWrite)+'\n')
+			fragmentMappabilityFile.write(str(fragDic[indices][0])+'\t'+str(fragDic[indices][1])+'\t'+\
+				str(fragDic[indices][2])+'\t'+str(int(fragDic[indices][3]))+'\t'+str(toWrite)+'\n')
 
 	if biasVectorPath is not None and biasVectorOutput is not None:
 		print "Converting bias file..."
@@ -65,7 +70,7 @@ def outputfithicform(bedPath, matrixPath, intCPath, fragMapPath, biasVectorPath=
 		# Centering the bias values on 1.
 		biasAvg=biasVec[0]/biasVec[1]
 
-		with open(biasVectorOutput, 'w') as biasVectorOutputFile:
+		with gzip.open(biasVectorOutput, 'w') as biasVectorOutputFile:
 			for index in sorted(biasDic):
 				value=biasDic[index]
 				if not math.isnan(value):
@@ -94,12 +99,12 @@ if __name__=="__main__":
 
 	args = parser.parse_args()
 
-	icounts_output = os.path.join(args.output + "/fithic.interactionCounts")
-	fragmap_output = os.path.join(args.output + "/fithic.fragmentMappability")
+	icounts_output = os.path.join(args.output + "/fithic.interactionCounts.gz")
+	fragmap_output = os.path.join(args.output + "/fithic.fragmentMappability.gz")
 	bias_output = None
 
 	if args.bias is not None:
-		bias_output = os.path.join(args.output + "/fithic.biases")
+		bias_output = os.path.join(args.output + "/fithic.biases.gz")
 
 	outputfithicform(args.bed, args.matrix, icounts_output, fragmap_output, args.bias, bias_output, args.resolution)
 

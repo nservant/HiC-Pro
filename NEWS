@@ -5,6 +5,8 @@ NEW FEATURES
 
 SIGNIFICANT USER-VISIBLE CHANGES
 
+   o Fix issues with floating values in hicpro2fithic.py (F. Ay)
+
    o Update hicpro2fithic.py script. New '-r' option to set up the data resolution (F. Ay)
 
    o samtools >1.0 is now required
