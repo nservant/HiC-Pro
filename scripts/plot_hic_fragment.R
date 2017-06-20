@@ -46,11 +46,22 @@ getHiCMat <- function(x){
 
   mmat <- data.frame(cbind(lab=names(x), p, count=x, perc=x.perc), stringsAsFactors=FALSE)
 
+  lab.order <- c("Invalid_pairs", "Valid_interaction_pairs", "Valid_interaction_pairs_FF", "Valid_interaction_pairs_RR",
+             "Valid_interaction_pairs_RF","Valid_interaction_pairs_FR", "Dumped_pairs", "Self_Cycle_pairs",
+             "Religation_pairs", "Single-end_pairs", "Dangling_end_pairs")
+  mmat$lab <- factor(mmat$lab, levels=lab.order)
+  #mmat <- mmat[rev(lab.order),]
+
   ## pos for label
   mmat$pos <- rep(0, length(x))
   for (i in unique(mmat$p)){
-    idx <-  which(mmat$p==i)
-    mmat$pos[idx] <- cumsum(as.numeric(as.character(mmat$count[idx])))-as.numeric(as.character(mmat$count[idx]))/2
+      idx <-  which(mmat$p==i)
+      counts <- mmat$count[idx]
+      names(counts) <- mmat$lab[idx]
+      ## get reverse order from levels for position
+      s <- counts[rev(intersect(levels(mmat$lab), mmat$lab[idx]))]
+      values <- as.numeric(as.character(s))
+      mmat$pos[match(names(s), mmat$lab)] <- cumsum(values)-values/2
   }  
   mmat$pos[which(mmat$count==0)] <- NA
 
@@ -65,8 +76,9 @@ getHiCMat <- function(x){
   col["Invalid_pairs"] <- "darkgray"
   col["Valid_interaction_pairs"] <- sel.val[5]
   mmat$selcol <- col
-  
-  mmat[order(mmat$p), ]
+      
+  #mmat[order(mmat$p), ]
+  mmat
 }
 
 ## plotHiCStat
@@ -81,21 +93,21 @@ plotHiCStat <- function(mat, xlab="", legend=TRUE){
   require(grid)
 
   ## update labels for plot
-  mat$lab <- paste0(gsub("_", " ", mat$lab)," (%)")
+  #mat$lab <- paste0(gsub("_", " ", mat$lab)," (%)")
 
-  gp <-ggplot(mat, aes(x=p, as.numeric(count), fill=as.character(lab))) +
+  gp <-ggplot(mat, aes(x=p, as.numeric(count), fill=lab)) +
     geom_bar(width=.7,stat="identity", colour="gray") + 
       theme(axis.title=element_text(face="bold", size=6), axis.ticks = element_blank(),  axis.text.y = element_text(size=5), axis.text.x = element_text(size=6))+
         xlab(xlab) + ylab("Read Counts") +
             scale_x_discrete(breaks=c("1", "2", "3"), labels=c("All Pairs","Valid 3C Pairs","Invalid 3C Pairs"))+
-              geom_text(aes(x=p, y=as.numeric(pos), label=paste(perc,"%")),fontface="bold", size=2) +
+              geom_text(aes(x=p, y=as.numeric(pos), label=paste0(perc,"%")),fontface="bold", size=2) +
                 ggtitle("Statistics of Read Pairs Alignment on Restriction Fragments") + theme(plot.title = element_text(lineheight=.8, face="bold", size=6))
 
   if (legend){
     scol <- mat$selcol
     names(scol) <- mat$lab
     gp = gp + scale_fill_manual(values=scol) + guides(fill=guide_legend(title="")) + theme(plot.margin=unit(x=c(1,0,0,0), units="cm"), legend.position="right",
-                                                        legend.margin=unit(.5,"cm"), legend.text=element_text(size=4))
+                                                        legend.margin=margin(.5,unit="cm"), legend.text=element_text(size=6))
   }else{
     gp = gp + scale_fill_manual(values=as.character(col)) + theme(plot.margin=unit(c(1,0,1.9,0),"cm"))+ guides(fill=FALSE)
   }

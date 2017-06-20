@@ -1,4 +1,16 @@
 ***********************************
+CHANGES IN VERSION 2.10.0
+
+NEW FEATURES
+
+SIGNIFICANT USER-VISIBLE CHANGES
+
+   o udpate R scripts to be compatible with the lastest ggplot2 version (>2.2.1)
+
+BUG FIXES
+
+
+***********************************
 CHANGES IN VERSION 2.9.0
 
 NEW FEATURES

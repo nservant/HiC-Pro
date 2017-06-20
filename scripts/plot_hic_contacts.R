@@ -53,9 +53,12 @@ getContactsStatMat <- function(x){
   lab <- c("n.a.rmdup", "n.b.dup", "n.c.trans", "n.d.cis.sr", "n.e.cis.lr")
   mmat <- data.frame(cbind(lab, p, count, perc), stringsAsFactors=FALSE)
   mmat$pos <- as.vector(unlist(sapply(unique(mmat$p), function(i){
-  idx <-  which(mmat$p==i)
-  cumsum(as.numeric(as.character(mmat$count[idx])))-as.numeric(as.character(mmat$count[idx]))/2
+      idx <-  which(mmat$p==i)
+      values <- as.numeric(as.character(mmat$count[idx]))
+      cumsum(values)-values/2
   })))  
+
+  mmat$lab <- factor(mmat$lab, levels=c("n.b.dup", "n.a.rmdup", "n.e.cis.lr", "n.d.cis.sr", "n.c.trans"))
   mmat
 }
 
@@ -70,9 +73,9 @@ plotDedup <- function(mat, sampleName="", legend=TRUE){
   require(ggplot2)
   require(grid)
   
-  sel.colours <- brewer.pal(12,"Paired")[c(7,8,3,1,2)] 
+  sel.colours <- brewer.pal(12,"Paired")[c(8,7,2,1,3)] 
 
-  gp <- ggplot(mat, aes(x=p, as.numeric(count), fill=as.character(lab))) +
+  gp <- ggplot(mat, aes(x=p, as.numeric(count), fill=lab)) +
     geom_bar(width=.7,stat="identity", colour="gray") +
       theme(axis.title=element_text(face="bold", size=6), axis.ticks = element_blank(), axis.text.y = element_text(size=5), axis.text.x = element_blank()) +
           xlab(sampleName) + ylab("Read Counts")  +
@@ -80,10 +83,10 @@ plotDedup <- function(mat, sampleName="", legend=TRUE){
                 ggtitle("Valid Pairs - duplicates and contact ranges") + theme(plot.title = element_text(lineheight=.8, face="bold", size=6))
 
   if (legend){
-    gp = gp + scale_fill_manual(values=sel.colours, labels = c("Valid Interactions (%)",  "Duplicates (%)", "Trans Contacts (%)", "Cis short-range (<20kb) (%)",
-                                                      "Cis long-range contacts (>20kb) (%)")) + guides(fill=guide_legend(title="")) +
-                                                        theme(plot.margin=unit(x=c(1,0,0,0), units="cm"), legend.position="bottom", legend.margin=unit(.5,"cm"),
-                                                              legend.text=element_text(size=4))
+    gp = gp + scale_fill_manual(values=sel.colours, labels = c("Duplicates (%)", "Valid Interactions (%)", "Cis short-range (<20kb) (%)", "Cis long-range contacts (>20kb) (%)", "Trans Contacts (%)")) +
+                                    guides(fill=guide_legend(title="")) +
+                                        theme(plot.margin=unit(x=c(1,0,0,0), units="cm"), legend.position="bottom", legend.margin=margin(.5,unit="cm"),
+                                              legend.text=element_text(size=4))
   }else{
     gp = gp + scale_fill_manual(values=sel.colours) + theme(plot.margin=unit(c(1,0,1.9,0),"cm"))+ guides(fill=FALSE)
   }
