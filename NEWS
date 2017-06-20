@@ -3,6 +3,8 @@ CHANGES IN VERSION 2.8.1
 
 NEW FEATURES
 
+   o update iced_0.4.2
+
 SIGNIFICANT USER-VISIBLE CHANGES
 
    o Fix issues with floating values in hicpro2fithic.py (F. Ay)
