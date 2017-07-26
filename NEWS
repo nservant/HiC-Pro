@@ -9,6 +9,7 @@ SIGNIFICANT USER-VISIBLE CHANGES
 
 BUG FIXES
 
+   o fix bug in ice_norm.sh when HiC-Pro is run with -s ice_norm option
 
 ***********************************
 CHANGES IN VERSION 2.9.0
