@@ -111,8 +111,10 @@ if [[ ! -z $RESFRAG ]]; then
  
     ## The restriction fragment sites file needs to be converted in order to be used in Juicebox command line tool (see attached script). 
     ## They expect one line per chromosome with restriction sites separated by tabs and sorted by coordinate.
-    awk 'BEGIN{OFS="\t"; prev_chr=""}$1!=prev{print ""; prev=$1; printf "%s\t", $1; printf "%s\t", $3}$1==prev{printf "%s\t",$3}END{print ""}' $RESFRAG | sed "s/\t\n/\n/" | sed "/^$/d" > ${TEMP}/$$_resfrag.juicebox
-    
+    ## Fix bug reported
+    awk 'BEGIN{OFS="\t"; prev_chr=""}$1!=prev{print ""; prev=$1; printf "%s\t", $1} $1==prev {printf "%s\t",$3+1} END{print ""}' $RESFRAG | sed "s/\t\n/\n/" | sed "/^$/d" > ${TEMP}/$$_resfrag.juicebox
+    ##awk 'BEGIN{OFS="\t"; prev_chr=""}$1!=prev{print ""; prev=$1; printf "%s\t", $1; printf "%s\t", $3} $1==prev{printf "%s\t",$3}END{print ""}' $RESFRAG | sed "s/\t\n/\n/" | sed "/^$/d" > ${TEMP}/$$_resfrag.juicebox
+
     ## The “pre” command needs the contact map to be sorted by chromosome and grouped so that all reads for one chromosome (let’s say, chr1) appear in the same column.
     ## Also, chromosomes should not have the ‘chr” substring and the strand is coded as 0 for positive and anything else for negative (in practice, 1).
     awk '{$4=$4!="+"; $7=$7!="+"; n1=split($9, frag1, "_"); n2=split($10, frag2, "_"); } $2<=$5{print $1, $4, $2, $3, frag1[n1], $7, $5, $6, frag2[n2], $11, $12 }$5<$2{ print $1, $7, $5, $6, frag2[3], $4, $2, $3, frag1[3], $12, $11}' $VALIDPAIRS | sort -k3,3d  -k7,7d -S 90 > ${TEMP}/$$_allValidPairs.pre_juicebox_sorted
