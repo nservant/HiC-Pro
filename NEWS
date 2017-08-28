@@ -9,7 +9,7 @@ SIGNIFICANT USER-VISIBLE CHANGES
 
 BUG FIXES
 
-   i fix issue in hicpro2juicebox.sh. The first column was duplicated, and position are now 1-based
+   o fix issue in hicpro2juicebox.sh. The first column was duplicated, and position are now 1-based
 
    o fix bug in ice_norm.sh when HiC-Pro is run with -s ice_norm option
 
