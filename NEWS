@@ -9,6 +9,8 @@ SIGNIFICANT USER-VISIBLE CHANGES
 
 BUG FIXES
 
+   o fix bugs in plots of no trans interactions were detected
+
    o fix bug in split_reads.py when -o is specified
 
    o fix issue in hicpro2juicebox.sh. The first column was duplicated, and position are now 1-based

@@ -87,7 +87,7 @@ do
 	echo -e $RES_FILE_NAME"\t"$nbdup >> ${LDIR}/merge_valid_interactions.log
         echo -e "valid_interaction\t"$allcount > ${DATA_DIR}/${RES_FILE_NAME}/${RES_FILE_NAME}_allValidPairs.mergestat
         echo -e "valid_interaction_rmdup\t"$allcount_rmdup >> ${DATA_DIR}/${RES_FILE_NAME}/${RES_FILE_NAME}_allValidPairs.mergestat
-        awk '$2 == $5{cis=cis+1; d=$6>$3?$6-$3:$3-$6; if (d<=20000){sr=sr+1}else{lr=lr+1}} $2!=$5{trans=trans+1}END{print "trans_interaction\t"trans"\ncis_interaction\t"cis"\ncis_shortRange\t"sr"\ncis_longRange\t"lr}' ${DATA_DIR}/${RES_FILE_NAME}/${RES_FILE_NAME}_allValidPairs >> ${DATA_DIR}/${RES_FILE_NAME}/${RES_FILE_NAME}_allValidPairs.mergestat
+        awk 'BEGIN{cis=0;trans=0;sr=0;lr=0} $2 == $5{cis=cis+1; d=$6>$3?$6-$3:$3-$6; if (d<=20000){sr=sr+1}else{lr=lr+1}} $2!=$5{trans=trans+1}END{print "trans_interaction\t"trans"\ncis_interaction\t"cis"\ncis_shortRange\t"sr"\ncis_longRange\t"lr}' ${DATA_DIR}/${RES_FILE_NAME}/${RES_FILE_NAME}_allValidPairs >> ${DATA_DIR}/${RES_FILE_NAME}/${RES_FILE_NAME}_allValidPairs.mergestat
 
        ## On Target                                                                                                                                                      
         if [[ ! -z ${CAPTURE_TARGET} ]]; then
