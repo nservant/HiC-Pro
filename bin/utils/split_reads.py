@@ -37,8 +37,9 @@ if retcode != 0:
     print "split file failed with return code %d", retcode
     sys.exit(1)
 
-files = glob(os.path.join(out, prefix + "*"))
+files = glob(os.path.join(prefix + "*"))
 files.sort()
+
 for ifile in files:
     shutil.move(ifile,
                 os.path.join(os.path.dirname(ifile),
