@@ -50,17 +50,32 @@ function opts_error {
     exit
 }
 
-if [ $# -lt 1 ]
-then
-    usage
-    exit
-fi
+## Set PATHS
+BIN_PATH=`dirname $0`
+ABS_BIN_PATH=`cd "$BIN_PATH"; pwd`
+SCRIPTS_PATH="$ABS_BIN_PATH/../scripts/"
+INSTALL_PATH="$ABS_BIN_PATH/../"
+CUR_PATH=$PWD
 
 CLUSTER=0
 MAKE_OPTS=""
 INPUT=""
 OUTPUT=""
 CONF=""
+
+if [[ ! -e ${INSTALL_PATH}/config-system.txt ]]; then
+    die "Installation issue - config system not detected. Please (re) install HiC-Pro !"
+fi
+
+#####################
+## Inputs
+#####################
+if [ $# -lt 1 ]
+then
+    usage
+    exit
+fi
+
 # Transform long options to short ones
 for arg in "$@"; do
   shift
@@ -104,20 +119,12 @@ if [[ -z $INPUT || -z $OUTPUT || -z $CONF ]]; then
     exit
 fi
 
-## Set PATHS
-BIN_PATH=`dirname $0`
-ABS_BIN_PATH=`cd "$BIN_PATH"; pwd`
-SCRIPTS_PATH="$ABS_BIN_PATH/../scripts/"
-INSTALL_PATH="$ABS_BIN_PATH/../"
-CUR_PATH=$PWD
-
-
-## Read conf file                                                                                                                                                        
-. $SCRIPTS_PATH/hic.inc.sh
 
 #####################
 ## Check Config file
 #####################
+## Read conf file
+. $SCRIPTS_PATH/hic.inc.sh
 
 INPUT=`abspath $INPUT`
 OUTPUT=`abspath $OUTPUT`
@@ -128,35 +135,44 @@ if [ ! -e $INPUT ]; then
 fi
 
 if [[ -z $PAIR1_EXT || -z $PAIR2_EXT ]]; then
-    echo "Read pairs extension is not defined. Exit"
-    exit -1
+    die "Read pairs extension is not defined. Exit"
 fi
 
-if [[ -z $GENOME_SIZE ]]; then
-    GENOME_SIZE_FILE=`abspath $GENOME_SIZE`
-    if [[ ! -e $GENOME_SIZE_FILE ]]; then
-	GENOME_SIZE_FILE=$ANNOT_DIR/$GENOME_SIZE
-	if [[ ! -e $GENOME_SIZE_FILE ]]; then
-	    echo "$GENOME_SIZE not found. Exit"
-	    exit -1
-	fi
-    fi
+GENOME_SIZE_FILE=`abspath $GENOME_SIZE`
+if [[ ! -e $GENOME_SIZE_FILE ]]; then
+    GENOME_SIZE_FILE=$ANNOT_DIR/$GENOME_SIZE
 fi
 
-if [[ -z $GENOME_FRAGMENT ]]; then
-    GENOME_FRAGMENT_FILE=`abspath $GENOME_FRAGMENT`
-    if [[ ! -e $GENOME_FRAGMENT_FILE ]]; then
-	GENOME_FRAGMENT_FILE=$ANNOT_DIR/$GENOME_FRAGMENT
-	if [[ ! -e $GENOME_FRAGMENT_FILE ]]; then
-	    echo "$GENOME_FRAGMENT not found. Exit"
-	    exit -1
-	fi
-    fi
+GENOME_FRAGMENT_FILE=`abspath $GENOME_FRAGMENT`
+if [[ ! -e $GENOME_FRAGMENT_FILE ]]; then
+    GENOME_FRAGMENT_FILE=$ANNOT_DIR/$GENOME_FRAGMENT
+fi
+
+## check other annotation files
+if [[ ! -z $GENOME_SIZE_FILE && ! -e $GENOME_SIZE_FILE ]]; then
+    die "GENOME_FILE $GENOME_SIZE_FILE not found. Exit"
+fi
+
+if [[ ! -z $GENOME_FRAGMENT_FILE && ! -e $GENOME_FRAGMENT_FILE ]]; then
+    die "GENOME_FRAGMENT $GENOME_FRAGMENT_FILE not found. Exit"
+fi
+
+if [[ ! -z $BOWTIE2_IDX_PATH && ! -d $BOWTIE2_IDX_PATH ]]; then
+    die "BOWTIE2_IDX $BOWTIE2_IDX_PATH directory not found. Exit"
+fi
+
+if [[ ! -z $CAPTURE_TARGET && ! -e $CAPTURE_TARGET ]]; then
+    die "CAPTURE_TARGET $CAPTURE_TARGET not found. Exit"
+fi
+
+if [[ ! -z $ALLELE_SPECIFIC_SNP && ! -e $ALLELE_SPECIFIC_SNP ]]; then
+    die "ALLELE_SPECIFIC_SNP $ALLELE_SPECIFIC_SNP not found. Exit"
 fi
 
 #####################
 ## Check step option
 #####################
+
 MAKE_OPTS=$(echo $MAKE_OPTS | sed -e 's/^ //')
 AVAILABLE_STEP_ARRAY=("mapping" "proc_hic" "quality_checks" "merge_persample" "build_contact_maps" "ice_norm")
 NEED_BAM_STEP_ARRAY=("proc_hic")
@@ -258,6 +274,8 @@ if [[ -d $OUTPUT && $MAKE_OPTS == "" ]]; then
     read ans
     if [ XX${ans} = XXy ]; then
 	/bin/rm -rf $OUTPUT
+    elif [ XX${ans} = XXn ]; then
+	exit -1
     fi
 fi
 mkdir -p $OUTPUT
@@ -274,6 +292,19 @@ fi
 
 cd $OUTPUT
 
+#####################
+## Check input files
+#####################
+
+if [[ $NEED_FASTQ == 1 ]]; then
+    r1files=$(find -L $RAW_DIR -mindepth 2 -maxdepth 2 -name "*.fastq" -o -name "*.fastq.gz" | grep "$PAIR1_EXT" | wc -l)
+    r2files=$(find -L $RAW_DIR -mindepth 2 -maxdepth 2 -name "*.fastq" -o -name "*.fastq.gz" | grep "$PAIR2_EXT" | wc -l)
+    if [[ "$r1files" != "$r2files" ]]; then
+	die "Number of $PAIR1_EXT files is different from $PAIR2_EXT [$r1files vs $r2files]."
+    fi
+fi
+
+
 ###################
 ## Run HiC-Pro
 ###################
@@ -288,7 +319,6 @@ else
     then	
 	MAKE_OPTS=$(echo $MAKE_OPTS | sed -e 's/ /,/g')
 	make --file $SCRIPTS_PATH/Makefile CONFIG_FILE=$CONF CONFIG_SYS=${INSTALL_PATH}/config-system.txt MAKE_OPTS=$MAKE_OPTS make_cluster_script 2>&1
-
     else
     	make --file $SCRIPTS_PATH/Makefile CONFIG_FILE=$CONF CONFIG_SYS=${INSTALL_PATH}/config-system.txt make_cluster_script 2>&1
     fi

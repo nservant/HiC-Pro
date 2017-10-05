@@ -69,6 +69,10 @@ do
     R2=$(echo $r | get_R2)
     sample_dir=$(get_sample_dir $r)
 
+    echo "-----------------"
+    echo "Combine $R1 and $R2 files ..."
+
+    
     mapping_combine $sample_dir $R1 &
     mapping_combine $sample_dir $R2 &
     

@@ -102,11 +102,11 @@ local_align()
     mkdir -p ${LDIR}
 
     ## Starts trimming reads from the ligation site
-    tfile=`echo $file | sed -e s/.fastq/_trimmed.fastq/`
+    tfile=`basename $file | sed -e s/.fastq$/_trimmed.fastq/`
     if [[ ${RM_LOCAL_NO_CUTSITE} == 1 ]]; then
-	${SCRIPTS}/cutsite_trimming --fastq $file --cutsite ${LIGATION_SITE} --out $tfile --rmuntrim > ${LDIR}/readsTrimming.log 2>&1
+	${SCRIPTS}/cutsite_trimming --fastq $file --cutsite ${LIGATION_SITE} --out ${BOWTIE2_GLOBAL_OUTPUT_DIR}/${sample_dir}/$tfile --rmuntrim > ${LDIR}/readsTrimming.log 2>&1
     else
-	${SCRIPTS}/cutsite_trimming --fastq $file --cutsite ${LIGATION_SITE} --out $tfile  > ${LDIR}/readsTrimming.log 2>&1
+	${SCRIPTS}/cutsite_trimming --fastq $file --cutsite ${LIGATION_SITE} --out ${BOWTIE2_GLOBAL_OUTPUT_DIR}/${sample_dir}/$tfile  > ${LDIR}/readsTrimming.log 2>&1
     fi
 
     ## Unmapped reads
@@ -115,7 +115,7 @@ local_align()
     fi
 
     ## Run bowtie
-    cmd="${BOWTIE2_PATH}/bowtie2 ${BOWTIE2_LOCAL_OPTIONS} --rg-id BML --rg SM:${prefix} --${FORMAT}-quals -p ${N_CPU} -x ${BOWTIE2_IDX} -U ${tfile} 2>${LDIR}/bowtie_${prefix}_local.log | ${SAMTOOLS_PATH}/samtools view -bS - > ${BOWTIE2_LOCAL_OUTPUT_DIR}/${sample_dir}/${prefix}_bwt2loc.bam"
+    cmd="${BOWTIE2_PATH}/bowtie2 ${BOWTIE2_LOCAL_OPTIONS} --rg-id BML --rg SM:${prefix} --${FORMAT}-quals -p ${N_CPU} -x ${BOWTIE2_IDX} -U ${BOWTIE2_GLOBAL_OUTPUT_DIR}/${sample_dir}/${tfile} 2>${LDIR}/bowtie_${prefix}_local.log | ${SAMTOOLS_PATH}/samtools view -bS - > ${BOWTIE2_LOCAL_OUTPUT_DIR}/${sample_dir}/${prefix}_bwt2loc.bam"
     exec_cmd "$cmd"
 }
 
@@ -145,8 +145,8 @@ if [[ ${MODE} == 'global' ]]; then
 	#fi
 	
 	sample_dir=$(get_sample_dir $r)
-	prefix1=$(basename ${R1} | sed -e 's/.fastq\(.gz\)*//')
-	prefix2=$(basename ${R2} | sed -e 's/.fastq\(.gz\)*//')
+	prefix1=$(basename ${R1} | sed -e 's/.fastq\(.gz\)*$//')
+	prefix2=$(basename ${R2} | sed -e 's/.fastq\(.gz\)*$//')
 	
 	global_align "$sample_dir" "$R1" "$prefix1" "$UNMAP" "$FILT_UNMAP"&
 	pid1=$!
@@ -166,9 +166,15 @@ elif [[ ${MODE} == 'local' ]]; then
 	    wasrun=1
 	    R1=$r
 	    R2=$(echo $r | get_R2)
+
+	    echo "-----------"
+	    echo $R1
+	    echo $R2
+	    echo "-------------"
+
 	    sample_dir=$(get_sample_dir $r)
-	    prefix1=$(basename ${R1} | sed -e 's/.fastq\(.gz\)*//')
-	    prefix2=$(basename ${R2} | sed -e 's/.fastq\(.gz\)*//')
+	    prefix1=$(basename ${R1} | sed -e 's/.fastq\(.gz\)*$//')
+	    prefix2=$(basename ${R2} | sed -e 's/.fastq\(.gz\)*$//')
 	    
 	    local_align "$sample_dir" "$R1" "$prefix1" "$UNMAP"&
 	    pid1=$!

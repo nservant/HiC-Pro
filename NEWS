@@ -7,6 +7,8 @@ SIGNIFICANT USER-VISIBLE CHANGES
 
    o udpate R scripts to be compatible with the lastest ggplot2 version (>2.2.1)
 
+   o add new checks on input files and configuration files
+
 BUG FIXES
 
    o fix bugs in plots of no trans interactions were detected
