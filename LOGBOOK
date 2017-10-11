@@ -7,7 +7,11 @@
 ##
 ################################################################################
 
-o Error if sample dir is named 'fastq'
+o Python 3
+
+o .cool format - Higlass
+
+o error if rerun the analysis twice in the same folder (rawdata link)
 
 o Add a way to load paired BAM file
 
@@ -17,13 +21,9 @@ o HiCUP compare
 
 o Assign reads using its 5' end ...
 
-o bug in samtools
-
 o look at pull request
 
-o bug in plot using R3.1.2 and ggplot 2.2.1
-
-o update qsub in step2 for paralleization per sample
+o update qsub in step2 for parallelization per sample
 
 o EV - update error tracking
 
