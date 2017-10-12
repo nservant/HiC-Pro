@@ -11,6 +11,10 @@ SIGNIFICANT USER-VISIBLE CHANGES
 
 BUG FIXES
 
+   o Fix bug in order of samtools sort parameter in bowtie_combine.sh
+
+   o Fix bug in output option of makeViewpoints
+
    o fix bugs in plots of no trans interactions were detected
 
    o fix bug in split_reads.py when -o is specified

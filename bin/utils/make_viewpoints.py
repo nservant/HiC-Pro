@@ -26,7 +26,7 @@ def usage():
     print "-f/--fragmentFile <Restriction fragment file (BED)>"
     print "-t/--target <Target file for viewpoints (BED)>"
     print "[-e/--exclusion] <Size of the regions upstream/downstream the capture sites to discard>"
-    print "[-o/--outputDir] <Output directory. Default is current directory>"
+    print "[-o/--output] <Output file. Default is stdout>"
     print "[-v/--verbose] <Verbose>"
     print "[-h/--help] <Help>"
     return
@@ -42,7 +42,7 @@ def get_args():
              "fragmentsFile=",
              "targetFile=",
              "exclusionSize=",
-             "outputDir=", 
+             "output=", 
              "verbose", "help"])
     except getopt.GetoptError:
         usage()
@@ -64,7 +64,7 @@ def load_BED(in_file, exclusionSize=0, verbose=False):
     x = {}
     x_ex = {}
     if verbose:
-        print "## Loading BED file '", in_file, "'..."
+        print >> sys.stderr, "## Loading BED file '", in_file, "'..."
     nline = 0
     with open(in_file) as bed_handle:
         for line in bed_handle:
@@ -73,7 +73,7 @@ def load_BED(in_file, exclusionSize=0, verbose=False):
             try:
                 chromosome, start, end, name = bedtab[:4]
             except ValueError:
-                print "Warning : wrong input format in line", nline,". Not a BED file !?"
+                print >> sys.stderr, "Warning : wrong input format in line", nline,". Not a BED file !?"
                 continue
             
             # BED files are zero-based as Intervals objects
@@ -133,7 +133,7 @@ if __name__ == "__main__":
     # Read command line arguments
     opts = get_args()
     verbose = False
-    outputDir = "."
+    output = None
     exclusionSize = 0
 
     if len(opts) == 0:
@@ -152,8 +152,8 @@ if __name__ == "__main__":
             targetFile = arg
         elif opt in ("-e", "--exclusion"):
             exclusionSize = arg
-        elif opt in ("-o", "--outputDir"):
-            outputDir = arg
+        elif opt in ("-o", "--output"):
+            output = arg
         elif opt in ("-v", "--verbose"):
             verbose = True
         else:
@@ -251,6 +251,9 @@ if __name__ == "__main__":
     in_handle.close()
 
     ## Write
+    if output is not None:
+        sys.stdout = open(output, 'w')
+
     for k in repdict:
         print "track type=bedGraph name='hicpro "+ k +"' description='hicpro "+ k +"' visibility=full color=200,100,0 altColor=0,100,200 priority=20"
         for key, value in repdict[k].iteritems():

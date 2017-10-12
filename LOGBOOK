@@ -7,6 +7,12 @@
 ##
 ################################################################################
 
+o Python 3
+
+o .cool format - Higlass
+
+o error if rerun the analysis twice in the same folder (rawdata link)
+
 o Add a way to load paired BAM file
 
 o New graph for Dumped pairs (see. Angelo's idea on the forum)
@@ -14,8 +20,6 @@ o New graph for Dumped pairs (see. Angelo's idea on the forum)
 o HiCUP compare
 
 o Assign reads using its 5' end ...
-
-o bug in samtools
 
 o look at pull request
 
