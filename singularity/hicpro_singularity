@@ -64,8 +64,6 @@ OSVersion: xenial
     cd $(echo HiC-Pro-$VERSION)
     make configure
     make install
-
-    INSTALLED_VERSION=$(find /usr/local/bin -name HiC-Pro | xargs dirname)
     
     # Let us save some space
     conda clean --packages -y
@@ -76,5 +74,6 @@ OSVersion: xenial
 
 %environment
     export PATH=$PATH:/usr/local/anaconda/bin
+    INSTALLED_VERSION=$(find /usr/local/bin -name HiC-Pro | xargs dirname)
     export PATH=$PATH:$INSTALLED_VERSION 
     export LANG=C
