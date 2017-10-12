@@ -406,7 +406,7 @@ else
 fi
 
 ## check rights in PREFIX folder
-if [[ -z $PREFIX ]]; then PREFIX=/local/bin; fi
+if [[ -z $PREFIX ]]; then PREFIX=/usr/local/bin; fi
 if [ ! -w $PREFIX ]; then
     die "Cannot install HiCPro in $PREFIX directory. Maybe missing super-user (root) permissions to write there. Please specify another directory in the config-install.txt file (PREFIX=)";
 fi 
