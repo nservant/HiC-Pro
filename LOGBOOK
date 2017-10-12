@@ -7,8 +7,6 @@
 ##
 ################################################################################
 
-o Error if sample dir is named 'fastq'
-
 o Add a way to load paired BAM file
 
 o New graph for Dumped pairs (see. Angelo's idea on the forum)
@@ -20,8 +18,6 @@ o Assign reads using its 5' end ...
 o bug in samtools
 
 o look at pull request
-
-o bug in plot using R3.1.2 and ggplot 2.2.1
 
 o update qsub in step2 for paralleization per sample
 

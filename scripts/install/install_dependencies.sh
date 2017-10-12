@@ -62,6 +62,7 @@ function usage {
     echo -e "Usage : ./install_all.sh"
     echo -e "-c"" <configuration install file>"
     echo -e "-o"" <installation folder>"
+    echo -e "-q"" <quiet>"
     echo -e "-h"" <help>"
     exit;
 }
@@ -71,13 +72,14 @@ echo -e "$BLUE""Starting $SOFT installation ...""$NORMAL";
 
 
 ################### Initialize ###################
-
-set -- $(getopt c:o:h "$@")
+quiet=0
+set -- $(getopt c:o:qh "$@")
 while [ $# -gt 0 ]
 do
     case "$1" in
 	(-c) conf=$2; shift;;
 	(-o) install_dir=$2; shift;;
+	(-q) quiet=1; shift;;
 	(-h) usage;;
 	(--) shift; break;;
 	(-*) echo "$0: error - unrecognized option $1" 1>&2; exit 1;;
@@ -175,24 +177,32 @@ cd ./tmp
 
 ################ Install dependencies  ###################
 
-PREFIX_BIN=/usr/bin
+PREFIX_BIN=/usr/local/bin
 
 if [ ! -w $PREFIX_BIN ]; then
     PREFIX_BIN=${HOME}/bin;
 fi
 
-echo "Where should missing software prerequisites be installed ? [$PREFIX_BIN] "
-read ans
-ans=${ans:-$PREFIX_BIN}
-PREFIX_BIN=$ans
+if [[ $quiet == 0 ]]; then
+    echo "Where should missing software prerequisites be installed ? [$PREFIX_BIN] "
+    read ans
+    ans=${ans:-$PREFIX_BIN}
+    PREFIX_BIN=$ans
+fi
+
 if [ ! -d $PREFIX_BIN ]; then
     echo "Directory $PREFIX_BIN does not exist!"
-    echo -n "Do you want to create $PREFIX_BIN folder ? (y/n) [n] : "
-    read ans
-    if [ XX${ans} = XXy ]; then
-        mkdir $PREFIX_BIN || die "Cannot create  $PREFIX_BIN folder. Maybe missing super-user (root) permissions"
+
+    if [[ $quiet == 0 ]]; then
+	echo -n "Do you want to create $PREFIX_BIN folder ? (y/n) [n] : "
+	read ans
+	if [ XX${ans} = XXy ]; then
+            mkdir $PREFIX_BIN || die "Cannot create  $PREFIX_BIN folder. Maybe missing super-user (root) permissions"
+	else
+            die "Must specify a directory to install required softwares!"
+	fi
     else
-        die "Must specify a directory to install required softwares!"
+	die "Error - unable to install/check dependancies !"
     fi
 fi
 
