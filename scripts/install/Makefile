@@ -26,7 +26,7 @@ else
 include $(CONFIG_SYS)
 endif
 ifndef PREFIX
-PREFIX = /local/bin/
+PREFIX = /usr/local/bin/
 endif
 
 ######################################
