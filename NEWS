@@ -3,6 +3,8 @@ CHANGES IN VERSION 2.10.0
 
 NEW FEATURES
 
+   o hicpro2juicebox.sh utility now supports alof HiC-Pro format (< 2.7.5)
+
 SIGNIFICANT USER-VISIBLE CHANGES
 
    o udpate R scripts to be compatible with the lastest ggplot2 version (>2.2.1)
@@ -10,6 +12,8 @@ SIGNIFICANT USER-VISIBLE CHANGES
    o add new checks on input files and configuration files
 
 BUG FIXES
+
+   o Fix bug to avoid floating values in valid pair positions 
 
    o Fix bug in order of samtools sort parameter in bowtie_combine.sh
 

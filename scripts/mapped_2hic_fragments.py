@@ -136,7 +136,7 @@ def get_read_pos(read):
     read : list
         list of aligned reads
     """
-    pos = read.pos + read.alen/2
+    pos = read.pos + int(read.alen/2)
 
     return pos
 
