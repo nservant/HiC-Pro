@@ -298,19 +298,19 @@ HiC-Pro v2.10.0 provides a Singularity container to overcome any limitations wit
 | Windows : http://singularity.lbl.gov/install-windows
 
 
-2- Build the singularity HiC-Pro image
+2- Build the singularity HiC-Pro image using the 'Singularity' file available in the HiC-Pro root directory.
 
 .. code-block:: guess
 
     singularity create -s 5000 hicpro_ubuntu.img
-    sudo singularity -d bootstrap hicpro_ubuntu.img hicpro_singularity
+    sudo singularity -d bootstrap hicpro_ubuntu.img Singularity
 
 3- Run HiC-pro
 
 
 .. code-block:: guess
 
-    singularity exec HiC-Pro -h
+    singularity exec hicpro_ubuntu.img HiC-Pro -h
 
 
    
