@@ -44,11 +44,11 @@ The HiC-Pro pipeline requires the following dependencies :
 3. R with the *RColorBrewer* and *ggplot2 (>2.2.1)* packages
 4. g++ compiler
 5. Samtools (>1.1)
-6. Unix sort (which support -V option) is required ! For Mac OS user, please install the GNU core utilities !
+6. Unix sort (**which support -V option**) is required ! For Mac OS user, please install the GNU core utilities !
 
 Bowtie >2.2.2 is strongly recommanded for allele specific analysis.  
 
-To install HiC-Pro (>=2.7.8):
+To install HiC-Pro (>=2.7.8), be sure to have the appropriate rights and run :
 
 .. code-block:: guess
 
@@ -296,6 +296,7 @@ HiC-Pro v2.10.0 provides a Singularity container to overcome any limitations wit
 | Linux : http://singularity.lbl.gov/install-linux
 | MAC : http://singularity.lbl.gov/install-mac
 | Windows : http://singularity.lbl.gov/install-windows
+
 
 2- Build the singularity HiC-Pro image
 
