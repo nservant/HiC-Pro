@@ -16,7 +16,7 @@ See LOGBOOK for details about the HiC-Pro developments
 
 See LICENSE for license information
 
-Where to find help ?
+Where to get help ?
 ====================
 
 For any question about HiC-Pro, please contact nicolas.servant@curie.fr or use the `HiC-Pro forum <https://groups.google.com/forum/#!forum/hic-pro>`_ !
@@ -71,21 +71,22 @@ To install HiC-Pro (>=2.7.8):
 | Note that if some of these dependencies are not installed (i.e. not detected in the $PATH), HiC-Pro will try to install them.
 | You can also edit the *config-install.txt* file and manually defined the paths to dependencies.
 
-+---------------+-----------------------------------------------------------------------------+
-| SYSTEM CONFIGURATION                                                                        |
-+===============+=============================================================================+
-| PREFIX        | Path to installation folder                                                 |
-+---------------+-----------------------------------------------------------------------------+
-| BOWTIE2_PATH  | Full path the bowtie2 installation directory                                |
-+---------------+-----------------------------------------------------------------------------+
-| SAMTOOLS_PATH | Full path to the samtools installation directory (>0.1.19)                  |
-+---------------+-----------------------------------------------------------------------------+
-| R_PATH        | Full path to the R installation directory                                   |
-+---------------+-----------------------------------------------------------------------------+
-| PYTHON_PATH   | Full path to the python installation directory (>2.7)                       |
-+---------------+-----------------------------------------------------------------------------+
-| CLUSTER_SYS   | Scheduler to use for cluster submission. Must be TORQUE, SGE, SLURM or LSF  |
-+---------------+-----------------------------------------------------------------------------+
+
++---------------+-------------------------------------------------------------------------------+
+| SYSTEM CONFIGURATION                                                                          |
++===============+===============================================================================+
+| PREFIX        | Path to installation folder                                                   |
++---------------+-------------------------------------------------------------------------------+
+| BOWTIE2_PATH  | Full path the bowtie2 installation directory                                  |
++---------------+-------------------------------------------------------------------------------+
+| SAMTOOLS_PATH | Full path to the samtools installation directory (>1.1   )                    |
++---------------+-------------------------------------------------------------------------------+
+| R_PATH        | Full path to the R installation directory                                     |
++---------------+-------------------------------------------------------------------------------+
+| PYTHON_PATH   | Full path to the python installation directory (>2.7 - python3 not supported) |
++---------------+-------------------------------------------------------------------------------+
+| CLUSTER_SYS   | Scheduler to use for cluster submission. Must be TORQUE, SGE, SLURM or LSF    |
++---------------+-------------------------------------------------------------------------------+
 
 
 Annotation Files
@@ -110,7 +111,7 @@ Please be sure that the chromosome names are the same than the ones used in your
    chr1   38791   39255   HIC_chr1_10   0   +
    (...)
 
-8. **A table file** of chromosomes' size. This file can be easily find on the UCSC genome browser. Of note, pay attention to the contigs or scaffolds, and be aware that HiC-pro will generate a map per chromosome pair. For model organisms such as Human or Mouse, which are well annotated, we usually recommand to remove all scaffolds.  
+8. **A table file** of chromosomes' size. This file can be easily find on the UCSC genome browser. Of note, pay attention to the contigs or scaffolds, and be aware that HiC-pro will generate a map per chromosomes pair. For model organisms such as Human or Mouse, which are well annotated, we usually recommand to remove all scaffolds.  
 
 ::
 
@@ -158,15 +159,20 @@ How to use it ?
 
 11. Copy and edit the configuration file *'config-hicpro.txt'* in your local folder. See the :ref:`manual <MANUAL>` for details about the configuration file
 12. Put all input files in a rawdata folder. The input files have to be organized with one folder per sample, with ;
-   * PATH_TO_MY_DATA
-     * + sample1
+
+::
+       
+   + PATH_TO_MY_DATA
+     + sample1
        ++ file1_R1.fastq.gz
        ++ file1_R2.fastq.gz
        ++ ...
-     * + sample2
+     + sample2
        ++ file1_R1.fastq.gz
        ++ file1_R2.fastq.gz
      *...
+
+
 3. Run HiC-Pro
 
 * **On your laptop**
@@ -286,17 +292,23 @@ Using HiC-Pro in a Singularity container
 HiC-Pro v2.10.0 provides a Singularity container to overcome any limitations with the installation process.
 
 1- Install singularity
-http://singularity.lbl.gov/install-linux
-http://singularity.lbl.gov/install-mac
-http://singularity.lbl.gov/install-windows
+http://singularity.lbl.gov/install-linux  
+http://singularity.lbl.gov/install-mac  
+http://singularity.lbl.gov/install-windows  
 
 2- Build the singularity HiC-Pro image
 
->> singularity create -s 5000 hicpro_ubuntu.img
->> sudo singularity -d bootstrap hicpro_ubuntu.img hicpro_singularity
+.. code-block:: guess
+
+    singularity create -s 5000 hicpro_ubuntu.img
+    sudo singularity -d bootstrap hicpro_ubuntu.img hicpro_singularity
 
 3- Run HiC-pro
 
->> singularity exec HiC-Pro -h
+
+.. code-block:: guess
+
+    singularity exec HiC-Pro -h
+
 
    
