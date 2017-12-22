@@ -3,15 +3,25 @@ CHANGES IN VERSION 2.10.0
 
 NEW FEATURES
 
+   o New utility - hicpro2higlass.sh to convert HiC-Pro output into higlass .cool files
+
+   o HiC-Pro is now availabe as a Singularity container !
+
    o hicpro2juicebox.sh utility now supports alof HiC-Pro format (< 2.7.5)
 
 SIGNIFICANT USER-VISIBLE CHANGES
 
-   o udpate R scripts to be compatible with the lastest ggplot2 version (>2.2.1)
+   o udpate R scripts to be compatible with the lastest ggplot2 version (>2.2.1) and fix graphical bugs in quality controls
 
    o add new checks on input files and configuration files
 
 BUG FIXES
+
+   o Remove the --user option during iced installation
+
+   o R sessions are no longer saved and restored
+
+   o hicpro2fithic - bug fix when no -o option specified 
 
    o Fix bug to avoid floating values in valid pair positions 
 

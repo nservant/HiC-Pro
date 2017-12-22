@@ -38,7 +38,7 @@ How to install it ?
 The HiC-Pro pipeline requires the following dependencies :
 
 * The `bowtie2 <http://bowtie-bio.sourceforge.net/bowtie2/index.shtml>`_ mapper
-* Python (>2.7) with *pysam (>=0.8.3)*, *bx(>=0.5.0)*, *numpy(>=1.8.2)*, and *scipy(>=0.15.1)* libraries
+* Python (>2.7) with *pysam (>=0.8.3)*, *bx-python(>=0.5.0)*, *numpy(>=1.8.2)*, and *scipy(>=0.15.1)* libraries
 * R with the *RColorBrewer* and *ggplot2* packages
 * g++ compiler
 * Samtools (>1.0)
