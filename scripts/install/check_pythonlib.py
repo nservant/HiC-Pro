@@ -9,6 +9,10 @@
 
 import re
 
+## Define cmp() for installation with python >= 3.0.0
+def cmp(a, b):
+    return (a > b) - (a < b)
+
 def vcmp(version1, version2):
     def normalize(v):
         ## 0.18.0.dev0+609facc
