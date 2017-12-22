@@ -102,9 +102,9 @@ plotPairStat <- function(mat, xlab="", legend=TRUE){
   require(grid)
 
   ## update labels for plot
-  mat$lab <- paste0(gsub("_", " ", mat$lab)," (%)")
+  #mat$lab <- paste0(gsub("_", " ", mat$lab)," (%)")
 
-  gp <-ggplot(mat, aes(x=p, as.numeric(count), fill=as.character(lab))) +
+  gp <-ggplot(mat, aes(x=p, as.numeric(count), fill=lab)) +
     geom_bar(width=.7,stat="identity", colour="gray") + 
       theme(axis.title=element_text(face="bold", size=6), axis.ticks = element_blank(),  axis.text.y = element_text(size=5), axis.text.x = element_text(size=6))+
         xlab(xlab) + ylab("Read Counts") +
@@ -115,7 +115,8 @@ plotPairStat <- function(mat, xlab="", legend=TRUE){
   if (legend){
     scol <- mat$selcol
     names(scol) <- mat$lab
-    gp = gp + scale_fill_manual(values=scol) + guides(fill=guide_legend(title="")) + theme(plot.margin=unit(x=c(1,0,0,0), units="cm"), legend.position="right", legend.margin=unit(.5,"cm"), legend.text=element_text(size=4))
+    gp = gp + scale_fill_manual(values=scol) + guides(fill=guide_legend(title="")) + theme(plot.margin=unit(x=c(1,0,0,0), units="cm"), legend.position="right", legend.margin=margin(.5, unit="cm"),
+                                                          legend.text=element_text(size=4))
   }else{
     gp = gp + scale_fill_manual(values=as.character(col)) + theme(plot.margin=unit(c(1,0,1.9,0),"cm"))+ guides(fill=FALSE)
   }
@@ -141,5 +142,6 @@ print(stats_per_sample)
 
 ## Make plots
 mat <- getPairMat(stats_per_sample, perc_per_sample, rmMulti=rmMulti, rmSingle=rmSingle)
+mat$lab <- factor(mat$lab, levels=c("Unmapped_pairs", "Not_Reported_pairs", "Reported_pairs", "Low_qual_pairs",  "Pairs_with_singleton", "Multiple_pairs_alignments"))
 p1 <- plotPairStat(mat, xlab=sampleName)
 ggsave(file.path(picDir, paste0("plotMappingPairing_",sampleName,".pdf")), p1, width=5, height=5)

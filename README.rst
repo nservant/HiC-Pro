@@ -2,8 +2,8 @@
 
 .. Nicolas Servant
 .. HiC-Pro
-.. v2.5.0
-.. 15-04-02
+.. v2.10.0
+.. 17-12-22
 
 HiC-Pro Quick Start Guide
 *************************
@@ -16,6 +16,10 @@ See LOGBOOK for details about the HiC-Pro developments
 
 See LICENSE for license information
 
+Where to get help ?
+====================
+
+For any question about HiC-Pro, please contact nicolas.servant@curie.fr or use the `HiC-Pro forum <https://groups.google.com/forum/#!forum/hic-pro>`_ !
 
 What is HiC-Pro ?
 =================
@@ -30,23 +34,20 @@ If you use HiC-Pro, please cite :
 HiC-Pro: An optimized and flexible pipeline for Hi-C processing. *Servant N., Varoquaux N., Lajoie BR., Viara E., Chen CJ., Vert JP., Dekker J., Heard E., Barillot E.* Genome Biology 2015, 16:259 doi:10.1186/s13059-015-0831-x
 `http://www.genomebiology.com/2015/16/1/259 <http://www.genomebiology.com/2015/16/1/259>`_
 
-For any question about HiC-Pro, please contact nicolas.servant@curie.fr or use the `HiC-Pro forum <https://groups.google.com/forum/#!forum/hic-pro>`_ !
-
 How to install it ?
 ===================
 
 The HiC-Pro pipeline requires the following dependencies :
-
-* The `bowtie2 <http://bowtie-bio.sourceforge.net/bowtie2/index.shtml>`_ mapper
-* Python (>2.7, python-3 is not supported) with *pysam (>=0.8.3)*, *bx(>=0.5.0)*, *numpy(>=1.8.2)*, and *scipy(>=0.15.1)* libraries
-* R with the *RColorBrewer* and *ggplot2* packages
-* g++ compiler
-* Samtools (>1.0)
-* Unix sort (which support -V option) is required ! For Mac OS user, please install the GNU core utilities !
+1. The `bowtie2 <http://bowtie-bio.sourceforge.net/bowtie2/index.shtml>`_ mapper
+2. Python (>2.7, python-3 is not supported) with *pysam (>=0.8.3)*, *bx-python(>=0.5.0)*, *numpy(>=1.8.2)*, and *scipy(>=0.15.1)* libraries
+3. R with the *RColorBrewer* and *ggplot2 (>2.2.1)* packages
+4. g++ compiler
+5. samtools (>1.1)
+6. Unix sort (**which support -V option**) is required ! For Mac OS user, please install the GNU core utilities !
 
 Bowtie >2.2.2 is strongly recommanded for allele specific analysis.  
 
-To install HiC-Pro (>=2.7.8):
+To install HiC-Pro (>=2.7.8), be sure to have the appropriate rights and run :
 
 .. code-block:: guess
 
@@ -69,21 +70,22 @@ To install HiC-Pro (>=2.7.8):
 | Note that if some of these dependencies are not installed (i.e. not detected in the $PATH), HiC-Pro will try to install them.
 | You can also edit the *config-install.txt* file and manually defined the paths to dependencies.
 
-+---------------+-----------------------------------------------------------------------------+
-| SYSTEM CONFIGURATION                                                                        |
-+===============+=============================================================================+
-| PREFIX        | Path to installation folder                                                 |
-+---------------+-----------------------------------------------------------------------------+
-| BOWTIE2_PATH  | Full path the bowtie2 installation directory                                |
-+---------------+-----------------------------------------------------------------------------+
-| SAMTOOLS_PATH | Full path to the samtools installation directory (>0.1.19)                  |
-+---------------+-----------------------------------------------------------------------------+
-| R_PATH        | Full path to the R installation directory                                   |
-+---------------+-----------------------------------------------------------------------------+
-| PYTHON_PATH   | Full path to the python installation directory (>2.7)                       |
-+---------------+-----------------------------------------------------------------------------+
-| CLUSTER_SYS   | Scheduler to use for cluster submission. Must be TORQUE, SGE, SLURM or LSF  |
-+---------------+-----------------------------------------------------------------------------+
+
++---------------+-------------------------------------------------------------------------------+
+| SYSTEM CONFIGURATION                                                                          |
++===============+===============================================================================+
+| PREFIX        | Path to installation folder                                                   |
++---------------+-------------------------------------------------------------------------------+
+| BOWTIE2_PATH  | Full path the bowtie2 installation directory                                  |
++---------------+-------------------------------------------------------------------------------+
+| SAMTOOLS_PATH | Full path to the samtools installation directory (>1.1   )                    |
++---------------+-------------------------------------------------------------------------------+
+| R_PATH        | Full path to the R installation directory                                     |
++---------------+-------------------------------------------------------------------------------+
+| PYTHON_PATH   | Full path to the python installation directory (>2.7 - python3 not supported) |
++---------------+-------------------------------------------------------------------------------+
+| CLUSTER_SYS   | Scheduler to use for cluster submission. Must be TORQUE, SGE, SLURM or LSF    |
++---------------+-------------------------------------------------------------------------------+
 
 
 Annotation Files
@@ -92,7 +94,7 @@ Annotation Files
 In order to process the raw data, HiC-Pro requires three annotation files. Note that the pipeline is provided with some Human and Mouse annotation files.
 Please be sure that the chromosome names are the same than the ones used in your bowtie indexes !
 
-1. **A BED file** of the restriction fragments after digestion. This file depends both of the restriction enzyme and the reference genome. See the :ref:`FAQ <FAQ>` and the :ref:`HiC-Pro utilities <UTILS>` for details about how to generate this file. A few annotation files are provided with the HiC-Pro sources.
+7. **A BED file** of the restriction fragments after digestion. This file depends both of the restriction enzyme and the reference genome. See the :ref:`FAQ <FAQ>` and the :ref:`HiC-Pro utilities <UTILS>` for details about how to generate this file. A few annotation files are provided with the HiC-Pro sources as examples.
 
 ::
 
@@ -108,7 +110,7 @@ Please be sure that the chromosome names are the same than the ones used in your
    chr1   38791   39255   HIC_chr1_10   0   +
    (...)
 
-2. **A table file** of chromosomes' size.
+8. **A table file** of chromosomes' size. This file can be easily find on the UCSC genome browser. Of note, pay attention to the contigs or scaffolds, and be aware that HiC-pro will generate a map per chromosomes pair. For model organisms such as Human or Mouse, which are well annotated, we usually recommand to remove all scaffolds.  
 
 ::
 
@@ -124,12 +126,12 @@ Please be sure that the chromosome names are the same than the ones used in your
    chr10   135534747
    (...)
 
-3. **The bowtie2 indexes**. See `the bowtie2 manual page <http://bowtie-bio.sourceforge.net/bowtie2/index.shtml>`_ for details about how to create such indexes.
+9. **The bowtie2 indexes**. See `the bowtie2 manual page <http://bowtie-bio.sourceforge.net/bowtie2/index.shtml>`_ for details about how to create such indexes.
 
 How to use it ?
 ===============
 
-0. First have a look at the help message !
+10. First have a look at the help message !
 
 .. code-block:: guess
 
@@ -137,7 +139,7 @@ How to use it ?
   usage : HiC-Pro -i INPUT -o OUTPUT -c CONFIG [-s ANALYSIS_STEP] [-p] [-h] [-v]
   Use option -h|--help for more information
 
-  HiC-Pro 2.7.0
+  HiC-Pro 2.10.0
   ---------------
   OPTIONS
 
@@ -154,22 +156,36 @@ How to use it ?
    [-h|--help]: help
    [-v|--version]: version
 
-1. Copy and edit the configuration file *'config-hicpro.txt'* in your local folder. See the :ref:`manual <MANUAL>` for details about the configuration file
-2. Put all input files in a rawdata folder. The input files have to be organized with a folder per sample.
+11. Copy and edit the configuration file *'config-hicpro.txt'* in your local folder. See the :ref:`manual <MANUAL>` for details about the configuration file
+12. Put all input files in a rawdata folder. The input files have to be organized with one folder per sample, with ;
+
+::
+       
+   + PATH_TO_MY_DATA
+     + sample1
+       ++ file1_R1.fastq.gz
+       ++ file1_R2.fastq.gz
+       ++ ...
+     + sample2
+       ++ file1_R1.fastq.gz
+       ++ file1_R2.fastq.gz
+     *...
+
+
 3. Run HiC-Pro
 
 * **On your laptop**
 
 .. code-block:: guess
 
-    MY_INSTALL_PATH/bin/HiC-Pro -i FULL_PATH_TO_RAW_DATA -o FULL_PATH_TO_OUTPUTS -c MY_LOCAL_CONFIG_FILE
+    MY_INSTALL_PATH/bin/HiC-Pro -i FULL_PATH_TO_DATA_FOLDER -o FULL_PATH_TO_OUTPUTS -c MY_LOCAL_CONFIG_FILE
 
 
 * **Using a cluster (TORQUE/SGE/SLURM/LSF)**
 
 .. code-block:: guess
 
-   MY_INSTALL_PATH/bin/HiC-Pro -i FULL_PATH_TO_RAW_DATA -o FULL_PATH_TO_OUTPUTS -c MY_LOCAL_CONFIG_FILE -p
+   MY_INSTALL_PATH/bin/HiC-Pro -i FULL_PATH_TO_DATA_FOLDER -o FULL_PATH_TO_OUTPUTS -c MY_LOCAL_CONFIG_FILE -p
 
 
 
@@ -216,54 +232,83 @@ Small fastq files (2M reads) extracted from the Dixon et al. 2012 paper are avai
    ## Run HiC-Pro
 
    time HICPRO_INSTALL_DIR/bin/HiC-Pro -c config_test_latest.txt -i test_data -o hicpro_latest_test
-
-   Run HiC-Pro 2.7.7
+   
+   Run HiC-Pro 2.10.0
    --------------------------------------------
-   mercredi 15 juin 2016, 20:44:23 (UTC+0200)
+   vendredi 22 décembre 2017, 13:34:18 (UTC+0100)
    Bowtie2 alignment step1 ...
-   /home/nservant/Apps/HiC-Pro_2.7.7/scripts/bowtie_wrap.sh -c /home/nservant/projects_dev/HiC-Pro/config_test_latest.txt -u >> hicpro.log
+   /home/nservant/Apps/HiC-Pro_2.10.0/scripts/bowtie_wrap.sh -c /home/nservant/Desktop/hicpro_dev/test-op/config_test_latest.txt -u >> hicpro.log
    --------------------------------------------
-   mercredi 15 juin 2016, 20:44:59 (UTC+0200)
+   vendredi 22 décembre 2017, 13:34:55 (UTC+0100)
    Bowtie2 alignment step2 ...
-   /home/nservant/Apps/HiC-Pro_2.7.7/scripts/bowtie_wrap.sh -c /home/nservant/projects_dev/HiC-Pro/config_test_latest.txt -l >> hicpro.log
+   /home/nservant/Apps/HiC-Pro_2.10.0/scripts/bowtie_wrap.sh -c /home/nservant/Desktop/hicpro_dev/test-op/config_test_latest.txt -l >> hicpro.log
    --------------------------------------------
-   mercredi 15 juin 2016, 20:45:17 (UTC+0200)
+   vendredi 22 décembre 2017, 13:35:05 (UTC+0100)
    Combine both alignment ...
-   /home/nservant/Apps/HiC-Pro_2.7.7/scripts/bowtie_combine.sh -c /home/nservant/projects_dev/HiC-Pro/config_test_latest.txt >> hicpro.log
+   /home/nservant/Apps/HiC-Pro_2.10.0/scripts/bowtie_combine.sh -c /home/nservant/Desktop/hicpro_dev/test-op/config_test_latest.txt >> hicpro.log
    --------------------------------------------
-   mercredi 15 juin 2016, 20:45:21 (UTC+0200)
+   vendredi 22 décembre 2017, 13:35:09 (UTC+0100)
    Bowtie2 mapping statistics for R1 and R2 tags ...
-   /home/nservant/Apps/HiC-Pro_2.7.7/scripts/mapping_stat.sh -c /home/nservant/projects_dev/HiC-Pro/config_test_latest.txt >> hicpro.log
+   /home/nservant/Apps/HiC-Pro_2.10.0/scripts/mapping_stat.sh -c /home/nservant/Desktop/hicpro_dev/test-op/config_test_latest.txt >> hicpro.log
    --------------------------------------------
-   mercredi 15 juin 2016, 20:45:22 (UTC+0200)
+   vendredi 22 décembre 2017, 13:35:10 (UTC+0100)
    Pairing of R1 and R2 tags ...
-   /home/nservant/Apps/HiC-Pro_2.7.7/scripts/bowtie_pairing.sh -c /home/nservant/projects_dev/HiC-Pro/config_test_latest.txt >> hicpro.log
+   /home/nservant/Apps/HiC-Pro_2.10.0/scripts/bowtie_pairing.sh -c /home/nservant/Desktop/hicpro_dev/test-op/config_test_latest.txt >> hicpro.log
    --------------------------------------------
-   mercredi 15 juin 2016, 20:45:30 (UTC+0200)
+   vendredi 22 décembre 2017, 13:35:16 (UTC+0100)
    Assign alignments to restriction fragments ...
-   /home/nservant/Apps/HiC-Pro_2.7.7/scripts/mapped_2hic_fragments.sh -c /home/nservant/projects_dev/HiC-Pro/config_test_latest.txt >> hicpro.log
+   /home/nservant/Apps/HiC-Pro_2.10.0/scripts/mapped_2hic_fragments.sh -c /home/nservant/Desktop/hicpro_dev/test-op/config_test_latest.txt >> hicpro.log
    --------------------------------------------
-   mercredi 15 juin 2016, 20:46:08 (UTC+0200)
+   vendredi 22 décembre 2017, 13:35:45 (UTC+0100)
    Merge multiple files from the same sample ...
-   /home/nservant/Apps/HiC-Pro_2.7.7/scripts/merge_valid_interactions.sh -c /home/nservant/projects_dev/HiC-Pro/config_test_latest.txt >> hicpro.log
+   /home/nservant/Apps/HiC-Pro_2.10.0/scripts/merge_valid_interactions.sh -c /home/nservant/Desktop/hicpro_dev/test-op/config_test_latest.txt >> hicpro.log
    --------------------------------------------
-   mercredi 15 juin 2016, 20:46:09 (UTC+0200)
+   vendredi 22 décembre 2017, 13:35:46 (UTC+0100)
    Merge stat files per sample ...
-   /home/nservant/Apps/HiC-Pro_2.7.7/scripts/merge_stats.sh -c /home/nservant/projects_dev/HiC-Pro/config_test_latest.txt >> hicpro.log
+   /home/nservant/Apps/HiC-Pro_2.10.0/scripts/merge_stats.sh -c /home/nservant/Desktop/hicpro_dev/test-op/config_test_latest.txt >> hicpro.log
    --------------------------------------------
-   mercredi 15 juin 2016, 20:46:09 (UTC+0200)
+   vendredi 22 décembre 2017, 13:35:46 (UTC+0100)
    Run quality checks for all samples ...
-   /home/nservant/Apps/HiC-Pro_2.7.7/scripts/make_plots.sh -c /home/nservant/projects_dev/HiC-Pro/config_test_latest.txt -p "all" >> hicpro.log
+   /home/nservant/Apps/HiC-Pro_2.10.0/scripts/make_plots.sh -c /home/nservant/Desktop/hicpro_dev/test-op/config_test_latest.txt -p "all" >> hicpro.log
    --------------------------------------------
-   mercredi 15 juin 2016, 20:46:22 (UTC+0200)
+   vendredi 22 décembre 2017, 13:35:55 (UTC+0100)
    Generate binned matrix files ...
-   /home/nservant/Apps/HiC-Pro_2.7.7/scripts/build_raw_maps.sh -c /home/nservant/projects_dev/HiC-Pro/config_test_latest.txt
+   /home/nservant/Apps/HiC-Pro_2.10.0/scripts/build_raw_maps.sh -c /home/nservant/Desktop/hicpro_dev/test-op/config_test_latest.txt
    --------------------------------------------
-   mercredi 15 juin 2016, 20:46:23 (UTC+0200)
+   vendredi 22 décembre 2017, 13:35:56 (UTC+0100)
    Run ICE Normalization ...
-   /home/nservant/Apps/HiC-Pro_2.7.7/scripts/ice_norm.sh -c /home/nservant/projects_dev/HiC-Pro/config_test_latest.txt >> hicpro.log 
+   /home/nservant/Apps/HiC-Pro_2.10.0/scripts/ice_norm.sh -c /home/nservant/Desktop/hicpro_dev/test-op/config_test_latest.txt >> hicpro.log
 
-   real	2m6.366s
-   user	3m24.493s
-   sys	0m33.151s
+   real1m38.855s
+   user3m13.344s
+   sys0m31.432s
 
+   
+Using HiC-Pro in a Singularity container
+========================================
+
+HiC-Pro v2.10.0 provides a Singularity container to ease its installation process.
+
+1- Install singularity
+
+| Linux : http://singularity.lbl.gov/install-linux
+| MAC : http://singularity.lbl.gov/install-mac
+| Windows : http://singularity.lbl.gov/install-windows
+
+
+2- Build the singularity HiC-Pro image using the 'Singularity' file available in the HiC-Pro root directory.
+
+.. code-block:: guess
+
+    singularity create -s 5000 hicpro_ubuntu.img
+    sudo singularity -d bootstrap hicpro_ubuntu.img MY_INSTALL_PATH/HiC-Pro/Singularity
+
+3- Run HiC-pro
+
+
+.. code-block:: guess
+
+    singularity exec hicpro_ubuntu.img HiC-Pro -h
+
+
+   

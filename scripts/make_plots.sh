@@ -64,7 +64,7 @@ if [ -d ${BOWTIE2_FINAL_OUTPUT_DIR} ]; then
 	    nb=$(find $MAPPING_DIR  -name "*.mapstat" | wc -l)
             if [[ $nb > 0 ]]; then
 		echo "Quality checks - Mapping results ..."
-		cmd="${R_PATH}/R --no-save --no-restore CMD BATCH \"--args picDir='${PIC_DIR}' bwtDir='${MAPPING_DIR}' sampleName='${RES_FILE_NAME}' r1tag='${PAIR1_EXT}' r2tag='${PAIR2_EXT}'\" ${SCRIPTS}/plot_mapping_portion.R ${LDIR}/plot_mapping_portion.Rout"
+		cmd="${R_PATH}/R CMD BATCH --no-save --no-restore \"--args picDir='${PIC_DIR}' bwtDir='${MAPPING_DIR}' sampleName='${RES_FILE_NAME}' r1tag='${PAIR1_EXT}' r2tag='${PAIR2_EXT}'\" ${SCRIPTS}/plot_mapping_portion.R ${LDIR}/plot_mapping_portion.Rout"
 		exec_cmd $cmd
 	    fi
 	fi
@@ -75,7 +75,7 @@ if [ -d ${BOWTIE2_FINAL_OUTPUT_DIR} ]; then
 	    nb=$(find $MAPPING_DIR  -name "*.pairstat" | wc -l)
             if [[ $nb > 0 ]]; then
 		echo "Quality Cheks - Pairing results ..."
-		cmd="${R_PATH}/R --no-save --no-restore CMD BATCH \"--args picDir='${PIC_DIR}' bwtDir='${MAPPING_DIR}' sampleName='${RES_FILE_NAME}' rmMulti='${RM_MULTI}' rmSingle='${RM_SINGLETON}'\" ${SCRIPTS}/plot_pairing_portion.R ${LDIR}/plot_pairing_portion.Rout"
+		cmd="${R_PATH}/R CMD BATCH --no-save --no-restore \"--args picDir='${PIC_DIR}' bwtDir='${MAPPING_DIR}' sampleName='${RES_FILE_NAME}' rmMulti='${RM_MULTI}' rmSingle='${RM_SINGLETON}'\" ${SCRIPTS}/plot_pairing_portion.R ${LDIR}/plot_pairing_portion.Rout"
 	    exec_cmd $cmd
 	    fi
 	fi
@@ -103,7 +103,7 @@ if [ -d ${DATA_DIR} ]; then
 	    nb=$(find $DATA_DIR  -name "*.RSstat" | wc -l)
             if [[ $nb > 0 ]]; then
 		echo "Quality checks - Hi-C processing ..."
-		cmd="${R_PATH}/R --no-save --no-restore CMD BATCH \"--args picDir='${PIC_DIR}' hicDir='${DATA_DIR}' sampleName='${RES_FILE_NAME}'\" ${SCRIPTS}/plot_hic_fragment.R ${LDIR}/plot_hic_fragment.Rout"
+		cmd="${R_PATH}/R CMD BATCH --no-save --no-restore \"--args picDir='${PIC_DIR}' hicDir='${DATA_DIR}' sampleName='${RES_FILE_NAME}'\" ${SCRIPTS}/plot_hic_fragment.R ${LDIR}/plot_hic_fragment.Rout"
 		exec_cmd $cmd
 	    fi
 	fi
@@ -114,7 +114,7 @@ if [ -d ${DATA_DIR} ]; then
 	    nb=$(find $DATA_DIR  -name "*.mergestat" | wc -l)
 	    if [[ $nb > 0 ]]; then
 		echo "Quality checks - Hi-C contact maps ..."
-		cmd="${R_PATH}/R --no-save --no-restore CMD BATCH \"--args picDir='${PIC_DIR}' hicDir='${DATA_DIR}' sampleName='${RES_FILE_NAME}'\" ${SCRIPTS}/plot_hic_contacts.R ${LDIR}/plot_hic_contacts.Rout"
+		cmd="${R_PATH}/R CMD BATCH --no-save --no-restore \"--args picDir='${PIC_DIR}' hicDir='${DATA_DIR}' sampleName='${RES_FILE_NAME}'\" ${SCRIPTS}/plot_hic_contacts.R ${LDIR}/plot_hic_contacts.Rout"
 		exec_cmd $cmd
 	    fi
 	fi

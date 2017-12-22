@@ -30,6 +30,7 @@ def usage():
     print "-a/--alt <sample name for alternative allele>"
     print "[-r/--ref] <sample name for reference allele. Default is the same as in the initial file>"
     print "[-f/--filt] <Filtering level. 0 - no filtering. 1 - based on FI information. 2 - based on FILTER information. Default is 2>"
+    print "[-x/--exclude] <Exclude potential contaminants from the list of SNPs which are equal to ALT genotype, i.e REF is expected to be contaminated>"
     print "[-v/--verbose] <Verbose>"
     print "[-h/--help] <Help>"
     return
@@ -39,11 +40,12 @@ def get_args():
     try:
         opts, args = getopt.getopt(
             sys.argv[1:],
-            "i:r:a:f:vh",
+            "i:r:a:f:x:vh",
             ["vcf=",
              "alt=",
              "ref=",
              "filt=", 
+             "excl=",
              "verbose", "help"])
     except getopt.GetoptError:
         usage()
@@ -52,7 +54,7 @@ def get_args():
 
 ## 0/0, 1/1, A, T, 1
 ## 1/1, 2/2, A, T, C, 1
-def get_filter_snp_gt(gref, galt, ref, alt):
+def get_filter_snp_gt(gref, galt, ref, alt, conta):
 
     #print gref
     #print galt
@@ -78,14 +80,21 @@ def get_filter_snp_gt(gref, galt, ref, alt):
         ## Non informative SNPs
         if ref_snp == alt_snp:
             return -3
-        else:
-            ## check alt and ref alleles
-            alleles = []
-            alleles.append(ref)
-            for a in alt.split(','):
-                alleles.append(a)
+        ## Remove SNPs that are different from the reference and therefore likely to be wrongly assigned to the alternative
+        elif len(conta)>0:
+            for i in range(len(conta)):
+                conta_geno = re.split('/|\|', conta[i])
+                ## if conta = alt remove snps
+                if conta_geno[0] == alt_geno[0] or conta_geno[1] == alt_geno[1]:
+                    return -4
+        
+        ## check alt and ref alleles
+        alleles = []
+        alleles.append(ref)
+        for a in alt.split(','):
+            alleles.append(a)
             
-            return [alleles[int(ref_snp)], alleles[int(alt_snp)]]
+        return [alleles[int(ref_snp)], alleles[int(alt_snp)]]
 
 
 if __name__ == "__main__":
@@ -95,6 +104,7 @@ if __name__ == "__main__":
     vcfFile = None
     refSample = None
     altSample = None
+    exclusion = None
     filt_qual=2
     verbose = False
        
@@ -114,6 +124,8 @@ if __name__ == "__main__":
             altSample = arg
         elif opt in ("-f", "--filt"):
             filt_qual = int(arg)
+        elif opt in ("-x", "--exclude"):
+            exclusion = arg
         elif opt in ("-v", "--verbose"):
                 verbose = True
         else:
@@ -138,16 +150,20 @@ if __name__ == "__main__":
     samples = []
     altidx = -1
     refidx = -1
-
+    contaidx=[]
+    
     var_counter = 0
     snp_counter = 0
     hetero_counter = 0
     badqual_counter = 0
     undefined_counter = 0
     nonspe_counter = 0
+    conta_counter = 0
 
     for line in vcf_handle:
         line = line.rstrip()
+        #print >> sys.stderr, line
+
         ## for now we don't care about the header 
         if line.startswith('##'):
             if refSample is not None and line.startswith("##reference="):
@@ -163,7 +179,29 @@ if __name__ == "__main__":
                     refidx = i
                 elif samples[i] == altSample:
                     altidx = i
-                    
+                elif exclusion is not None:
+                    ## conta idx
+                    exs=exclusion.split(",")
+                    for i in range(len(exs)):
+                        ct = exs[i]
+                        if samples[i] == ct:
+                            contaidx.append(i)
+                            if verbose:
+                                print >> sys.stderr, "## Potential Contaminant(s) = " + ct                           
+
+
+            ## Check if Bl6 is in the conta list
+            if exclusion is not None:
+                exs=exclusion.split(",")
+                for i in range(len(exs)):
+                    ct = exs[i]
+                    if ct == "REF":
+                        contaidx.append(-1)
+                        if verbose:
+                            print >> sys.stderr, "## Potential Contaminant(s) = REF"
+
+
+
             ## Check input parameters
             if refSample != None and refidx == -1:
                 print   >> sys.stderr, "Error : REF sample not found"
@@ -190,7 +228,10 @@ if __name__ == "__main__":
 
             fields = line.split('\t',9)
             var_counter+=1
-            
+
+            ## init list of contaminant
+            contg=[]
+
             ## check chromosomes name
             if re.compile('^chr').match(fields[0]):
                 chrom=fields[0]
@@ -219,6 +260,16 @@ if __name__ == "__main__":
                 else:
                     refg = ["0/0"]
                     reffi =  "1"
+                    
+                if len(contaidx) > 0:
+                    for  i in range(len(contaidx)):
+                        if contaidx[i] == -1:
+                            contg.append("0/0")
+                        else:
+                            cg=genotypes[contaidx[i]].split(':')
+                            cfi = cg[len(cg)-1]
+                            if filt_qual != 1 or filt_qual == 1 and cfi == str(1):
+                                contg.append(cg[0])
 
                 ## Filter on FI field
                 if filt_qual != 1 or (filt_qual == 1 and reffi == str(1) and altfi == str(1)):
@@ -226,17 +277,20 @@ if __name__ == "__main__":
                     #print refg
                     #print altg
                     #print fields
-                    geno = get_filter_snp_gt(refg[0], altg[0], fields[3], fields[4])
+                    geno = get_filter_snp_gt(refg[0], altg[0], fields[3], fields[4], contg)
+
                     if geno == -1:
                         undefined_counter += 1 
                     elif geno == -2:
                         hetero_counter += 1
                     elif geno == -3:
                         nonspe_counter += 1
+                    elif geno == -4:
+                        conta_counter += 1
                     else:
                         snp_counter += 1
                         #altg[0]="1/1"
-                        #print chrom + "\t" + fields[1] + "\t" + fields[2] + "\t" + geno[0] + "\t" + geno[1] + "\t" + fields[5] + "\t" + fields[6] + "\t" + fields[7] + "\t" + fields[8] + "\t" + ":".join(altg)
+                        ##print chrom + "\t" + fields[1] + "\t" + fields[2] + "\t" + geno[0] + "\t" + geno[1] + "\t" + fields[5] + "\t" + fields[6] + "\t" + fields[7] + "\t" + fields[8] + "\t" + ":".join(altg)
                         print chrom + "\t" + fields[1] + "\t" + fields[2] + "\t" + geno[0] + "\t" + geno[1] + "\t" + fields[5] + "\t" + fields[6] + "\t" + fields[7] + "\t" + "GT" + "\t" + "0/1"
 
                 else:
@@ -257,6 +311,7 @@ if __name__ == "__main__":
          print >> sys.stderr, "## Number of heterozygous SNPs =", hetero_counter
          print >> sys.stderr, "## Number of undefined genotype SNPs =", undefined_counter
          print >> sys.stderr, "## Number of bad quality SNPs =", badqual_counter
+         print >> sys.stderr, "## Number of potential contaminant SNPs =", conta_counter
 
 
     vcf_handle.close()

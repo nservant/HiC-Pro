@@ -120,7 +120,7 @@ Setting the configuration file
 +-----------------------------+-------------------------------------------------------------------------------------------------------------------------+
 | BIN_STEP                    | Binning step size in ‘n’ coverage _i.e._ window step. *Default: 1*                                                      |
 +-----------------------------+-------------------------------------------------------------------------------------------------------------------------+
-| MATRIX_FORMAT               | Output matrix format. Must be complete, asis, upper or lower. *Default: upper*                                          |
+| MATRIX_FORMAT               | Output matrix format. Must be complete, upper. *Default: upper*. *Deprecated: asis, lower*                              |
 +-----------------------------+-------------------------------------------------------------------------------------------------------------------------+
 
 ------------
@@ -214,7 +214,14 @@ The HiC-Pro workflow can be divided in five main steps presented below.
 2. **Fragment assignment and filtering**
 
 | Each aligned reads can be assigned to one restriction fragment according to the reference genome and the restriction enzyme.
-| The next step is to separate the invalid ligation products from the valid pairs. Dangling end and self circles pairs are therefore excluded.
+| The next step is to separate the invalid ligation products from the valid pairs.
+| Here is the list of pairs classified as invalid by HiC-Pro :
+
+* Dangling end, i.e. unligated fragments (both reads mapped on the same restriction fragment)
+* Self circles, i.e. fragments ligated on themselves (both reads mapped on the same restriction fragment in inverted orientation
+* Religation, i.e. ligation of juxtaposed fragments
+* Dumped pairs, i.e. any pairs that do not match the filtering criteria on inserts size, restriction fragments size or for which we were not able to reconstruct the ligation product.
+
 | Only valid pairs involving two different restriction fragments are used to build the contact maps. Duplicated valid pairs associated to PCR artefacts are discarded.
 | The fragment assignment can be visualized through a BAM files of aliged pairs where each pair is flagged according to its classification.
 | In case of Hi-C protocols that do not require a restriction enzyme such as DNase Hi-C or micro Hi-C, the assignment to a restriction is not possible. If no *GENOME_FRAGMENT* file are specified, this step is ignored. Short range interactions can however still be discarded using the *MIN_CIS_DIST* parameter.

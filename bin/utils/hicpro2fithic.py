@@ -10,6 +10,7 @@ import gzip
 # Modified by Nicolas Servant - 1/23/2017
 # Modified by Ferhat Ay - 6/5/2017 - added resolution (-r <res>) argument to avoid some problems with inferring it from the first entry of bedFile
 # Modified by Ferhat Ay - 6/7/2017 - hitCount to ints, and gzip output 
+# Modified by Arya Kaul - 12/21/2017 - bug fix when no -o option specified 
 
 
 def outputfithicform(bedPath, matrixPath, intCPath, fragMapPath, biasVectorPath=None, biasVectorOutput=None,res=0):
@@ -94,7 +95,7 @@ if __name__=="__main__":
 	parser.add_argument("-i", "--matrix", help="Input matrix file with raw contact frequencies.", required=True)
 	parser.add_argument("-b", "--bed", help="BED file with bins coordinates.", required=True)
 	parser.add_argument("-s", "--bias", help="The bias file provided after IC normalization.", default=None)
-	parser.add_argument("-o", "--output", help="Output path", default="./")
+	parser.add_argument("-o", "--output", help="Output path", default=".")
 	parser.add_argument("-r", "--resolution", help="Resolution of the matrix", type=int, default=0) # 0 means it is inferred from fragments file's first entry
 
 	args = parser.parse_args()

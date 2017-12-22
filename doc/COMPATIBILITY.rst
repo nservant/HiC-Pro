@@ -8,13 +8,19 @@ Compatibility with other software
 Juicebox visualization software
 -------------------------------
 
-The `Juicebox<http://aidenlab.org/juicebox/>`_ software allows dynamic visualization of HiC contact maps. The list of valid interaction products called by HiC-Pro can can be converted in Juicebox input format (.hic file). To do so, please have a look at the hicpro2juicebox.sh utility.
+The `Juicebox <http://aidenlab.org/juicebox/>`_ software allows dynamic visualization of HiC contact maps. The list of valid interaction products called by HiC-Pro can can be converted in Juicebox input format (.hic file). To do so, please have a look at the hicpro2juicebox.sh utility.
+
+
+Higlass visualization software
+------------------------------
+
+HiC-Pro is also compatible with the `higlass <http://gehlenborglab.org/research/projects/higlass/>`_ visualization software. The matrix files or the list of valid interactions can be used by the hicpro2higlass.sh utility to generate higlass input files (.cool). Please look at the :ref:`utility page <UTILS>` page for details about how to use it.
 
 
 HiCPlotter visualition software
 -------------------------------
 
-The output format of HiC-Pro can be loaded into the `HiCPlotter<https://github.com/kcakdemir/HiCPlotter>`_ software for Hi-C data visualization.
+The output format of HiC-Pro can be loaded into the `HiCPlotter <https://github.com/kcakdemir/HiCPlotter>`_ software for Hi-C data visualization.
 Here is a small example of how to use it.
 
 .. code-block:: guess
@@ -25,6 +31,7 @@ Here is a small example of how to use it.
    ## Plot the chrX at 150Kb resolution
    python HiCPlotter.py -f hic_results/matrix/sample1/iced/150000/sample1_150000_iced.matrix -o Exemple -r 150000 -tri 1 -bed hic_results/matrix/sample1/raw/150000/sample1_150000_ord.bed -n Test -chr chrX -ptr 1
 
+   
 TADs calling (Directionality Index)
 -----------------------------------
 

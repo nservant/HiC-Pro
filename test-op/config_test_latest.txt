@@ -1,0 +1,91 @@
+# Please change the variable settings below if necessary
+
+#########################################################################
+## Paths and Settings  - Do not edit !
+#########################################################################
+
+TMP_DIR = tmp
+LOGS_DIR = logs
+BOWTIE2_OUTPUT_DIR = bowtie_results
+MAPC_OUTPUT = hic_results
+RAW_DIR = rawdata
+
+#######################################################################
+## SYSTEM - PBS - Start Editing Here !!
+#######################################################################
+N_CPU = 4
+LOGFILE = hicpro.log
+
+JOB_NAME = IMR90_split
+JOB_MEM = 10gb
+JOB_WALLTIME = 6:00:00
+JOB_QUEUE = batch
+JOB_MAIL = nservant@curie.fr
+
+#########################################################################
+## Data
+#########################################################################
+
+PAIR1_EXT = _R1
+PAIR2_EXT = _R2
+
+#######################################################################
+## Alignment options
+#######################################################################
+
+FORMAT = phred33
+MIN_MAPQ = 0
+
+BOWTIE2_IDX_PATH = /home/nservant/Bureau/hicpro_dev/test-op/bowtie2_indexes/
+BOWTIE2_GLOBAL_OPTIONS = --very-sensitive -L 30 --score-min L,-0.6,-0.2 --end-to-end --reorder
+BOWTIE2_LOCAL_OPTIONS =  --very-sensitive -L 20 --score-min L,-0.6,-0.2 --end-to-end --reorder
+
+#######################################################################
+## Annotation files
+#######################################################################
+
+REFERENCE_GENOME = hg19
+GENOME_SIZE = chrom_hg19.sizes
+
+#######################################################################
+## Allele specific
+#######################################################################
+
+ALLELE_SPECIFIC_SNP = 
+
+#######################################################################
+## Digestion Hi-C
+#######################################################################
+
+GENOME_FRAGMENT = HindIII_resfrag_hg19.bed
+LIGATION_SITE = AAGCTAGCTT
+MIN_FRAG_SIZE = 100
+MAX_FRAG_SIZE = 100000
+MIN_INSERT_SIZE = 100
+MAX_INSERT_SIZE = 600
+
+#######################################################################
+## Hi-C processing
+#######################################################################
+
+MIN_CIS_DIST =
+GET_ALL_INTERACTION_CLASSES = 1
+GET_PROCESS_SAM = 1
+RM_SINGLETON = 1
+RM_MULTI = 1
+RM_DUP = 1
+
+#######################################################################
+## Contact Maps
+#######################################################################
+
+BIN_SIZE = 500000 1000000
+MATRIX_FORMAT = upper
+
+#######################################################################
+## ICE Normalization
+#######################################################################
+MAX_ITER = 100
+FILTER_LOW_COUNT_PERC = 0.02
+FILTER_HIGH_COUNT_PERC = 0
+EPS = 0.1
