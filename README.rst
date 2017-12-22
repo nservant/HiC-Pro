@@ -288,6 +288,7 @@ Using HiC-Pro in a Singularity container
 ========================================
 
 HiC-Pro v2.10.0 provides a Singularity container to ease its installation process.
+A ready-to-use container is available `here <https://zerkalo.curie.fr/partage/HiC-Pro/hicpro_latest_ubuntu.img>_`.
 
 1- Install singularity
 
@@ -300,15 +301,15 @@ HiC-Pro v2.10.0 provides a Singularity container to ease its installation proces
 
 .. code-block:: guess
 
-    singularity create -s 5000 hicpro_ubuntu.img
-    sudo singularity -d bootstrap hicpro_ubuntu.img MY_INSTALL_PATH/HiC-Pro/Singularity
+    singularity create -s 5000 hicpro_latest_ubuntu.img
+    sudo singularity -d bootstrap hicpro_latest_ubuntu.img MY_INSTALL_PATH/HiC-Pro/Singularity
 
 3- Run HiC-pro
 
 
 .. code-block:: guess
 
-    singularity exec hicpro_ubuntu.img HiC-Pro -h
+    singularity exec hicpro_latest_ubuntu.img HiC-Pro -h
 
 
    
