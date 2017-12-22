@@ -9,7 +9,7 @@
 
                                                                    
 SOFT="HiC-Pro"
-VERSION="2.10.0"
+VERSION="2.10.1"
 
 function usage {
     echo -e "usage : $SOFT -i INPUT -o OUTPUT -c CONFIG [-s ANALYSIS_STEP] [-p] [-h] [-v]"
