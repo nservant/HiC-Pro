@@ -75,7 +75,7 @@ or **How can I generate a BED profile from a given viewpoints ?**
 .. code-block:: bash
 
    ## Generate a viewpoints from capture site
-   HICPRO_PATH/bin/utils/make_viewpoints -i hicpro_res/hic_results/data/dixon_2M/dixon_2M_allValidPairs  -f HICPRO_PATH/data_info/HindIII_resfrag_hg19.bed -t mycapture.bed -e 1000 -d -v > capture.bedgraph
+   HICPRO_PATH/bin/utils/make_viewpoints -i hicpro_res/hic_results/data/dixon_2M/dixon_2M_allValidPairs  -f HICPRO_PATH/data_info/HindIII_resfrag_hg19.bed -t mycapture.bed -e 1000 -v > capture.bedgraph
 
 
 4- hicpro2juicebox.sh
