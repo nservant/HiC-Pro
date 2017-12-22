@@ -303,7 +303,7 @@ HiC-Pro v2.10.0 provides a Singularity container to overcome any limitations wit
 .. code-block:: guess
 
     singularity create -s 5000 hicpro_ubuntu.img
-    sudo singularity -d bootstrap hicpro_ubuntu.img Singularity
+    sudo singularity -d bootstrap hicpro_ubuntu.img MY_INSTALL_PATH/HiC-Pro/Singularity
 
 3- Run HiC-pro
 
