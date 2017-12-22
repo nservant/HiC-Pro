@@ -27,7 +27,7 @@ What is HiC-Pro ?
 | HiC-Pro was designed to process Hi-C data, from raw fastq files (paired-end Illumina data) to the normalized contact maps. Since version 2.7.0, HiC-Pro supports the main Hi-C protocols, including digestion protocols as well as protocols that do not require restriction enzyme such as DNase Hi-C. In practice, HiC-Pro can be used to process dilution Hi-C, in situ Hi-C, DNase Hi-C, Micro-C, capture-C, capture Hi-C or HiChip data.
 | The pipeline is flexible, scalable and optimized. It can operate either on a single laptop or on a computational cluster. HiC-Pro is sequential and each step of the workflow can be run independantly.
 | HiC-Pro includes a fast implementatation of the iterative correction method (see the `iced <https://github.com/hiclib/iced>`_ python library for more information).
-| In addition, HiC-Pro can use phasing data to build allele secific contact maps (see AS_ for details). :doc:`AS` allele specific contact maps.
+| In addition, HiC-Pro can use phasing data to build :ref:`allele specific contact maps <AS>`.
 
 If you use HiC-Pro, please cite :
 
@@ -43,7 +43,7 @@ The HiC-Pro pipeline requires the following dependencies :
 2. Python (>2.7, python-3 is not supported) with *pysam (>=0.8.3)*, *bx-python(>=0.5.0)*, *numpy(>=1.8.2)*, and *scipy(>=0.15.1)* libraries
 3. R with the *RColorBrewer* and *ggplot2 (>2.2.1)* packages
 4. g++ compiler
-5. Samtools (>1.1)
+5. samtools (>1.1)
 6. Unix sort (**which support -V option**) is required ! For Mac OS user, please install the GNU core utilities !
 
 Bowtie >2.2.2 is strongly recommanded for allele specific analysis.  
@@ -288,7 +288,7 @@ Small fastq files (2M reads) extracted from the Dixon et al. 2012 paper are avai
 Using HiC-Pro in a Singularity container
 ========================================
 
-HiC-Pro v2.10.0 provides a Singularity container to overcome any limitations with the installation process.
+HiC-Pro v2.10.0 provides a Singularity container to ease its installation process.
 
 1- Install singularity
 
