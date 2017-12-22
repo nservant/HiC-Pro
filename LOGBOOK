@@ -7,6 +7,8 @@
 ##
 ################################################################################
 
+o Specify a chromosome subsets in the configuration file (to deal with random for instance)
+
 o It seems that recent PE data does not have the same read names ??
 
 o Look at issues about good practice installation

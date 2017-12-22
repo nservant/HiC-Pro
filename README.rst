@@ -233,59 +233,58 @@ Small fastq files (2M reads) extracted from the Dixon et al. 2012 paper are avai
    ## Run HiC-Pro
 
    time HICPRO_INSTALL_DIR/bin/HiC-Pro -c config_test_latest.txt -i test_data -o hicpro_latest_test
-
-   Run HiC-Pro 2.7.7
+   
+   Run HiC-Pro 2.10.0
    --------------------------------------------
-   mercredi 15 juin 2016, 20:44:23 (UTC+0200)
+   vendredi 22 décembre 2017, 13:34:18 (UTC+0100)
    Bowtie2 alignment step1 ...
-   /home/nservant/Apps/HiC-Pro_2.7.7/scripts/bowtie_wrap.sh -c /home/nservant/projects_dev/HiC-Pro/config_test_latest.txt -u >> hicpro.log
+   /home/nservant/Apps/HiC-Pro_2.10.0/scripts/bowtie_wrap.sh -c /home/nservant/Desktop/hicpro_dev/test-op/config_test_latest.txt -u >> hicpro.log
    --------------------------------------------
-   mercredi 15 juin 2016, 20:44:59 (UTC+0200)
+   vendredi 22 décembre 2017, 13:34:55 (UTC+0100)
    Bowtie2 alignment step2 ...
-   /home/nservant/Apps/HiC-Pro_2.7.7/scripts/bowtie_wrap.sh -c /home/nservant/projects_dev/HiC-Pro/config_test_latest.txt -l >> hicpro.log
+   /home/nservant/Apps/HiC-Pro_2.10.0/scripts/bowtie_wrap.sh -c /home/nservant/Desktop/hicpro_dev/test-op/config_test_latest.txt -l >> hicpro.log
    --------------------------------------------
-   mercredi 15 juin 2016, 20:45:17 (UTC+0200)
+   vendredi 22 décembre 2017, 13:35:05 (UTC+0100)
    Combine both alignment ...
-   /home/nservant/Apps/HiC-Pro_2.7.7/scripts/bowtie_combine.sh -c /home/nservant/projects_dev/HiC-Pro/config_test_latest.txt >> hicpro.log
+   /home/nservant/Apps/HiC-Pro_2.10.0/scripts/bowtie_combine.sh -c /home/nservant/Desktop/hicpro_dev/test-op/config_test_latest.txt >> hicpro.log
    --------------------------------------------
-   mercredi 15 juin 2016, 20:45:21 (UTC+0200)
+   vendredi 22 décembre 2017, 13:35:09 (UTC+0100)
    Bowtie2 mapping statistics for R1 and R2 tags ...
-   /home/nservant/Apps/HiC-Pro_2.7.7/scripts/mapping_stat.sh -c /home/nservant/projects_dev/HiC-Pro/config_test_latest.txt >> hicpro.log
+   /home/nservant/Apps/HiC-Pro_2.10.0/scripts/mapping_stat.sh -c /home/nservant/Desktop/hicpro_dev/test-op/config_test_latest.txt >> hicpro.log
    --------------------------------------------
-   mercredi 15 juin 2016, 20:45:22 (UTC+0200)
+   vendredi 22 décembre 2017, 13:35:10 (UTC+0100)
    Pairing of R1 and R2 tags ...
-   /home/nservant/Apps/HiC-Pro_2.7.7/scripts/bowtie_pairing.sh -c /home/nservant/projects_dev/HiC-Pro/config_test_latest.txt >> hicpro.log
+   /home/nservant/Apps/HiC-Pro_2.10.0/scripts/bowtie_pairing.sh -c /home/nservant/Desktop/hicpro_dev/test-op/config_test_latest.txt >> hicpro.log
    --------------------------------------------
-   mercredi 15 juin 2016, 20:45:30 (UTC+0200)
+   vendredi 22 décembre 2017, 13:35:16 (UTC+0100)
    Assign alignments to restriction fragments ...
-   /home/nservant/Apps/HiC-Pro_2.7.7/scripts/mapped_2hic_fragments.sh -c /home/nservant/projects_dev/HiC-Pro/config_test_latest.txt >> hicpro.log
+   /home/nservant/Apps/HiC-Pro_2.10.0/scripts/mapped_2hic_fragments.sh -c /home/nservant/Desktop/hicpro_dev/test-op/config_test_latest.txt >> hicpro.log
    --------------------------------------------
-   mercredi 15 juin 2016, 20:46:08 (UTC+0200)
+   vendredi 22 décembre 2017, 13:35:45 (UTC+0100)
    Merge multiple files from the same sample ...
-   /home/nservant/Apps/HiC-Pro_2.7.7/scripts/merge_valid_interactions.sh -c /home/nservant/projects_dev/HiC-Pro/config_test_latest.txt >> hicpro.log
+   /home/nservant/Apps/HiC-Pro_2.10.0/scripts/merge_valid_interactions.sh -c /home/nservant/Desktop/hicpro_dev/test-op/config_test_latest.txt >> hicpro.log
    --------------------------------------------
-   mercredi 15 juin 2016, 20:46:09 (UTC+0200)
+   vendredi 22 décembre 2017, 13:35:46 (UTC+0100)
    Merge stat files per sample ...
-   /home/nservant/Apps/HiC-Pro_2.7.7/scripts/merge_stats.sh -c /home/nservant/projects_dev/HiC-Pro/config_test_latest.txt >> hicpro.log
+   /home/nservant/Apps/HiC-Pro_2.10.0/scripts/merge_stats.sh -c /home/nservant/Desktop/hicpro_dev/test-op/config_test_latest.txt >> hicpro.log
    --------------------------------------------
-   mercredi 15 juin 2016, 20:46:09 (UTC+0200)
+   vendredi 22 décembre 2017, 13:35:46 (UTC+0100)
    Run quality checks for all samples ...
-   /home/nservant/Apps/HiC-Pro_2.7.7/scripts/make_plots.sh -c /home/nservant/projects_dev/HiC-Pro/config_test_latest.txt -p "all" >> hicpro.log
+   /home/nservant/Apps/HiC-Pro_2.10.0/scripts/make_plots.sh -c /home/nservant/Desktop/hicpro_dev/test-op/config_test_latest.txt -p "all" >> hicpro.log
    --------------------------------------------
-   mercredi 15 juin 2016, 20:46:22 (UTC+0200)
+   vendredi 22 décembre 2017, 13:35:55 (UTC+0100)
    Generate binned matrix files ...
-   /home/nservant/Apps/HiC-Pro_2.7.7/scripts/build_raw_maps.sh -c /home/nservant/projects_dev/HiC-Pro/config_test_latest.txt
+   /home/nservant/Apps/HiC-Pro_2.10.0/scripts/build_raw_maps.sh -c /home/nservant/Desktop/hicpro_dev/test-op/config_test_latest.txt
    --------------------------------------------
-   mercredi 15 juin 2016, 20:46:23 (UTC+0200)
+   vendredi 22 décembre 2017, 13:35:56 (UTC+0100)
    Run ICE Normalization ...
-   /home/nservant/Apps/HiC-Pro_2.7.7/scripts/ice_norm.sh -c /home/nservant/projects_dev/HiC-Pro/config_test_latest.txt >> hicpro.log 
+   /home/nservant/Apps/HiC-Pro_2.10.0/scripts/ice_norm.sh -c /home/nservant/Desktop/hicpro_dev/test-op/config_test_latest.txt >> hicpro.log
 
-   real	2m6.366s
-   user	3m24.493s
-   sys	0m33.151s
+   real1m38.855s
+   user3m13.344s
+   sys0m31.432s
 
-
-
+   
 Using HiC-Pro in a Singularity container
 ========================================
 

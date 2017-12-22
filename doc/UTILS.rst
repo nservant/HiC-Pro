@@ -80,7 +80,7 @@ or **How can I generate a BED profile from a given viewpoints ?**
 
 4- hicpro2juicebox.sh
 ---------------------
-or **How can I generate load my HiC-Pro data into Juicebox visualization software ?**
+or **How can I load my HiC-Pro data into Juicebox visualization software ?**
 
 | The hicpro2juicebox.sh utility allows to generate input file for Juicebox.
 | It can be use both for restriction fragment Hi-C or Dnase Hi-C by specifying the -f FRAGMENT_FILE option. Note that in this case, it is advice to use the HiC-Pro annotation file, as the fragment name is expected to be HiC_CHROMOSOME_FRAGMENTNUMBER.
@@ -90,10 +90,10 @@ or **How can I generate load my HiC-Pro data into Juicebox visualization softwar
 .. code-block:: bash
 
    ## Convert HiC-Pro output to Juicebox input
-   HICPRO_PATH/bin/utils/hicpro2juicebox.sh -i hicpro_res/hic_results/data/dixon_2M/dixon_2M_allValidPairs -g hg19 -j /usr/local/juicebox/juicebox_clt_1.4.jar
+   HICPRO_PATH/bin/utils/hicpro2juicebox.sh -i hicpro_res/hic_results/data/dixon_2M/dixon_2M_allValidPairs -g chrom_hg19.sizes -j /usr/local/juicebox/juicebox_clt_1.4.jar
 
    ## Convert HiC-Pro output to Juicebox input up to restriction fragment resolution
-   HICPRO_PATH/bin/utils/hicpro2juicebox.sh -i hicpro_res/hic_results/data/dixon_2M/dixon_2M_allValidPairs -g hg19 -j /usr/local/juicebox/juicebox_clt_1.4.jar -f  HICPRO_PATH/data_info/HindIII_resfrag_hg19.bed
+   HICPRO_PATH/bin/utils/hicpro2juicebox.sh -i hicpro_res/hic_results/data/dixon_2M/dixon_2M_allValidPairs -g chrom_hg19.sizes -j /usr/local/juicebox/juicebox_clt_1.4.jar -f  HICPRO_PATH/data_info/HindIII_resfrag_hg19.bed
 
 5- sparseToDense.py
 -------------------
@@ -126,4 +126,22 @@ Convert HiC-Pro output to Fit-Hi-C input (Ay et al. 2014)
   HICPRO_PATH/bin/utils/hicpro2fithic.py -i hic_results/matrix/dixon_2M/raw/1000000/dixon_2M_1000000.matrix -b hic_results/matrix/dixon_2M/raw/1000000/dixon_2M_1000000_abs.bed -s hic_results/matrix/dixon_2M/iced/1000000/dixon_2M_1000000_iced.matrix.biases
 
 
+6- hicpro2higlass.sh
+-------------------
+or **How can I load my HiC-Pro output into the Higlass visualization tool ?**
 
+| First be sure that Higlass is install on the environment and that the cooler python package is available.
+| See http://gehlenborglab.org/research/projects/higlass/ for higlass installation
+| See https://github.com/mirnylab/cooler for .cool Hi-C data format. The path to cooler utility must be defined in your PATH.
+
+.. code-block:: bash
+
+   ## Convert matrix file into .cool file
+   HICPRO_PATH/bin/utils/hicpro2higlass.sh -i hic_results/matrix/dixon_2M/raw/1000000/dixon_2M_1000000.matrix -c chrom_hg19.sizes -n
+
+   ## Convert matrix file into .cool file
+   HICPRO_PATH/bin/utils/hicpro2higlass.sh -i hic_results/data/dixon_2M/dixon_2M_allValidPairs -r 40000 -c chrom_hg19.sizes -n
+	 
+
+
+		    
