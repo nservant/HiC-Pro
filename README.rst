@@ -38,12 +38,14 @@ How to install it ?
 ===================
 
 The HiC-Pro pipeline requires the following dependencies :
+
 1. The `bowtie2 <http://bowtie-bio.sourceforge.net/bowtie2/index.shtml>`_ mapper
 2. Python (>2.7, python-3 is not supported) with *pysam (>=0.8.3)*, *bx-python(>=0.5.0)*, *numpy(>=1.8.2)*, and *scipy(>=0.15.1)* libraries
 3. R with the *RColorBrewer* and *ggplot2 (>2.2.1)* packages
 4. g++ compiler
 5. samtools (>1.1)
 6. Unix sort (**which support -V option**) is required ! For Mac OS user, please install the GNU core utilities !
+
 
 Bowtie >2.2.2 is strongly recommanded for allele specific analysis.  
 
