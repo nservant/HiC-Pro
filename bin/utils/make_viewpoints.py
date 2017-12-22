@@ -1,4 +1,4 @@
-#!/usr/bin/python
+#!/usr/bin/env python
 
 # HiC-Pro
 # Copyleft 2015 Institut Curie
@@ -44,7 +44,8 @@ def get_args():
              "exclusionSize=",
              "output=", 
              "verbose", "help"])
-    except getopt.GetoptError:
+    except getopt.GetoptError, err:
+        print "GetoptError: " + str(err) + "\n"
         usage()
         sys.exit(-1)
     return opts
