@@ -11,6 +11,10 @@ NEW FEATURES
 
 SIGNIFICANT USER-VISIBLE CHANGES
 
+   o N_CPU parameter is now correcly used for the mapping step. R1 and R2 reads are now mapped using N_CPU/2 CPUs
+
+   o add simple script for unit testing 'test-op'
+
    o udpate R scripts to be compatible with the lastest ggplot2 version (>2.2.1) and fix graphical bugs in quality controls
 
    o add new checks on input files and configuration files

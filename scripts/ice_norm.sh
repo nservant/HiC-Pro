@@ -42,11 +42,6 @@ else
     IN_DIR=${MAPC_OUTPUT}/matrix/
 fi
 
-echo "----"
-echo "$input_data_type"
-echo $IN_DIR
-
-
 ################### Combine Bowtie mapping ###################
 
 for RES_FILE_NAME in ${IN_DIR}/*
