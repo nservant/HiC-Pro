@@ -11,6 +11,19 @@
 ## The cooler python package should be properly installed, as well as the higlass software
 ##
 
+##
+## A few notes about higlass
+##
+## docker run will install the docker image and start it
+## sudo docker run --detach  --publish 8888:80  --volume ~/hg-data:/data --volume ~/hg-tmp:/tmp --name higlass-container  gehlenborglab/higlass
+## sudo docker start higlass-container
+## sudo docker ps -all
+##
+## Once higlass is installed, you can just run it using
+## sudo docker start higlass-container
+## higlass will then be available at http://localhost:8888
+##
+
 function usage {
     echo -e "usage : hicpro2higlass -i INPUT -r RESOLUTION -c CHROMSIZE [-n] [-h]" ## [-b BINS]
     echo -e "Use option -h|--help for more information"
@@ -88,15 +101,20 @@ then
     exit
 fi
 
+if [[ ! -e $CHROMSIZES_FILE ]]; then
+    echo -e "$CHROMSIZES_FILE file not found. Exit"
+    exit 1
+fi
+
 ## Detect input data type
 DATATYPE=""
 if [[ $INPUT_HICPRO == *.matrix ]]; then
     DATATYPE="MATRIX"
-    if [[ -z $INPUT_BED ]]; then
-	echo -e "Exit. BED file is required with .matrix file."
-	usage
-	exit 1
-    fi
+    #if [[ -z $INPUT_BED ]]; then
+    #	echo -e "Exit. BED file is required with .matrix file."
+    #	usage
+    #	exit 1
+    #fi
 elif [[ $INPUT_HICPRO == *allValidPairs ]]; then
     DATATYPE="VALID"
 else
@@ -121,7 +139,7 @@ fi
 if [[ $DATATYPE == "VALID" ]]; then
     which pairix > /dev/null;
     if [ $? != "0" ]; then
-	echo -e "Pairix is not installed or is not in your $PATH. See https://github.com/4dn-dcic/pairix."
+	echo -e "Pairix is not installed or is not in your PATH. See https://github.com/4dn-dcic/pairix."
 	exit 1;
     fi
 fi
@@ -150,7 +168,7 @@ elif [[ $DATATYPE == "VALID" ]]; then
     awk '{OFS="\t";print $2,$3,$4,$5,$6,$7,1}' $INPUT_HICPRO | sed -e 's/+/1/g' -e 's/-/16/g' > $tmp_dir/contacts.txt
     #awk '{print $1,$4,$2,$3,$9,$7,$5,$6,$10,$11,$12}' SRR3179588_WT_sample_allValidPairs | sed -e 's/+/1/g' -e 's/-/16/g' > contacts.txt
     cooler csort --nproc 2 -c1 1 -p1 2 -s1 3 -c2 4 -p2 5 -s2 6 \
-	   -o $tmp_idr/contacts.sorted.txt.gz  \
+	   -o $tmp_dir/contacts.sorted.txt.gz  \
 	   $tmp_dir/contacts.txt \
 	   $CHROMSIZES_FILE
     
@@ -168,11 +186,11 @@ elif [[ $DATATYPE == "VALID" ]]; then
 fi
 
 ## clean
-#/bin/rm -f $tmp_dir
+/bin/rm -rf $tmp_dir
 
 echo -e "\nCooler file generated with success ..."
 echo "Please copy the file $out in your Higlass input directory and run :"
-echo "docker exec higlass-container python higlass-server/manage.py  ingest_tileset --filename /tmp/$out --datatype matrix --filetype cooler" 
+echo "sudo docker exec higlass-container python higlass-server/manage.py  ingest_tileset --filename /tmp/$out --datatype matrix --filetype cooler" 
 
 
 

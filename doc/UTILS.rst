@@ -134,10 +134,11 @@ or **How can I load my HiC-Pro output into the Higlass visualization tool ?**
 | See http://gehlenborglab.org/research/projects/higlass/ for higlass installation
 | See https://github.com/mirnylab/cooler for .cool Hi-C data format. The path to cooler utility must be defined in your PATH.
 
+
 .. code-block:: bash
 
    ## Convert matrix file into .cool file
-   HICPRO_PATH/bin/utils/hicpro2higlass.sh -i hic_results/matrix/dixon_2M/raw/1000000/dixon_2M_1000000.matrix -c chrom_hg19.sizes -n
+   HICPRO_PATH/bin/utils/hicpro2higlass.sh -i hic_results/matrix/dixon_2M/raw/1000000/dixon_2M_1000000.matrix -r 1000000 -c chrom_hg19.sizes -n
 
    ## Convert matrix file into .cool file
    HICPRO_PATH/bin/utils/hicpro2higlass.sh -i hic_results/data/dixon_2M/dixon_2M_allValidPairs -r 40000 -c chrom_hg19.sizes -n
