@@ -292,9 +292,9 @@ Using HiC-Pro in a Singularity container
 HiC-Pro v2.10.0 provides a Singularity container to overcome any limitations with the installation process.
 
 1- Install singularity
-|http://singularity.lbl.gov/install-linux  
-|http://singularity.lbl.gov/install-mac  
-|http://singularity.lbl.gov/install-windows  
+| http://singularity.lbl.gov/install-linux  
+| http://singularity.lbl.gov/install-mac  
+| http://singularity.lbl.gov/install-windows  
 
 2- Build the singularity HiC-Pro image
 
