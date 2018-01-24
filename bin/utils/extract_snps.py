@@ -18,6 +18,8 @@ import sys
 import os
 import pysam
 import re
+import gzip
+
 
 def usage():
     print "This script was designed to extract informative SNPs information from two parental genotypes, and return the F1 genotype."
@@ -138,8 +140,11 @@ if __name__ == "__main__":
         print  >> sys.stderr, "Error: --filt"
         usage()
         sys.exit()
-
-    vcf_handle = open(vcfFile)
+    
+    if vcfFile.endswith('.gz') or vcfFile.endswith('.gzip'):
+        vcf_handle = gzip.open(vcfFile)
+    else:
+        vcf_handle = open(vcfFile)
 
     header = []
     samples = []

@@ -1,17 +1,40 @@
 ***********************************
+CHANGES IN VERSION 2.10.1
+
+BUG FIXES
+
+   o Fix shebang in make_viewpoints.py
+
+***********************************
 CHANGES IN VERSION 2.10.0
 
 NEW FEATURES
+
+   o New utility - hicpro2higlass.sh to convert HiC-Pro output into higlass .cool files
+
+   o HiC-Pro is now availabe as a Singularity container !
 
    o hicpro2juicebox.sh utility now supports alof HiC-Pro format (< 2.7.5)
 
 SIGNIFICANT USER-VISIBLE CHANGES
 
-   o udpate R scripts to be compatible with the lastest ggplot2 version (>2.2.1)
+   o N_CPU parameter is now correcly used for the mapping step. R1 and R2 reads are now mapped using N_CPU/2 CPUs
+
+   o add simple script for unit testing 'test-op'
+
+   o udpate R scripts to be compatible with the lastest ggplot2 version (>2.2.1) and fix graphical bugs in quality controls
 
    o add new checks on input files and configuration files
 
+   o Only provide HindIII annotation files for Mouse and Human as examples.
+
 BUG FIXES
+
+   o Remove the --user option during iced installation
+
+   o R sessions are no longer saved and restored
+
+   o hicpro2fithic - bug fix when no -o option specified 
 
    o Fix bug to avoid floating values in valid pair positions 
 

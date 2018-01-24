@@ -68,6 +68,12 @@ global_align()
     fi
 
     ## Run bowtie
+    if [[ $N_CPU -lt 2 ]]; then
+	echo -e "Warning : HiC-Pro need at least 2 CPUs to run the mapping !!"
+	bwt_cpu=1
+    else
+	bwt_cpu=$(( $N_CPU / 2 ))
+    fi
     cmd="${BOWTIE2_PATH}/bowtie2 ${BOWTIE2_GLOBAL_OPTIONS} --rg-id BMG --rg SM:${prefix} --${FORMAT}-quals -p ${N_CPU} -x ${BOWTIE2_IDX} -U ${file} 2> ${LDIR}/bowtie_${prefix}_global_${REFERENCE_GENOME}.log "
     if [[ $filtunmap == 1 ]]; then
 	cmd=$cmd"| ${SAMTOOLS_PATH}/samtools view -F 4 -bS - > ${BOWTIE2_GLOBAL_OUTPUT_DIR}/${sample_dir}/${prefix}_${REFERENCE_GENOME}.bwt2glob.bam"

@@ -3,6 +3,8 @@
 Frequently Reported Errors
 ==========================
 
+Please see the HiC-Pro forum (https://groups.google.com/forum/#!forum/hic-pro) and the github issue page (https://github.com/nservant/HiC-Pro)
+
 HiC-Pro does not generate any maps
 ------------------------------------------------
 
