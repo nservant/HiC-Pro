@@ -46,7 +46,7 @@ do
 	nb_map_r2=$(find -L ${BOWTIE2_FINAL_OUTPUT_DIR}/${RES_FILE_NAME} -maxdepth 1 -name "*.bam" -and -name "*${PAIR2_EXT}*" | wc -l)
 
 	if [[ $nb_map_r1 -gt 0 && $nb_map_r2 -gt 0 ]]; then
-	    echo "Merge mapstat files ..." >> ${LDIR}/merge_stat.log
+	    echo "Merge mapstat files ..." >> ${LDIR}/merge_stats.log
 	    ${PYTHON_PATH}/python ${SCRIPTS}/merge_statfiles.py -d ${BOWTIE2_FINAL_OUTPUT_DIR}/${RES_FILE_NAME}/ -p "*${PAIR1_EXT}*.mapstat" -v> ${BOWTIE2_FINAL_OUTPUT_DIR}/${RES_FILE_NAME}/${RES_FILE_NAME}_${PAIR1_EXT}.mmapstat 2>> ${LDIR}/merge_stats.log
 	    ${PYTHON_PATH}/python ${SCRIPTS}/merge_statfiles.py -d ${BOWTIE2_FINAL_OUTPUT_DIR}/${RES_FILE_NAME}/ -p "*${PAIR2_EXT}*.mapstat" -v> ${BOWTIE2_FINAL_OUTPUT_DIR}/${RES_FILE_NAME}/${RES_FILE_NAME}_${PAIR2_EXT}.mmapstat 2>> ${LDIR}/merge_stats.log
 	fi  
@@ -65,7 +65,7 @@ do
     if [[ -d ${DATA_DIR}/${RES_FILE_NAME} ]]; then
 	nb_rs=$(find -L ${DATA_DIR}/${RES_FILE_NAME} -maxdepth 1 -name "*.RSstat" | wc -l)
 	if [[ $nb_rs -gt 0 ]]; then
-	    echo "Merge RSstat files ..." >> ${LDIR}/merge_stat.log
+	    echo "Merge RSstat files ..." >> ${LDIR}/merge_stats.log
             ${PYTHON_PATH}/python ${SCRIPTS}/merge_statfiles.py -d ${DATA_DIR}/${RES_FILE_NAME}/ -p "*.RSstat" -v> ${DATA_DIR}/${RES_FILE_NAME}/${RES_FILE_NAME}.mRSstat 2>> ${LDIR}/merge_stats.log
 	fi
     fi
