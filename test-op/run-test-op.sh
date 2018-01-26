@@ -1,5 +1,7 @@
 #!/bin/bash
 
+export PATH=$(pwd)/../bin/:$PATH
+
 function die
 {
     echo -e "Unit testing failed !"
@@ -20,8 +22,8 @@ if [[ $(ls bowtie2_indexes | wc -l) == 0 ]]; then
     exit 1
 fi
 
-#wget https://zerkalo.curie.fr/partage/HiC-Pro/HiCPro_testdata.tar.gz && tar -zxvf HiCPro_testdata.tar.gz
-#/bin/rm -f HiCPro_testdata.tar.gz
+wget https://zerkalo.curie.fr/partage/HiC-Pro/HiCPro_testdata.tar.gz && tar -zxvf HiCPro_testdata.tar.gz
+/bin/rm -f HiCPro_testdata.tar.gz
 
 RES_PREFIX=HiC_Pro_test-op
 CONFIG=config_test_latest.txt

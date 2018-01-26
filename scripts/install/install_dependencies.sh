@@ -177,10 +177,11 @@ cd ./tmp
 
 ################ Install dependencies  ###################
 
-PREFIX_BIN=/usr/local/bin
+## By default, dependencies will be installed in the same path than HiC-Pro
+PREFIX_BIN=${PREFIX}
 
 if [ ! -w $PREFIX_BIN ]; then
-    PREFIX_BIN=${HOME}/bin;
+   quiet=1
 fi
 
 if [[ $quiet == 0 ]]; then
