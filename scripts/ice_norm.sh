@@ -77,7 +77,8 @@ do
 
 	    if [[ $input_data_type == "mat" ]]
 	    then
-		input=$(find -L $IN_DIR/${RES_FILE_NAME}/ -maxdepth 1 -name "*.matrix" -name "*$bsize*")
+		# input=$(find -L $IN_DIR/${RES_FILE_NAME}/ -maxdepth 1 -name "*.matrix" -name "*$bsize*")
+		input=$(find -L $IN_DIR/${RES_FILE_NAME}/ -maxdepth 3 -name "*${bsize}.matrix*")
 		if [ ! -z $input ]; then
 		    cmd="${PYTHON_PATH}/python ${SCRIPTS}/ice --results_filename ${NORM_DIR}/${bsize}/${RES_FILE_NAME}_${bsize}_iced.matrix --filter_low_counts_perc ${FILTER_LOW_COUNT_PERC} --filter_high_counts_perc ${FILTER_HIGH_COUNT_PERC} --max_iter ${MAX_ITER} --eps ${EPS} --remove-all-zeros-loci --output-bias 1 --verbose 1 ${input} >> ${LDIR}/ice_${bsize}.log"
                     echo $cmd > ${LDIR}/ice_${bsize}.log
