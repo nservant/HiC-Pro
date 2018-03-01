@@ -48,7 +48,7 @@ or **How can I generate the list of restriction fragments after genome digestion
 | Digest the reference genome by the provided restriction enzymes(s) and generate a BED file with the list of restriction fragments after digestion.
 | This file can then be used by HiC-Pro (GENOME_FRAGMENT) for the data processing.
 | Note that the cutting site of the restriction enzyme has to be specified using the '^' character.
-| The restriction enzymes HindIII, DpnII and BglII are encoded within the script and are therefore recognized if specified to the program.
+| The restriction enzymes HindIII, DpnII, BglII and MboI are encoded within the script and are therefore recognized if specified to the program.
 | Finally, multiple restriction enzymes can also be provided.
 
 .. code-block:: bash
