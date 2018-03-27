@@ -127,7 +127,7 @@ def get_overlapping_fragment(frag, chrom, pos, quiet=False):
         else:
             return ifrag[0]
     else:
-        if not quit: print >> sys.stderr, "Warning - no fragments found for read at", chrom, ":", pos, "- skipped"
+        if not quiet: print >> sys.stderr, "Warning - no fragments found for read at", chrom, ":", pos, "- skipped"
         return None
 
 

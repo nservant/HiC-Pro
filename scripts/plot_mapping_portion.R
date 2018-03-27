@@ -44,13 +44,13 @@ multiplot <- function(..., plotlist=NULL, file, cols=1, layout=NULL) {
     layout <- matrix(seq(1, cols * ceiling(numPlots/cols)),
                     ncol = cols, nrow = ceiling(numPlots/cols))
   }
- if (numPlots==1) {
-    print(plots[[1]])
-
+  if (numPlots==1) {
+      print(plots[[1]])
+      
   } else {
-    # Set up the page
-    grid.newpage()
-    pushViewport(viewport(layout = grid.layout(nrow(layout), ncol(layout))))
+      ## Set up the page
+      grid.newpage()
+      pushViewport(viewport(layout = grid.layout(nrow(layout), ncol(layout))))
 
     # Make each plot, in the correct location
     for (i in 1:numPlots) {
@@ -112,17 +112,16 @@ ploMapStat <- function(mat, sampleName="", tag="", legend=TRUE){
   }
    
   
-  gp <- ggplot(mat, aes(x=p, as.numeric(count), fill=as.character(lab))) +
-    geom_bar(width=.7,stat="identity", colour="gray") +
-      theme(axis.title=element_text(face="bold", size=6), axis.ticks = element_blank(), axis.text.y = element_text(size=5), axis.text.x = element_blank()) +
-          xlab(sampleName) + ylab("Read Counts")  +
-            geom_text(aes(x=p, y=as.numeric(pos), label=paste(perc,"%")),fontface="bold", size=2)+
-                ggtitle(tit) + theme(plot.title = element_text(lineheight=.8, face="bold", size=6))
+  gp <- ggplot(mat, aes(x=p, as.numeric(count), fill=lab)) + geom_bar(width=.7,stat="identity", colour="gray") + theme_minimal() + 
+          theme(axis.title=element_text(face="bold", size=6), axis.ticks = element_blank(), axis.text.y = element_text(size=6), axis.text.x = element_blank()) +
+              xlab(sampleName) + ylab("Read Counts")  +
+                  geom_text(aes(x=p, y=as.numeric(pos), label=paste(perc,"%")),fontface="bold", size=2)+
+                      ggtitle(tit) + theme(plot.title = element_text(lineheight=.8, face="bold", size=8))
 
   if (legend){
-    gp = gp + scale_fill_manual(values=c(sel.colours[2:4], "darkgray"), labels = c("Full read mapping (%)",  "Trimmed read Mapping (%)", "Aligned reads (%)", "Not aligned (%)")) + guides(fill=guide_legend(title="")) + theme(plot.margin=unit(x=c(1,0,0,0), units="cm"), legend.position="bottom", legend.margin=unit(.5,"cm"), legend.text=element_text(size=4))
+    gp = gp + scale_fill_manual(values=c("darkgray", sel.colours[2:4]), labels = c("Full read mapping (%)",  "Trimmed read Mapping (%)", "Aligned reads (%)", "Not aligned (%)")) + guides(fill=guide_legend(title="")) + theme(plot.margin=unit(x=c(1,0,0,0), units="cm"), legend.position="bottom", legend.text=element_text(size=5))
   }else{
-    gp = gp + scale_fill_manual(values=c(sel.colours[2:4], "darkgray")) + theme(plot.margin=unit(c(1,0,1.9,0),"cm"))+ guides(fill=FALSE)
+    gp = gp + scale_fill_manual(values=c("darkgray", sel.colours[2:4])) + theme(plot.margin=unit(c(1,0,1.45,0),"cm"))+ guides(fill=FALSE)
   }
   gp
 }
@@ -152,8 +151,10 @@ print(stats_per_sample_r2)
 
 ## Make plots
 mat_r1 <- getMapMat(stats_per_sample_r1[1], stats_per_sample_r1[2], stats_per_sample_r1[3], stats_per_sample_r1[4])
+mat_r1$lab <- factor(mat_r1$lab, levels=c("n.un","n.loc","n.glob","n.map"))
 p1 <- ploMapStat(mat_r1, sampleName=sampleName, tag="R1")
 mat_r2 <- getMapMat(stats_per_sample_r2[1], stats_per_sample_r2[2], stats_per_sample_r2[3], stats_per_sample_r2[4])
+mat_r2$lab <- factor(mat_r2$lab, levels=c("n.un","n.loc","n.glob","n.map"))
 p2 <- ploMapStat(mat_r2, sampleName=sampleName, tag="R2", legend=FALSE)
 
 pdf(file.path(picDir, paste0("plotMapping_",sampleName,".pdf")), width=7, height=4)

@@ -95,8 +95,7 @@ plotHiCStat <- function(mat, xlab="", legend=TRUE){
   ## update labels for plot
   #mat$lab <- paste0(gsub("_", " ", mat$lab)," (%)")
 
-  gp <-ggplot(mat, aes(x=p, as.numeric(count), fill=lab)) +
-    geom_bar(width=.7,stat="identity", colour="gray") + 
+  gp <-ggplot(mat, aes(x=p, as.numeric(count), fill=lab)) + geom_bar(width=.7,stat="identity", colour="gray") + theme_minimal() + 
       theme(axis.title=element_text(face="bold", size=6), axis.ticks = element_blank(),  axis.text.y = element_text(size=5), axis.text.x = element_text(size=6))+
         xlab(xlab) + ylab("Read Counts") +
             scale_x_discrete(breaks=c("1", "2", "3"), labels=c("All Pairs","Valid 3C Pairs","Invalid 3C Pairs"))+
@@ -107,7 +106,7 @@ plotHiCStat <- function(mat, xlab="", legend=TRUE){
     scol <- mat$selcol
     names(scol) <- mat$lab
     gp = gp + scale_fill_manual(values=scol) + guides(fill=guide_legend(title="")) + theme(plot.margin=unit(x=c(1,0,0,0), units="cm"), legend.position="right",
-                                                        legend.margin=margin(.5,unit="cm"), legend.text=element_text(size=6))
+                                                        legend.margin=margin(.5,unit="cm"), legend.text=element_text(size=5))
   }else{
     gp = gp + scale_fill_manual(values=as.character(col)) + theme(plot.margin=unit(c(1,0,1.9,0),"cm"))+ guides(fill=FALSE)
   }

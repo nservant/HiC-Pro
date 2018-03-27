@@ -5,7 +5,11 @@ SIGNIFICANT USER-VISIBLE CHANGES
 
    o Small changes during installation process to deal with --user
 
+   o Update layout of quality control plots
+
 BUG FIXES
+
+   o Fix inversion between cis/long range contacts in plot_hic_contacts.R
 
    o Fix shebang in make_viewpoints.py
 
