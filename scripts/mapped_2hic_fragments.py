@@ -111,7 +111,7 @@ def get_cis_dist(read1, read2):
      # Get oriented reads
      ##r1, r2 = get_ordered_reads(read1, read2)
      dist = None
-     if not r1.is_unmapped and not r2.is_unmapped:         
+     if not read1.is_unmapped and not read2.is_unmapped:         
          ## Contact distances can be calculated for intrachromosomal reads only
          if isIntraChrom(read1, read2):
              r1pos = get_read_pos(read1)
