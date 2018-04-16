@@ -32,7 +32,7 @@ OSVersion: xenial
     conda config --add channels defaults
     conda config --add channels conda-forge
     conda config --add channels bioconda
-
+    
     # Let us save some space
     conda clean --packages -y
 
@@ -49,6 +49,8 @@ OSVersion: xenial
     conda install -y -c bioconda pysam 
 
     # Install R
+    conda update readline	
+    #conda install -c conda-forge readline=6.2
     conda install -c r r-base 
     conda install -c r r-ggplot2=2.2.1
     conda install -c r r-rcolorbrewer
@@ -71,6 +73,8 @@ OSVersion: xenial
     rm -rf /usr/local/anaconda/pkgs
 
 %test
+    INSTALLED_HICPRO_VERSION=$(find /usr/local/bin -name HiC-Pro | xargs dirname)
+    $INSTALLED_HICPRO_VERSION/HiC-Pro -h
 
 %environment
     export PATH=$PATH:/usr/local/anaconda/bin
