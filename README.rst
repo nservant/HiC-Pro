@@ -290,7 +290,7 @@ Using HiC-Pro in a Singularity container
 ========================================
 
 HiC-Pro v2.10.0 provides a Singularity container to ease its installation process.
-A ready-to-use container is available `here <https://zerkalo.curie.fr/partage/HiC-Pro/hicpro_latest_ubuntu.img>`_.
+A ready-to-use container is available `here <https://zerkalo.curie.fr/partage/HiC-Pro/singularity_images/hicpro_latest_ubuntu.img>`_.
 
 1- Install singularity
 
