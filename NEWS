@@ -11,6 +11,8 @@ SIGNIFICANT USER-VISIBLE CHANGES
 
 BUG FIXES
 
+   o Fix bug in read name when merging SAM files
+
    o Fix inversion between cis/long range contacts in plot_hic_contacts.R
 
    o Fix bug in mapped_2hic_fragments.py (issue #134)

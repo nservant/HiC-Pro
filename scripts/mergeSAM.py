@@ -65,11 +65,11 @@ def is_unique_bowtie2(read):
     
     return ret
 
-## Remove everything after "/" in read's name
+## Remove everything after "/" or " " in read's name
 def get_read_name(read):
     name = read.qname
-    return name.split("/",1)[0]
-    
+    #return name.split("/",1)[0]
+    return re.split('/| ', name)[0]
 
 def sam_flag(read1, read2, hr1, hr2):
 
