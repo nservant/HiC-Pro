@@ -9,6 +9,8 @@ SIGNIFICANT USER-VISIBLE CHANGES
 
    o Update layout of quality control plots
 
+   o hicpro2juicebox - add temporary folder for sorting, and update juicer path variable (issue#147)
+
 BUG FIXES
 
    o Fix bug in read name when merging SAM files
