@@ -3,6 +3,8 @@ CHANGES IN VERSION 2.11.0
 
 SIGNIFICANT USER-VISIBLE CHANGES
 
+   o Add MultiQC support for HiC-Pro
+
    o Update of Singularity image
 
    o Small changes during installation process to deal with --user
