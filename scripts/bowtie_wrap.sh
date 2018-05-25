@@ -74,7 +74,10 @@ global_align()
     else
 	bwt_cpu=$(( $N_CPU / 2 ))
     fi
-    cmd="${BOWTIE2_PATH}/bowtie2 ${BOWTIE2_GLOBAL_OPTIONS} --rg-id BMG --rg SM:${prefix} --${FORMAT}-quals -p ${N_CPU} -x ${BOWTIE2_IDX} -U ${file} 2> ${LDIR}/bowtie_${prefix}_global_${REFERENCE_GENOME}.log "
+    
+    echo "##HiC-Pro mapping" > ${LDIR}/bowtie_${prefix}_global_${REFERENCE_GENOME}.log
+    cmd="${BOWTIE2_PATH}/bowtie2 ${BOWTIE2_GLOBAL_OPTIONS} --rg-id BMG --rg SM:${prefix} --${FORMAT}-quals -p ${N_CPU} -x ${BOWTIE2_IDX} -U ${file} \
+2> ${LDIR}/bowtie_${prefix}_global_${REFERENCE_GENOME}.log"
     if [[ $filtunmap == 1 ]]; then
 	cmd=$cmd"| ${SAMTOOLS_PATH}/samtools view -F 4 -bS - > ${BOWTIE2_GLOBAL_OUTPUT_DIR}/${sample_dir}/${prefix}_${REFERENCE_GENOME}.bwt2glob.bam"
     else
@@ -121,7 +124,9 @@ local_align()
     fi
 
     ## Run bowtie
-    cmd="${BOWTIE2_PATH}/bowtie2 ${BOWTIE2_LOCAL_OPTIONS} --rg-id BML --rg SM:${prefix} --${FORMAT}-quals -p ${N_CPU} -x ${BOWTIE2_IDX} -U ${BOWTIE2_GLOBAL_OUTPUT_DIR}/${sample_dir}/${tfile} 2>${LDIR}/bowtie_${prefix}_local.log | ${SAMTOOLS_PATH}/samtools view -bS - > ${BOWTIE2_LOCAL_OUTPUT_DIR}/${sample_dir}/${prefix}_bwt2loc.bam"
+    echo "##HiC-Pro mapping" > ${LDIR}/bowtie_${prefix}_local.log
+    cmd="${BOWTIE2_PATH}/bowtie2 ${BOWTIE2_LOCAL_OPTIONS} --rg-id BML --rg SM:${prefix} --${FORMAT}-quals -p ${N_CPU} -x ${BOWTIE2_IDX} -U ${BOWTIE2_GLOBAL_OUTPUT_DIR}/${sample_dir}/${tfile} \
+2>${LDIR}/bowtie_${prefix}_local.log | ${SAMTOOLS_PATH}/samtools view -bS - > ${BOWTIE2_LOCAL_OUTPUT_DIR}/${sample_dir}/${prefix}_bwt2loc.bam"
     exec_cmd "$cmd"
 }
 

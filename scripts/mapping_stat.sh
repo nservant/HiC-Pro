@@ -48,6 +48,7 @@ mapping_stat(){
 
     local sample_dir="$1"
     local file="$2"
+    local tag="$3"
     local prefix=$(echo ${sample_dir}/$(basename $file) | sed -e 's/.bwt2glob.bam//')
 
     cmd="${SAMTOOLS_PATH}/samtools view -c ${BOWTIE2_FINAL_OUTPUT_DIR}/${prefix}.bwt2merged.bam"
@@ -63,10 +64,10 @@ mapping_stat(){
 	lmap_reads=0
     fi
     echo "## $prefix.mapstat"
-    echo -e "total\t$tot_reads"
-    echo -e "mapped\t$map_reads"
-    echo -e "global\t$gmap_reads"
-    echo -e "local\t$lmap_reads"
+    echo -e "total_${tag}\t$tot_reads"
+    echo -e "mapped_${tag}\t$map_reads"
+    echo -e "global_${tag}\t$gmap_reads"
+    echo -e "local_${tag}\t$lmap_reads"
 }
 
 for r in $(get_global_aln_for_stats ${mode})
@@ -78,8 +79,8 @@ do
     R_STAT1=$(get_stat_file $R1)
     R_STAT2=$(get_stat_file $R2)
 
-    mapping_stat $sample_dir $R1 > $R_STAT1 &
-    mapping_stat $sample_dir $R2 > $R_STAT2 &
+    mapping_stat $sample_dir $R1 R1 > $R_STAT1 &
+    mapping_stat $sample_dir $R2 R2 > $R_STAT2 &
 
     wait
 done
