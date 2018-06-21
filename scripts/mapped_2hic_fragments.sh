@@ -19,11 +19,11 @@ done
 CONF=$conf_file . $dir/hic.inc.sh
 
 ## Do we have a restriction fragment file ?
-MODE="RS"
+mode="RS"
 GENOME_FRAGMENT_FILE=`abspath $GENOME_FRAGMENT`
 
 if [[ $GENOME_FRAGMENT == "" ]]; then
-    MODE="DNAse"
+    mode="DNAse"
 elif [[ ! -f $GENOME_FRAGMENT_FILE ]]; then
     GENOME_FRAGMENT_FILE=$ANNOT_DIR/$GENOME_FRAGMENT
     if [[ ! -f $GENOME_FRAGMENT_FILE ]]; then
@@ -34,7 +34,7 @@ fi
 
 ## Options
 opts="-v"
-if [[ $MODE == "RS" ]]; then
+if [[ $mode == "RS" ]]; then
     if [[ "${GET_PROCESS_SAM}" -eq "1" ]]; then opts=$opts" -S"; fi
     if [[ "${MIN_FRAG_SIZE}" -ge "0" && "${MIN_FRAG_SIZE}" -ne "" ]]; then opts=$opts" -t ${MIN_FRAG_SIZE}"; fi
     if [[ "${MAX_FRAG_SIZE}" -ge "0" && "${MAX_FRAG_SIZE}" -ne "" ]]; then opts=$opts" -m ${MAX_FRAG_SIZE}"; fi
@@ -54,21 +54,27 @@ do
     mkdir -p ${datadir}
     
     ## Logs
-    LDIR=${LOGS_DIR}/${sample_dir}
-    mkdir -p ${LDIR}
+    ldir=${LOGS_DIR}/${sample_dir}
+    mkdir -p ${ldir}
     
-     if [[ $MODE == "DNAse" ]]; then
+    if [[ $mode == "DNAse" ]]; then
+	logfile=${ldir}/mapped_2hic_dnase.log
 	cmd="${PYTHON_PATH}/python ${SCRIPTS}/mapped_2hic_dnase.py ${opts} -r ${r} -o ${datadir}"
-	exec_cmd $cmd > ${LDIR}/mapped_2hic_fragments.log 2>&1
+	echo "Logs: ${logfile}"
+	exec_cmd $cmd > ${logfile} 2>&1
     else
-	cmd="${PYTHON_PATH}/python ${SCRIPTS}/mapped_2hic_fragments.py ${opts} -f ${GENOME_FRAGMENT_FILE} -r ${r} -o ${datadir}"
-        exec_cmd $cmd > ${LDIR}/mapped_2hic_fragments.log 2>&1
-     fi
+	logfile=${ldir}/mapped_2hic_fragments.log
+       	cmd="${PYTHON_PATH}/python ${SCRIPTS}/mapped_2hic_fragments.py ${opts} -f ${GENOME_FRAGMENT_FILE} -r ${r} -o ${datadir}"
+	echo "Logs: ${logfile}"
+	exec_cmd $cmd > ${logfile} 2>&1
+    fi
+    
     ## Valid pairs are already sorted
     outVALID=`basename ${r} | sed -e 's/.bam$/.validPairs/'`
      
-    echo "## Sorting valid interaction file ..." >> ${LDIR}/mapped_2hic_fragments.log 2>&1
-    LANG=en TMPDIR=${TMP_DIR} sort -k2,2V -k3,3n -k5,5V -k6,6n -o ${datadir}/${outVALID} ${datadir}/${outVALID} 
+    echo "## Sorting valid interaction file ..." >> ${logfile}
+    cmd="LANG=en; sort -T ${TMP_DIR} -k2,2V -k3,3n -k5,5V -k6,6n -o ${datadir}/${outVALID} ${datadir}/${outVALID}"
+    exec_cmd $cmd > ${logfile} 2>&1
 done
 
 

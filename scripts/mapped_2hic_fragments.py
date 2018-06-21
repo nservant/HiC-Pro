@@ -567,9 +567,10 @@ if __name__ == "__main__":
     samfile = pysam.Samfile(mappedReadsFile, "rb")
 
     if samOut:
-        handle_sam = open(outputDir + '/' + baseReadsFile + '_interaction.sam', 'w')
-        handle_sam = pysam.Samfile(outputDir + '/' + baseReadsFile + '_interaction.sam',
-            "wh", header=samfile.header)
+        #handle_sam = open(outputDir + '/' + baseReadsFile + '_interaction.sam', 'w')
+        #handle_sam = pysam.Samfile(outputDir + '/' + baseReadsFile + '_interaction.sam',
+        #    "wh", header=samfile.header)
+        handle_sam = pysam.AlignmentFile(outputDir + '/' + baseReadsFile + '_interaction.bam', "wb", template=samfile)
 
     # Reads are 0-based too (for both SAM and BAM format)
     # Loop on all reads
