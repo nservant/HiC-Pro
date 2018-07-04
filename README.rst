@@ -303,8 +303,7 @@ A ready-to-use container is available `here <https://zerkalo.curie.fr/partage/Hi
 
 .. code-block:: guess
 
-    singularity create -s 5000 hicpro_latest_ubuntu.img
-    sudo singularity -d bootstrap hicpro_latest_ubuntu.img MY_INSTALL_PATH/HiC-Pro/Singularity
+    sudo singularity build hicpro_latest_ubuntu.img MY_INSTALL_PATH/HiC-Pro/Singularity
 
 3- Run HiC-pro
 
