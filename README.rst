@@ -8,7 +8,7 @@
 HiC-Pro Quick Start Guide
 *************************
 
-[![GitHub version](https://img.shields.io/github/release/qubyte/rubidium.svg](version-link)  
+![GitHub release](https://img.shields.io/github/release/qubyte/rubidium.svg)(version-link)  
 [![Ask me Anything !](https://img.shields.io/badge/Ask%20me-anything-1abc9c.svg)](https://groups.google.com/forum/#!forum/hic-pro)  
 
 This page is just a quick start guide, please read the full `online manual <http://nservant.github.io/HiC-Pro/>`_ for more information !
