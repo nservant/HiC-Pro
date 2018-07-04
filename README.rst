@@ -8,6 +8,10 @@
 HiC-Pro Quick Start Guide
 *************************
 
+[![HiC-Pro version][version-badge]][version-link]
+[![License][license-badge]][license-link]
+[![Join the forum at https://groups.google.com/forum/#!forum/hic-pro][google-badge]][google-link]
+
 This page is just a quick start guide, please read the full `online manual <http://nservant.github.io/HiC-Pro/>`_ for more information !
 
 See NEWS for information about changes in this and previous versions
