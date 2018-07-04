@@ -6,6 +6,9 @@ OSVersion: xenial
 %labels
     AUTHOR Nicolas Servant
 
+%pre
+    apt-get install -y debootstrap
+    
 %post
     apt-get install -y wget
     apt-get install -y gzip
