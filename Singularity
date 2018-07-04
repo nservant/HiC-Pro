@@ -21,7 +21,7 @@ OSVersion: xenial
     
     # install anaconda
     if [ ! -d /usr/local/anaconda ]; then
-       wget https://repo.continuum.io/miniconda/Miniconda3-4.2.12-Linux-x86_64.sh\
+       wget https://repo.continuum.io/miniconda/Miniconda3-4.5.4-Linux-x86_64.sh \
        	    -O ~/anaconda.sh && \
 	    bash ~/anaconda.sh -b -p /usr/local/anaconda && \
 	    rm ~/anaconda.sh
