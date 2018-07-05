@@ -1,70 +1,39 @@
 #!/bin/bash
 
 ## HiC-Pro
-## Copyright (c) 2015 Institut Curie                               
+## Copyright (c) 2015-2018 Institut Curie                               
 ## Author(s): Nicolas Servant, Eric Viara
 ## Contact: nicolas.servant@curie.fr
 ## This software is distributed without any guarantee under the terms of the BSD-3 licence.
 ## See the LICENCE file for details
 
-## Init
-dir=$(dirname $0)
-MODE='global'
-
-## Get args
-while [ $# -gt 0 ]
-do
-    case "$1" in
-	(-c) conf_file=$2; shift;;
-	(-l) MODE='local'; shift;;
-	(-p) FASTQLIST=$2; shift;;
-	(-u) UNMAP=1; shift;;
-	(-h) usage;;
-	(--) shift; break;;
-	(-*) echo "$0: error - unrecognized option $1" 1>&2; exit 1;;
-	(*)  break;;
-    esac
-    shift
-done
-
-## Read configuration files
-CONF=$conf_file . $dir/hic.inc.sh
-
 ## Bowtie2 wrapper
-## Global Alignment
-global_align()
+## Step1 mapping
+end_to_end_align()
 {
-    local sample_dir="$1"
-    local file="$2"
-    local prefix="$3"
-    local unmap="$4"
-    local filtunmap="$5"
-    local cmd
-    echo ${file} >> ${LOGFILE}
-    
-    echo "Running bowtie on full length reads ..."
+    local odir="$1"
+    local infile="$2"
+    local unmap="$3"
+    local filtunmap="$4"
+    local ldir="$5"
     
     ## Check mapping options
     if [[ -z ${BOWTIE2_GLOBAL_OPTIONS} ]]; then
-	echo "Mapping step1 options not defined. Exit"
+	echo "Error: Mapping step1 options not defined. Exit"
 	exit -1
     fi
     
     ## Output
-    mkdir -p ${BOWTIE2_GLOBAL_OUTPUT_DIR}/${sample_dir}
-    
-    ## Logs
-    LDIR=${LOGS_DIR}/${sample_dir}
-    mkdir -p ${LDIR}
+    prefix=$(basename ${infile} | sed -e 's/.fastq\(.gz\)*$//')
     
     ## Unmapped reads
     if [[ $unmap == 1 ]]; then
-	BOWTIE2_GLOBAL_OPTIONS=${BOWTIE2_GLOBAL_OPTIONS}" --un ${BOWTIE2_GLOBAL_OUTPUT_DIR}/${sample_dir}/${prefix}_${REFERENCE_GENOME}.bwt2glob.unmap.fastq"
+	BOWTIE2_GLOBAL_OPTIONS=${BOWTIE2_GLOBAL_OPTIONS}" --un ${odir}/${prefix}_${REFERENCE_GENOME}.bwt2glob.unmap.fastq"
     fi
     
     ## Check for gz files
-    if [[ ! -e $file &&  -e $file.gz ]]; then
-	file=$file.gz
+    if [[ ! -e $infile && -e $infile.gz ]]; then
+	infile=$infile.gz
     fi
     
     ## Run bowtie
@@ -75,59 +44,76 @@ global_align()
 	bwt_cpu=$(( $N_CPU / 2 ))
     fi
     
-    echo "##HiC-Pro mapping" > ${LDIR}/bowtie_${prefix}_global_${REFERENCE_GENOME}.log
-    cmd="${BOWTIE2_PATH}/bowtie2 ${BOWTIE2_GLOBAL_OPTIONS} --rg-id BMG --rg SM:${prefix} --${FORMAT}-quals -p ${N_CPU} -x ${BOWTIE2_IDX} -U ${file} 2>> ${LDIR}/bowtie_${prefix}_global_${REFERENCE_GENOME}.log"
+    echo "##HiC-Pro mapping" > ${ldir}/${prefix}_bowtie2.log
+    cmd="${BOWTIE2_PATH}/bowtie2 ${BOWTIE2_GLOBAL_OPTIONS} --rg-id BMG --rg SM:${prefix} -p ${N_CPU} -x ${BOWTIE2_IDX} -U ${infile} 2>> ${ldir}/${prefix}_bowtie2.log"
     if [[ $filtunmap == 1 ]]; then
-	cmd=$cmd"| ${SAMTOOLS_PATH}/samtools view -F 4 -bS - > ${BOWTIE2_GLOBAL_OUTPUT_DIR}/${sample_dir}/${prefix}_${REFERENCE_GENOME}.bwt2glob.bam"
+	cmd=$cmd"| ${SAMTOOLS_PATH}/samtools view -F 4 -bS - > ${odir}/${prefix}_${REFERENCE_GENOME}.bwt2glob.bam"
     else
-	cmd=$cmd"> ${BOWTIE2_GLOBAL_OUTPUT_DIR}/${sample_dir}/${prefix}_${REFERENCE_GENOME}.bwt2glob.bam"
+	cmd=$cmd"> ${odir}/${prefix}_${REFERENCE_GENOME}.bwt2glob.bam"
     fi
     
-    exec_cmd $cmd
+    exec_cmd $cmd 
 }
 
+## Bowtie2
 ## Trimmed reads Alignment
-local_align()
+cut_and_align()
 {
-    local sample_dir="$1"
-    local file="$2"
-    local prefix="$3"
-    local unmap="$4"
-    local cmd
+    local odir="$1"
+    local infile="$2"
+    local unmap="$3"
+    local ldir="$4"
     
-    echo "Running bowtie on trimmed reads ..."
-
     ## Check mapping options
     if [[ -z ${BOWTIE2_LOCAL_OPTIONS} ]]; then
 	echo "Mapping step2 options not defined. Exit"
 	exit -1
     fi
-    
-    mkdir -p ${BOWTIE2_LOCAL_OUTPUT_DIR}/${sample_dir}
-    
-    ## Logs
-    LDIR=${LOGS_DIR}/${sample_dir}
-    mkdir -p ${LDIR}
-    
+    ## Output
+    prefix=$(basename ${infile} | sed -e 's/.fastq\(.gz\)*$//')
+
     ## Starts trimming reads from the ligation site
-    tfile=`basename $file | sed -e s/.fastq$/_trimmed.fastq/`
-    if [[ ${RM_LOCAL_NO_CUTSITE} == 1 ]]; then
-	${SCRIPTS}/cutsite_trimming --fastq $file --cutsite ${LIGATION_SITE} --out ${BOWTIE2_GLOBAL_OUTPUT_DIR}/${sample_dir}/$tfile --rmuntrim > ${LDIR}/readsTrimming.log 2>&1
-    else
-	${SCRIPTS}/cutsite_trimming --fastq $file --cutsite ${LIGATION_SITE} --out ${BOWTIE2_GLOBAL_OUTPUT_DIR}/${sample_dir}/$tfile  > ${LDIR}/readsTrimming.log 2>&1
-    fi
+    tfile=`basename $infile | sed -e s/.fastq$/_trimmed.fastq/`
+    ##cmd="${SCRIPTS}/cutsite_trimming --fastq $infile --cutsite ${LIGATION_SITE} --out ${odir}/$tfile --rmuntrim > ${ldir}/${prefix}_readsTrimming.log 2>&1"
+    cmd="${SCRIPTS}/cutsite_trimming --fastq $infile --cutsite ${LIGATION_SITE} --out ${odir}/$tfile  > ${ldir}/${prefix}_readsTrimming.log 2>&1"
+    exec_cmd "$cmd" 
     
     ## Unmapped reads
     if [[ $unmap == 1 ]]; then
-	BOWTIE2_LOCAL_OPTIONS=${BOWTIE2_LOCAL_OPTIONS}" --un ${BOWTIE2_LOCAL_OUTPUT_DIR}/${sample_dir}/${prefix}_${REFERENCE_GENOME}.bwt2glob.unmap.fastq"
+	BOWTIE2_LOCAL_OPTIONS=${BOWTIE2_LOCAL_OPTIONS}" --un ${odir}/${prefix}_${REFERENCE_GENOME}.bwt2glob.unmap.fastq"
     fi
     
     ## Run bowtie
-    echo "##HiC-Pro mapping" > ${LDIR}/bowtie_${prefix}_local.log
-    cmd="${BOWTIE2_PATH}/bowtie2 ${BOWTIE2_LOCAL_OPTIONS} --rg-id BML --rg SM:${prefix} --${FORMAT}-quals -p ${N_CPU} -x ${BOWTIE2_IDX} -U ${BOWTIE2_GLOBAL_OUTPUT_DIR}/${sample_dir}/${tfile} 2>> ${LDIR}/bowtie_${prefix}_local.log | ${SAMTOOLS_PATH}/samtools view -bS - > ${BOWTIE2_LOCAL_OUTPUT_DIR}/${sample_dir}/${prefix}_bwt2loc.bam"
-    exec_cmd "$cmd"
+    echo "##HiC-Pro mapping" > ${ldir}/${prefix}_bowtie2.log
+    cmd="${BOWTIE2_PATH}/bowtie2 ${BOWTIE2_LOCAL_OPTIONS} --rg-id BML --rg SM:${prefix} -p ${N_CPU} -x ${BOWTIE2_IDX} -U ${odir}/${tfile} 2>> ${ldir}/${prefix}_bowtie2.log | ${SAMTOOLS_PATH}/samtools view -bS - > ${odir}/${prefix}_bwt2loc.bam"
+    exec_cmd "$cmd" 
 }
 
+
+## Init
+dir=$(dirname $0)
+MODE='step1'
+UNMAP=0
+
+## Get args
+while [ $# -gt 0 ]
+do
+    case "$1" in
+	(-c) conf_file=$2; shift;;
+	(-m) MODE=$2; shift;;
+	(-p) FASTQLIST=$2; shift;;
+	(-u) UNMAP=1; shift;;
+	(-h) usage;;
+	(--) shift; break;;
+	(-*) echo "$0: error - unrecognized option $1" 1>&2; exit 1;;
+	(*)  break;;
+    esac
+    shift
+done
+
+
+## Read configuration files
+CONF=$conf_file . $dir/hic.inc.sh
 
 ## If the step 2 is not run - do not filter the BAM
 if [[ -z $LIGATION_SITE ]]; then
@@ -136,61 +122,60 @@ else
     FILT_UNMAP=1
 fi
 
-if [[ ${MODE} == 'global' ]]; then
+if [[ ${MODE} == 'step1' ]]; then
     for r in $(get_fastq_for_bowtie_global)
     do
 	wasrun=1
        	R1=$r
 	R2=$(echo $r | get_R2)
-	
-	echo "-----------"
-	echo $R1
-	echo $R2
-	echo "-------------"
-	
-	#if [[ ! -e $R1 || ! -e $R2 ]]; then
-	#    echo "error - input files not found." >&2
-	#    exit 1
-	#fi
-	
 	sample_dir=$(get_sample_dir $r)
-	prefix1=$(basename ${R1} | sed -e 's/.fastq\(.gz\)*$//')
-	prefix2=$(basename ${R2} | sed -e 's/.fastq\(.gz\)*$//')
+
+	## Ouput
+	odir=${BOWTIE2_GLOBAL_OUTPUT_DIR}/${sample_dir}
+	mkdir -p $odir
 	
-	global_align "$sample_dir" "$R1" "$prefix1" "$UNMAP" "$FILT_UNMAP"&
+	## Logs
+	ldir=${LOGS_DIR}/${sample_dir}
+	mkdir -p ${ldir}
+
+	echo "Logs: ${ldir}/mapping_step1.log"
+	
+	end_to_end_align ${odir} ${R1} ${UNMAP} ${FILT_UNMAP} ${ldir} >> ${ldir}/mapping_step1.log & 
 	pid1=$!
-	global_align "$sample_dir" "$R2" "$prefix2" "$UNMAP" "$FILT_UNMAP"&
+	end_to_end_align ${odir} ${R2} ${UNMAP} ${FILT_UNMAP} ${ldir} >> ${ldir}/mapping_step1.log &
 	pid2=$!
 	
-	wait $pid1 $pid2 || die "Error in Bowtie alignment"
+	wait $pid1 $pid2 || die "Error in reads alignment - Exit"
     done
     if [[ $wasrun != 1 ]]; then
 	echo "Nothing to align ! Please check input files and R1/R2 extension." >&2
 	exit 1
     fi
-elif [[ ${MODE} == 'local' ]]; then
+elif [[ ${MODE} == 'step2' ]]; then
     if [[ ! -z $LIGATION_SITE ]]; then
 	for r in $(get_fastq_for_bowtie_local)
 	do
 	    wasrun=1
 	    R1=$r
-	    R2=$(echo $r | get_R2)
-	    
-	    echo "-----------"
-	    echo $R1
-	    echo $R2
-	    echo "-------------"
-	    
+	    R2=$(echo $r | get_R2)	    	    
 	    sample_dir=$(get_sample_dir $r)
-	    prefix1=$(basename ${R1} | sed -e 's/.fastq\(.gz\)*$//')
-	    prefix2=$(basename ${R2} | sed -e 's/.fastq\(.gz\)*$//')
+
+	    ## Ouput
+	    odir=${BOWTIE2_LOCAL_OUTPUT_DIR}/${sample_dir}
+	    mkdir -p $odir
+
+	    ## Logs
+	    ldir=${LOGS_DIR}/${sample_dir}
+	    mkdir -p ${ldir}
+
+	    echo "Logs: ${ldir}/mapping_step2.log"
 	    
-	    local_align "$sample_dir" "$R1" "$prefix1" "$UNMAP"&
+	    cut_and_align ${odir} ${R1} ${UNMAP} ${ldir} >> ${ldir}/mapping_step2.log &
 	    pid1=$!
-	    local_align "$sample_dir" "$R2" "$prefix2" "$UNMAP"&
+	    cut_and_align ${odir} ${R2} ${UNMAP} ${ldir} >> ${ldir}/mapping_step2.log &
 	    pid2=$!
 	    
-	    wait $pid1 $pid2 || die "Error in Bowtie alignment"
+	    wait $pid1 $pid2 || die "Error in reads alignment - Exit"
 	done
 	if [[ $wasrun != 1 ]]; then
 	    echo "Nothing to align ! Please check input files and R1/R2 extension." >&2
