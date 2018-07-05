@@ -795,20 +795,20 @@ static int build_matrix_init(Matrix& matrix, const char* ifile, std::ifstream& i
   }
 
   std::string ybedfile = oprefix + "_ord.bed";
-  if (whole_genome) {
-    std::string xbedlink;
-    size_t pos = xbedfile.rfind('/');
-    if (pos != std::string::npos) {
-      xbedlink = xbedfile.substr(pos+1);
-    } else {
-      xbedlink = xbedfile;
-    }
-    unlink(ybedfile.c_str());
-    if (symlink(xbedlink.c_str(), ybedfile.c_str())) {
-      std::cerr << prog << " cannot created link: " << ybedfile << "\n";
-      return 1;
-    }
-  } else {
+  if (!whole_genome) {
+    //std::string xbedlink;
+    //size_t pos = xbedfile.rfind('/');
+    //if (pos != std::string::npos) {
+    //  xbedlink = xbedfile.substr(pos+1);
+    //} else {
+    //  xbedlink = xbedfile;
+    //}
+    //unlink(ybedfile.c_str());
+    //if (symlink(xbedlink.c_str(), ybedfile.c_str())) {
+    //  std::cerr << prog << " cannot created link: " << ybedfile << "\n";
+    //  return 1;
+    //}
+    //} else {
     ybedfs.open(ybedfile);
     if (ybedfs.bad() || ybedfs.fail()) {
       std::cerr << prog << " cannot open file: " << ybedfile << " for writing\n";

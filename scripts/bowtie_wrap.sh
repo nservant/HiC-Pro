@@ -85,6 +85,7 @@ cut_and_align()
     
     ## Run bowtie
     echo "##HiC-Pro mapping" > ${ldir}/${prefix}_bowtie2.log
+
     cmd="${BOWTIE2_PATH}/bowtie2 ${BOWTIE2_LOCAL_OPTIONS} --rg-id BML --rg SM:${prefix} -p ${N_CPU} -x ${BOWTIE2_IDX} -U ${odir}/${tfile} 2>> ${ldir}/${prefix}_bowtie2.log | ${SAMTOOLS_PATH}/samtools view -bS - > ${odir}/${prefix}_bwt2loc.bam"
     exec_cmd "$cmd" 
 }

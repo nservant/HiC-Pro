@@ -62,10 +62,12 @@ fi
 for RES_FILE_NAME in ${DATA_DIR}/*
 do
     RES_FILE_NAME=$(basename $RES_FILE_NAME)
-    ## Logs
-    LDIR=${LOGS_DIR}/${RES_FILE_NAME}
-    mkdir -p ${LDIR}
 
+    ## Logs
+    ldir=${LOGS_DIR}/${RES_FILE_NAME}
+    mkdir -p ${ldir}
+    echo "Logs: ${ldir}/build_raw_maps.log"
+    
     if [ -d ${DATA_DIR}/${RES_FILE_NAME} ]; then
 	MATRIX_DIR=${MAPC_OUTPUT}/matrix/${RES_FILE_NAME}/raw
 	for bsize in ${BIN_SIZE}
@@ -83,21 +85,25 @@ do
 	    fi
 	    
 	    mkdir -p ${MATRIX_DIR}/${bsize}
-
+	    echo "## Generate contact maps at $bsize resolution ..." >> ${ldir}/build_raw_maps.log
+	    
 	    ## Build haplotype contact maps if specified
 	    if [[ ! -z ${ALLELE_SPECIFIC_SNP} ]]; then
-	    	cat ${DATA_DIR}/${RES_FILE_NAME}/${RES_FILE_NAME}_allValidPairs_G1 | ${SCRIPTS}/build_matrix --matrix-format ${MATRIX_FORMAT} --binsize ${bsize} --chrsizes $GENOME_SIZE_FILE --ifile /dev/stdin --oprefix ${MATRIX_DIR}/${bsize}/${RES_FILE_NAME}_${bsize}_G1 2> ${LDIR}/build_raw_maps_G1.log
-		cat ${DATA_DIR}/${RES_FILE_NAME}/${RES_FILE_NAME}_allValidPairs_G2 | ${SCRIPTS}/build_matrix --matrix-format ${MATRIX_FORMAT} --binsize ${bsize} --chrsizes $GENOME_SIZE_FILE --ifile /dev/stdin --oprefix ${MATRIX_DIR}/${bsize}/${RES_FILE_NAME}_${bsize}_G2 2> ${LDIR}/build_raw_maps_G2.log
-
+	    	cmd="cat ${DATA_DIR}/${RES_FILE_NAME}/${RES_FILE_NAME}_allValidPairs_G1 | ${SCRIPTS}/build_matrix --matrix-format ${MATRIX_FORMAT} --binsize ${bsize} --chrsizes $GENOME_SIZE_FILE --ifile /dev/stdin --oprefix ${MATRIX_DIR}/${bsize}/${RES_FILE_NAME}_${bsize}_G1"
+		exec_cmd $cmd >> ${ldir}/build_raw_maps.log 2>&1
+		cmd="cat ${DATA_DIR}/${RES_FILE_NAME}/${RES_FILE_NAME}_allValidPairs_G2 | ${SCRIPTS}/build_matrix --matrix-format ${MATRIX_FORMAT} --binsize ${bsize} --chrsizes $GENOME_SIZE_FILE --ifile /dev/stdin --oprefix ${MATRIX_DIR}/${bsize}/${RES_FILE_NAME}_${bsize}_G2"
+		exec_cmd $cmd >> ${ldir}/build_raw_maps.log  2>&1
+		
 	    else
 		## Build normal diploid maps
 		## RS resolution
 		if [[ ${bsize} == "rfbin" ]]; then
-		    cat ${DATA_DIR}/${RES_FILE_NAME}/${RES_FILE_NAME}_allValidPairs | ${SCRIPTS}/build_matrix --binfile ${GENOME_FRAGMENT_FILE} --chrsizes $GENOME_SIZE_FILE --ifile /dev/stdin --oprefix ${MATRIX_DIR}/${bsize}/${RES_FILE_NAME}_${bsize} --matrix-format ${MATRIX_FORMAT} 2> ${LDIR}/build_raw_maps.log
-		## Bin resolution
+		    cmd="cat ${DATA_DIR}/${RES_FILE_NAME}/${RES_FILE_NAME}_allValidPairs | ${SCRIPTS}/build_matrix --binfile ${GENOME_FRAGMENT_FILE} --chrsizes $GENOME_SIZE_FILE --ifile /dev/stdin --oprefix ${MATRIX_DIR}/${bsize}/${RES_FILE_NAME}_${bsize} --matrix-format ${MATRIX_FORMAT}"
+		    exec_cmd $cmd >> ${ldir}/build_raw_maps.log  2>&1
+		    ## Bin resolution
 		else
-		    #echo " cat ${DATA_DIR}/${RES_FILE_NAME}/${RES_FILE_NAME}_allValidPairs | ${SCRIPTS}/build_matrix --binsize ${bsize} --chrsizes $GENOME_SIZE_FILE --ifile /dev/stdin --oprefix ${MATRIX_DIR}/${bsize}/${RES_FILE_NAME}_${bsize} --matrix-format ${MATRIX_FORMAT} 2> ${LDIR}/build_raw_maps.log"
-		    cat ${DATA_DIR}/${RES_FILE_NAME}/${RES_FILE_NAME}_allValidPairs | ${SCRIPTS}/build_matrix --binsize ${bsize} --chrsizes $GENOME_SIZE_FILE --ifile /dev/stdin --oprefix ${MATRIX_DIR}/${bsize}/${RES_FILE_NAME}_${bsize} --matrix-format ${MATRIX_FORMAT} 2> ${LDIR}/build_raw_maps.log
+		    cmd="cat ${DATA_DIR}/${RES_FILE_NAME}/${RES_FILE_NAME}_allValidPairs | ${SCRIPTS}/build_matrix --binsize ${bsize} --chrsizes $GENOME_SIZE_FILE --ifile /dev/stdin --oprefix ${MATRIX_DIR}/${bsize}/${RES_FILE_NAME}_${bsize} --matrix-format ${MATRIX_FORMAT}"
+		    exec_cmd $cmd >> ${ldir}/build_raw_maps.log  2>&1
 		fi
 	    fi
 	done

@@ -33,7 +33,6 @@ PAIR2_EXT = _R2
 ## Alignment options
 #######################################################################
 
-FORMAT = phred33
 MIN_MAPQ = 0
 
 BOWTIE2_IDX_PATH = 

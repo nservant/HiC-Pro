@@ -1,7 +1,7 @@
 #!/bin/bash
 
 ## HiC-Pro
-## Copyleft 2015 Institut Curie                               
+## Copyleft 2015-2018 Institut Curie                               
 ## Author(s): Nicolas Servant, Eric Viara
 ## Contact: nicolas.servant@curie.fr
 ## This software is distributed without any guarantee under the terms of the GNU General
@@ -36,27 +36,26 @@ mapping_combine()
     local file="$2"
     local prefix=$(echo ${sample_dir}/$(basename $file) | sed -e 's/.bwt2glob.bam//')
     local tmp_prefix=$(basename $prefix)
-    echo ${prefix} >> ${LOGFILE}
 
     mkdir -p ${BOWTIE2_FINAL_OUTPUT_DIR}/${sample_dir}    
 
     ## Merge local and global alignment
     if [[ -e ${BOWTIE2_GLOBAL_OUTPUT_DIR}/${prefix}.bwt2glob.bam && -e ${BOWTIE2_LOCAL_OUTPUT_DIR}/${prefix}.bwt2glob.unmap_bwt2loc.bam ]]; then
 	
-	cmd="${SAMTOOLS_PATH}/samtools merge -@ ${N_CPU} -n -f ${BOWTIE2_FINAL_OUTPUT_DIR}/${prefix}.bwt2merged.bam ${BOWTIE2_GLOBAL_OUTPUT_DIR}/${prefix}.bwt2glob.bam ${BOWTIE2_LOCAL_OUTPUT_DIR}/${prefix}.bwt2glob.unmap_bwt2loc.bam 2> ${LOGFILE}"
-	exec_cmd $cmd
+	cmd="${SAMTOOLS_PATH}/samtools merge -@ ${N_CPU} -n -f ${BOWTIE2_FINAL_OUTPUT_DIR}/${prefix}.bwt2merged.bam ${BOWTIE2_GLOBAL_OUTPUT_DIR}/${prefix}.bwt2glob.bam ${BOWTIE2_LOCAL_OUTPUT_DIR}/${prefix}.bwt2glob.unmap_bwt2loc.bam"
+	exec_cmd $cmd 2>&1
 
         ## Sort merge file. In theory, should be perform by "merge -n", but do not work in some cases ... depending on read name ?
 	cmd="${SAMTOOLS_PATH}/samtools sort -@ ${N_CPU} -n -T ${TMP_DIR}/$tmp_prefix -o ${BOWTIE2_FINAL_OUTPUT_DIR}/${prefix}.bwt2merged.sorted.bam ${BOWTIE2_FINAL_OUTPUT_DIR}/${prefix}.bwt2merged.bam 2> ${LOGFILE}"
-        exec_cmd $cmd
+        exec_cmd $cmd 2>&1
     
 	cmd="mv ${BOWTIE2_FINAL_OUTPUT_DIR}/${prefix}.bwt2merged.sorted.bam ${BOWTIE2_FINAL_OUTPUT_DIR}/${prefix}.bwt2merged.bam"
-        exec_cmd $cmd
+        exec_cmd $cmd 2>&1
     
     elif [[ ${LIGATTION_SITE} == "" ]]; then
 	
 	cmd="ln -f -s ../../bwt2_global/${prefix}.bwt2glob.bam ${BOWTIE2_FINAL_OUTPUT_DIR}/${prefix}.bwt2merged.bam "
-	exec_cmd $cmd
+	exec_cmd $cmd 2>&1
     else
 	die "Error - Mapping files not found"
     fi
@@ -69,12 +68,12 @@ do
     R2=$(echo $r | get_R2)
     sample_dir=$(get_sample_dir $r)
 
-    echo "-----------------"
-    echo "Combine $R1 and $R2 files ..."
-
+    ## Logs
+    ldir=${LOGS_DIR}/${sample_dir}
+    echo "Logs: $ldir/mapping_combine.log"
     
-    mapping_combine $sample_dir $R1 &
-    mapping_combine $sample_dir $R2 &
+    mapping_combine $sample_dir $R1 >> ${ldir}/mapping_combine.log &
+    mapping_combine $sample_dir $R2 >> ${ldir}/mapping_combine.log &
     
     wait
 done

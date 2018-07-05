@@ -80,24 +80,27 @@ configure:  config_check
 ##
 ######################################
 
-## Global Alignement
+## End-to-end Alignement
 bowtie_global:  config_check
 	@echo "--------------------------------------------" 
 	@date 
 	@echo "Bowtie2 alignment step1 ..." 
-	$(SCRIPTS)/bowtie_wrap.sh -c $(CONFIG_FILE) -u >> $(LOGFILE)
+	@$(SCRIPTS)/bowtie_wrap.sh -c $(CONFIG_FILE) -m step1 -u
+	@echo
 
 ######################################
 ##  Bowtie2 Local Alignment
 ##
 ######################################
 
-## Local Alignement
+## Cut-and-map Alignement
 bowtie_local:  config_check
 	@echo "--------------------------------------------" 
 	@date 
-	@echo "Bowtie2 alignment step2 ..." 
-	$(SCRIPTS)/bowtie_wrap.sh -c $(CONFIG_FILE) -l >> $(LOGFILE)
+	@echo "Bowtie2 alignment step2 ..."
+	@$(SCRIPTS)/bowtie_wrap.sh -c $(CONFIG_FILE) -m step2
+	@echo
+
 
 ######################################
 ## Merge Bowtie2 local and global mapping
@@ -108,23 +111,25 @@ bowtie_local:  config_check
 bowtie_combine:  config_check
 	@echo "--------------------------------------------" 
 	@date 
-	@echo "Combine both alignment ..."
-	$(SCRIPTS)/bowtie_combine.sh -c $(CONFIG_FILE) >> $(LOGFILE)
+	@echo "Combine R1/R2 alignment files ..."
+	@$(SCRIPTS)/bowtie_combine.sh -c $(CONFIG_FILE) 
+	@echo
 
 ## Compute mapping statistics
 mapping_stat:  config_check
 	@echo "--------------------------------------------" 
 	@date 
-	@echo "Bowtie2 mapping statistics for R1 and R2 tags ..." 
-	$(SCRIPTS)/mapping_stat.sh -c $(CONFIG_FILE) >> $(LOGFILE)
+	@echo "Mapping statistics for R1 and R2 tags ..." 
+	@$(SCRIPTS)/mapping_stat.sh -c $(CONFIG_FILE)
+	@echo
 
 mapping_clean: config_check
 	@echo "--------------------------------------------" 
 	@date 
 	@echo "Cleaning mapping files ..."
-	rm -rf $(BOWTIE2_OUTPUT_DIR)/bwt2_global
-	rm -rf $(BOWTIE2_OUTPUT_DIR)/bwt2_local
-
+	@rm -rf $(BOWTIE2_OUTPUT_DIR)/bwt2_global
+	@rm -rf $(BOWTIE2_OUTPUT_DIR)/bwt2_local
+	@echo
 
 ######################################
 ## Hi-C processing 
@@ -136,41 +141,45 @@ bowtie_pairing:  config_check
 	@echo "--------------------------------------------"
 	@date 
 	@echo "Pairing of R1 and R2 tags ..." 
-	$(SCRIPTS)/bowtie_pairing.sh -c $(CONFIG_FILE) >> $(LOGFILE)
+	@$(SCRIPTS)/bowtie_pairing.sh -c $(CONFIG_FILE)
+	@echo
 
 ## Assign alignments to restriction fragments
 mapped_2hic_fragments:  config_check
 	@echo "--------------------------------------------"
 	@date 
 	@echo "Assign alignments to restriction fragments ..." 
-	$(SCRIPTS)/mapped_2hic_fragments.sh -c $(CONFIG_FILE) >> $(LOGFILE)
+	@$(SCRIPTS)/mapped_2hic_fragments.sh -c $(CONFIG_FILE)
+	@echo
 
 ## Combine multiple BAM files from the same sample, and remove duplicates
 merge_valid_interactions:  config_check
 	@echo "--------------------------------------------" 
 	@date 
-	@echo "Merge multiple files from the same sample ..." 
-	$(SCRIPTS)/merge_valid_interactions.sh -c $(CONFIG_FILE) >> $(LOGFILE)
+	@echo "Merge chunks from the same sample ..." 
+	@$(SCRIPTS)/merge_valid_interactions.sh -c $(CONFIG_FILE)
+	@echo
 
 merge_allstat: config_check
 	@echo "--------------------------------------------" 
 	@date 
 	@echo "Merge stat files per sample ..." 
-	$(SCRIPTS)/merge_stats.sh -c $(CONFIG_FILE) >> $(LOGFILE)
-
+	@$(SCRIPTS)/merge_stats.sh -c $(CONFIG_FILE)
+	@echo
 
 build_raw_maps:  config_check
 	@echo "--------------------------------------------" 
 	@date 
 	@echo "Generate binned matrix files ..." 
-	$(SCRIPTS)/build_raw_maps.sh -c $(CONFIG_FILE)
+	@$(SCRIPTS)/build_raw_maps.sh -c $(CONFIG_FILE)
+	@echo
 
 hic_qc:
 	@echo "--------------------------------------------" 
 	@date 
 	@echo "Run quality checks for all samples ..."
-	$(SCRIPTS)/make_plots.sh -c $(CONFIG_FILE) -p "all" >> $(LOGFILE)
-
+	@$(SCRIPTS)/make_plots.sh -c $(CONFIG_FILE) -p "all"
+	@echo
 
 ######################################
 ## Normalization
@@ -182,5 +191,5 @@ ice_norm:
 	@echo "--------------------------------------------" 
 	@date 
 	@echo "Run ICE Normalization ..." 
-	$(SCRIPTS)/ice_norm.sh -c $(CONFIG_FILE) >> $(LOGFILE) 
+	@$(SCRIPTS)/ice_norm.sh -c $(CONFIG_FILE)
 
