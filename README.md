@@ -56,8 +56,9 @@ HiC-Pro -h
 
 The HiC-Pro pipeline requires the following dependencies :
 
-- The `bowtie2 <http://bowtie-bio.sourceforge.net/bowtie2/index.shtml>`_ mapper
-- Python (>2.7) with *pysam (>=0.8.3)*, *bx-python(>=0.5.0)*, *numpy(>=1.8.2)*, and *scipy(>=0.15.1)* libraries. **Note that the current version does not support python 3**
+- The [bowtie2](http://bowtie-bio.sourceforge.net/bowtie2/index.shtml) mapper
+- Python (>2.7) with *pysam (>=0.8.3)*, *bx-python(>=0.5.0)*, *numpy(>=1.8.2)*, and *scipy(>=0.15.1)* libraries.  
+**Note that the current version does not support python 3**
 - R with the *RColorBrewer* and *ggplot2 (>2.2.1)* packages
 - g++ compiler
 - samtools (>1.1)
@@ -84,7 +85,7 @@ cd HiC-Pro-master
 make CONFIG_SYS=config-install.txt install
 ```
 
-Note that if some of these dependencies are not installed (i.e. not detected in the $PATH), HiC-Pro will try to install them.
+Note that if some of these dependencies are not installed (i.e. not detected in the $PATH), HiC-Pro will try to install them.  
 You can also edit the *config-install.txt* file and manually defined the paths to dependencies.
 
 
@@ -98,17 +99,14 @@ You can also edit the *config-install.txt* file and manually defined the paths t
 | CLUSTER_SYS   | Scheduler to use for cluster submission. Must be TORQUE, SGE, SLURM or LSF    |
 
 
+## Annotation Files
 
-Annotation Files
-================
+In order to process the raw data, HiC-Pro requires three annotation files. Note that the pipeline is provided with some Human and Mouse annotation files.  
+**Please be sure that the chromosome names are the same than the ones used in your bowtie indexes !**
 
-In order to process the raw data, HiC-Pro requires three annotation files. Note that the pipeline is provided with some Human and Mouse annotation files.
-Please be sure that the chromosome names are the same than the ones used in your bowtie indexes !
+- **A BED file** of the restriction fragments after digestion. This file depends both of the restriction enzyme and the reference genome. See the [FAQ](FAQ.md) and the [HiC-Pro utilities](UTILS.md) for details about how to generate this file. A few annotation files are provided with the HiC-Pro sources as examples.
 
-7. **A BED file** of the restriction fragments after digestion. This file depends both of the restriction enzyme and the reference genome. See the :ref:`FAQ <FAQ>` and the :ref:`HiC-Pro utilities <UTILS>` for details about how to generate this file. A few annotation files are provided with the HiC-Pro sources as examples.
-
-::
-
+```
    chr1   0       16007   HIC_chr1_1    0   +
    chr1   16007   24571   HIC_chr1_2    0   +
    chr1   24571   27981   HIC_chr1_3    0   +
@@ -120,11 +118,11 @@ Please be sure that the chromosome names are the same than the ones used in your
    chr1   38369   38791   HIC_chr1_9    0   +
    chr1   38791   39255   HIC_chr1_10   0   +
    (...)
+```
 
-8. **A table file** of chromosomes' size. This file can be easily find on the UCSC genome browser. Of note, pay attention to the contigs or scaffolds, and be aware that HiC-pro will generate a map per chromosomes pair. For model organisms such as Human or Mouse, which are well annotated, we usually recommand to remove all scaffolds.  
+- **A table file** of chromosomes' size. This file can be easily find on the UCSC genome browser. Of note, pay attention to the contigs or scaffolds, and be aware that HiC-pro will generate a map per chromosomes pair. For model organisms such as Human or Mouse, which are well annotated, we usually recommand to remove all scaffolds.  
 
-::
-
+```
    chr1    249250621
    chr2    243199373
    chr3    198022430
@@ -136,16 +134,16 @@ Please be sure that the chromosome names are the same than the ones used in your
    chr9    141213431
    chr10   135534747
    (...)
+```
 
-9. **The bowtie2 indexes**. See `the bowtie2 manual page <http://bowtie-bio.sourceforge.net/bowtie2/index.shtml>`_ for details about how to create such indexes.
+- **The bowtie2 indexes**. See the [bowtie2 manual page](http://bowtie-bio.sourceforge.net/bowtie2/index.shtml) for details about how to create such indexes.
 
-How to use it ?
-===============
 
-10. First have a look at the help message !
+## How to use it ?
 
-.. code-block:: guess
+First have a look at the help message !
 
+```
   HiC-Pro --help
   usage : HiC-Pro -i INPUT -o OUTPUT -c CONFIG [-s ANALYSIS_STEP] [-p] [-h] [-v]
   Use option -h|--help for more information
@@ -166,12 +164,13 @@ How to use it ?
       ice_norm: run ICE normalization on contact maps
    [-h|--help]: help
    [-v|--version]: version
+```
 
-11. Copy and edit the configuration file *'config-hicpro.txt'* in your local folder. See the :ref:`manual <MANUAL>` for details about the configuration file
-12. Put all input files in a rawdata folder. The input files have to be organized with one folder per sample, with ;
+- Copy and edit the configuration file *'config-hicpro.txt'* in your local folder. See the [manual](MANUAL.md) for details about the configuration file
 
-::
+- Put all input files in a rawdata folder. The input files have to be organized with **one folder per sample**, such as;
 
+```
    + PATH_TO_MY_DATA
      + sample1
        ++ file1_R1.fastq.gz
@@ -181,115 +180,126 @@ How to use it ?
        ++ file1_R1.fastq.gz
        ++ file1_R2.fastq.gz
      *...
+```
 
+- Run HiC-Pro on your laptop in standalone model
 
-3. Run HiC-Pro
-
-* **On your laptop**
-
-.. code-block:: guess
-
+```
     MY_INSTALL_PATH/bin/HiC-Pro -i FULL_PATH_TO_DATA_FOLDER -o FULL_PATH_TO_OUTPUTS -c MY_LOCAL_CONFIG_FILE
+```
 
+  - Run HiC-Pro on a cluster (TORQUE/SGE/SLURM/LSF)
 
-* **Using a cluster (TORQUE/SGE/SLURM/LSF)**
-
-.. code-block:: guess
-
+```
    MY_INSTALL_PATH/bin/HiC-Pro -i FULL_PATH_TO_DATA_FOLDER -o FULL_PATH_TO_OUTPUTS -c MY_LOCAL_CONFIG_FILE -p
+```
 
+In the latter case, you will have the following message :
 
-
-You will get the following message :
-
-.. code-block:: guess
-
+```
   Please run HiC-Pro in two steps :
   1- The following command will launch the parallel workflow through 12 torque jobs:
   qsub HiCPro_step1.sh
   2- The second command will merge all outputs to generate the contact maps:
   qsub HiCPro_step2.sh
-
+```
 
 Execute the displayed command from the output folder:
 
-.. code-block:: guess
-
+```
   qsub HiCPro_step1.sh
-  774410[].torque.curie.fr
+```
 
+Once executed succesfully (may take several hours), run the step using:
 
-Then wait for the torque mails... :)
-Once executed succesfully (may take several hours), then type:
-
-.. code-block:: guess
-
+```
   qsub HiCPro_step2.sh
+```
 
+## Test Dataset
 
-Test Dataset
-============
-
-The test dataset and associated results are available at `https://zerkalo.curie.fr/partage/HiC-Pro/ <https://zerkalo.curie.fr/partage/HiC-Pro/>`_.
+The test dataset and associated results are available [here](https://zerkalo.curie.fr/partage/HiC-Pro/).
 Small fastq files (2M reads) extracted from the Dixon et al. 2012 paper are available for test.
 
-.. code-block:: guess
+```
+ ## Get the data. Will download a test_data folder and a configuration file
+ wget https://zerkalo.curie.fr/partage/HiC-Pro/HiCPro_testdata.tar.gz && tar -zxvf HiCPro_testdata.tar.gz
 
-   ## Get the data. Will download a test_data folder and a configuration file
-   wget https://zerkalo.curie.fr/partage/HiC-Pro/HiCPro_testdata.tar.gz && tar -zxvf HiCPro_testdata.tar.gz
+ ## Edit the configuration file and set the path to Human bowtie2 indexes
 
-   ## Edit the configuration file and set the path to Human bowtie2 indexes
+ ## Run HiC-Pro
+ time HICPRO_INSTALL_DIR/bin/HiC-Pro -c config_test_latest.txt -i test_data -o hicpro_latest_test
 
-   ## Run HiC-Pro
+ Run HiC-Pro 2.11.0-beta
+ --------------------------------------------
+ vendredi 13 juillet 2018, 14:55:21 (UTC+0200)
+ Bowtie2 alignment step1 ...
+ Logs: logs/dixon_2M_2/mapping_step1.log
+ Logs: logs/dixon_2M/mapping_step1.log
 
-   time HICPRO_INSTALL_DIR/bin/HiC-Pro -c config_test_latest.txt -i test_data -o hicpro_latest_test
+ --------------------------------------------
+ vendredi 13 juillet 2018, 14:56:06 (UTC+0200)
+ Bowtie2 alignment step2 ...
+ Logs: logs/dixon_2M_2/mapping_step2.log
+ Logs: logs/dixon_2M/mapping_step2.log
 
-   Run HiC-Pro 2.10.0
-   --------------------------------------------
-   vendredi 22 décembre 2017, 13:34:18 (UTC+0100)
-   Bowtie2 alignment step1 ...
-   /home/nservant/Apps/HiC-Pro_2.10.0/scripts/bowtie_wrap.sh -c /home/nservant/Desktop/hicpro_dev/test-op/config_test_latest.txt -u >> hicpro.log
-   --------------------------------------------
-   vendredi 22 décembre 2017, 13:34:55 (UTC+0100)
-   Bowtie2 alignment step2 ...
-   /home/nservant/Apps/HiC-Pro_2.10.0/scripts/bowtie_wrap.sh -c /home/nservant/Desktop/hicpro_dev/test-op/config_test_latest.txt -l >> hicpro.log
-   --------------------------------------------
-   vendredi 22 décembre 2017, 13:35:05 (UTC+0100)
-   Combine both alignment ...
-   /home/nservant/Apps/HiC-Pro_2.10.0/scripts/bowtie_combine.sh -c /home/nservant/Desktop/hicpro_dev/test-op/config_test_latest.txt >> hicpro.log
-   --------------------------------------------
-   vendredi 22 décembre 2017, 13:35:09 (UTC+0100)
-   Bowtie2 mapping statistics for R1 and R2 tags ...
-   /home/nservant/Apps/HiC-Pro_2.10.0/scripts/mapping_stat.sh -c /home/nservant/Desktop/hicpro_dev/test-op/config_test_latest.txt >> hicpro.log
-   --------------------------------------------
-   vendredi 22 décembre 2017, 13:35:10 (UTC+0100)
-   Pairing of R1 and R2 tags ...
-   /home/nservant/Apps/HiC-Pro_2.10.0/scripts/bowtie_pairing.sh -c /home/nservant/Desktop/hicpro_dev/test-op/config_test_latest.txt >> hicpro.log
-   --------------------------------------------
-   vendredi 22 décembre 2017, 13:35:16 (UTC+0100)
-   Assign alignments to restriction fragments ...
-   /home/nservant/Apps/HiC-Pro_2.10.0/scripts/mapped_2hic_fragments.sh -c /home/nservant/Desktop/hicpro_dev/test-op/config_test_latest.txt >> hicpro.log
-   --------------------------------------------
-   vendredi 22 décembre 2017, 13:35:45 (UTC+0100)
-   Merge multiple files from the same sample ...
-   /home/nservant/Apps/HiC-Pro_2.10.0/scripts/merge_valid_interactions.sh -c /home/nservant/Desktop/hicpro_dev/test-op/config_test_latest.txt >> hicpro.log
-   --------------------------------------------
-   vendredi 22 décembre 2017, 13:35:46 (UTC+0100)
-   Merge stat files per sample ...
-   /home/nservant/Apps/HiC-Pro_2.10.0/scripts/merge_stats.sh -c /home/nservant/Desktop/hicpro_dev/test-op/config_test_latest.txt >> hicpro.log
-   --------------------------------------------
-   vendredi 22 décembre 2017, 13:35:46 (UTC+0100)
-   Run quality checks for all samples ...
-   /home/nservant/Apps/HiC-Pro_2.10.0/scripts/make_plots.sh -c /home/nservant/Desktop/hicpro_dev/test-op/config_test_latest.txt -p "all" >> hicpro.log
-   --------------------------------------------
-   vendredi 22 décembre 2017, 13:35:55 (UTC+0100)
-   Generate binned matrix files ...
-   /home/nservant/Apps/HiC-Pro_2.10.0/scripts/build_raw_maps.sh -c /home/nservant/Desktop/hicpro_dev/test-op/config_test_latest.txt
-   --------------------------------------------
-   vendredi 22 décembre 2017, 13:35:56 (UTC+0100)
-   Run ICE Normalization ...
-   /home/nservant/Apps/HiC-Pro_2.10.0/scripts/ice_norm.sh -c /home/nservant/Desktop/hicpro_dev/test-op/config_test_latest.txt >> hicpro.log
+ --------------------------------------------
+ vendredi 13 juillet 2018, 14:56:15 (UTC+0200)
+ Combine R1/R2 alignment files ...
+ Logs: logs/dixon_2M_2/mapping_combine.log
+ Logs: logs/dixon_2M/mapping_combine.log
 
-   real1m38.855s
-   user3m13.344s
-   sys0m31.432s
+ --------------------------------------------
+ vendredi 13 juillet 2018, 14:56:20 (UTC+0200)
+ Mapping statistics for R1 and R2 tags ...
+ Logs: logs/dixon_2M_2/mapping_stats.log
+ Logs: logs/dixon_2M/mapping_stats.log
+
+ --------------------------------------------
+ vendredi 13 juillet 2018, 14:56:21 (UTC+0200)
+ Pairing of R1 and R2 tags ...
+ Logs: logs/dixon_2M_2/mergeSAM.log
+ Logs: logs/dixon_2M/mergeSAM.log
+
+ --------------------------------------------
+ vendredi 13 juillet 2018, 14:56:29 (UTC+0200)
+ Assign alignments to restriction fragments ...
+ Logs: logs/dixon_2M_2/mapped_2hic_fragments.log
+ Logs: logs/dixon_2M/mapped_2hic_fragments.log
+
+ --------------------------------------------
+ vendredi 13 juillet 2018, 14:57:09 (UTC+0200)
+ Merge chunks from the same sample ...
+ Logs: logs/dixon_2M/merge_valid_interactions.log
+ Logs: logs/dixon_2M_2/merge_valid_interactions.log
+
+ --------------------------------------------
+ vendredi 13 juillet 2018, 14:57:09 (UTC+0200)
+ Merge stat files per sample ...
+ Logs: logs/dixon_2M/merge_stats.log
+ Logs: logs/dixon_2M_2/merge_stats.log
+
+ --------------------------------------------
+ vendredi 13 juillet 2018, 14:57:10 (UTC+0200)
+ Run quality checks for all samples ...
+ Logs: logs/dixon_2M/make_Rplots.log
+ Logs: logs/dixon_2M_2/make_Rplots.log
+
+ --------------------------------------------
+ vendredi 13 juillet 2018, 14:57:22 (UTC+0200)
+ Generate binned matrix files ...
+ Logs: logs/dixon_2M/build_raw_maps.log
+ Logs: logs/dixon_2M_2/build_raw_maps.log
+
+ --------------------------------------------
+ vendredi 13 juillet 2018, 14:57:23 (UTC+0200)
+ Run ICE Normalization ...
+ Logs: logs/dixon_2M/ice_500000.log
+ Logs: logs/dixon_2M/ice_1000000.log
+ Logs: logs/dixon_2M_2/ice_500000.log
+ Logs: logs/dixon_2M_2/ice_1000000.log
+
+ real	2m5.660s
+ user	3m44.816s
+ sys	0m25.612s
+```
