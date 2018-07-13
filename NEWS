@@ -29,6 +29,8 @@ SIGNIFICANT USER-VISIBLE CHANGES
 
 BUG FIXES
 
+   o Fix bug in hicpro2higlass.sh - added option --balance if normalization is specified
+
    o Fix bug in read name when merging SAM files (issue #153)
 
    o Fix inversion between cis/long range contacts in plot_hic_contacts.R

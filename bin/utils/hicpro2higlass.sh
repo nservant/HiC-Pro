@@ -23,6 +23,35 @@
 ## sudo docker start higlass-container
 ## higlass will then be available at http://localhost:8888
 ##
+###########################
+## trap handler
+###########################
+function trap_error()
+{    
+    echo "Error: $1 - line $2 - exit status of last command: $?. Exit" >&2
+    exit 1
+}
+
+function trap_exit()
+{
+    ##Since bash-4.0 $LINENO is reset to 1 when the trap is triggered
+    if [ "$?" != "0" ]; then
+	echo "Error: exit status detected. Exit." >&2
+    fi
+
+    if [ -e ${tmp_dir} ]; then 
+	echo -e "Cleaning temporary folders ..." >&2
+	#/bin/rm -rf ${tmp_dir}; 
+    fi
+}
+
+trap 'trap_error "$0" "$LINENO"' ERR
+trap 'trap_exit' 0 1 2 3
+
+set -E ## export trap to functions
+set -o pipefail  ## trace ERR through pipes         
+#set -o errexit   ## set -e : exit the script if any statement returns a non-true return value
+
 
 function usage {
     echo -e "usage : hicpro2higlass -i INPUT -r RESOLUTION -c CHROMSIZE [-n] [-h]" ## [-b BINS]
@@ -156,7 +185,7 @@ if [[ $DATATYPE == "MATRIX" ]]; then
 
     echo -e "\nZoomify .cool file ..."
     if [[ $NORMALIZE == 1 ]]; then
-	cooler zoomify $out
+	cooler zoomify --balance $out
     else
 	cooler zoomify --no-balance $out
     fi
@@ -178,7 +207,7 @@ elif [[ $DATATYPE == "VALID" ]]; then
 
     echo -e "\nZoomify .cool file ..."
     if [[ $NORMALIZE == 1 ]]; then
-	cooler zoomify $out
+	cooler zoomify --balance $out
     else
 	cooler zoomify --no-balance $out
     fi
@@ -186,7 +215,7 @@ elif [[ $DATATYPE == "VALID" ]]; then
 fi
 
 ## clean
-/bin/rm -rf $tmp_dir
+#/bin/rm -rf $tmp_dir
 
 echo -e "\nCooler file generated with success ..."
 echo "Please copy the file $out in your Higlass input directory and run :"

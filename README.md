@@ -1,93 +1,102 @@
-.. _QS:
 
-.. Nicolas Servant
-.. HiC-Pro
-.. v2.10.0
-.. 17-12-22
+# HiC-Pro
 
-HiC-Pro Quick Start Guide
-*************************
+## An optimized and flexible pipeline for Hi-C data processing
 
-This page is just a quick start guide, please read the full `online manual <http://nservant.github.io/HiC-Pro/>`_ for more information !
+Find documentation and examples at [http://nservant.github.io/HiC-Pro/](http://nservant.github.io/HiC-Pro/)
 
-See NEWS for information about changes in this and previous versions
+For any question about HiC-Pro, please contact nicolas.servant@curie.fr or use the [HiC-Pro forum](https://groups.google.com/forum/#!forum/hic-pro)
 
-See LOGBOOK for details about the HiC-Pro developments
+## What is HiC-Pro ?
 
-See LICENSE for license information
-
-Where to get help ?
-====================
-
-For any question about HiC-Pro, please contact nicolas.servant@curie.fr or use the `HiC-Pro forum <https://groups.google.com/forum/#!forum/hic-pro>`_ !
-
-What is HiC-Pro ?
-=================
-
-| HiC-Pro was designed to process Hi-C data, from raw fastq files (paired-end Illumina data) to the normalized contact maps. Since version 2.7.0, HiC-Pro supports the main Hi-C protocols, including digestion protocols as well as protocols that do not require restriction enzyme such as DNase Hi-C. In practice, HiC-Pro can be used to process dilution Hi-C, in situ Hi-C, DNase Hi-C, Micro-C, capture-C, capture Hi-C or HiChip data.
-| The pipeline is flexible, scalable and optimized. It can operate either on a single laptop or on a computational cluster. HiC-Pro is sequential and each step of the workflow can be run independantly.
-| HiC-Pro includes a fast implementatation of the iterative correction method (see the `iced <https://github.com/hiclib/iced>`_ python library for more information).
-| In addition, HiC-Pro can use phasing data to build :ref:`allele specific contact maps <AS>`.
+HiC-Pro was designed to process Hi-C data, from raw fastq files (paired-end Illumina data) to normalized contact maps. It supports the main Hi-C protocols, including digestion protocols as well as protocols that do not require restriction enzymes such as DNase Hi-C. In practice, HiC-Pro was successfully applied to many data-sets including dilution Hi-C, in situ Hi-C, DNase Hi-C, Micro-C, capture-C, capture Hi-C or HiChip data.  
+The pipeline is flexible, scalable and optimized. It can operate either on a single laptop or on a computational cluster. HiC-Pro is sequential and each step of the workflow can be run independantly.  
+HiC-Pro includes a fast implementatation of the iterative correction method (see the [iced python package](https://github.com/hiclib/iced) for more information).
+Finally, HiC-Pro can use phasing data to build [allele-specific contact maps](AS.md).
 
 If you use HiC-Pro, please cite :
 
-HiC-Pro: An optimized and flexible pipeline for Hi-C processing. *Servant N., Varoquaux N., Lajoie BR., Viara E., Chen CJ., Vert JP., Dekker J., Heard E., Barillot E.* Genome Biology 2015, 16:259 doi:10.1186/s13059-015-0831-x
-`http://www.genomebiology.com/2015/16/1/259 <http://www.genomebiology.com/2015/16/1/259>`_
+*Servant N., Varoquaux N., Lajoie BR., Viara E., Chen CJ., Vert JP., Dekker J., Heard E., Barillot E.* HiC-Pro: An optimized and flexible pipeline for Hi-C processing. Genome Biology 2015, 16:259 [doi:10.1186/s13059-015-0831-x](https://doi.org/10.1186/s13059-015-0831-x)
 
-How to install it ?
-===================
+## Using HiC-Pro through Singularity
+
+HiC-Pro provides a Singularity container to ease its installation process.
+A ready-to-use container is available [here](https://zerkalo.curie.fr/partage/HiC-Pro/singularity_images/hicpro_latest_ubuntu.img).
+
+In order to build you own Singularity image;
+
+1- Install singularity
+
+- Linux : http://singularity.lbl.gov/install-linux
+- MAC : http://singularity.lbl.gov/install-mac
+- Windows : http://singularity.lbl.gov/install-windows
+
+2- Build the singularity HiC-Pro image using the 'Singularity' file available in the HiC-Pro root directory.
+
+```
+sudo singularity build hicpro_latest_ubuntu.img MY_INSTALL_PATH/HiC-Pro/Singularity
+```
+
+3- Run HiC-pro
+
+You can then either use HiC-Pro using the 'exec' command ;
+
+```
+singularity exec hicpro_latest_ubuntu.img HiC-Pro -h
+```
+
+Or directly use HiC-Pro within the Singularity shell
+
+```
+singularity shell hicpro_latest_ubuntu.img
+HiC-Pro -h
+```
+
+## How to install it ?
 
 The HiC-Pro pipeline requires the following dependencies :
 
-1. The `bowtie2 <http://bowtie-bio.sourceforge.net/bowtie2/index.shtml>`_ mapper
-2. Python (>2.7, python-3 is not supported) with *pysam (>=0.8.3)*, *bx-python(>=0.5.0)*, *numpy(>=1.8.2)*, and *scipy(>=0.15.1)* libraries
-3. R with the *RColorBrewer* and *ggplot2 (>2.2.1)* packages
-4. g++ compiler
-5. samtools (>1.1)
-6. Unix sort (**which support -V option**) is required ! For Mac OS user, please install the GNU core utilities !
+- The `bowtie2 <http://bowtie-bio.sourceforge.net/bowtie2/index.shtml>`_ mapper
+- Python (>2.7) with *pysam (>=0.8.3)*, *bx-python(>=0.5.0)*, *numpy(>=1.8.2)*, and *scipy(>=0.15.1)* libraries. **Note that the current version does not support python 3**
+- R with the *RColorBrewer* and *ggplot2 (>2.2.1)* packages
+- g++ compiler
+- samtools (>1.1)
+- Unix sort (**which support -V option**) is required ! For Mac OS user, please install the GNU core utilities !
 
-
-Bowtie >2.2.2 is strongly recommanded for allele specific analysis.  
+Note that Bowtie >2.2.2 is strongly recommanded for allele specific analysis.  
 
 To install HiC-Pro (>=2.7.8), be sure to have the appropriate rights and run :
 
-.. code-block:: guess
+```
+tar -zxvf HiC-Pro-master.tar.gz
+cd HiC-Pro-master
+## Edit config-install.txt file if necessary
+make configure
+make install
+```
 
-  tar -zxvf HiC-Pro-master.tar.gz
-  cd HiC-Pro-master
-  ## Edit config-install.txt file if necessary
-  make configure
-  make install
+For older version (<2.7.8), the following process can be used
 
-| For older version (<2.7.8), the following process can be used
+```
+tar -zxvf HiC-Pro-master.tar.gz
+cd HiC-Pro-master
+## Edit config-install.txt file if necessary
+make CONFIG_SYS=config-install.txt install
+```
 
-.. code-block:: guess
-
-  tar -zxvf HiC-Pro-master.tar.gz
-  cd HiC-Pro-master
-  ## Edit config-install.txt file if necessary
-  make CONFIG_SYS=config-install.txt install
+Note that if some of these dependencies are not installed (i.e. not detected in the $PATH), HiC-Pro will try to install them.
+You can also edit the *config-install.txt* file and manually defined the paths to dependencies.
 
 
-| Note that if some of these dependencies are not installed (i.e. not detected in the $PATH), HiC-Pro will try to install them.
-| You can also edit the *config-install.txt* file and manually defined the paths to dependencies.
-
-
-+---------------+-------------------------------------------------------------------------------+
-| SYSTEM CONFIGURATION                                                                          |
-+===============+===============================================================================+
+|               | SYSTEM CONFIGURATION                                                          |
+|---------------|-------------------------------------------------------------------------------|
 | PREFIX        | Path to installation folder                                                   |
-+---------------+-------------------------------------------------------------------------------+
 | BOWTIE2_PATH  | Full path the bowtie2 installation directory                                  |
-+---------------+-------------------------------------------------------------------------------+
 | SAMTOOLS_PATH | Full path to the samtools installation directory (>1.1   )                    |
-+---------------+-------------------------------------------------------------------------------+
 | R_PATH        | Full path to the R installation directory                                     |
-+---------------+-------------------------------------------------------------------------------+
 | PYTHON_PATH   | Full path to the python installation directory (>2.7 - python3 not supported) |
-+---------------+-------------------------------------------------------------------------------+
 | CLUSTER_SYS   | Scheduler to use for cluster submission. Must be TORQUE, SGE, SLURM or LSF    |
-+---------------+-------------------------------------------------------------------------------+
+
 
 
 Annotation Files
@@ -162,7 +171,7 @@ How to use it ?
 12. Put all input files in a rawdata folder. The input files have to be organized with one folder per sample, with ;
 
 ::
-       
+
    + PATH_TO_MY_DATA
      + sample1
        ++ file1_R1.fastq.gz
@@ -234,7 +243,7 @@ Small fastq files (2M reads) extracted from the Dixon et al. 2012 paper are avai
    ## Run HiC-Pro
 
    time HICPRO_INSTALL_DIR/bin/HiC-Pro -c config_test_latest.txt -i test_data -o hicpro_latest_test
-   
+
    Run HiC-Pro 2.10.0
    --------------------------------------------
    vendredi 22 décembre 2017, 13:34:18 (UTC+0100)
@@ -284,45 +293,3 @@ Small fastq files (2M reads) extracted from the Dixon et al. 2012 paper are avai
    real1m38.855s
    user3m13.344s
    sys0m31.432s
-
-   
-Using HiC-Pro in a Singularity container
-========================================
-
-HiC-Pro v2.10.0 provides a Singularity container to ease its installation process.
-A ready-to-use container is available `here <https://zerkalo.curie.fr/partage/HiC-Pro/singularity_images/hicpro_latest_ubuntu.img>`_.
-
-1- Install singularity
-
-| Linux : http://singularity.lbl.gov/install-linux
-| MAC : http://singularity.lbl.gov/install-mac
-| Windows : http://singularity.lbl.gov/install-windows
-
-
-2- Build the singularity HiC-Pro image using the 'Singularity' file available in the HiC-Pro root directory.
-
-.. code-block:: guess
-
-    sudo singularity build HiC-Pro_ubuntu.img Singularity
-
-    
-3- Run HiC-pro
-
-You can then either use HiC-Pro using the 'exec' command ;
-
-.. code-block:: guess
-
-    singularity exec hicpro_latest_ubuntu.img HiC-Pro -h
-
-
-Or directly use HiC-Pro within the Singularity shell
-
-.. code-block:: guess
-
-    singularity shell hicpro_latest_ubuntu.img
-    HiC-Pro -h
-
-
-
-
-   
