@@ -11,7 +11,7 @@ Phasing data, such as the ones available from the [Illumina Platinum Project](ht
 ### Allele specific mapping
 
 In allele-specific mode, the sequencing reads are first aligned on a masked reference genome for which all polymorphic sites were first N-masked.
-In the current version, **this is the user responsability to generate this genome and to provide the bowtie2 indexes to HiC-Pro.** Example of how to generate such reference genome is discribed in the :ref:`FAQ <FAQ>` section.
+In the current version, **this is the user responsability to generate this genome and to provide the bowtie2 indexes to HiC-Pro.** Example of how to generate such reference genome is discribed in the [FAQ](FAQ.md) section.
 This masking strategy avoid systematic bias toward the reference allele, compared to standard mapping where reads with the reference allele are more likely to be mapped than the reads with non-reference alleles.
 
 ### Assignment to parental genome
