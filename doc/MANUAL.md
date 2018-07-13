@@ -3,9 +3,7 @@
 
 ### Setting the configuration file
 
-Copy and edit the configuration file *'config-hicpro.txt'* in your local folder.  
-The '[]' options are optional and can be undefined.
-
+Copy and edit the configuration file *'config-hicpro.txt'* in your local folder. The '[]' options are optional and can be undefined.
 
 | SYSTEM         |                                        |
 |----------------|----------------------------------------|
@@ -42,7 +40,7 @@ The '[]' options are optional and can be undefined.
 
 | ALLLELE SPECIFIC ANALYSIS |                                                                                                                                  |
 |---------------------------|----------------------------------------------------------------------------------------------------------------------------------|
-| [ALLELE_SPECIFIC_SNP]     | VCF file to SNPs which can be used to distinguish parental origin. See the [allele specific section](AS.md) for more details     |
+| [ALLELE_SPECIFIC_SNP]     | VCF file to SNPs which can be used to distinguish parental origin. See the [allele specific section](AS.md) for details     |
 
 ----------------
 
