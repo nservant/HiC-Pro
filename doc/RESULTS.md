@@ -3,6 +3,10 @@
 Results presented in this section come from the analysis of the IMR90 replicate 1 sample from Dixon et al (2012).
 It is important to note that in parallele mode, HiC-Pro will generate statistics file for each reads chunck. Then, when all chuncks are merged, statistics files are also combined in a single stat file available in the same directory.
 
+Since v2.11.0, HiC-Pro is now compatible with the MultiQC tool to easily generate a dynamic and complete report of your HiC-Pro analysis.
+Example of MultiQC reports for HiC-pro are available:
+- [For Hi-C data analysis](multiQC/multiqc_report.html)
+- [For Allele-specific analysis](multiQC/multiqc_report_as.html)
 
 ### Mapping results
 

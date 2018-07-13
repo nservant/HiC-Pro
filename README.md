@@ -18,7 +18,7 @@ For any question about HiC-Pro, please contact nicolas.servant@curie.fr or use t
 HiC-Pro was designed to process Hi-C data, from raw fastq files (paired-end Illumina data) to normalized contact maps. It supports the main Hi-C protocols, including digestion protocols as well as protocols that do not require restriction enzymes such as DNase Hi-C. In practice, HiC-Pro was successfully applied to many data-sets including dilution Hi-C, in situ Hi-C, DNase Hi-C, Micro-C, capture-C, capture Hi-C or HiChip data.  
 The pipeline is flexible, scalable and optimized. It can operate either on a single laptop or on a computational cluster. HiC-Pro is sequential and each step of the workflow can be run independantly.  
 HiC-Pro includes a fast implementatation of the iterative correction method (see the [iced python package](https://github.com/hiclib/iced) for more information).
-Finally, HiC-Pro can use phasing data to build [allele-specific contact maps](AS.md).
+Finally, HiC-Pro can use phasing data to build [allele-specific contact maps](doc/AS.md).
 
 If you use HiC-Pro, please cite :
 
@@ -110,7 +110,7 @@ You can also edit the *config-install.txt* file and manually defined the paths t
 In order to process the raw data, HiC-Pro requires three annotation files. Note that the pipeline is provided with some Human and Mouse annotation files.  
 **Please be sure that the chromosome names are the same than the ones used in your bowtie indexes !**
 
-- **A BED file** of the restriction fragments after digestion. This file depends both of the restriction enzyme and the reference genome. See the [FAQ](FAQ.md) and the [HiC-Pro utilities](UTILS.md) for details about how to generate this file. A few annotation files are provided with the HiC-Pro sources as examples.
+- **A BED file** of the restriction fragments after digestion. This file depends both of the restriction enzyme and the reference genome. See the [FAQ](doc/FAQ.md) and the [HiC-Pro utilities](doc/UTILS.md) for details about how to generate this file. A few annotation files are provided with the HiC-Pro sources as examples.
 
 ```
    chr1   0       16007   HIC_chr1_1    0   +
@@ -172,7 +172,7 @@ First have a look at the help message !
    [-v|--version]: version
 ```
 
-- Copy and edit the configuration file *'config-hicpro.txt'* in your local folder. See the [manual](MANUAL.md) for details about the configuration file
+- Copy and edit the configuration file *'config-hicpro.txt'* in your local folder. See the [manual](doc/MANUAL.md) for details about the configuration file
 
 - Put all input files in a rawdata folder. The input files have to be organized with **one folder per sample**, such as;
 
