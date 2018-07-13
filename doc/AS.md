@@ -2,8 +2,8 @@
 ## Allele specific analysis
 
 If the ALLELE_SPECIFIC_SNP option is defined in the configuration file, HiC-Pro will run the allele specific mode.  
-The ALLELE_SPECIFIC_SNP option must contain the path to a VCF file with SNPs information. The [extract_snps.py](UTILS.md) utility can be used to generate such file.
-This utility was first design to extract relevant information from VCF file provided by the [Mouse Sanger database](http://www.sanger.ac.uk/resources/mouse/genomes/). It aims at generating a VCF file of the F1 individual based on its parental genotype. For instance using *extract_snps.py* with *-r CASTEiJ* and *-a 129S1* will generate a VCF file with all F1 heterogyzote SNPs which can be used to distinguish *CASTEiJ* and *129S1* alleles.
+The ALLELE_SPECIFIC_SNP option must contain the path to a VCF file with SNPs information. The [extract_snps.py](UTILS.md) utility can be used to generate such file.  
+This utility was first design to extract relevant information from VCF file provided by the [Mouse Sanger database](http://www.sanger.ac.uk/resources/mouse/genomes/). It aims at generating a VCF file of the F1 individual based on its parental genotype. For instance using *extract_snps.py* with *-r CASTEiJ* and *-a 129S1* will generate a VCF file with all F1 heterogyzote SNPs which can be used to distinguish *CASTEiJ* and *129S1* alleles.  
 The idea is therefore to have a VCF will maternal/paternal haplotypes encoded as the reference/alternative SNPs information.
 Phasing data, such as the ones available from the [Illumina Platinum Project](http://www.illumina.com/platinumgenomes/) can be simply used as is.
 
@@ -11,7 +11,7 @@ Phasing data, such as the ones available from the [Illumina Platinum Project](ht
 ### Allele specific mapping
 
 In allele-specific mode, the sequencing reads are first aligned on a masked reference genome for which all polymorphic sites were first N-masked.
-In the current version, **this is the user responsability to generate this genome and to provide the bowtie2 indexes to HiC-Pro.** Example of how to generate such reference genome is discribed in the :ref:`FAQ <FAQ>` section.
+In the current version, **this is the user responsability to generate this genome and to provide the bowtie2 indexes to HiC-Pro.** Example of how to generate such reference genome is discribed in the [FAQ](FAQ.md) section.
 This masking strategy avoid systematic bias toward the reference allele, compared to standard mapping where reads with the reference allele are more likely to be mapped than the reads with non-reference alleles.
 
 ### Assignment to parental genome

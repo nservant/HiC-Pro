@@ -1,14 +1,49 @@
 
-### HiC-Pro Manual
+## HiC-Pro Manual
 
-Modified - 13st July 2018  
-Reference version - HiC-Pro 2.11.0  
+### Building the annotation Files
 
-## Setting the configuration file
+In order to process the raw data, HiC-Pro requires three annotation files. Note that the pipeline is provided with some Human and Mouse annotation files.  
+**Please be sure that the chromosome names are the same than the ones used in your bowtie indexes !**
 
-Copy and edit the configuration file *'config-hicpro.txt'* in your local folder.  
-The '[]' options are optional and can be undefined.
+- **A BED file** of the restriction fragments after digestion. This file depends both of the restriction enzyme and the reference genome. See the [FAQ](doc/FAQ.md) and the [HiC-Pro utilities](doc/UTILS.md) for details about how to generate this file. A few annotation files are provided with the HiC-Pro sources as examples.
 
+```
+   chr1   0       16007   HIC_chr1_1    0   +
+   chr1   16007   24571   HIC_chr1_2    0   +
+   chr1   24571   27981   HIC_chr1_3    0   +
+   chr1   27981   30429   HIC_chr1_4    0   +
+   chr1   30429   32153   HIC_chr1_5    0   +
+   chr1   32153   32774   HIC_chr1_6    0   +
+   chr1   32774   37752   HIC_chr1_7    0   +
+   chr1   37752   38369   HIC_chr1_8    0   +
+   chr1   38369   38791   HIC_chr1_9    0   +
+   chr1   38791   39255   HIC_chr1_10   0   +
+   (...)
+```
+
+- **A table file** of chromosomes' size. This file can be easily find on the UCSC genome browser. Of note, pay attention to the contigs or scaffolds, and be aware that HiC-pro will generate a map per chromosomes pair. For model organisms such as Human or Mouse, which are well annotated, we usually recommand to remove all scaffolds.  
+
+```
+   chr1    249250621
+   chr2    243199373
+   chr3    198022430
+   chr4    191154276
+   chr5    180915260
+   chr6    171115067
+   chr7    159138663
+   chr8    146364022
+   chr9    141213431
+   chr10   135534747
+   (...)
+```
+
+- **The bowtie2 indexes**. See the [bowtie2 manual page](http://bowtie-bio.sourceforge.net/bowtie2/index.shtml) for details about how to create such indexes.
+
+
+### Setting the configuration file
+
+Copy and edit the configuration file *'config-hicpro.txt'* in your local folder. The '[]' options are optional and can be undefined.
 
 | SYSTEM         |                                        |
 |----------------|----------------------------------------|
@@ -19,31 +54,35 @@ The '[]' options are optional and can be undefined.
 | [JOB_WALLTIME] | WallTime allows per job                |
 | [JOB_MAIL]     | User mail for PBS/Torque report        |
 
+----------------
 
 | READS ALIGNMENT OPTIONS|                                                                                                                     |
 |------------------------|---------------------------------------------------------------------------------------------------------------------|
 | RAW_DIR                | Link to rawdata folder. The user usually not need to change this option. *Default: rawdata*                         |
-| PAIR1_EXT              | Keyword for first mate detection. *Default:_R1*                                                                     |
-| PAIR2_EXT              | Keywoard for seconde mate detection. *Default:_R2*                                                                  |
+| PAIR1_EXT              | Keyword for first mate detection. *Default: _R1*                                                                     |
+| PAIR2_EXT              | Keywoard for seconde mate detection. *Default: _R2*                                                                  |
 | FORMAT                 | Sequencing qualities encoding. *Default: phred33*                                                                   |
 | MIN_MAPQ               | Minimum mapping quality. Reads with lower quality are discarded. *Default: 0*                                       |
 | BOWTIE2_IDX_PATH       | Path to bowtie2 indexes                                                                                             |
 | BOWTIE2_GLOBAL_OPTIONS | bowtie2 options for mapping step1. *Default: --very-sensitive -L 30 --score-min L,-0.6,-0.2 --end-to-end --reorder* |
 | BOWTIE2_LOCAL_OPTIONS  | bowtie2 options for mapping step2. *Default: --very-sensitive -L 20 --score-min L,-0.6,-0.2 --end-to-end --reorder* |
 
+----------------
 
 | ANNOTATION FILES      |                                                                                                                                   |
 |-----------------------|-----------------------------------------------------------------------------------------------------------------------------------|
 | REFERENCE_GENOME      | Reference genome prefix used for genome indexes. *Default: hg19*                                                                  |
 | GENOME_SIZE           | Chromsome size file. Loaded from the ANNOTATION folder in the HiC-Pro installation directory. *Default: chrom_hg19.sizes*         |
 | [CAPTURE_TARGET]      | BED file of target regions to focus on (mainly used for capture Hi-C data)                                                        |
-| [ALLELE_SPECIFIC_SNP] | VCF file to SNPs which can be used to distinguish parental origin. See the :ref:`allele specific section <AS>` for more details   |
+| [ALLELE_SPECIFIC_SNP] | VCF file to SNPs which can be used to distinguish parental origin. See the [allele specific section]( AS.md) for details   |
 
+----------------
 
 | ALLLELE SPECIFIC ANALYSIS |                                                                                                                                  |
 |---------------------------|----------------------------------------------------------------------------------------------------------------------------------|
-| [ALLELE_SPECIFIC_SNP]     | VCF file to SNPs which can be used to distinguish parental origin. See the [allele specific section](AS.md) for more details     |
+| [ALLELE_SPECIFIC_SNP]     | VCF file to SNPs which can be used to distinguish parental origin. See the [allele specific section](AS.md) for details     |
 
+----------------
 
 | DIGESTION Hi-C        |                                                                                                                                          |
 |-----------------------|------------------------------------------------------------------------------------------------------------------------------------------|
@@ -54,6 +93,7 @@ The '[]' options are optional and can be undefined.
 | [MIN_INSERT_SIZE]     | Minimum sequenced insert size. Shorter 3C products are discarded. *Example: 100*                                                         |
 | [MAX_INSERT_SIZE]     | Maximum sequenced insert size. Larger 3C products are discarded. *Example: 600*                                                          |
 
+----------------
 
 | Hi-C PROCESSING             |                                                                                                                         |
 |-----------------------------|-------------------------------------------------------------------------------------------------------------------------|
@@ -64,6 +104,7 @@ The '[]' options are optional and can be undefined.
 | RM_MULTI                    | Remove multi-mapped reads. *Default: 1*                                                                                 |
 | RM_DUP                      | Remove duplicated reads' pairs. *Default: 1*                                                                            |
 
+----------------
 
 | GENOME-WIDE CONTACT MAPS    |                                                                                                                         |
 |-----------------------------|-------------------------------------------------------------------------------------------------------------------------|
@@ -71,6 +112,7 @@ The '[]' options are optional and can be undefined.
 | BIN_STEP                    | Binning step size in ‘n’ coverage _i.e._ window step. *Default: 1*                                                      |
 | MATRIX_FORMAT               | Output matrix format. Must be complete, upper. *Default: upper*. *Deprecated: asis, lower*                              |
 
+----------------
 
 | NORMALIZATION                     |                                                                                                                         |
 |-----------------------------------|-------------------------------------------------------------------------------------------------------------------------|
@@ -81,8 +123,92 @@ The '[]' options are optional and can be undefined.
 | EPS                               | The relative increment in the results before declaring convergence. *Default: 0.1*                                      |
 
 
+## Run HiC-Pro through Singularity
 
-## Run HiC-Pro in sequential mode
+HiC-Pro provides a Singularity container to ease its installation process.
+A ready-to-use container is available [here](https://zerkalo.curie.fr/partage/HiC-Pro/singularity_images/hicpro_latest_ubuntu.img).
+
+In order to build you own Singularity image;
+
+1- Install singularity
+
+- Linux : http://singularity.lbl.gov/install-linux
+- MAC : http://singularity.lbl.gov/install-mac
+- Windows : http://singularity.lbl.gov/install-windows
+
+2- Build the singularity HiC-Pro image using the 'Singularity' file available in the HiC-Pro root directory.
+
+```
+sudo singularity build hicpro_latest_ubuntu.img MY_INSTALL_PATH/HiC-Pro/Singularity
+```
+
+3- Run HiC-pro
+
+You can then either use HiC-Pro using the 'exec' command ;
+
+```
+singularity exec hicpro_latest_ubuntu.img HiC-Pro -h
+```
+
+Or directly use HiC-Pro within the Singularity shell
+
+```
+singularity shell hicpro_latest_ubuntu.img
+HiC-Pro -h
+```
+
+## Run HiC-Pro in standalone/cluster mode
+
+Once the configuration is set, put all input files in a rawdata folder. The input files have to be organized with **one folder per sample**, such as;
+
+```
+   + PATH_TO_MY_DATA
+     + sample1
+       ++ file1_R1.fastq.gz
+       ++ file1_R2.fastq.gz
+       ++ ...
+     + sample2
+       ++ file1_R1.fastq.gz
+       ++ file1_R2.fastq.gz
+     *...
+```
+
+- Run HiC-Pro on your laptop in standalone model
+
+```
+    MY_INSTALL_PATH/bin/HiC-Pro -i FULL_PATH_TO_DATA_FOLDER -o FULL_PATH_TO_OUTPUTS -c MY_LOCAL_CONFIG_FILE
+```
+
+  - Run HiC-Pro on a cluster (TORQUE/SGE/SLURM/LSF)
+
+```
+   MY_INSTALL_PATH/bin/HiC-Pro -i FULL_PATH_TO_DATA_FOLDER -o FULL_PATH_TO_OUTPUTS -c MY_LOCAL_CONFIG_FILE -p
+```
+
+In the latter case, you will have the following message :
+
+```
+  Please run HiC-Pro in two steps :
+  1- The following command will launch the parallel workflow through 12 torque jobs:
+  qsub HiCPro_step1.sh
+  2- The second command will merge all outputs to generate the contact maps:
+  qsub HiCPro_step2.sh
+```
+
+Execute the displayed command from the output folder:
+
+```
+  qsub HiCPro_step1.sh
+```
+
+Once executed succesfully (may take several hours), run the step using:
+
+```
+  qsub HiCPro_step2.sh
+```
+
+
+### Run HiC-Pro in sequential mode
 
 HiC-Pro can be run in a step-by-step mode.
 Available steps are described in the help command.
@@ -127,8 +253,7 @@ Note that in sequential mode, the INPUT argument depends on the analysis step. S
 | -s build_contact_maps | .validPairs files  |
 | -s ice_norm           | .matrix files      |
 
-
-## How does HiC-Pro work ?
+### How does HiC-Pro work ?
 
 The HiC-Pro workflow can be divided in five main steps presented below.
 
@@ -169,7 +294,7 @@ Intra et inter-chromosomal contact maps are build for all specified resolutions.
 Hi-C data can contain several sources of biases which has to be corrected. HiC-Pro proposes a fast implementation of the original ICE normalization algorithm (Imakaev et al. 2012), making the assumption of equal visibility of each fragment. The ICE normalization can be used as a standalone python package through the [iced python package](https://github.com/hiclib/).
 
 
-## Browsing the results
+### Browsing the results
 
 All outputs follow the input organization, with one folder per sample.
 See the [results](RES.md) section for more information.

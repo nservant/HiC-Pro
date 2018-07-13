@@ -1,9 +1,8 @@
 ## Welcome to the HiC-pro documentation !
 
-HiC-Pro is a tool for Hi-C data processing, from raw sequencing reads to normalized contact maps. It is flexible, fast and scalable.  
-HiC-Pro supports most of the current Hi-C protocols including digestion, DNAse Hi-C, as well as Micro-C, Capture-C, Capture-Hi-C, single-cell Hi-C, etc.  
+HiC-Pro is a tool for Hi-C data processing, from raw sequencing reads to normalized contact maps. It is flexible, fast and scalable. HiC-Pro supports most of the current Hi-C protocols including digestion, DNAse Hi-C, as well as Micro-C, Capture-C, Capture-Hi-C, single-cell Hi-C, etc.  
 
-The HiC-Pro output are now compatible with many downstream analysis software, including reporting (multiQC), visualization (HiGlass, etc.) and analysis (Fit-HiC, etc.)
+The HiC-Pro output are now compatible with many downstream analysis softwares, including reporting (multiQC), visualization (HiGlass, etc.) and analysis (Fit-HiC, etc.)
 Feel free to contact nicolas.servant@curie.fr for any suggestion.
 
 The documentation has the following pages:
