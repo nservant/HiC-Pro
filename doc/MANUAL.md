@@ -29,6 +29,7 @@ The '[]' options are optional and can be undefined.
 | BOWTIE2_GLOBAL_OPTIONS | bowtie2 options for mapping step1. *Default: --very-sensitive -L 30 --score-min L,-0.6,-0.2 --end-to-end --reorder* |
 | BOWTIE2_LOCAL_OPTIONS  | bowtie2 options for mapping step2. *Default: --very-sensitive -L 20 --score-min L,-0.6,-0.2 --end-to-end --reorder* |
 
+----------------
 
 | ANNOTATION FILES      |                                                                                                                                   |
 |-----------------------|-----------------------------------------------------------------------------------------------------------------------------------|
@@ -37,11 +38,13 @@ The '[]' options are optional and can be undefined.
 | [CAPTURE_TARGET]      | BED file of target regions to focus on (mainly used for capture Hi-C data)                                                        |
 | [ALLELE_SPECIFIC_SNP] | VCF file to SNPs which can be used to distinguish parental origin. See the :ref:`allele specific section <AS>` for more details   |
 
+----------------
 
 | ALLLELE SPECIFIC ANALYSIS |                                                                                                                                  |
 |---------------------------|----------------------------------------------------------------------------------------------------------------------------------|
 | [ALLELE_SPECIFIC_SNP]     | VCF file to SNPs which can be used to distinguish parental origin. See the [allele specific section](AS.md) for more details     |
 
+----------------
 
 | DIGESTION Hi-C        |                                                                                                                                          |
 |-----------------------|------------------------------------------------------------------------------------------------------------------------------------------|
@@ -52,6 +55,7 @@ The '[]' options are optional and can be undefined.
 | [MIN_INSERT_SIZE]     | Minimum sequenced insert size. Shorter 3C products are discarded. *Example: 100*                                                         |
 | [MAX_INSERT_SIZE]     | Maximum sequenced insert size. Larger 3C products are discarded. *Example: 600*                                                          |
 
+----------------
 
 | Hi-C PROCESSING             |                                                                                                                         |
 |-----------------------------|-------------------------------------------------------------------------------------------------------------------------|
@@ -62,6 +66,7 @@ The '[]' options are optional and can be undefined.
 | RM_MULTI                    | Remove multi-mapped reads. *Default: 1*                                                                                 |
 | RM_DUP                      | Remove duplicated reads' pairs. *Default: 1*                                                                            |
 
+----------------
 
 | GENOME-WIDE CONTACT MAPS    |                                                                                                                         |
 |-----------------------------|-------------------------------------------------------------------------------------------------------------------------|
@@ -69,6 +74,7 @@ The '[]' options are optional and can be undefined.
 | BIN_STEP                    | Binning step size in ‘n’ coverage _i.e._ window step. *Default: 1*                                                      |
 | MATRIX_FORMAT               | Output matrix format. Must be complete, upper. *Default: upper*. *Deprecated: asis, lower*                              |
 
+----------------
 
 | NORMALIZATION                     |                                                                                                                         |
 |-----------------------------------|-------------------------------------------------------------------------------------------------------------------------|
