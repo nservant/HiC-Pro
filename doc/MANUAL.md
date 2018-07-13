@@ -1,10 +1,7 @@
 
-### HiC-Pro Manual
+## HiC-Pro Manual
 
-Modified - 13st July 2018  
-Reference version - HiC-Pro 2.11.0  
-
-## Setting the configuration file
+### Setting the configuration file
 
 Copy and edit the configuration file *'config-hicpro.txt'* in your local folder.  
 The '[]' options are optional and can be undefined.
@@ -19,6 +16,7 @@ The '[]' options are optional and can be undefined.
 | [JOB_WALLTIME] | WallTime allows per job                |
 | [JOB_MAIL]     | User mail for PBS/Torque report        |
 
+----------------
 
 | READS ALIGNMENT OPTIONS|                                                                                                                     |
 |------------------------|---------------------------------------------------------------------------------------------------------------------|
