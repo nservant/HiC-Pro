@@ -1,7 +1,16 @@
 
-## Compatibility with other software
+## Compatibility with other software
 
 HiC-Pro is designed to process Hi-C data from .fastq files to normalized contact matrices. Additional software or methods should then be used to perform downstream analysis. We therefore decided to propose several utilities to increase the compatibility of HiC-Pro with other tools. Most of the scripts presented below were developed by HiC-Pro users or collaborators. Many thanks to them for sharing their work with us, and do not hesitate the contact us with many new ideas !
+
+### MultiQC compatibility
+
+Since v2.11.0, HiC-Pro is compatible with the MultiQC tool, allowing in a simple and dynamic way to have a nice report summarizing your HiC-Pro analysis. To do so, simply run:
+```
+cd HIC-PRO_OUTPUT
+multiqc .
+```
+Example of multiQC reports are available [here](http://zerkalo.curie.fr/partage/HiC-Pro/multiQC/).
 
 ### Juicebox visualization software
 
