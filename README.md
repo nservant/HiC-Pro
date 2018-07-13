@@ -4,10 +4,8 @@
 ![MultiQC](https://img.shields.io/badge/MultiQC-1.6dev-blue.svg)
 ![Singularity](https://img.shields.io/badge/Singularity-build-brightgreen.svg)
 
-[![Forum](https://img.shields.io/badge/Groups-%20join%20chat%20%E2%86%92-4fb99a
-.svg?style=flat-square)](https://groups.google.com/forum/#!forum/hic-pro)
-[![DOI](https://img.shields.io/badge/DOI-10.1186%2Fs13059--015--0831--x-light
-grey.svg?style=flat-square)](https://doi.org/10.1186/s13059-015-0831-x)
+[![Forum](https://img.shields.io/badge/Groups-%20join%20chat%20%E2%86%92-4fb99a.svg?style=flat-square)](https://groups.google.com/forum/#!forum/hic-pro)
+[![DOI](https://img.shields.io/badge/DOI-10.1186%2Fs13059--015--0831--x-lightgrey.svg?style=flat-square)](https://doi.org/10.1186/s13059-015-0831-x)
 
 ## An optimized and flexible pipeline for Hi-C data processing
 
