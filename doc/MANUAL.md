@@ -1,6 +1,46 @@
 
 ## HiC-Pro Manual
 
+### Building the annotation Files
+
+In order to process the raw data, HiC-Pro requires three annotation files. Note that the pipeline is provided with some Human and Mouse annotation files.  
+**Please be sure that the chromosome names are the same than the ones used in your bowtie indexes !**
+
+- **A BED file** of the restriction fragments after digestion. This file depends both of the restriction enzyme and the reference genome. See the [FAQ](doc/FAQ.md) and the [HiC-Pro utilities](doc/UTILS.md) for details about how to generate this file. A few annotation files are provided with the HiC-Pro sources as examples.
+
+```
+   chr1   0       16007   HIC_chr1_1    0   +
+   chr1   16007   24571   HIC_chr1_2    0   +
+   chr1   24571   27981   HIC_chr1_3    0   +
+   chr1   27981   30429   HIC_chr1_4    0   +
+   chr1   30429   32153   HIC_chr1_5    0   +
+   chr1   32153   32774   HIC_chr1_6    0   +
+   chr1   32774   37752   HIC_chr1_7    0   +
+   chr1   37752   38369   HIC_chr1_8    0   +
+   chr1   38369   38791   HIC_chr1_9    0   +
+   chr1   38791   39255   HIC_chr1_10   0   +
+   (...)
+```
+
+- **A table file** of chromosomes' size. This file can be easily find on the UCSC genome browser. Of note, pay attention to the contigs or scaffolds, and be aware that HiC-pro will generate a map per chromosomes pair. For model organisms such as Human or Mouse, which are well annotated, we usually recommand to remove all scaffolds.  
+
+```
+   chr1    249250621
+   chr2    243199373
+   chr3    198022430
+   chr4    191154276
+   chr5    180915260
+   chr6    171115067
+   chr7    159138663
+   chr8    146364022
+   chr9    141213431
+   chr10   135534747
+   (...)
+```
+
+- **The bowtie2 indexes**. See the [bowtie2 manual page](http://bowtie-bio.sourceforge.net/bowtie2/index.shtml) for details about how to create such indexes.
+
+
 ### Setting the configuration file
 
 Copy and edit the configuration file *'config-hicpro.txt'* in your local folder. The '[]' options are optional and can be undefined.
