@@ -145,7 +145,7 @@ In order to process the raw data, HiC-Pro requires three annotation files. Note 
 - **The bowtie2 indexes**. See the [bowtie2 manual page](http://bowtie-bio.sourceforge.net/bowtie2/index.shtml) for details about how to create such indexes.
 
 
-## How to use it ?
+## How to use it ?
 
 First have a look at the help message !
 
