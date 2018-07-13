@@ -83,6 +83,90 @@ Copy and edit the configuration file *'config-hicpro.txt'* in your local folder.
 | EPS                               | The relative increment in the results before declaring convergence. *Default: 0.1*                                      |
 
 
+## Run HiC-Pro through Singularity
+
+HiC-Pro provides a Singularity container to ease its installation process.
+A ready-to-use container is available [here](https://zerkalo.curie.fr/partage/HiC-Pro/singularity_images/hicpro_latest_ubuntu.img).
+
+In order to build you own Singularity image;
+
+1- Install singularity
+
+- Linux : http://singularity.lbl.gov/install-linux
+- MAC : http://singularity.lbl.gov/install-mac
+- Windows : http://singularity.lbl.gov/install-windows
+
+2- Build the singularity HiC-Pro image using the 'Singularity' file available in the HiC-Pro root directory.
+
+```
+sudo singularity build hicpro_latest_ubuntu.img MY_INSTALL_PATH/HiC-Pro/Singularity
+```
+
+3- Run HiC-pro
+
+You can then either use HiC-Pro using the 'exec' command ;
+
+```
+singularity exec hicpro_latest_ubuntu.img HiC-Pro -h
+```
+
+Or directly use HiC-Pro within the Singularity shell
+
+```
+singularity shell hicpro_latest_ubuntu.img
+HiC-Pro -h
+```
+
+## Run HiC-Pro in standalone/cluster mode
+
+Once the configuration is set, put all input files in a rawdata folder. The input files have to be organized with **one folder per sample**, such as;
+
+```
+   + PATH_TO_MY_DATA
+     + sample1
+       ++ file1_R1.fastq.gz
+       ++ file1_R2.fastq.gz
+       ++ ...
+     + sample2
+       ++ file1_R1.fastq.gz
+       ++ file1_R2.fastq.gz
+     *...
+```
+
+- Run HiC-Pro on your laptop in standalone model
+
+```
+    MY_INSTALL_PATH/bin/HiC-Pro -i FULL_PATH_TO_DATA_FOLDER -o FULL_PATH_TO_OUTPUTS -c MY_LOCAL_CONFIG_FILE
+```
+
+  - Run HiC-Pro on a cluster (TORQUE/SGE/SLURM/LSF)
+
+```
+   MY_INSTALL_PATH/bin/HiC-Pro -i FULL_PATH_TO_DATA_FOLDER -o FULL_PATH_TO_OUTPUTS -c MY_LOCAL_CONFIG_FILE -p
+```
+
+In the latter case, you will have the following message :
+
+```
+  Please run HiC-Pro in two steps :
+  1- The following command will launch the parallel workflow through 12 torque jobs:
+  qsub HiCPro_step1.sh
+  2- The second command will merge all outputs to generate the contact maps:
+  qsub HiCPro_step2.sh
+```
+
+Execute the displayed command from the output folder:
+
+```
+  qsub HiCPro_step1.sh
+```
+
+Once executed succesfully (may take several hours), run the step using:
+
+```
+  qsub HiCPro_step2.sh
+```
+
 
 ### Run HiC-Pro in sequential mode
 
