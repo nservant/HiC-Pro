@@ -84,7 +84,7 @@ Copy and edit the configuration file *'config-hicpro.txt'* in your local folder.
 
 
 
-## Run HiC-Pro in sequential mode
+### Run HiC-Pro in sequential mode
 
 HiC-Pro can be run in a step-by-step mode.
 Available steps are described in the help command.
@@ -129,8 +129,7 @@ Note that in sequential mode, the INPUT argument depends on the analysis step. S
 | -s build_contact_maps | .validPairs files  |
 | -s ice_norm           | .matrix files      |
 
-
-## How does HiC-Pro work ?
+### How does HiC-Pro work ?
 
 The HiC-Pro workflow can be divided in five main steps presented below.
 
@@ -171,7 +170,7 @@ Intra et inter-chromosomal contact maps are build for all specified resolutions.
 Hi-C data can contain several sources of biases which has to be corrected. HiC-Pro proposes a fast implementation of the original ICE normalization algorithm (Imakaev et al. 2012), making the assumption of equal visibility of each fragment. The ICE normalization can be used as a standalone python package through the [iced python package](https://github.com/hiclib/).
 
 
-## Browsing the results
+### Browsing the results
 
 All outputs follow the input organization, with one folder per sample.
 See the [results](RES.md) section for more information.
