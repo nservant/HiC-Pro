@@ -36,7 +36,7 @@ The '[]' options are optional and can be undefined.
 | REFERENCE_GENOME      | Reference genome prefix used for genome indexes. *Default: hg19*                                                                  |
 | GENOME_SIZE           | Chromsome size file. Loaded from the ANNOTATION folder in the HiC-Pro installation directory. *Default: chrom_hg19.sizes*         |
 | [CAPTURE_TARGET]      | BED file of target regions to focus on (mainly used for capture Hi-C data)                                                        |
-| [ALLELE_SPECIFIC_SNP] | VCF file to SNPs which can be used to distinguish parental origin. See the :ref:`allele specific section <AS>` for more details   |
+| [ALLELE_SPECIFIC_SNP] | VCF file to SNPs which can be used to distinguish parental origin. See the [allele specific section]( AS.md) for details   |
 
 ----------------
 
