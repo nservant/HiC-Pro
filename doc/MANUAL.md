@@ -21,8 +21,8 @@ The '[]' options are optional and can be undefined.
 | READS ALIGNMENT OPTIONS|                                                                                                                     |
 |------------------------|---------------------------------------------------------------------------------------------------------------------|
 | RAW_DIR                | Link to rawdata folder. The user usually not need to change this option. *Default: rawdata*                         |
-| PAIR1_EXT              | Keyword for first mate detection. *Default:_R1*                                                                     |
-| PAIR2_EXT              | Keywoard for seconde mate detection. *Default:_R2*                                                                  |
+| PAIR1_EXT              | Keyword for first mate detection. *Default: _R1*                                                                     |
+| PAIR2_EXT              | Keywoard for seconde mate detection. *Default: _R2*                                                                  |
 | FORMAT                 | Sequencing qualities encoding. *Default: phred33*                                                                   |
 | MIN_MAPQ               | Minimum mapping quality. Reads with lower quality are discarded. *Default: 0*                                       |
 | BOWTIE2_IDX_PATH       | Path to bowtie2 indexes                                                                                             |
