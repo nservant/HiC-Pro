@@ -1,7 +1,7 @@
 
 # HiC-Pro
 
-![MultiQC](https://img.shields.io/badge/MultiQC-1.6dev-blue.svg)
+![MultiQC](https://img.shields.io/badge/MultiQC-1.6-blue.svg)
 ![Singularity](https://img.shields.io/badge/Singularity-build-brightgreen.svg)
 
 [![Forum](https://img.shields.io/badge/Groups-%20join%20chat%20%E2%86%92-4fb99a.svg?style=flat-square)](https://groups.google.com/forum/#!forum/hic-pro)
