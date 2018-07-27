@@ -84,6 +84,13 @@ Copy and edit the configuration file *'config-hicpro.txt'* in your local folder.
 
 ----------------
 
+| CAPTURE Hi-C              |                                                                                                     |
+|---------------------------|-----------------------------------------------------------------------------------------------------|
+| [CAPTURE_TARGET]          | BED file of target regions to focus on (mainly used for capture Hi-C data)                          |
+| [REPORT_CAPTURE_REPORTER] | Report interactions between targeted and non-targeted loci (=1) and between targeted loci only (=0) |
+
+----------------
+
 | DIGESTION Hi-C        |                                                                                                                                          |
 |-----------------------|------------------------------------------------------------------------------------------------------------------------------------------|
 | [GENOME_FRAGMENT]     | BED file with restriction fragments. Full path or name of file available in the ANNOTATION folder. *Default: HindIII_resfrag_hg19.bed*   |

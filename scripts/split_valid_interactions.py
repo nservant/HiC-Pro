@@ -22,6 +22,7 @@ def usage():
     """Usage function"""
     print "Usage : python split_valid_interactions.py"
     print "-i/--input <valid interaction file>"
+    print "[-s/--stats] <stats file>"
     print "[-v/--verbose] <Verbose>"
     print "[-h/--help] <Help>"
     return
@@ -32,8 +33,8 @@ def get_args():
     try:
         opts, args = getopt.getopt(
             sys.argv[1:],
-            "i:vh",
-            ["input=",
+            "i:s:vh",
+            ["input=", "stats=",
              "verbose", "help"])
     except getopt.GetoptError:
         usage()
@@ -45,6 +46,7 @@ if __name__ == "__main__":
     ## Read command line arguments
     opts = get_args()
     inputfile = None
+    statsFile = None
     verbose = False
 
     if len(opts) == 0:
@@ -55,6 +57,8 @@ if __name__ == "__main__":
         if opt in ("-h", "--help"):
             usage()
             sys.exit()
+        elif opt in ("-s", "--stats"):
+            statsFile = arg
         elif opt in ("-i", "--input"):
             inputfile = arg
         elif opt in ("-v", "--verbose"):
@@ -66,6 +70,7 @@ if __name__ == "__main__":
     if verbose:
         print "## split_valid_interactions.py"
         print "## input=", inputfile
+        print "## statsFile=", statsFile
         print "## verbose=", verbose
 
     ## AS counter
@@ -89,8 +94,8 @@ if __name__ == "__main__":
     G2trans = 0
 
     ## Init output
-    handle_g1 = open(inputfile + '_G1', 'w')
-    handle_g2 = open(inputfile + '_G2', 'w')
+    handle_g1 = open(inputfile.replace(".allValidPairs", "_G1.allValidPairs"), 'w')
+    handle_g2 = open(inputfile.replace(".allValidPairs", "_G2.allValidPairs"), 'w')
 
     if verbose:
         print "## Splitting valid pairs interactions ..."
@@ -169,25 +174,25 @@ if __name__ == "__main__":
             if (vp_counter % 100000 == 0 and verbose):
                 print "##", vp_counter
 
-                
-    handle_stat = open(inputfile + '_assplit.stat', 'w')            
-    handle_stat.write("## ======================================\n")
-    handle_stat.write("## Allele specific information\n")
-    handle_stat.write("Valid_pairs\t" + str(vp_counter) + "\n")
-    handle_stat.write("Valid_pairs_from_ref_genome_(1-1)\t" + str(G1G1_ascounter) + "\n")
-    handle_stat.write("Valid_pairs_from_ref_genome_with_one_unassigned_mate_(0-1/1-0)\t" + str(UG1_ascounter+G1U_ascounter) + "\n")
-    handle_stat.write("Valid_pairs_from_alt_genome_(2-2)\t" + str(G2G2_ascounter) + "\n")
-    handle_stat.write("Valid_pairs_from_alt_genome_with_one_unassigned_mate_(0-2/2-0)\t" + str(UG2_ascounter+G2U_ascounter) + "\n")
-    handle_stat.write("Valid_pairs_from_alt_and_ref_genome_(1-2/2-1)\t" + str(G1G2_ascounter+G2G1_ascounter) + "\n")
-    handle_stat.write("Valid_pairs_with_both_unassigned_mated_(0-0)\t" + str(UU_ascounter) + "\n")
-    handle_stat.write("Valid_pairs_with_at_least_one_conflicting_mate_(3-)\t" + str(CF_ascounter) + "\n")
-    handle_stat.write("cis_short_G1\t" + str(G1cis_s) + "\n")
-    handle_stat.write("cis_long_G1\t" + str(G1cis_l) + "\n")
-    handle_stat.write("trans_G1\t" + str(G1trans) + "\n")
-    handle_stat.write("cis_short_G2\t" + str(G2cis_s) + "\n")
-    handle_stat.write("cis_long_G2\t" + str(G2cis_l) + "\n")
-    handle_stat.write("trans_G2\t" + str(G2trans) + "\n")
-    handle_stat.close()
+    if statsFile is not None:
+        handle_stat = open(statsFile, 'w')            
+        handle_stat.write("## HiC-Pro\n")
+        handle_stat.write("## Allele specific information\n")
+        handle_stat.write("Valid_pairs\t" + str(vp_counter) + "\n")
+        handle_stat.write("Valid_pairs_from_ref_genome_(1-1)\t" + str(G1G1_ascounter) + "\n")
+        handle_stat.write("Valid_pairs_from_ref_genome_with_one_unassigned_mate_(0-1/1-0)\t" + str(UG1_ascounter+G1U_ascounter) + "\n")
+        handle_stat.write("Valid_pairs_from_alt_genome_(2-2)\t" + str(G2G2_ascounter) + "\n")
+        handle_stat.write("Valid_pairs_from_alt_genome_with_one_unassigned_mate_(0-2/2-0)\t" + str(UG2_ascounter+G2U_ascounter) + "\n")
+        handle_stat.write("Valid_pairs_from_alt_and_ref_genome_(1-2/2-1)\t" + str(G1G2_ascounter+G2G1_ascounter) + "\n")
+        handle_stat.write("Valid_pairs_with_both_unassigned_mated_(0-0)\t" + str(UU_ascounter) + "\n")
+        handle_stat.write("Valid_pairs_with_at_least_one_conflicting_mate_(3-)\t" + str(CF_ascounter) + "\n")
+        handle_stat.write("cis_short_G1\t" + str(G1cis_s) + "\n")
+        handle_stat.write("cis_long_G1\t" + str(G1cis_l) + "\n")
+        handle_stat.write("trans_G1\t" + str(G1trans) + "\n")
+        handle_stat.write("cis_short_G2\t" + str(G2cis_s) + "\n")
+        handle_stat.write("cis_long_G2\t" + str(G2cis_l) + "\n")
+        handle_stat.write("trans_G2\t" + str(G2trans) + "\n")
+        handle_stat.close()
 
 
 

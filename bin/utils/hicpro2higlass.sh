@@ -23,6 +23,7 @@
 ## sudo docker start higlass-container
 ## higlass will then be available at http://localhost:8888
 ##
+
 ###########################
 ## trap handler
 ###########################
@@ -39,9 +40,9 @@ function trap_exit()
 	echo "Error: exit status detected. Exit." >&2
     fi
 
-    if [ -e ${tmp_dir} ]; then 
+    if [[ ! -z ${tmp_dir} && -e ${tmp_dir} ]]; then 
 	echo -e "Cleaning temporary folders ..." >&2
-	/bin/rm ${tmp_dir}
+	/bin/rm -rf ${tmp_dir}
     fi
 }
 
@@ -50,6 +51,41 @@ trap 'trap_exit' 0 1 2 3
 
 set -E ## export trap to functions
 set -o pipefail  ## trace ERR through pipes         
+
+## 0 =
+## 1 >
+## 2 <
+vercomp () {
+    if [[ $1 == $2 ]]
+    then
+        return 0
+    fi
+    local IFS=.
+    local i ver1=($1) ver2=($2)
+    # fill empty fields in ver1 with zeros
+    for ((i=${#ver1[@]}; i<${#ver2[@]}; i++))
+    do
+        ver1[i]=0
+    done
+
+    for ((i=0; i<${#ver1[@]}; i++))
+    do
+        if [[ -z ${ver2[i]} ]]
+        then
+            # fill empty fields in ver2 with zeros
+            ver2[i]=0
+        fi
+        if ((10#${ver1[i]} > 10#${ver2[i]}))
+        then
+            echo 1
+        fi
+        if ((10#${ver1[i]} < 10#${ver2[i]}))
+        then
+            echo 2
+        fi
+    done
+    echo 0
+}
 
 function usage {
     echo -e "usage : hicpro2higlass -i INPUT -r RESOLUTION -c CHROMSIZE [-n] [-h]"
@@ -134,9 +170,9 @@ fi
 
 ## Detect input data type
 DATATYPE=""
-if [[ $INPUT_HICPRO == *.matrix ]]; then
+if [[ $INPUT_HICPRO == *.mat* ]]; then
     DATATYPE="MATRIX"
-elif [[ $INPUT_HICPRO == *allValidPairs ]]; then
+elif [[ $INPUT_HICPRO == *allValidPairs* ]]; then
     DATATYPE="VALID"
 else
     echo -e "Unknown input data type. Expect .matrix or _allValidPairs input files."
@@ -153,8 +189,10 @@ fi
 
 COOLER_VERSION=$(cooler --version 2>&1 | awk '{print $NF}')
 echo "Cooler version $COOLER_VERSION detected ..."
-if [[ "$COOLER_VERSION" < "0.7.6" ]]; then
+cres=$(vercomp ${COOLER_VERSION} "0.7.6")
+if [[ $cres == "2" ]]; then
     echo "Cooler version must be >= 0.7.6 ! Stop."
+    exit 1
 fi
 
 if [[ $DATATYPE == "VALID" ]]; then
@@ -170,7 +208,7 @@ tmp_dir=./_tmp$$
 mkdir -p $tmp_dir
 
 if [[ $DATATYPE == "MATRIX" ]]; then
-    out=$(basename $INPUT_HICPRO | sed -e 's/.matrix/.cool/')
+    out=$(basename $INPUT_HICPRO | sed -e 's/.mat.*/.cool/')
     
     cooler makebins $CHROMSIZES_FILE $RES > $tmp_dir/bins.bed
     cooler load -f coo --one-based $tmp_dir/bins.bed $INPUT_HICPRO $out
@@ -181,10 +219,10 @@ if [[ $DATATYPE == "MATRIX" ]]; then
     else
 	cooler zoomify --no-balance $out
     fi
-    out=$(basename $INPUT_HICPRO | sed -e 's/.matrix/.mcool/')
+    out=$(basename $INPUT_HICPRO | sed -e 's/.mat.*/.mcool/')
     
 elif [[ $DATATYPE == "VALID" ]]; then
-    out=$(basename $INPUT_HICPRO | sed -e 's/_allValidPairs/.cool/')
+    out=$(basename $INPUT_HICPRO | sed -e 's/.allValidPairs.*/.cool/')
 
     awk '{OFS="\t";print $2,$3,$4,$5,$6,$7,1}' $INPUT_HICPRO | sed -e 's/+/1/g' -e 's/-/16/g' > $tmp_dir/contacts.txt
     cooler csort --nproc 2 -c1 1 -p1 2 -s1 3 -c2 4 -p2 5 -s2 6 \
@@ -201,7 +239,7 @@ elif [[ $DATATYPE == "VALID" ]]; then
     else
 	cooler zoomify --no-balance $out
     fi
-    out=$(basename $INPUT_HICPRO | sed -e 's/_allValidPairs/.mcool/')
+    out=$(basename $INPUT_HICPRO | sed -e 's/.allValidPairs.*/.mcool/')
 fi
 
 ## clean

@@ -1,7 +1,7 @@
 #!/bin/bash
 
 ## HiC-Pro
-## Copyright (c) 2015 Institut Curie                               
+## Copyright (c) 2015-2018 Institut Curie                               
 ## Author(s): Nicolas Servant, Eric Viara
 ## Contact: nicolas.servant@curie.fr
 ## This software is distributed without any guarantee under the terms of the BSD-3 licence.
@@ -81,30 +81,37 @@ do
 			exit 1
 		    fi
 		fi
+		bsize_opts="--binfile ${GENOME_FRAGMENT_FILE}"
 		bsize="rfbin"
+	    else
+		bsize_opts=" --binsize ${bsize}"
 	    fi
-	    
 	    mkdir -p ${MATRIX_DIR}/${bsize}
 	    echo "## Generate contact maps at $bsize resolution ..." >> ${ldir}/build_raw_maps.log
 	    
-	    ## Build haplotype contact maps if specified
-	    if [[ ! -z ${ALLELE_SPECIFIC_SNP} ]]; then
-	    	cmd="cat ${DATA_DIR}/${RES_FILE_NAME}/${RES_FILE_NAME}_allValidPairs_G1 | ${SCRIPTS}/build_matrix --matrix-format ${MATRIX_FORMAT} --binsize ${bsize} --chrsizes $GENOME_SIZE_FILE --ifile /dev/stdin --oprefix ${MATRIX_DIR}/${bsize}/${RES_FILE_NAME}_${bsize}_G1"
+	    ## Capture Hi-C experiments
+	    if [[ ! -z ${CAPTURE_TARGET} ]]; then
+		if [[ ! -z ${ALLELE_SPECIFIC_SNP} ]]; then
+		    cmd="cat ${DATA_DIR}/${RES_FILE_NAME}/${RES_FILE_NAME}_ontarget_G1.allValidPairs | ${SCRIPTS}/build_matrix --matrix-format ${MATRIX_FORMAT} ${bsize_opts} --chrsizes $GENOME_SIZE_FILE --ifile /dev/stdin --oprefix ${MATRIX_DIR}/${bsize}/${RES_FILE_NAME}_${bsize}_G1"
+		    exec_cmd $cmd >> ${ldir}/build_raw_maps.log 2>&1
+		    cmd="cat ${DATA_DIR}/${RES_FILE_NAME}/${RES_FILE_NAME}_ontarget_G2.allValidPairs | ${SCRIPTS}/build_matrix --matrix-format ${MATRIX_FORMAT} ${bsize_opts} --chrsizes $GENOME_SIZE_FILE --ifile /dev/stdin --oprefix ${MATRIX_DIR}/${bsize}/${RES_FILE_NAME}_${bsize}_G2"
+		    exec_cmd $cmd >> ${ldir}/build_raw_maps.log  2>&1	    
+		else
+		    cmd="cat ${DATA_DIR}/${RES_FILE_NAME}/${RES_FILE_NAME}_ontarget.allValidPairs | ${SCRIPTS}/build_matrix --matrix-format ${MATRIX_FORMAT} ${bsize_opts} --chrsizes $GENOME_SIZE_FILE --ifile /dev/stdin --oprefix ${MATRIX_DIR}/${bsize}/${RES_FILE_NAME}_${bsize} --matrix-format ${MATRIX_FORMAT}"
+		    exec_cmd $cmd >> ${ldir}/build_raw_maps.log  2>&1
+		fi
+		
+	    ## Build Allele-specific contact maps if specified
+	    elif [[ ! -z ${ALLELE_SPECIFIC_SNP} ]]; then
+	    	cmd="cat ${DATA_DIR}/${RES_FILE_NAME}/${RES_FILE_NAME}_G1.allValidPairs | ${SCRIPTS}/build_matrix --matrix-format ${MATRIX_FORMAT} ${bsize_opts} --chrsizes $GENOME_SIZE_FILE --ifile /dev/stdin --oprefix ${MATRIX_DIR}/${bsize}/${RES_FILE_NAME}_${bsize}_G1"
 		exec_cmd $cmd >> ${ldir}/build_raw_maps.log 2>&1
-		cmd="cat ${DATA_DIR}/${RES_FILE_NAME}/${RES_FILE_NAME}_allValidPairs_G2 | ${SCRIPTS}/build_matrix --matrix-format ${MATRIX_FORMAT} --binsize ${bsize} --chrsizes $GENOME_SIZE_FILE --ifile /dev/stdin --oprefix ${MATRIX_DIR}/${bsize}/${RES_FILE_NAME}_${bsize}_G2"
+		cmd="cat ${DATA_DIR}/${RES_FILE_NAME}/${RES_FILE_NAME}_G2.allValidPairs | ${SCRIPTS}/build_matrix --matrix-format ${MATRIX_FORMAT} ${bsize_opts} --chrsizes $GENOME_SIZE_FILE --ifile /dev/stdin --oprefix ${MATRIX_DIR}/${bsize}/${RES_FILE_NAME}_${bsize}_G2"
 		exec_cmd $cmd >> ${ldir}/build_raw_maps.log  2>&1
 		
 	    else
 		## Build normal diploid maps
-		## RS resolution
-		if [[ ${bsize} == "rfbin" ]]; then
-		    cmd="cat ${DATA_DIR}/${RES_FILE_NAME}/${RES_FILE_NAME}_allValidPairs | ${SCRIPTS}/build_matrix --binfile ${GENOME_FRAGMENT_FILE} --chrsizes $GENOME_SIZE_FILE --ifile /dev/stdin --oprefix ${MATRIX_DIR}/${bsize}/${RES_FILE_NAME}_${bsize} --matrix-format ${MATRIX_FORMAT}"
-		    exec_cmd $cmd >> ${ldir}/build_raw_maps.log  2>&1
-		    ## Bin resolution
-		else
-		    cmd="cat ${DATA_DIR}/${RES_FILE_NAME}/${RES_FILE_NAME}_allValidPairs | ${SCRIPTS}/build_matrix --binsize ${bsize} --chrsizes $GENOME_SIZE_FILE --ifile /dev/stdin --oprefix ${MATRIX_DIR}/${bsize}/${RES_FILE_NAME}_${bsize} --matrix-format ${MATRIX_FORMAT}"
-		    exec_cmd $cmd >> ${ldir}/build_raw_maps.log  2>&1
-		fi
+		cmd="cat ${DATA_DIR}/${RES_FILE_NAME}/${RES_FILE_NAME}.allValidPairs | ${SCRIPTS}/build_matrix ${bsize_opts} --chrsizes $GENOME_SIZE_FILE --ifile /dev/stdin --oprefix ${MATRIX_DIR}/${bsize}/${RES_FILE_NAME}_${bsize} --matrix-format ${MATRIX_FORMAT}"
+		exec_cmd $cmd >> ${ldir}/build_raw_maps.log  2>&1
 	    fi
 	done
     fi

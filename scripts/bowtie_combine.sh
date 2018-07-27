@@ -46,7 +46,7 @@ mapping_combine()
 	exec_cmd $cmd 2>&1
 
         ## Sort merge file. In theory, should be perform by "merge -n", but do not work in some cases ... depending on read name ?
-	cmd="${SAMTOOLS_PATH}/samtools sort -@ ${N_CPU} -n -T ${TMP_DIR}/$tmp_prefix -o ${BOWTIE2_FINAL_OUTPUT_DIR}/${prefix}.bwt2merged.sorted.bam ${BOWTIE2_FINAL_OUTPUT_DIR}/${prefix}.bwt2merged.bam 2> ${LOGFILE}"
+	cmd="${SAMTOOLS_PATH}/samtools sort -@ ${N_CPU} -n -T ${TMP_DIR}/$tmp_prefix -o ${BOWTIE2_FINAL_OUTPUT_DIR}/${prefix}.bwt2merged.sorted.bam ${BOWTIE2_FINAL_OUTPUT_DIR}/${prefix}.bwt2merged.bam"
         exec_cmd $cmd 2>&1
     
 	cmd="mv ${BOWTIE2_FINAL_OUTPUT_DIR}/${prefix}.bwt2merged.sorted.bam ${BOWTIE2_FINAL_OUTPUT_DIR}/${prefix}.bwt2merged.bam"
