@@ -268,7 +268,6 @@ public:
 
   chrsize_t getBinstart() const {return binstart;}
   chrsize_t getBinend() const {return binend;}
-
   chrsize_t getChrsize() const {return chr->getChrsize();}
   chrsize_t getBinsize() const {return chr->getBinsize();}
   chrsize_t getStepsize() const {return chr->getStepsize();}

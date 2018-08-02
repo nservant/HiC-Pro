@@ -25,7 +25,7 @@ if (la > 0){
 getHiCMat <- function(x){
   require(RColorBrewer)
   
-  invalid.lab <- intersect(names(x), c("Self_Cycle_pairs", "Dangling_end_pairs", "Religation_pairs", "Single-end_pairs", "Dumped_pairs"))
+  invalid.lab <- intersect(names(x), c("Self_Cycle_pairs", "Dangling_end_pairs", "Religation_pairs", "Single-end_pairs", "Dumped_pairs", "Filtered_pairs"))
   valid.lab <- intersect(names(x), c("Valid_interaction_pairs_FF", "Valid_interaction_pairs_RR", "Valid_interaction_pairs_RF", "Valid_interaction_pairs_FR"))
   x <- x[c("Valid_interaction_pairs", valid.lab, invalid.lab)]
   
@@ -47,7 +47,7 @@ getHiCMat <- function(x){
   mmat <- data.frame(cbind(lab=names(x), p, count=x, perc=x.perc), stringsAsFactors=FALSE)
 
   lab.order <- c("Invalid_pairs", "Valid_interaction_pairs", "Valid_interaction_pairs_FF", "Valid_interaction_pairs_RR",
-             "Valid_interaction_pairs_RF","Valid_interaction_pairs_FR", "Dumped_pairs", "Self_Cycle_pairs",
+             "Valid_interaction_pairs_RF","Valid_interaction_pairs_FR", "Filtered_pairs", "Dumped_pairs", "Self_Cycle_pairs",
              "Religation_pairs", "Single-end_pairs", "Dangling_end_pairs")
   mmat$lab <- factor(mmat$lab, levels=lab.order)
   #mmat <- mmat[rev(lab.order),]

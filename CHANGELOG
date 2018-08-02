@@ -11,6 +11,14 @@ NEW FEATURES
 
 SIGNIFICANT USER-VISIBLE CHANGES
 
+   o Filtered pairs based on min/max insert/fragment size are now distinguished from the dumped pairs
+
+   o Reads are now reported based on the 5' end and not on their middle position
+
+   o _allValidPairs extension is now changed to .allValidpairs
+
+   o Defulat MAPQ filter in the configuration file is now set to 10
+
    o Update log reports
 
    o Stats file per sample are not put in hic_results/stats for clarity reasons
@@ -30,6 +38,8 @@ SIGNIFICANT USER-VISIBLE CHANGES
    o hicpro2juicebox - add temporary folder for sorting, and update juicer path variable (issue#147)
 
 BUG FIXES
+
+   o Fix bug when RM_SINGLETON=0
 
    o Fix bug in hicpro2higlass.sh - added option --balance if normalization is specified
 

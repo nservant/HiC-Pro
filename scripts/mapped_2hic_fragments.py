@@ -120,14 +120,14 @@ def get_cis_dist(read1, read2):
      return dist
 
 
-def get_read_pos(read):
+def get_read_pos(read, st="start"):
     """
     Return the read position (zero-based) used for the intersection with
     the restriction fragment
 
     The 5' end is not a good choice for the reverse reads (which contain part
     of the restriction site, and thus overlap the next restriction fragment)
-    Using the left-most position (5' for forward, 3' for reverse) or the
+    Using the left-most position (ie. start, 5' for forward, 3' for reverse) or the
     middle of the read should work but the middle of the reads might be more
     safe
 
@@ -136,8 +136,14 @@ def get_read_pos(read):
     read : list
         list of aligned reads
     """
-    pos = read.pos + int(read.alen/2)
 
+    if st == "middle":
+        pos = read.pos + int(read.alen/2)
+    elif st =="start":
+        pos = get_read_start(read)
+    elif st == "left":
+        pos = read.pos
+    
     return pos
 
 
@@ -146,7 +152,7 @@ def get_read_start(read):
     Return the 5' end of the read
     """
     if read.is_reverse:
-        pos = read.pos + read.alen
+        pos = read.pos + read.alen -1
     else:
         pos = read.pos
     return pos
@@ -204,6 +210,7 @@ def load_restriction_fragment(in_file, minfragsize=None, maxfragsize=None, verbo
 
     bed_handle = open(in_file)
     nline = 0
+    nfilt = 0
     for line in bed_handle:
         nline +=1
         bedtab = line.split("\t")
@@ -220,21 +227,25 @@ def load_restriction_fragment(in_file, minfragsize=None, maxfragsize=None, verbo
         name = name.strip()
 
         ## Discard fragments outside the size range
+        filt=False
         if minfragsize != None and int(fragl) < int(minfragsize):
-            print "Warning : fragment ", name, " [", fragl, "] outside of range. Discarded"  
-            continue
-        if maxfragsize != None and int(fragl) > int(maxfragsize):
-            print "Warning : fragment ", name, " [", fragl,"] outside of range. Discarded"  
-            continue
+            nfilt+=1
+            filt=True
+        elif maxfragsize != None and int(fragl) > int(maxfragsize):
+            nfilt+=1
+            filt=True
        
         if chromosome in resFrag:
             tree = resFrag[chromosome]
-            tree.add_interval(Interval(start, end, value={'name': name}))
+            tree.add_interval(Interval(start, end, value={'name': name, 'filter': filt}))
         else:
             tree = Intersecter()
-            tree.add_interval(Interval(start, end, value={'name': name}))
+            tree.add_interval(Interval(start, end, value={'name': name, 'filter': filt}))
             resFrag[chromosome] = tree
     
+    if nfilt > 0:
+        print "Warning : ", nfilt ,"fragment(s) outside of range. Discarded"
+
     bed_handle.close()
     return resFrag
 
@@ -250,7 +261,7 @@ def get_overlapping_restriction_fragment(resFrag, chrom, read):
 
     """
     # Get read position (middle or 5' end)
-    pos = get_read_pos(read)
+    pos = get_read_pos(read, st="middle")
     
     if chrom in resFrag:
         # Overlap with the position of the read (zero-based)
@@ -532,6 +543,7 @@ if __name__ == "__main__":
     valid_counter_RF = 0
     single_counter = 0
     dump_counter = 0
+    filt_counter = 0
 
     ## AS counter
     G1G1_ascounter = 0
@@ -557,6 +569,7 @@ if __name__ == "__main__":
         handle_sc = open(outputDir + '/' + baseReadsFile + '.SCPairs', 'w')
         handle_dump = open(outputDir + '/' + baseReadsFile + '.DumpPairs', 'w')
         handle_single = open(outputDir + '/' + baseReadsFile + '.SinglePairs', 'w')
+        handle_filt = open(outputDir + '/' + baseReadsFile + '.FiltPairs', 'w')
 
     # Read the BED file
     resFrag = timing(load_restriction_fragment, fragmentFile, minFragSize, maxFragSize, verbose)
@@ -567,9 +580,6 @@ if __name__ == "__main__":
     samfile = pysam.Samfile(mappedReadsFile, "rb")
 
     if samOut:
-        #handle_sam = open(outputDir + '/' + baseReadsFile + '_interaction.sam', 'w')
-        #handle_sam = pysam.Samfile(outputDir + '/' + baseReadsFile + '_interaction.sam',
-        #    "wh", header=samfile.header)
         handle_sam = pysam.AlignmentFile(outputDir + '/' + baseReadsFile + '_interaction.bam', "wb", template=samfile)
 
     # Reads are 0-based too (for both SAM and BAM format)
@@ -602,22 +612,27 @@ if __name__ == "__main__":
                 r2_resfrag = None
                 r2_chrom = None
 
-            if r1_resfrag is not None or r2_resfrag is not None:
+            ## Filter based on restriction fragments
+            if (r1_resfrag is not None and r1_resfrag.value['filter'] == True) or (r2_resfrag is not None and r2_resfrag.value['filter']) == True:
+                interactionType = "FILT"
+                filt_counter += 1
+                cur_handler = handle_filt if allOutput else None
+
+            elif r1_resfrag is not None or r2_resfrag is not None:
                 interactionType = get_interaction_type(r1, r1_chrom, r1_resfrag, r2, r2_chrom, r2_resfrag, verbose)
                 dist = get_PE_fragment_size(r1, r2, r1_resfrag, r2_resfrag, interactionType)
                 cdist = get_cis_dist(r1, r2)
-                #print r1.qname + "\t" + r1_chrom + "\t" + str(get_read_pos(r1)) + "\t" + r2_chrom + "\t" + str(get_read_pos(r2)) + "\t" + str(dist) + "\t" + str(htag) + "\n"
-
-                # Check Insert size criteria - DUMP
+   
+                # Check Insert size criteria - FILT
                 if (minInsertSize is not None and dist is not None and
                     dist < int(minInsertSize)) or \
                     (maxInsertSize is not None and dist is not None and dist > int(maxInsertSize)):
-                    interactionType = "DUMP"
+                    interactionType = "FILT"
 
-                # Check Distance criteria - DUMP
+                # Check Distance criteria - FILT
                 # Done for VI otherwise this criteria will overwrite all other invalid classification
                 if (interactionType == "VI" and minDist is not None and cdist is not None and cdist < int(minDist)):
-                    interactionType = "DUMP"
+                    interactionType = "FILT"
         
                 if interactionType == "VI":
                     valid_counter += 1
@@ -632,12 +647,10 @@ if __name__ == "__main__":
                     elif validType == "RF":
                         valid_counter_RF += 1
 
-                    ## Split valid pairs based on XA tag
+                    ## Counts valid pairs based on XA tag
                     if gtag is not None:
                         r1as = get_read_tag(r1, gtag)
                         r2as = get_read_tag(r2, gtag)
-                        htag = str(r1as)+"-"+str(r2as)
-                        
                         if r1as == 1 and r2as == 1:
                             G1G1_ascounter += 1
                         elif r1as == 2 and r2as == 2:
@@ -674,6 +687,11 @@ if __name__ == "__main__":
                 elif interactionType == "SI":
                     single_counter += 1
                     cur_handler = handle_single if allOutput else None
+                
+                elif interactionType == "FILT":
+                    filt_counter += 1
+                    cur_handler = handle_filt if allOutput else None
+                
                 else:
                     interactionType = "DUMP"
                     dump_counter += 1
@@ -684,13 +702,19 @@ if __name__ == "__main__":
                 cur_handler = handle_dump if allOutput else None
                 dist = None
 
+            ## Write results in right handler
             if cur_handler is not None:
-                if not r1.is_unmapped and not r2.is_unmapped:
-                    
+                if not r1.is_unmapped and not r2.is_unmapped:                 
                     ##reorient reads to ease duplicates removal
                     or1, or2 = get_ordered_reads(r1, r2)
                     or1_chrom = samfile.getrname(or1.tid)
                     or2_chrom = samfile.getrname(or2.tid)
+                    
+                    ##reset as tag now that the reads are oriented
+                    r1as = get_read_tag(or1, gtag)
+                    r2as = get_read_tag(or2, gtag)
+                    if gtag is not None:
+                        htag = str(r1as)+"-"+str(r2as)
 
                     ##get fragment name and reorient if necessary
                     if or1 == r1 and or2 == r2:
@@ -699,23 +723,20 @@ if __name__ == "__main__":
                     elif or1 == r2 and or2 == r1:
                         or1_resfrag = r2_resfrag
                         or2_resfrag = r1_resfrag
-                        
+
                     if or1_resfrag is not None:
                         or1_fragname = or1_resfrag.value['name']
-                    else:
-                        or1_fragname = 'NA'
+                    
                     if or2_resfrag is not None:
                         or2_fragname = or2_resfrag.value['name']
-                    else:
-                        or2_fragname = 'NA'
-
+                    
                     cur_handler.write(
                         or1.qname + "\t" +
                         or1_chrom + "\t" +
-                        str(get_read_pos(or1)) + "\t" +
+                        str(get_read_pos(or1)+1) + "\t" +
                         str(get_read_strand(or1)) + "\t" +
                         or2_chrom + "\t" +
-                        str(get_read_pos(or2)) + "\t" +
+                        str(get_read_pos(or2)+1) + "\t" +
                         str(get_read_strand(or2)) + "\t" +
                         str(dist) + "\t" + 
                         or1_fragname + "\t" +
@@ -723,35 +744,42 @@ if __name__ == "__main__":
                         str(or1.mapping_quality) + "\t" + 
                         str(or2.mapping_quality) + "\t" + 
                         str(htag) + "\n")
-                elif r2.is_unmapped:
+
+                elif r2.is_unmapped and not r1.is_unmapped:
+                    if r1_resfrag is not None:
+                        r1_fragname = r1_resfrag.value['name']
+                          
                     cur_handler.write(
-                        or1.qname + "\t" +
-                        or1_chrom + "\t" +
-                        str(get_read_pos(or1)) + "\t" +
-                        str(get_read_strand(or1)) + "\t" +
-                        "+" + "\t" +
-                        "0" + "\t" +
+                        r1.qname + "\t" +
+                        r1_chrom + "\t" +
+                        str(get_read_pos(r1)+1) + "\t" +
+                        str(get_read_strand(r1)) + "\t" +
                         "*" + "\t" +
-                        str(dist) + "\t" + 
-                        or1_fragname + "\t" +
-                        or2_fragname + "\t" +
-                        str(or1.mapping_quality) + "\t" + 
-                        str(or2.mapping_quality) + "\n")
-                else:
+                        "*" + "\t" +
+                        "*" + "\t" +
+                        "*" + "\t" + 
+                        r1_fragname + "\t" +
+                        "*" + "\t" +
+                        str(r1.mapping_quality) + "\t" + 
+                        "*" + "\n")
+                elif r1.is_unmapped and not r2.is_unmapped:
+                    if r2_resfrag is not None:
+                        r2_fragname = r2_resfrag.value['name']
+                    
                     cur_handler.write(
-                        or1.qname + "\t" +
+                        r2.qname + "\t" +
                         "*" + "\t" +
-                        "0" + "\t" +
                         "*" + "\t" +
-                        or2_chrom + "\t" +
-                        str(get_read_pos(or2)) + "\t" +
-                        str(get_read_strand(or2)) + "\t" +
-                        str(dist) + "\t" +
-                        or1_fragname + "\t" +
-                        or2_fragname + "\t" +
-                        str(or1.mapping_quality) + "\t" + 
-                        str(or2.mapping_quality) + "\n")
-                
+                        "*" + "\t" +
+                        r2_chrom + "\t" +
+                        str(get_read_pos(r2)+1) + "\t" +
+                        str(get_read_strand(r2)) + "\t" +
+                        "*" + "\t" +
+                        "*" + "\t" +
+                        r2_fragname + "\t" +
+                        "*" + "\t" +
+                        str(r2.mapping_quality) + "\n")
+
                 ## Keep initial order    
                 if samOut:
                     r1.tags = r1.tags + [('CT', str(interactionType))]
@@ -770,6 +798,8 @@ if __name__ == "__main__":
         handle_sc.close()
         handle_dump.close()
         handle_single.close()
+        handle_filt.close()
+
 
     # Write stats file
     handle_stat = open(outputDir + '/' + baseReadsFile + '.RSstat', 'w')
@@ -787,6 +817,7 @@ if __name__ == "__main__":
     handle_stat.write("Religation_pairs\t" + str(re_counter) + "\n")
     handle_stat.write("Self_Cycle_pairs\t" + str(sc_counter) + "\n")
     handle_stat.write("Single-end_pairs\t" + str(single_counter) + "\n")
+    handle_stat.write("Filtered_pairs\t" + str(filt_counter) + "\n")
     handle_stat.write("Dumped_pairs\t" + str(dump_counter) + "\n")
 
     ## Write AS report

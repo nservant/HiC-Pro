@@ -67,20 +67,23 @@ then
  
     ## step 1 - parallel
     torque_script=HiCPro_step1_${JOB_NAME}.sh
-    PPN=$(( ${N_CPU} * 2))
     cat > ${torque_script} <<EOF
 #!/bin/bash
-#PBS -l nodes=1:ppn=${PPN},mem=${JOB_MEM},walltime=${JOB_WALLTIME}
+#PBS -l nodes=1:ppn=${N_CPU},mem=${JOB_MEM},walltime=${JOB_WALLTIME}
 #PBS -M ${JOB_MAIL}
 #PBS -m ae
 #PBS -j eo
 #PBS -N HiCpro_s1_${JOB_NAME}
 #PBS -q ${JOB_QUEUE}
 #PBS -V
-#PBS -t 1-$count
+EOF
 
+    if [[ $count -gt 1 ]]; then
+	echo -e "#PBS -t 1-$count" >> ${torque_script} 
+    fi
+
+cat >> ${torque_script} <<EOF
 cd \$PBS_O_WORKDIR
-
 FASTQFILE=\$PBS_O_WORKDIR/$inputfile; export FASTQFILE
 make --file ${SCRIPTS}/Makefile CONFIG_FILE=${conf_file} CONFIG_SYS=${INSTALL_PATH}/config-system.txt $make_target 2>&1
 EOF

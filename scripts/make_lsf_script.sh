@@ -67,7 +67,6 @@ then
  
     ## step 1 - parallel
     lsf_script=HiCPro_step1_${JOB_NAME}.sh
-    PPN=$(( ${N_CPU} * 2))
     cat > ${lsf_script} <<EOF
 #!/bin/bash
 #BSUB -M ${JOB_MEM}
@@ -78,8 +77,14 @@ then
 #BSUB -e HiCpro_s1_${JOB_NAME}.%J.e
 #BSUB -o HiCpro_s1_${JOB_NAME}.%J.o
 #BSUB -q ${JOB_QUEUE}
-#BSUB -n ${PPN}
+#BSUB -n ${N_CPU}
+EOF
 
+    if [[ $count -gt 1 ]]; then
+	echo -e "#BSUB -J HiCpro_s1_${JOB_NAME}[1-$count]" >> ${lsf_script} 
+    fi
+
+    cat >> ${lsf_script} <<EOF
 FASTQFILE=$inputfile; export FASTQFILE
 make --file ${SCRIPTS}/Makefile CONFIG_FILE=${conf_file} CONFIG_SYS=${INSTALL_PATH}/config-system.txt $make_target 2>&1
 EOF

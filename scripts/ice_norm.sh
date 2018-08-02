@@ -77,7 +77,7 @@ do
 	    	    
 	    if [[ $input_data_type == "mat" ]]
 	    then
-		input=$(find -L $IN_DIR/${RES_FILE_NAME}/ -name "*.matrix" -name "*$bsize*")
+		input=$(find -L $IN_DIR/${RES_FILE_NAME}/ -name "*.matrix" -name "*$bsize*" ! -name "*iced*")
 		if [ ! -z $input ]; then
 		    cmd="${PYTHON_PATH}/python ${SCRIPTS}/ice --results_filename ${NORM_DIR}/${bsize}/${RES_FILE_NAME}_${bsize}_iced.matrix --filter_low_counts_perc ${FILTER_LOW_COUNT_PERC} --filter_high_counts_perc ${FILTER_HIGH_COUNT_PERC} --max_iter ${MAX_ITER} --eps ${EPS} --remove-all-zeros-loci --output-bias 1 --verbose 1 ${input}"
                     exec_cmd $cmd >> ${ldir}/ice_${bsize}.log
@@ -85,19 +85,12 @@ do
 		    echo "Warning : Matrix not found at $bsize resolution in $IN_DIR/${RES_FILE_NAME} - skip"
 		fi
 	    else
-		if [[ ! -z ${ALLELE_SPECIFIC_SNP} ]]; then
-		    ## Build haplotype contact maps if specified
-	    	    INPUT_MATRIX_G1=${IN_DIR}/${RES_FILE_NAME}/raw/${bsize}/${RES_FILE_NAME}_${bsize}_G1.matrix
-		    INPUT_MATRIX_G2=${IN_DIR}/${RES_FILE_NAME}/raw/${bsize}/${RES_FILE_NAME}_${bsize}_G2.matrix
-		    cmd="${PYTHON_PATH}/python ${SCRIPTS}/ice --results_filename ${NORM_DIR}/${bsize}/${RES_FILE_NAME}_${bsize}_G1_iced.matrix --filter_low_counts_perc ${FILTER_LOW_COUNT_PERC} --filter_high_counts_perc ${FILTER_HIGH_COUNT_PERC} --max_iter ${MAX_ITER} --eps ${EPS} --remove-all-zeros-loci --output-bias 1 --verbose 1 ${INPUT_MATRIX_G1}"
-		    exec_cmd $cmd >> ${ldir}/ice_${bsize}.log
-		    cmd="${PYTHON_PATH}/python ${SCRIPTS}/ice --results_filename ${NORM_DIR}/${bsize}/${RES_FILE_NAME}_${bsize}_G2_iced.matrix --filter_low_counts_perc ${FILTER_LOW_COUNT_PERC} --filter_high_counts_perc ${FILTER_HIGH_COUNT_PERC} --max_iter ${MAX_ITER} --eps ${EPS} --remove-all-zeros-loci --output-bias 1 --verbose 1 ${INPUT_MATRIX_G2} "
-		    exec_cmd $cmd >> ${ldir}/ice_${bsize}.log
-		else
-		    INPUT_MATRIX=${IN_DIR}/${RES_FILE_NAME}/raw/${bsize}/${RES_FILE_NAME}_${bsize}.matrix
-		    cmd="${PYTHON_PATH}/python ${SCRIPTS}/ice --results_filename ${NORM_DIR}/${bsize}/${RES_FILE_NAME}_${bsize}_iced.matrix --filter_low_counts_perc ${FILTER_LOW_COUNT_PERC} --filter_high_counts_perc ${FILTER_HIGH_COUNT_PERC} --max_iter ${MAX_ITER} --eps ${EPS} --remove-all-zeros-loci --output-bias 1 --verbose 1 ${INPUT_MATRIX}"
-		    exec_cmd $cmd >> ${ldir}/ice_${bsize}.log
-		fi
+		for r in $(get_hic_files ${IN_DIR}/${RES_FILE_NAME}/raw/${bsize}/ .matrix)
+		do
+                    ofile=$(basename ${r} | sed -e 's/.matrix/_iced.matrix/')
+		    cmd="${PYTHON_PATH}/python ${SCRIPTS}/ice --results_filename ${NORM_DIR}/${bsize}/${ofile} --filter_low_counts_perc ${FILTER_LOW_COUNT_PERC} --filter_high_counts_perc ${FILTER_HIGH_COUNT_PERC} --max_iter ${MAX_ITER} --eps ${EPS} --remove-all-zeros-loci --output-bias 1 --verbose 1 ${r}"
+		    exec_cmd $cmd >> ${ldir}/build_raw_maps.log 2>&1
+		done
 	    fi
 	done
 

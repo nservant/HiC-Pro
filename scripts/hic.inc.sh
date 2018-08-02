@@ -142,7 +142,7 @@ get_data_type()
     nb_fq=$(find -L $RAW_DIR -mindepth 2 -maxdepth 2 -name "*.fastq" -o -name "*.fastq.gz" | wc -l)
     nb_bam=$(find -L $RAW_DIR -mindepth 2 -maxdepth 2 -name "*.bam" -o -name "*.sam" | wc -l)
     nb_vpairs=$(find -L $RAW_DIR -mindepth 2 -maxdepth 2 -name "*.validPairs" | wc -l)
-    nb_allvpairs=$(find -L $RAW_DIR -mindepth 2 -maxdepth 2 -name "*_allValidPairs" | wc -l)
+    nb_allvpairs=$(find -L $RAW_DIR -mindepth 2 -maxdepth 2 -name "*.allValidPairs" | wc -l)
     nb_mat=$(find -L $RAW_DIR -mindepth 2 -maxdepth 4 -name "*.matrix" | wc -l)
 
     if (( $nb_mat > 0 )); then
@@ -156,7 +156,7 @@ get_data_type()
     elif (( $nb_fq > 0 )); then
         INPUT_DATA_TYPE="fastq"
     else
-	die "Error in input type.'.fastq|.bam|.validPairs|_allValidPairs|.matrix' files are expected."
+	die "Error in input type.'.fastq|.bam|.validPairs|.allValidPairs|.matrix' files are expected."
     fi
     echo $INPUT_DATA_TYPE
 }
@@ -305,6 +305,7 @@ get_sam_for_combine()
 
 get_paired_bam()
 {
-    get_hic_files ${BOWTIE2_FINAL_OUTPUT_DIR} _${REFERENCE_GENOME}.bwt2pairs.bam | get_R1 | sed -e "s/${PAIR1_EXT}//" -e "s/_${REFERENCE_GENOME}.bwt2merged//"
+    get_hic_files ${BOWTIE2_FINAL_OUTPUT_DIR} _${REFERENCE_GENOME}.bwt2pairs.bam 
+##| get_R1 | sed -e "s/${PAIR1_EXT}//" -e "s/_${REFERENCE_GENOME}.bwt2merged//"
 }
 

@@ -65,11 +65,11 @@ then
  
     ## step 1 - parallel
     torque_script=HiCPro_step1_${JOB_NAME}.sh
-    PPN=$(( ${N_CPU} * 2))
+ 
     cat > ${torque_script} <<EOF
 #!/bin/bash
 #SBATCH -N 1
-#SBATCH -n ${PPN}
+#SBATCH -n ${N_CPU}
 #SBATCH -t ${JOB_WALLTIME}
 #SBATCH --mem-per-cpu=${JOB_MEM}
 #SBATCH -p ${JOB_QUEUE}
@@ -78,8 +78,12 @@ then
 #SBATCH --mail-type=end
 #SBATCH --job-name=HiCpro_s1_${JOB_NAME}
 #SBATCH --export=ALL
-#SBATCH --array=1-$count
-
+EOF
+    
+    if [[ $count -gt 1 ]]; then
+	echo -e "#SBATCH --array=1-$count" >> ${torque_script}
+    fi
+    cat >> ${torque_script} <<EOF
 FASTQFILE=\$SLURM_SUBMIT_DIR/$inputfile; export FASTQFILE
 make --file ${SCRIPTS}/Makefile CONFIG_FILE=${conf_file} CONFIG_SYS=${INSTALL_PATH}/config-system.txt $make_target 2>&1
 EOF

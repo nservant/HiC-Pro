@@ -88,31 +88,12 @@ do
 	    fi
 	    mkdir -p ${MATRIX_DIR}/${bsize}
 	    echo "## Generate contact maps at $bsize resolution ..." >> ${ldir}/build_raw_maps.log
-	    
-	    ## Capture Hi-C experiments
-	    if [[ ! -z ${CAPTURE_TARGET} ]]; then
-		if [[ ! -z ${ALLELE_SPECIFIC_SNP} ]]; then
-		    cmd="cat ${DATA_DIR}/${RES_FILE_NAME}/${RES_FILE_NAME}_ontarget_G1.allValidPairs | ${SCRIPTS}/build_matrix --matrix-format ${MATRIX_FORMAT} ${bsize_opts} --chrsizes $GENOME_SIZE_FILE --ifile /dev/stdin --oprefix ${MATRIX_DIR}/${bsize}/${RES_FILE_NAME}_${bsize}_G1"
-		    exec_cmd $cmd >> ${ldir}/build_raw_maps.log 2>&1
-		    cmd="cat ${DATA_DIR}/${RES_FILE_NAME}/${RES_FILE_NAME}_ontarget_G2.allValidPairs | ${SCRIPTS}/build_matrix --matrix-format ${MATRIX_FORMAT} ${bsize_opts} --chrsizes $GENOME_SIZE_FILE --ifile /dev/stdin --oprefix ${MATRIX_DIR}/${bsize}/${RES_FILE_NAME}_${bsize}_G2"
-		    exec_cmd $cmd >> ${ldir}/build_raw_maps.log  2>&1	    
-		else
-		    cmd="cat ${DATA_DIR}/${RES_FILE_NAME}/${RES_FILE_NAME}_ontarget.allValidPairs | ${SCRIPTS}/build_matrix --matrix-format ${MATRIX_FORMAT} ${bsize_opts} --chrsizes $GENOME_SIZE_FILE --ifile /dev/stdin --oprefix ${MATRIX_DIR}/${bsize}/${RES_FILE_NAME}_${bsize} --matrix-format ${MATRIX_FORMAT}"
-		    exec_cmd $cmd >> ${ldir}/build_raw_maps.log  2>&1
-		fi
-		
-	    ## Build Allele-specific contact maps if specified
-	    elif [[ ! -z ${ALLELE_SPECIFIC_SNP} ]]; then
-	    	cmd="cat ${DATA_DIR}/${RES_FILE_NAME}/${RES_FILE_NAME}_G1.allValidPairs | ${SCRIPTS}/build_matrix --matrix-format ${MATRIX_FORMAT} ${bsize_opts} --chrsizes $GENOME_SIZE_FILE --ifile /dev/stdin --oprefix ${MATRIX_DIR}/${bsize}/${RES_FILE_NAME}_${bsize}_G1"
+	    for r in $(get_hic_files ${DATA_DIR}/${RES_FILE_NAME} .allValidPairs)
+	    do
+		ofile=$(basename ${r} | sed -e 's/.allValidPairs/_${bsize}/')
+		cmd="cat ${r} | ${SCRIPTS}/build_matrix --matrix-format ${MATRIX_FORMAT} ${bsize_opts} --chrsizes $GENOME_SIZE_FILE --ifile /dev/stdin --oprefix ${MATRIX_DIR}/${bsize}/${ofile}"
 		exec_cmd $cmd >> ${ldir}/build_raw_maps.log 2>&1
-		cmd="cat ${DATA_DIR}/${RES_FILE_NAME}/${RES_FILE_NAME}_G2.allValidPairs | ${SCRIPTS}/build_matrix --matrix-format ${MATRIX_FORMAT} ${bsize_opts} --chrsizes $GENOME_SIZE_FILE --ifile /dev/stdin --oprefix ${MATRIX_DIR}/${bsize}/${RES_FILE_NAME}_${bsize}_G2"
-		exec_cmd $cmd >> ${ldir}/build_raw_maps.log  2>&1
-		
-	    else
-		## Build normal diploid maps
-		cmd="cat ${DATA_DIR}/${RES_FILE_NAME}/${RES_FILE_NAME}.allValidPairs | ${SCRIPTS}/build_matrix ${bsize_opts} --chrsizes $GENOME_SIZE_FILE --ifile /dev/stdin --oprefix ${MATRIX_DIR}/${bsize}/${RES_FILE_NAME}_${bsize} --matrix-format ${MATRIX_FORMAT}"
-		exec_cmd $cmd >> ${ldir}/build_raw_maps.log  2>&1
-	    fi
+	    done
 	done
     fi
     wait

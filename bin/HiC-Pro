@@ -37,7 +37,7 @@ function help {
     echo "      proc_hic: perform Hi-C filtering - require BAM files"
     echo "      quality_checks: run Hi-C quality control plots"
     echo "      merge_persample: merge multiple inputs and remove duplicates if specified - require .validPairs files"
-    echo "      build_contact_maps: Build raw inter/intrachromosomal contact maps - require _allValidPairs files"
+    echo "      build_contact_maps: Build raw inter/intrachromosomal contact maps - require .allValidPairs files"
     echo "      ice_norm : run ICE normalization on contact maps - require .matrix files"
     echo "   [-h|--help]: help"
     echo "   [-v|--version]: version"
@@ -242,9 +242,15 @@ fi
 ## Check rawdata structure
 if [[ $NEED_FASTQ == 1 ]]; then
     nbin=$(find -L $INPUT -mindepth 2 -maxdepth 2 -name "*.fastq" -o -name "*.fastq.gz" | wc -l)
+    nbin_r1=$(find -L $INPUT -mindepth 2 -maxdepth 2 -name "*.fastq*" -and -name "*${PAIR1_EXT}* | wc -l")
+    nbin_r2=$(find -L $INPUT -mindepth 2 -maxdepth 2 -name "*.fastq*" -and -name "*${PAIR2_EXT}* | wc -l")
     if [ $nbin == 0 ]; then
 	die "Error: Directory Hierarchy of rawdata '$INPUT' is not correct. No '.fastq(.gz)' files detected"
     fi
+    if [[ $nbin_r1 != $nbin_r2 ]]; then
+        die "Error: Directory Hierarchy of rawdata '$INPUT' is not correct. Paired '.fastq' files with ${PAIR1_EXT}/${PAIR2_EXT} are required !"
+    fi
+
 elif [[ $NEED_BAM == 1 ]]; then
     nbin=$(find -L $INPUT -mindepth 2 -maxdepth 2 -name "*.bam" | wc -l)
     nbin_r1=$(find -L $INPUT -mindepth 2 -maxdepth 2 -name "*.bam" -and -name "*${PAIR1_EXT}* | wc -l")
@@ -258,9 +264,9 @@ elif [[ $NEED_VALID == 1 ]]; then
         die "Error: Directory Hierarchy of rawdata '$INPUT' is not correct. No '.validPairs' files detected"
     fi
 elif [[ $NEED_ALLVALID == 1 ]]; then
-    nbin=$(find -L $INPUT -mindepth 2 -maxdepth 2 -name "*_allValidPairs" | wc -l)
+    nbin=$(find -L $INPUT -mindepth 2 -maxdepth 2 -name "*.allValidPairs" | wc -l)
     if [ $nbin == 0 ]; then
-        die "Error: Directory Hierarchy of rawdata '$INPUT' is not correct. No '_allValidPairs' files detected"
+        die "Error: Directory Hierarchy of rawdata '$INPUT' is not correct. No '.allValidPairs' files detected"
     fi
 elif [[ $NEED_MAT == 1 ]]; then
     nbin=$(find -L $INPUT -mindepth 2 -maxdepth 4 -name "*.matrix" | wc -l)
@@ -277,7 +283,7 @@ fi
 ## Init HiC-Pro
 ####################
 if [[ -d $OUTPUT && $MAKE_OPTS == "" ]]; then
-    echo "$OUTPUT folder alreads exists. Do you want to delete it before running ?(y/n) [n] : "
+    echo "$OUTPUT folder alreads exists. Do you want to overwrite it ? (y/n) [n] : "
     read ans
     if [ XX${ans} = XXy ]; then
 	/bin/rm -rf $OUTPUT

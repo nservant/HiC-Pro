@@ -33,7 +33,7 @@ PAIR2_EXT = _R2
 ## Alignment options
 #######################################################################
 
-MIN_MAPQ = 0
+MIN_MAPQ = 10
 
 BOWTIE2_IDX_PATH = 
 BOWTIE2_GLOBAL_OPTIONS = --very-sensitive -L 30 --score-min L,-0.6,-0.2 --end-to-end --reorder
