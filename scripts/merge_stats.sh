@@ -35,7 +35,7 @@ CONF=$conf_file . $dir/hic.inc.sh
 DATA_DIR=${MAPC_OUTPUT}/data/
 
 ################### Combine Bowtie mapping ###################
-for RES_FILE_NAME in ${RAW_DIR}/*
+for RES_FILE_NAME in ${RAW_DIR}/*/
 do
     RES_FILE_NAME=$(basename $RES_FILE_NAME)
     ldir=${LOGS_DIR}/${RES_FILE_NAME}

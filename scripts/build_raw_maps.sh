@@ -88,7 +88,17 @@ do
 	    fi
 	    mkdir -p ${MATRIX_DIR}/${bsize}
 	    echo "## Generate contact maps at $bsize resolution ..." >> ${ldir}/build_raw_maps.log
-	    for r in $(get_hic_files ${DATA_DIR}/${RES_FILE_NAME} .allValidPairs)
+
+	    pattern=".allValidPairs"
+            if [[ ! -z ${ALLELE_SPECIFIC_SNP} && ! -z ${CAPTURE_TARGET} ]]; then
+		pattern="G[12]_ontargets.allValidPairs"
+	    elif [[ ! -z ${ALLELE_SPECIFIC_SNP} ]]; then
+		pattern="G[12].allValidPairs"
+	    elif [[ ! -z ${CAPTURE_TARGET} ]]; then
+		pattern="ontarget.allValidPairs"
+	    fi
+		
+	    for r in $(get_hic_files ${DATA_DIR}/${RES_FILE_NAME} ${pattern})
 	    do
 		ofile=$(basename ${r} | sed -e 's/.allValidPairs/_${bsize}/')
 		cmd="cat ${r} | ${SCRIPTS}/build_matrix --matrix-format ${MATRIX_FORMAT} ${bsize_opts} --chrsizes $GENOME_SIZE_FILE --ifile /dev/stdin --oprefix ${MATRIX_DIR}/${bsize}/${ofile}"

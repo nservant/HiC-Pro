@@ -85,13 +85,14 @@ if [ -d ${BOWTIE2_FINAL_OUTPUT_DIR} ]; then
 fi
 
 ## Hi-C processing quality checks   
-if [ -d ${DATA_DIR} ]; then
+if [[ -d ${DATA_DIR} ]]; then
     for RES_FILE_NAME in ${DATA_DIR}/*
     do
 	RES_FILE_NAME=$(basename $RES_FILE_NAME)
 	PIC_DIR=${MAPC_OUTPUT}/pic/${RES_FILE_NAME}
 	DATA_DIR=${MAPC_OUTPUT}/data/${RES_FILE_NAME}
-	
+	STATS_DIR=${MAPC_OUTPUT}/stats/${RES_FILE_NAME}
+
          ## Logs
 	ldir=${LOGS_DIR}/${RES_FILE_NAME}
 	mkdir -p ${ldir}
@@ -113,10 +114,10 @@ if [ -d ${DATA_DIR} ]; then
 	if [[ ${plot_type} == "all" || ${plot_type} == "contacts" ]]
 	then
 	## be sure that the merge_valid_interaction step was run
-	    nb=$(find $DATA_DIR  -name "*.mergestat" | wc -l)
+	    nb=$(find $STATS_DIR  -name "*.mergestat" | wc -l)
 	    if [[ $nb > 0 ]]; then
 		echo "##Quality checks - Hi-C contact maps ..." >> ${ldir}/make_Rplots.log
-		cmd="${R_PATH}/R CMD BATCH --no-save --no-restore \"--args picDir='${PIC_DIR}' hicDir='${DATA_DIR}' sampleName='${RES_FILE_NAME}'\" ${SCRIPTS}/plot_hic_contacts.R ${ldir}/plot_hic_contacts.Rout"
+		cmd="${R_PATH}/R CMD BATCH --no-save --no-restore \"--args picDir='${PIC_DIR}' hicDir='${DATA_DIR}' statsDir='${STATS_DIR}' sampleName='${RES_FILE_NAME}'\" ${SCRIPTS}/plot_hic_contacts.R ${ldir}/plot_hic_contacts.Rout"
 		exec_cmd $cmd >> ${ldir}/make_Rplots.log 2>&1
 	    fi
 	fi
