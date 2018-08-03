@@ -142,8 +142,13 @@ if [ ! -e $INPUT ]; then
 fi
 
 if [[ -z $PAIR1_EXT || -z $PAIR2_EXT ]]; then
-    die "Read pairs extension is not defined. Exit"
+    die "Read pairs extensions not defined. Exit"
 fi
+
+if [[ $(echo $REFERENCE_GENOME | grep -c -e $PAIR1_EXT -e $PAIR2_EXT) == "1" ]]; then
+    die "Conflict in file names. PAIR1_EXT/PAIR2_EXT detected in REFERENCE_GENOME. Please correct before running. Exit"
+fi
+
 
 GENOME_SIZE_FILE=`abspath $GENOME_SIZE`
 if [[ ! -e $GENOME_SIZE_FILE ]]; then
@@ -175,6 +180,7 @@ fi
 if [[ ! -z $ALLELE_SPECIFIC_SNP && ! -e $ALLELE_SPECIFIC_SNP ]]; then
     die "ALLELE_SPECIFIC_SNP $ALLELE_SPECIFIC_SNP not found. Exit"
 fi
+
 
 #####################
 ## Check step option
@@ -242,12 +248,12 @@ fi
 ## Check rawdata structure
 if [[ $NEED_FASTQ == 1 ]]; then
     nbin=$(find -L $INPUT -mindepth 2 -maxdepth 2 -name "*.fastq" -o -name "*.fastq.gz" | wc -l)
-    nbin_r1=$(find -L $INPUT -mindepth 2 -maxdepth 2 -name "*.fastq*" -and -name "*${PAIR1_EXT}* | wc -l")
-    nbin_r2=$(find -L $INPUT -mindepth 2 -maxdepth 2 -name "*.fastq*" -and -name "*${PAIR2_EXT}* | wc -l")
+    nbin_r1=$(find -L $INPUT -mindepth 2 -maxdepth 2 -name "*.fastq*" -and -name "*${PAIR1_EXT}*" | wc -l)
+    nbin_r2=$(find -L $INPUT -mindepth 2 -maxdepth 2 -name "*.fastq*" -and -name "*${PAIR2_EXT}*" | wc -l)
     if [ $nbin == 0 ]; then
 	die "Error: Directory Hierarchy of rawdata '$INPUT' is not correct. No '.fastq(.gz)' files detected"
     fi
-    if [[ $nbin_r1 != $nbin_r2 ]]; then
+    if [[ $nbin_r1 == 0 || $nbin_r2 == 0 || $nbin_r1 != $nbin_r2 ]]; then
         die "Error: Directory Hierarchy of rawdata '$INPUT' is not correct. Paired '.fastq' files with ${PAIR1_EXT}/${PAIR2_EXT} are required !"
     fi
 
