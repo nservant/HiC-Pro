@@ -114,11 +114,13 @@ if [[ -d ${DATA_DIR} ]]; then
 	if [[ ${plot_type} == "all" || ${plot_type} == "contacts" ]]
 	then
 	## be sure that the merge_valid_interaction step was run
-	    nb=$(find $STATS_DIR  -name "*.mergestat" | wc -l)
-	    if [[ $nb > 0 ]]; then
-		echo "##Quality checks - Hi-C contact maps ..." >> ${ldir}/make_Rplots.log
-		cmd="${R_PATH}/R CMD BATCH --no-save --no-restore \"--args picDir='${PIC_DIR}' hicDir='${DATA_DIR}' statsDir='${STATS_DIR}' sampleName='${RES_FILE_NAME}'\" ${SCRIPTS}/plot_hic_contacts.R ${ldir}/plot_hic_contacts.Rout"
-		exec_cmd $cmd >> ${ldir}/make_Rplots.log 2>&1
+	    if [[ -d ${STATS_DIR} ]]; then
+		nb=$(find $STATS_DIR  -name "*.mergestat" | wc -l)
+		if [[ $nb > 0 ]]; then
+		    echo "##Quality checks - Hi-C contact maps ..." >> ${ldir}/make_Rplots.log
+		    cmd="${R_PATH}/R CMD BATCH --no-save --no-restore \"--args picDir='${PIC_DIR}' hicDir='${DATA_DIR}' statsDir='${STATS_DIR}' sampleName='${RES_FILE_NAME}'\" ${SCRIPTS}/plot_hic_contacts.R ${ldir}/plot_hic_contacts.Rout"
+		    exec_cmd $cmd >> ${ldir}/make_Rplots.log 2>&1
+		fi
 	    fi
 	fi
     done
