@@ -11,14 +11,14 @@ MAPC_OUTPUT = hic_results
 RAW_DIR = rawdata
 
 #######################################################################
-## SYSTEM - PBS - Start Editing Here !!
+## SYSTEM AND SCHEDULER - Start Editing Here !!
 #######################################################################
 N_CPU = 2
 LOGFILE = hicpro.log
 
-JOB_NAME = hicpro-testop
+JOB_NAME = hicpro-test-op-cap
 JOB_MEM = 10gb
-JOB_WALLTIME = 6:00:00
+JOB_WALLTIME = 12:00:00
 JOB_QUEUE = batch
 JOB_MAIL = nservant@curie.fr
 
@@ -26,16 +26,17 @@ JOB_MAIL = nservant@curie.fr
 ## Data
 #########################################################################
 
-PAIR1_EXT = _R1
-PAIR2_EXT = _R2
+PAIR1_EXT = _1
+PAIR2_EXT = _2
 
 #######################################################################
 ## Alignment options
 #######################################################################
 
+FORMAT = phred33
 MIN_MAPQ = 0
 
-BOWTIE2_IDX_PATH = /bioinfo/users/nservant/Apps/HiC-Pro_2.11.0-beta/test-op/bowtie2_indexes_hg19
+BOWTIE2_IDX_PATH = /bioinfo/users/nservant/Apps/HiC-Pro_2.11.0-beta/test-op/bowtie2_indexes_mm9/
 BOWTIE2_GLOBAL_OPTIONS = --very-sensitive -L 30 --score-min L,-0.6,-0.2 --end-to-end --reorder
 BOWTIE2_LOCAL_OPTIONS =  --very-sensitive -L 20 --score-min L,-0.6,-0.2 --end-to-end --reorder
 
@@ -43,11 +44,11 @@ BOWTIE2_LOCAL_OPTIONS =  --very-sensitive -L 20 --score-min L,-0.6,-0.2 --end-to
 ## Annotation files
 #######################################################################
 
-REFERENCE_GENOME = hg19
-GENOME_SIZE = chrom_hg19.sizes
+REFERENCE_GENOME = mm9
+GENOME_SIZE = chrom_mm9.sizes
 
 #######################################################################
-## Allele specific
+## Allele specific analysis
 #######################################################################
 
 ALLELE_SPECIFIC_SNP = 
@@ -56,27 +57,27 @@ ALLELE_SPECIFIC_SNP =
 ## Capture Hi-C analysis
 #######################################################################
 
-CAPTURE_TARGET =
-REPORT_CAPTURE_REPORTER = 
+CAPTURE_TARGET = /bioinfo/users/nservant/Apps/HiC-Pro_2.11.0-beta/test-op/test_data_cap/capture.bed
+REPORT_CAPTURE_REPORTER = 1
 
 #######################################################################
 ## Digestion Hi-C
 #######################################################################
 
-GENOME_FRAGMENT = HindIII_resfrag_hg19.bed
-LIGATION_SITE = AAGCTAGCTT
-MIN_FRAG_SIZE = 100
-MAX_FRAG_SIZE = 100000
-MIN_INSERT_SIZE = 100
-MAX_INSERT_SIZE = 600
+GENOME_FRAGMENT = DpnII_resfrag_mm9.bed
+LIGATION_SITE = GATC
+MIN_FRAG_SIZE = 
+MAX_FRAG_SIZE =
+MIN_INSERT_SIZE =
+MAX_INSERT_SIZE =
 
 #######################################################################
 ## Hi-C processing
 #######################################################################
 
 MIN_CIS_DIST =
-GET_ALL_INTERACTION_CLASSES = 1
-GET_PROCESS_SAM = 1
+GET_ALL_INTERACTION_CLASSES = 0
+GET_PROCESS_SAM = 0
 RM_SINGLETON = 1
 RM_MULTI = 1
 RM_DUP = 1
@@ -85,11 +86,11 @@ RM_DUP = 1
 ## Contact Maps
 #######################################################################
 
-BIN_SIZE = 500000 1000000
+BIN_SIZE = 1000 5000 10000 20000 40000 150000
 MATRIX_FORMAT = upper
 
 #######################################################################
-## ICE Normalization
+## Normalization
 #######################################################################
 MAX_ITER = 100
 FILTER_LOW_COUNT_PERC = 0.02

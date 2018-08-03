@@ -1,7 +1,7 @@
 # Please change the variable settings below if necessary
 
 #########################################################################
-## Paths and Settings  - Do not edit !
+## Paths and Settings  - Do not edit !!
 #########################################################################
 
 TMP_DIR = tmp
@@ -16,14 +16,14 @@ RAW_DIR = rawdata
 N_CPU = 2
 LOGFILE = hicpro.log
 
-JOB_NAME = hicpro-testop
-JOB_MEM = 10gb
-JOB_WALLTIME = 6:00:00
-JOB_QUEUE = batch
-JOB_MAIL = nservant@curie.fr
+PBS_SUFFIX = hicpro-testop-dnase
+PBS_MEM = 10gb
+PBS_WALLTIME = 6:00:00
+PBS_QUEUE = batch
+PBS_MAIL = nservant@curie.fr
 
 #########################################################################
-## Data
+## Input data
 #########################################################################
 
 PAIR1_EXT = _R1
@@ -33,9 +33,10 @@ PAIR2_EXT = _R2
 ## Alignment options
 #######################################################################
 
+FORMAT = phred33
 MIN_MAPQ = 0
 
-BOWTIE2_IDX_PATH = /bioinfo/users/nservant/Apps/HiC-Pro_2.11.0-beta/test-op/bowtie2_indexes_hg19
+BOWTIE2_IDX_PATH = /bioinfo/users/nservant/Apps/HiC-Pro_2.11.0-beta/test-op/bowtie2_indexes_hg19/
 BOWTIE2_GLOBAL_OPTIONS = --very-sensitive -L 30 --score-min L,-0.6,-0.2 --end-to-end --reorder
 BOWTIE2_LOCAL_OPTIONS =  --very-sensitive -L 20 --score-min L,-0.6,-0.2 --end-to-end --reorder
 
@@ -63,26 +64,26 @@ REPORT_CAPTURE_REPORTER =
 ## Digestion Hi-C
 #######################################################################
 
-GENOME_FRAGMENT = HindIII_resfrag_hg19.bed
-LIGATION_SITE = AAGCTAGCTT
-MIN_FRAG_SIZE = 100
-MAX_FRAG_SIZE = 100000
-MIN_INSERT_SIZE = 100
-MAX_INSERT_SIZE = 600
+GENOME_FRAGMENT = 
+LIGATION_SITE = 
+MIN_FRAG_SIZE =
+MAX_FRAG_SIZE =
+MIN_INSERT_SIZE =
+MAX_INSERT_SIZE =
 
 #######################################################################
 ## Hi-C processing
 #######################################################################
 
-MIN_CIS_DIST =
+MIN_CIS_DIST = 1000
 GET_ALL_INTERACTION_CLASSES = 1
-GET_PROCESS_SAM = 1
+GET_PROCESS_SAM = 0
 RM_SINGLETON = 1
 RM_MULTI = 1
 RM_DUP = 1
 
 #######################################################################
-## Contact Maps
+## Generate interaction count matrices
 #######################################################################
 
 BIN_SIZE = 500000 1000000
