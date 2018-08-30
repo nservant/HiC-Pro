@@ -74,7 +74,7 @@ do
      
     echo "## Sorting valid interaction file ..." >> ${logfile}
     cmd="LANG=en; sort -T ${TMP_DIR} -k2,2V -k3,3n -k5,5V -k6,6n -o ${datadir}/${outVALID} ${datadir}/${outVALID}"
-    exec_cmd $cmd > ${logfile} 2>&1
+    exec_cmd $cmd >> ${logfile} 2>&1
 done
 
 
