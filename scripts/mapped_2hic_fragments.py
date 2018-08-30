@@ -244,7 +244,7 @@ def load_restriction_fragment(in_file, minfragsize=None, maxfragsize=None, verbo
             resFrag[chromosome] = tree
     
     if nfilt > 0:
-        print "Warning : ", nfilt ,"fragment(s) outside of range. Discarded"
+        print "Warning : ", nfilt ,"fragment(s) outside of range and discarded. ", nline - nfilt, " remaining."
 
     bed_handle.close()
     return resFrag
@@ -612,16 +612,14 @@ if __name__ == "__main__":
                 r2_resfrag = None
                 r2_chrom = None
 
-            ## Filter based on restriction fragments
-            if (r1_resfrag is not None and r1_resfrag.value['filter'] == True) or (r2_resfrag is not None and r2_resfrag.value['filter']) == True:
-                interactionType = "FILT"
-                filt_counter += 1
-                cur_handler = handle_filt if allOutput else None
-
-            elif r1_resfrag is not None or r2_resfrag is not None:
+            if r1_resfrag is not None or r2_resfrag is not None:
                 interactionType = get_interaction_type(r1, r1_chrom, r1_resfrag, r2, r2_chrom, r2_resfrag, verbose)
                 dist = get_PE_fragment_size(r1, r2, r1_resfrag, r2_resfrag, interactionType)
                 cdist = get_cis_dist(r1, r2)
+                
+                ## Filter based on restriction fragments
+                if (r1_resfrag is not None and r1_resfrag.value['filter'] == True) or (r2_resfrag is not None and r2_resfrag.value['filter']) == True:
+                    interactionType = "FILT"
    
                 # Check Insert size criteria - FILT
                 if (minInsertSize is not None and dist is not None and
