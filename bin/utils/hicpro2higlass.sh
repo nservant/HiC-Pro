@@ -88,7 +88,7 @@ vercomp () {
 }
 
 function usage {
-    echo -e "usage : hicpro2higlass -i INPUT -r RESOLUTION -c CHROMSIZE [-n] [-h]"
+    echo -e "usage : hicpro2higlass -i INPUT -r RESOLUTION -c CHROMSIZE [-n] [-o ODIR] [-t TEMP]  [-h]"
     echo -e "Use option -h|--help for more information"
 }
 
@@ -104,6 +104,8 @@ function help {
     echo "   -r|--res RESOLUTION : .matrix file resolution or maximum resolution to reach from the .allValidPairs input file"
     echo "   -c|--chrom CHROMSIZE : chromosome size file"
     echo "   [-n|--norm] : run cooler matrix balancing algorithm"
+    echo "   [-o|--out] : output path. Default is current path"
+    echo "   [-t|--temp] TEMP : path to tmp folder. Default is current path"
     echo "   [-h|--help]: help"
     exit;
 }
@@ -123,6 +125,8 @@ for arg in "$@"; do
       "--bed")   set -- "$@" "-b" ;;
       "--res")   set -- "$@" "-r" ;;
       "--chrom") set -- "$@" "-c" ;;
+      "--out") set -- "$@" "-o" ;;
+      "--temp") set -- "$@" "-t" ;;
       "--norm")   set -- "$@" "-n" ;;
       "--help")   set -- "$@" "-h" ;;
        *)        set -- "$@" "$arg"
@@ -134,8 +138,10 @@ INPUT_BED=""
 NORMALIZE=0
 CHROMSIZES_FILE=""
 RES=10000
+OUT="./"
+TEMP="./"
 
-while getopts ":i:b:c:r:nh" OPT
+while getopts ":i:b:c:r:o:t:nh" OPT
 do
     case $OPT in
 	i) INPUT_HICPRO=$OPTARG;;
@@ -143,6 +149,8 @@ do
 	n) NORMALIZE=1;;
 	c) CHROMSIZES_FILE=$OPTARG;;
 	r) RES=$OPTARG;;
+	o) OUT=$OPTARG;;
+	t) TEMP=$OPTARG;;
 	h) help ;;
 	\?)
 	    echo "Invalid option: -$OPTARG" >&2
@@ -204,20 +212,20 @@ if [[ $DATATYPE == "VALID" ]]; then
 fi
 
 echo -e "\nGenerating .cool files ..."
-tmp_dir=./_tmp$$
+tmp_dir=${TEMP}/_tmp$$
 mkdir -p $tmp_dir
 
 if [[ $DATATYPE == "MATRIX" ]]; then
     out=$(basename $INPUT_HICPRO | sed -e 's/.mat.*/.cool/')
     
     cooler makebins $CHROMSIZES_FILE $RES > $tmp_dir/bins.bed
-    cooler load -f coo --one-based $tmp_dir/bins.bed $INPUT_HICPRO $out
+    cooler load -f coo --one-based $tmp_dir/bins.bed $INPUT_HICPRO $tmp_dir/$out
 
     echo -e "\nZoomify .cool file ..."
     if [[ $NORMALIZE == 1 ]]; then
-	cooler zoomify --balance $out
+	cooler zoomify --balance $tmp_dir/$out
     else
-	cooler zoomify --no-balance $out
+	cooler zoomify --no-balance $tmp_dir/$out
     fi
     out=$(basename $INPUT_HICPRO | sed -e 's/.mat.*/.mcool/')
     
@@ -231,16 +239,19 @@ elif [[ $DATATYPE == "VALID" ]]; then
 	   $CHROMSIZES_FILE
     
     cooler makebins $CHROMSIZES_FILE $RES > $tmp_dir/bins.bed
-    cooler cload pairix $tmp_dir/bins.bed $tmp_dir/contacts.sorted.txt.gz $out
+    cooler cload pairix $tmp_dir/bins.bed $tmp_dir/contacts.sorted.txt.gz $tmp_dir/$out
 
     echo -e "\nZoomify .cool file ..."
     if [[ $NORMALIZE == 1 ]]; then
-	cooler zoomify --balance $out
+	cooler zoomify --balance $tmp_dir/$out
     else
-	cooler zoomify --no-balance $out
+	cooler zoomify --no-balance $tmp_dir/$out
     fi
     out=$(basename $INPUT_HICPRO | sed -e 's/.allValidPairs.*/.mcool/')
 fi
+
+## mv to out
+mv $tmp_dir/*cool ${OUT}/
 
 ## clean
 /bin/rm -rf $tmp_dir
