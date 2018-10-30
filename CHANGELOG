@@ -1,5 +1,13 @@
 ***********************************
-CHANGES IN VERSION 2.11.0
+CHANGES IN VERSION 2.11.2
+
+BUG FIXES
+
+   o Fix bug in build_contact_maps.sh when capture and allele-specific analysis are combined
+
+
+***********************************
+CHANGES IN VERSION 2.11.1
 
 SIGNIFICANT USER-VISIBLE CHANGES
 

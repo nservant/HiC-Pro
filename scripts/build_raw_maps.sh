@@ -91,7 +91,7 @@ do
 
 	    pattern=".allValidPairs"
             if [[ ! -z ${ALLELE_SPECIFIC_SNP} && ! -z ${CAPTURE_TARGET} ]]; then
-		pattern="G[12]_ontargets.allValidPairs"
+		pattern="ontarget_G[12].allValidPairs"
 	    elif [[ ! -z ${ALLELE_SPECIFIC_SNP} ]]; then
 		pattern="G[12].allValidPairs"
 	    elif [[ ! -z ${CAPTURE_TARGET} ]]; then
