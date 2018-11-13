@@ -39,6 +39,11 @@ mapping_combine()
 
     mkdir -p ${BOWTIE2_FINAL_OUTPUT_DIR}/${sample_dir}    
 
+    ## Set a default for legacy config files that do not have SORT_RAM set
+    if [[ "${SORT_RAM}" == "" ]]; then
+       SORT_RAM="768M"
+    fi
+    
     ## Merge local and global alignment
     if [[ -e ${BOWTIE2_GLOBAL_OUTPUT_DIR}/${prefix}.bwt2glob.bam && -e ${BOWTIE2_LOCAL_OUTPUT_DIR}/${prefix}.bwt2glob.unmap_bwt2loc.bam ]]; then
 	
