@@ -45,7 +45,7 @@ end_to_end_align()
     fi
     
     echo "##HiC-Pro mapping" > ${ldir}/${prefix}_bowtie2.log
-    cmd="${BOWTIE2_PATH}/bowtie2 ${BOWTIE2_GLOBAL_OPTIONS} --rg-id BMG --rg SM:${prefix} -p ${N_CPU} -x ${BOWTIE2_IDX} -U ${infile} 2>> ${ldir}/${prefix}_bowtie2.log"
+    cmd="${BOWTIE2_PATH}/bowtie2 ${BOWTIE2_GLOBAL_OPTIONS} --rg-id BMG --rg SM:${prefix} -p ${bwt_cpu} -x ${BOWTIE2_IDX} -U ${infile} 2>> ${ldir}/${prefix}_bowtie2.log"
     if [[ $filtunmap == 1 ]]; then
 	cmd=$cmd"| ${SAMTOOLS_PATH}/samtools view -F 4 -bS - > ${odir}/${prefix}_${REFERENCE_GENOME}.bwt2glob.bam"
     else
