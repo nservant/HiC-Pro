@@ -47,7 +47,7 @@ mapping_combine()
     ## Merge local and global alignment
     if [[ -e ${BOWTIE2_GLOBAL_OUTPUT_DIR}/${prefix}.bwt2glob.bam && -e ${BOWTIE2_LOCAL_OUTPUT_DIR}/${prefix}.bwt2glob.unmap_bwt2loc.bam ]]; then
 	
-	cmd="${SAMTOOLS_PATH}/samtools merge -@ ${N_CPU} -m ${SORT_RAM} -n -f ${BOWTIE2_FINAL_OUTPUT_DIR}/${prefix}.bwt2merged.bam ${BOWTIE2_GLOBAL_OUTPUT_DIR}/${prefix}.bwt2glob.bam ${BOWTIE2_LOCAL_OUTPUT_DIR}/${prefix}.bwt2glob.unmap_bwt2loc.bam"
+	cmd="${SAMTOOLS_PATH}/samtools merge -@ ${N_CPU} -n -f ${BOWTIE2_FINAL_OUTPUT_DIR}/${prefix}.bwt2merged.bam ${BOWTIE2_GLOBAL_OUTPUT_DIR}/${prefix}.bwt2glob.bam ${BOWTIE2_LOCAL_OUTPUT_DIR}/${prefix}.bwt2glob.unmap_bwt2loc.bam"
 	exec_cmd $cmd 2>&1
 
         ## Sort merge file. In theory, should be perform by "merge -n", but do not work in some cases ... depending on read name ?
