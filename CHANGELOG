@@ -1,7 +1,14 @@
 ***********************************
 CHANGES IN VERSION 2.11.2
 
+SIGNIFICANT USER-VISIBLE CHANGES
+
+   o add SORT_RAM parameter to set the maximum memory per thread used by samtools.
+     Default is 768M (pull request F. Reinecke)
+
 BUG FIXES
+
+   o fix bug in bowtie2 cpu usage (pull request F. Reinecke)
 
    o Fix bug in build_contact_maps.sh when capture and allele-specific analysis are combined
 
@@ -160,7 +167,7 @@ SIGNIFICANT USER-VISIBLE CHANGES
    o Update iced version (-> 0.4.0). This version includes a major changes on matrix filtering before iced normalization
 
    o sparseToDense.py utils. Create output file in the current folder by default
-   
+
 BUG FIXES
 
    o Fix bug in the help message of digest_genome.py
