@@ -36,11 +36,15 @@ merge_pairs()
     local sample_dir="$1"
     local file_r1="$2"
     local file_r2="$3"
-
+    local ldir="$4"
+    
     local prefix_r1=$(echo ${sample_dir}/$(basename $file_r1) | sed -e 's/.bwt2merged.bam//')
     local prefix_r2=$(echo ${sample_dir}/$(basename $file_r2) | sed -e 's/.bwt2merged.bam//')
     local prefix_out=$(echo $prefix_r1 | get_pairs)
 
+    ## Create output folder if not available
+    mkdir -p ${BOWTIE2_FINAL_OUTPUT_DIR}/${sample_dir}
+    
     ## Merge two SAM files into 1 paired-end SAM file / removed unmapped and multihits reads
     OPTS="-q ${MIN_MAPQ} -t -v"
     if [[ ${RM_SINGLETON} == 0 ]]; then
@@ -50,15 +54,9 @@ merge_pairs()
 	OPTS=$OPTS" -m"
     fi
 
-    ## Logs
-    LDIR=${LOGS_DIR}/${sample_dir}
-    mkdir -p ${LDIR}
-    mkdir -p ${BOWTIE2_FINAL_OUTPUT_DIR}/${sample_dir}
-
-
-    #cmd="${PYTHON_PATH}/python ${SCRIPTS}/mergeSAM.py ${OPTS} -f ${BOWTIE2_FINAL_OUTPUT_DIR}/${prefix_r1}.bwt2merged.bam -r ${BOWTIE2_FINAL_OUTPUT_DIR}/${prefix_r2}.bwt2merged.bam -o ${BOWTIE2_FINAL_OUTPUT_DIR}/${prefix_out}.bwt2pairs.bam > ${LDIR}/mergeSAM.log"
-    cmd="${PYTHON_PATH}/python ${SCRIPTS}/mergeSAM.py ${OPTS} -f ${file_r1} -r ${file_r2} -o ${BOWTIE2_FINAL_OUTPUT_DIR}/${prefix_out}.bwt2pairs.bam > ${LDIR}/mergeSAM.log"
-        exec_cmd $cmd
+    #cmd="${PYTHON_PATH}/python ${SCRIPTS}/mergeSAM.py ${OPTS} -f ${BOWTIE2_FINAL_OUTPUT_DIR}/${prefix_r1}.bwt2merged.bam -r ${BOWTIE2_FINAL_OUTPUT_DIR}/${prefix_r2}.bwt2merged.bam -o ${BOWTIE2_FINAL_OUTPUT_DIR}/${prefix_out}.bwt2pairs.bam > ${ldir}/mergeSAM.log"
+    cmd="${PYTHON_PATH}/python ${SCRIPTS}/mergeSAM.py ${OPTS} -f ${file_r1} -r ${file_r2} -o ${BOWTIE2_FINAL_OUTPUT_DIR}/${prefix_out}.bwt2pairs.bam"
+    exec_cmd $cmd 
 }
 
 ##
@@ -70,14 +68,9 @@ tag_allele_spe()
     local vcf_file="$2"
     local asout=$(echo ${sample_dir}/$(basename $r) | sed -e 's/.bwt2pairs.bam/.bwt2pairs_allspe.bam/')
 
-    local sample_dir=$(get_sample_dir ${r})
-    LDIR=${LOGS_DIR}/${sample_dir}
-
     if [ -e ${vcf_file} ]; then
-	cmd="${PYTHON_PATH}/python ${SCRIPTS}/markAllelicStatus.py -s ${vcf_file} -v -r -i ${bam_paired} -o ${BOWTIE2_FINAL_OUTPUT_DIR}/${asout} 2> ${LDIR}/markAlleleSpecific.log"
-	echo $cmd
+	cmd="${PYTHON_PATH}/python ${SCRIPTS}/markAllelicStatus.py -s ${vcf_file} -v -r -i ${bam_paired} -o ${BOWTIE2_FINAL_OUTPUT_DIR}/${asout}"
 	exec_cmd $cmd
-
 	cmd="mv ${BOWTIE2_FINAL_OUTPUT_DIR}/${asout} $bam_paired"
 	exec_cmd $cmd
     else
@@ -91,15 +84,20 @@ do
     R1=$r
     R2=$(echo $r | get_R2)
     sample_dir=$(get_sample_dir $r)
-    merge_pairs $sample_dir $R1 $R2 
+
+    ## Logs
+    ldir=${LOGS_DIR}/${sample_dir}
+    mkdir -p ${ldir}
+    echo "Logs: ${ldir}/mergeSAM.log"
+    merge_pairs $sample_dir $R1 $R2 &> ${ldir}/mergeSAM.log
 done
 
 ## Add allele specific tag if specified
 if [[ ${ALLELE_SPECIFIC_SNP} != "" ]]; then
-    AS_FILE=`abspath $ALLELE_SPECIFIC_SNP`
-    if [[ ${AS_FILE} == "" || ! -f ${AS_FILE} ]]; then
-	AS_FILE=$ANNOT_DIR/${ALLELE_SPECIFIC_SNP}
-	if [[ ! -f $AS_FILE ]]; then
+    as_file=`abspath $ALLELE_SPECIFIC_SNP`
+    if [[ ${as_file} == "" || ! -f ${as_file} ]]; then
+	as_file=$ANNOT_DIR/${ALLELE_SPECIFIC_SNP}
+	if [[ ! -f $as_file ]]; then
 	    echo "ALLELE_SPECIFIC_SNP not found. Cannot process alignment file"
 	    exit 1
 	fi
@@ -107,6 +105,9 @@ if [[ ${ALLELE_SPECIFIC_SNP} != "" ]]; then
 
     for r in $(get_paired_bam)
     do
-	tag_allele_spe $r ${AS_FILE}
+	sample_dir=$(get_sample_dir $r)
+	ldir=${LOGS_DIR}/${sample_dir}
+	echo "Logs: ${ldir}/markAllelicStatus.log"
+	tag_allele_spe $r ${as_file} &> ${ldir}/markAllelicStatus.log
     done
 fi

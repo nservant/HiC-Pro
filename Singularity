@@ -6,6 +6,10 @@ OSVersion: xenial
 %labels
     AUTHOR Nicolas Servant
 
+%pre
+    apt-get install -y debootstrap
+
+
 %post
     apt-get install -y wget
     apt-get install -y gzip
@@ -18,7 +22,7 @@ OSVersion: xenial
     
     # install anaconda
     if [ ! -d /usr/local/anaconda ]; then
-       wget https://repo.continuum.io/miniconda/Miniconda3-4.2.12-Linux-x86_64.sh\
+       wget https://repo.continuum.io/miniconda/Miniconda3-4.5.4-Linux-x86_64.sh \
        	    -O ~/anaconda.sh && \
 	    bash ~/anaconda.sh -b -p /usr/local/anaconda && \
 	    rm ~/anaconda.sh
@@ -32,7 +36,7 @@ OSVersion: xenial
     conda config --add channels defaults
     conda config --add channels conda-forge
     conda config --add channels bioconda
-
+    
     # Let us save some space
     conda clean --packages -y
 
@@ -49,6 +53,8 @@ OSVersion: xenial
     conda install -y -c bioconda pysam 
 
     # Install R
+    conda update readline	
+    #conda install -c conda-forge readline=6.2
     conda install -c r r-base 
     conda install -c r r-ggplot2=2.2.1
     conda install -c r r-rcolorbrewer
@@ -71,6 +77,8 @@ OSVersion: xenial
     rm -rf /usr/local/anaconda/pkgs
 
 %test
+    INSTALLED_HICPRO_VERSION=$(find /usr/local/bin -name HiC-Pro | xargs dirname)
+    $INSTALLED_HICPRO_VERSION/HiC-Pro -h
 
 %environment
     export PATH=$PATH:/usr/local/anaconda/bin

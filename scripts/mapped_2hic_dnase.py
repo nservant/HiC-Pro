@@ -61,7 +61,7 @@ def get_read_strand(read):
     return strand
 
 
-def get_read_pos(read):
+def get_read_pos(read, st="start"):
     """
     Return the read position (zero-based) used for the intersection with
     the restriction fragment
@@ -77,15 +77,24 @@ def get_read_pos(read):
     read : list
         list of aligned reads
     """
-    # 5 end
-    # if (read.is_reverse):
-    #    pos = read.pos + read.alen + 1 # (50 - 5) + 1 # zero-based transformation
-    # else:
-    #    pos = read.pos
+    if st == "middle":
+        pos = read.pos + int(read.alen/2)
+    elif st =="start":
+        pos = get_read_start(read)
+    elif st == "left":
+        pos = read.pos
 
-    # Middle of the reads
-    pos = read.pos + read.alen/2
+    return pos
 
+
+def get_read_start(read):
+    """                                                                                                                                                                                                        
+    Return the 5' end of the read                                                                                                                                                                              
+    """
+    if read.is_reverse:
+        pos = read.pos + read.alen -1
+    else:
+        pos = read.pos
     return pos
 
 
@@ -235,6 +244,7 @@ if __name__ == "__main__":
     valid_counter_RF = 0
     single_counter = 0
     dump_counter = 0
+    filt_counter = 0
 
     # AS counter
     G1G1_ascounter = 0
@@ -256,8 +266,9 @@ if __name__ == "__main__":
 
     if allOutput:
         handle_dump = open(outputDir + '/' + baseReadsFile + '.DumpPairs', 'w')
-        handle_single = open(outputDir + '/' + baseReadsFile + '.SinglePairs',
-                             'w')
+        handle_single = open(outputDir + '/' + baseReadsFile + '.SinglePairs','w')
+        handle_filt = open(outputDir + '/' + baseReadsFile + '.FiltPairs','w')
+
     # Read the SAM/BAM file
     if verbose:
         print "## Opening SAM/BAM file '", mappedReadsFile, "'..."
@@ -298,11 +309,11 @@ if __name__ == "__main__":
                 single_counter += 1
                 cur_handler = handle_single if allOutput else None
 
-            # Check Distance criteria - DUMP
+            # Check Distance criteria - Filter
             if (minDist is not None and dist is not None and dist < int(minDist)):
-                interactionType = "DUMP"
-                dump_counter += 1
-                cur_handler = handle_dump if allOutput else None
+                interactionType = "FILT"
+                filt_counter += 1
+                cur_handler = handle_filt if allOutput else None
 
             # By default pair is valid
             if interactionType == None:
@@ -329,7 +340,6 @@ if __name__ == "__main__":
             if gtag is not None:
                 r1as = get_read_tag(r1, gtag)
                 r2as = get_read_tag(r2, gtag)
-                htag = str(r1as)+"-"+str(r2as)
                         
                 if r1as == 1 and r2as == 1:
                     G1G1_ascounter += 1
@@ -361,13 +371,19 @@ if __name__ == "__main__":
                     or1_chrom = samfile.getrname(or1.tid)
                     or2_chrom = samfile.getrname(or2.tid)
 
+                    ##reset as tag now that the reads are oriented
+                    r1as = get_read_tag(or1, gtag)
+                    r2as = get_read_tag(or2, gtag)
+                    if gtag is not None:
+                        htag = str(r1as)+"-"+str(r2as)
+                        
                     cur_handler.write(
                         or1.qname + "\t" +
                         or1_chrom + "\t" +
-                        str(get_read_pos(or1)) + "\t" +
+                        str(get_read_pos(or1)+1) + "\t" +
                         str(get_read_strand(or1)) + "\t" +
                         or2_chrom + "\t" +
-                        str(get_read_pos(or2)) + "\t" +
+                        str(get_read_pos(or2)+1) + "\t" +
                         str(get_read_strand(or2)) + "\t" +
                         "NA" + "\t" + ##dist 
                         "NA" + "\t" + ##resfrag1
@@ -376,34 +392,34 @@ if __name__ == "__main__":
                         str(or2.mapping_quality) + "\t" + 
                         str(htag) + "\n")
                 
-                elif r2.is_unmapped:
+                elif r2.is_unmapped and not r1.is_unmapped:
                     cur_handler.write(
-                        or1.qname + "\t" +
-                        or1_chrom + "\t" +
-                        str(get_read_pos(or1)) + "\t" +
-                        str(get_read_strand(or1)) + "\t" +
-                        "+" + "\t" +
-                        "0" + "\t" +
+                        r1.qname + "\t" +
+                        r1_chrom + "\t" +
+                        str(get_read_pos(r1)+1) + "\t" +
+                        str(get_read_strand(r1)) + "\t" +
                         "*" + "\t" +
-                        "NA" + "\t" + 
-                        "NA" + "\t" +
-                        "NA" + "\t" +
-                        str(or1.mapping_quality) + "\t" + 
-                        str(or2.mapping_quality) + "\n")
-                else:
+                        "*" + "\t" +
+                        "*" + "\t" +
+                        "*" + "\t" + 
+                        "*" + "\t" +
+                        "*" + "\t" +
+                        str(r1.mapping_quality) + "\t" + 
+                        "*" + "\n")
+                elif r1.is_unmapped and not r2.is_unmapped:
                     cur_handler.write(
-                        or1.qname + "\t" +
+                        r2.qname + "\t" +
                         "*" + "\t" +
-                        "0" + "\t" +
                         "*" + "\t" +
-                        or2_chrom + "\t" +
-                        str(get_read_pos(or2)) + "\t" +
-                        str(get_read_strand(or2)) + "\t" +
-                        "NA" + "\t" +
-                        "NA" + "\t" +
-                        "NA" + "\t" +
-                        str(or1.mapping_quality) + "\t" + 
-                        str(or2.mapping_quality) + "\n")
+                        "*" + "\t" +
+                        r2_chrom + "\t" +
+                        str(get_read_pos(r2)+1) + "\t" +
+                        str(get_read_strand(r2)) + "\t" +
+                        "*" + "\t" +
+                        "*" + "\t" +
+                        "*" + "\t" +
+                        "*" + "\t" + 
+                        str(r2.mapping_quality) + "\n")
 
             if (reads_counter % 100000 == 0 and verbose):
                 print "##", reads_counter
@@ -413,6 +429,7 @@ if __name__ == "__main__":
     if allOutput:
         handle_dump.close()
         handle_single.close()
+        handle_filt.close()
 
     # Write stats file
     handle_stat = open(outputDir + '/' + baseReadsFile + '.RSstat', 'w')
@@ -427,6 +444,7 @@ if __name__ == "__main__":
     handle_stat.write(
         "Valid_interaction_pairs_FR\t" + str(valid_counter_FR) + "\n")
     handle_stat.write("Single-end_pairs\t" + str(single_counter) + "\n")
+    handle_stat.write("Filtered_pairs\t" + str(filt_counter) + "\n")
     handle_stat.write("Dumped_pairs\t" + str(dump_counter) + "\n")
 
     ## Write AS report

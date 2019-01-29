@@ -69,6 +69,7 @@ def load_BED(in_file, exclusionSize=0, verbose=False):
     nline = 0
     with open(in_file) as bed_handle:
         for line in bed_handle:
+            if nline%1000000==0 and verbose: print >> sys.stderr, "%d million lines loaded" % int(nline/1000000)
             nline +=1
             bedtab = line.split("\t")
             try:
@@ -126,7 +127,7 @@ def get_overlapping_fragment(frag, chrom, pos, quiet=False):
         else:
             return ifrag[0]
     else:
-        if not quit: print >> sys.stderr, "Warning - no fragments found for read at", chrom, ":", pos, "- skipped"
+        if not quiet: print >> sys.stderr, "Warning - no fragments found for read at", chrom, ":", pos, "- skipped"
         return None
 
 
@@ -162,21 +163,24 @@ if __name__ == "__main__":
 
     # Verbose mode
     if verbose:
-        print "## make_viewpoints.py"
-        print "## validPairsFile=", validPairsFile
-        print "## fragmentFile=", fragmentFile
-        print "## targetFile=", targetFile
-        print "## exclusionSize=", exclusionSize
-        print "## verbose=", verbose, "\n"
+        print  >> sys.stderr, "## make_viewpoints.py"
+        print  >> sys.stderr, "## validPairsFile=", validPairsFile
+        print  >> sys.stderr, "## fragmentFile=", fragmentFile
+        print  >> sys.stderr, "## targetFile=", targetFile
+        print  >> sys.stderr, "## exclusionSize=", exclusionSize
+        print  >> sys.stderr, "## verbose=", verbose, "\n"
 
 
     # Read the BED files
+    if verbose:
+        print  >> sys.stderr, "## Loading data ..."
+
     resFrag = load_BED(fragmentFile, verbose)[0]
     (target, exclu) =  load_BED(targetFile, exclusionSize=exclusionSize, verbose=verbose)
 
     # Read the validPairs file
     if verbose:
-        print "## Opening file '", validPairsFile, "'..."
+        print  >> sys.stderr, "## Opening file '", validPairsFile, "'..."
    
     nline = 0
     repdict = {}
@@ -188,6 +192,7 @@ if __name__ == "__main__":
     exclu_counter = 0
 
     with open(validPairsFile) as in_handle:
+        if nline%1000000==0 and verbose: print >> sys.stderr, "%d million lines processed" % int(nline/1000000)
         for line in in_handle:
             nline +=1
             intab = line.split("\t")

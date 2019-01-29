@@ -9,12 +9,7 @@
 ###########################
 ## Load Configuration
 ###########################
-#function error_handler() {
-#  echo "Error occurred in script at line: ${1}."
-#  echo "Line exited with status: ${2}"
-#}
 
-#trap 'error_handler ${LINENO} $?' ERR
 set -o pipefail  # trace ERR through pipes
 set -o errexit   ## set -e : exit the script if any statement returns a non-true return value
 
@@ -88,14 +83,14 @@ exec_cmd()
 {
     echo $*
     if [ -z "$DRY_RUN" ]; then
-	eval "$@" ##|| die 'Error'
+	eval "$@" 
     fi
 }
 
 exec_ret()
 {
     if [ -z "$DRY_RUN" ]; then
-	eval "$@" ##|| die 'Error'
+	eval "$@" 
     fi
 }
 
@@ -142,7 +137,7 @@ get_data_type()
     nb_fq=$(find -L $RAW_DIR -mindepth 2 -maxdepth 2 -name "*.fastq" -o -name "*.fastq.gz" | wc -l)
     nb_bam=$(find -L $RAW_DIR -mindepth 2 -maxdepth 2 -name "*.bam" -o -name "*.sam" | wc -l)
     nb_vpairs=$(find -L $RAW_DIR -mindepth 2 -maxdepth 2 -name "*.validPairs" | wc -l)
-    nb_allvpairs=$(find -L $RAW_DIR -mindepth 2 -maxdepth 2 -name "*_allValidPairs" | wc -l)
+    nb_allvpairs=$(find -L $RAW_DIR -mindepth 2 -maxdepth 2 -name "*.allValidPairs" | wc -l)
     nb_mat=$(find -L $RAW_DIR -mindepth 2 -maxdepth 4 -name "*.matrix" | wc -l)
 
     if (( $nb_mat > 0 )); then
@@ -156,7 +151,7 @@ get_data_type()
     elif (( $nb_fq > 0 )); then
         INPUT_DATA_TYPE="fastq"
     else
-	die "Error in input type.'.fastq|.bam|.validPairs|_allValidPairs|.matrix' files are expected."
+	die "Error in input type.'.fastq|.bam|.validPairs|.allValidPairs|.matrix' files are expected."
     fi
     echo $INPUT_DATA_TYPE
 }
@@ -176,16 +171,12 @@ set_ext2fastq()
 get_hic_files_build_list()
 {
     local file=$idir/$(set_ext2fastq $fastq $ext)
-#    if [[ ! -r ${file} && ! -r ${file}.gz ]]; then
-#    	echo "HiC get_hic_file: unreadable file: $file" >&2
-#    else
     if [ ! -z "$list" ]; then
 	list="$list
 $file"
     else
 	list=$file
     fi
-    ##fi
 }
 
 filter_rawdir()
@@ -259,26 +250,14 @@ get_local_aln_for_stats()
     get_hic_files ${BOWTIE2_LOCAL_OUTPUT_DIR} _${REFERENCE_GENOME}.bwt2glob.unmap_bwt2loc.bam
 }
 
-#get_aln_for_stats()
-#{
-#    local mode=$1
-#    if [ "$mode" = local ]; then
-#	get_local_aln_for_stats
-#    else
-#	get_global_aln_for_stats
-#    fi
-#}
-
 get_stat_file()
 {
-    #local mode=$1
     local file=$1
     local sample_dir=$(get_sample_dir ${file})
     local prefix=$(echo ${sample_dir}/$(basename $file) | sed -e 's/.bwt2glob.bam//')
 
     echo ${BOWTIE2_FINAL_OUTPUT_DIR}/$prefix.mapstat
 }
-
 
 get_bam_from_raw_dir()
 {

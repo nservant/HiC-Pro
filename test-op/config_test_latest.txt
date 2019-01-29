@@ -13,10 +13,10 @@ RAW_DIR = rawdata
 #######################################################################
 ## SYSTEM - PBS - Start Editing Here !!
 #######################################################################
-N_CPU = 4
+N_CPU = 2
 LOGFILE = hicpro.log
 
-JOB_NAME = IMR90_split
+JOB_NAME = hicpro-testop
 JOB_MEM = 10gb
 JOB_WALLTIME = 6:00:00
 JOB_QUEUE = batch
@@ -33,10 +33,9 @@ PAIR2_EXT = _R2
 ## Alignment options
 #######################################################################
 
-FORMAT = phred33
 MIN_MAPQ = 0
 
-BOWTIE2_IDX_PATH = /home/nservant/Bureau/hicpro_dev/test-op/bowtie2_indexes/
+BOWTIE2_IDX_PATH = /bioinfo/users/nservant/Apps/HiC-Pro_2.11.0-beta/test-op/bowtie2_indexes_hg19
 BOWTIE2_GLOBAL_OPTIONS = --very-sensitive -L 30 --score-min L,-0.6,-0.2 --end-to-end --reorder
 BOWTIE2_LOCAL_OPTIONS =  --very-sensitive -L 20 --score-min L,-0.6,-0.2 --end-to-end --reorder
 
@@ -52,6 +51,13 @@ GENOME_SIZE = chrom_hg19.sizes
 #######################################################################
 
 ALLELE_SPECIFIC_SNP = 
+
+#######################################################################
+## Capture Hi-C analysis
+#######################################################################
+
+CAPTURE_TARGET =
+REPORT_CAPTURE_REPORTER = 
 
 #######################################################################
 ## Digestion Hi-C

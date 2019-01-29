@@ -20,7 +20,8 @@ def usage():
     print "Usage : python onTarget.py"
     print "-i/--inFile <Valid Pairs file>"
     print "-t/--target <BED file of targets>"
-    print "[-p/--paired] <Require that both interactors overlap with the target>"
+    print "[-s/--stats] <Stats file>"
+    print "[-c/--cis] <Report only capture-capture interactions. Otherwise both capture-capture and capture-reporter interactions are returned>"
     print "[-v/--verbose] <Verbose>"
     print "[-h/--help] <Help>"
     return
@@ -30,10 +31,11 @@ def get_args():
     try:
         opts, args = getopt.getopt(
             sys.argv[1:],
-            "i:t:pvh",
+            "i:t:s:cvh",
             ["inFile=",
              "target=",
-             "paired", "verbose"])
+             "stats=",
+             "cis", "verbose"])
     except getopt.GetoptError:
         usage()
         sys.exit(-1)
@@ -85,7 +87,8 @@ if __name__ == "__main__":
     # Read command line arguments
     opts = get_args()
     verbose = False
-    paired = False
+    cis = False
+    statsFile = None
 
     if len(opts) == 0:
         usage()
@@ -99,8 +102,10 @@ if __name__ == "__main__":
             inFile = arg
         elif opt in ("-t", "--target"):
             target = arg
-        elif opt in ("-p", "--paired"):
-            paired = True
+        elif opt in ("-c", "--cis"):
+            cis = True
+        elif opt in ("-s", "--stats"):
+            statsFile = arg
         elif opt in ("-v", "--verbose"):
             verbose = True
         else:
@@ -111,13 +116,15 @@ if __name__ == "__main__":
         print >> sys.stderr,"## onTarget.py"
         print >> sys.stderr,"## inFile =", inFile
         print >> sys.stderr,"## target =", target
-        print >> sys.stderr,"## paired =", paired
+        print >> sys.stderr,"## cis =", cis
         print >> sys.stderr,"## verbose =", verbose, "\n"
 
     # Initialize variables
     vp_counter = 0
     ontarget_counter = 0
-            
+    ontarget_cap_cap_counter = 0
+    ontarget_cap_rep_counter = 0
+
     # Read the BED file
     targetInter = load_bed(target, verbose)
         
@@ -146,17 +153,23 @@ if __name__ == "__main__":
                 res1 = targetInter[chr1].find(pos1, pos1+1)
             if chr2 in targetInter:
                 res2 = targetInter[chr2].find(pos2, pos2+1)
-            
-            if paired:
-                if len(res1) > 0 and len(res2) > 0:
-                    ontarget_counter +=1
-                    print line.strip()
-            else:
-                if len(res1) > 0 or len(res2) > 0:
-                    ontarget_counter +=1
+                
+            if len(res1) > 0 and len(res2) > 0:
+                ontarget_counter +=1
+                ontarget_cap_cap_counter +=1
+                print line.strip()
+            elif len(res1) > 0 or len(res2) > 0:
+                ontarget_counter +=1
+                ontarget_cap_rep_counter +=1
+                if not cis:
                     print line.strip()
 
-    if verbose:
-        print >> sys.stderr, "Total_valid_pairs\t" + str(vp_counter)
-        print >> sys.stderr, "Pairs_on_target\t" + str(ontarget_counter)
+        if statsFile is not None:
+            if verbose:
+                print >> sys.stderr,"## Writing stats in '", statsFile, "'..."
+            f = open(statsFile, 'a')
+            f.write("valid_pairs_on_target\t" + str(ontarget_counter) + "\n")
+            f.write("valid_pairs_on_target_cap_cap\t" + str(ontarget_cap_cap_counter) + "\n")
+            f.write("valid_pairs_on_target_cap_rep\t" + str(ontarget_cap_rep_counter) + "\n")
+            f.closed
 
