@@ -6,6 +6,8 @@ SIGNIFICANT USER-VISIBLE CHANGES
    o add SORT_RAM parameter to set the maximum memory per thread used by samtools.
      Default is 768M (pull request F. Reinecke)
 
+   o update of Singularity file adding MultiQC
+
 BUG FIXES
 
    o fix bug in bowtie2 cpu usage (pull request F. Reinecke)

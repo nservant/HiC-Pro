@@ -35,7 +35,7 @@ Digest the reference genome by the provided restriction enzymes(s) and generate 
 This file can then be used by HiC-Pro (GENOME_FRAGMENT) for the data processing.  
 Note that the cutting site of the restriction enzyme has to be specified using the '^' character.  
 The restriction enzymes HindIII, DpnII, BglII and MboI are encoded within the script and are therefore recognized if specified to the program.  
-Finally, note that multiple restriction enzymes can also be provided.  
+Finally, note that multiple restriction enzymes can also be provided (comma separated).  
 
 ```
    ## Digest the mm9 genome by HindIII

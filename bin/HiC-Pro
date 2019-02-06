@@ -320,7 +320,7 @@ if [[ $NEED_FASTQ == 1 ]]; then
     r2files=$(find -L $RAW_DIR -mindepth 2 -maxdepth 2 -name "*.fastq" -o -name "*.fastq.gz" | grep "$PAIR2_EXT" | wc -l)
     if [[ "$r1files" != "$r2files" ]]; then
 	die "Number of $PAIR1_EXT files is different from $PAIR2_EXT [$r1files vs $r2files]. \
-Please, note that the paired-end files are detected using the PAIR1_EXT/PAIR2_EXT parameters. Be sure that these extensions can be used to distinguish both file types."
+Please, note that the paired-end files are detected using the PAIR1_EXT/PAIR2_EXT parameters. Be sure that there is no conflict with files/dir names."
     fi
 fi
 

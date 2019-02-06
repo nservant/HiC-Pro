@@ -60,6 +60,9 @@ OSVersion: xenial
     conda install -c r r-rcolorbrewer
     conda install -c r r-gridbase	
 
+    # Install MultiQC
+    conda install -c bioconda multiqc 
+   
     # Install HiC-pro
     echo "Installing latest HiC-Pro release ..."
     VERSION=$(curl -s https://github.com/nservant/HiC-Pro/releases/latest | egrep -o '2.[0-9]*.[0-9]*')
