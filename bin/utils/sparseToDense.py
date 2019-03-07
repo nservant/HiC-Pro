@@ -6,20 +6,6 @@ import os
 from iced import io
 from scipy import sparse
 
-def madd(x):
-    """Performs element-wise string concatenation with multiple input arrays.
-
-    Args:
-        x: iterable of np.array.
-
-    Returns: np.array.
-    """
-    for i, arr in enumerate(x):
-        if type(arr.item(0)) is not str:
-            x[i] = x[i].astype(str)
-    return reduce(np.core.defchararray.add, x)
-
-
 def load_bed(filename):
     '''
     Load a BED file using numpy
