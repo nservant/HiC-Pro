@@ -54,11 +54,11 @@ readstrimming: $(INST_SOURCES)/cutsite_trimming.cpp
 ## Build Python lib
 iced: $(INST_SOURCES)/ice_mod
 	runner=$(shell whoami)
-ifeq ($(runner),"root")
+ifeq ($(runner),root)
         @echo "Installing the iced package as root"     
         (cp $(INST_SOURCES)/ice_mod/iced/scripts/ice ${INST_SCRIPTS}; cd $(INST_SOURCES)/ice_mod/; ${PYTHON_PATH}/python setup.py install;)
 else
-	@echo "Installing the iced package in --user repository [runner=$runner]"
+	@echo "Installing the iced package in --user repository [runner=$(runner)]"
 	(cp $(INST_SOURCES)/ice_mod/iced/scripts/ice ${INST_SCRIPTS}; cd $(INST_SOURCES)/ice_mod/; ${PYTHON_PATH}/python setup.py install --user;)
 endif
 
