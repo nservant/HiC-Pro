@@ -16,7 +16,6 @@ OSVersion: xenial
     apt-get install -y bzip2
     apt-get install -y curl
     apt-get install -y unzip
-    apt-get install -y chmod
 
     ## g++
     apt-get install -y build-essential
@@ -72,7 +71,6 @@ OSVersion: xenial
     echo $VERSION".zip" | wget --base=http://github.com/nservant/HiC-Pro/archive/ -i - -O hicpro_latest.zip && unzip hicpro_latest.zip
     
     cd $(echo HiC-Pro-$VERSION)
-    chmod a+x bin/HiC-Pro
     make configure
     make install
  
