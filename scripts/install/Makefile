@@ -8,7 +8,7 @@
 ## DO NOT EDIT THE REST OF THIS FILE!!
 
 MK_PATH = $(shell dirname $(abspath $(lastword $(MAKEFILE_LIST))))
-VNUM = $(shell $(MK_PATH)/bin/HiC-Pro --version | cut -d " " -f 3)
+VNUM = $(shell bash $(MK_PATH)/bin/HiC-Pro --version | cut -d " " -f 3)
 
 SCRIPTS=$(MK_PATH)/scripts
 SOURCES=$(SCRIPTS)/src
