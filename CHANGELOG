@@ -1,9 +1,15 @@
 ***********************************
 CHANGES IN VERSION 2.11.3
 
+NEW FEATURES
+
+   o 'N' is now supported in the ligation motif (for Arima Hi-C kit)
+
 SIGNIFICANT USER-VISIBLE CHANGES
 
    o Update of the sparse2dense.py utils to include insulation score (Crane et al.) format
+
+   o Update of Singularity image
 
 ***********************************
 CHANGES IN VERSION 2.11.2
