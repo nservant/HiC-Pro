@@ -13,7 +13,27 @@ tracker](https://github.com/nservant/HiC-Pro/issues). You are also welcome to
 post feature requests or pull requests.
 
 
-## Ways to contribute
+
+
+### Our community, our values
+
+We are a community based on openness and friendly, didactic, discussions.
+
+We aspire to treat everybody equally, and value their contributions.
+
+Decisions are made based on technical merit and consensus.
+
+Code is not the only way to help the project. Reviewing pull requests,
+answering questions to help others on mailing lists or issues, organizing and
+teaching tutorials, working on the website, improving the documentation, are
+all priceless contributions.
+
+We abide by the principles of openness, respect, and consideration of others
+of the [R community](https://user2015.math.aau.dk/behaviouR) 
+
+
+
+### Ways to contribute
 
 There are many ways to contribute to HiC-pro, with the most common ones
 being contribution of code or documentation to the project. Improving the
@@ -32,7 +52,7 @@ Another way to contribute is to report issues you're facing, and give a
 also helps us if you spread the word: reference the project from your blog and
 articles, link to it from your website, or simply star to say "I use it."
 
-## How to contribute
+### How to contribute
 
 
 The preferred way to contribute to HiC-pro is to fork the [main
@@ -98,7 +118,7 @@ $ git merge upstream/master
 Subsequently, you need to solve the conflicts. You can refer to the Git
 documentation related to resolving merge conflict using the command line.
 
-## Contributing to related projects
+### Contributing to related projects
 
 HiC-pro thrives in an ecosystem of several related projects, which also may
 have relevant issues to work on including:
