@@ -124,3 +124,4 @@ HiC-pro thrives in an ecosystem of several related projects, which also may
 have relevant issues to work on including:
 
 - [iced](https://github.com/hiclib/iced) 
+- [HiTC](https://www.bioconductor.org/packages/release/bioc/html/HiTC.html)
