@@ -52,7 +52,7 @@ repository](https://github.com/nservant/HiC-Pro) on GitHub, then submit a
 
 ```bash
     $ git clone git@github.com:YourLogin/HiC-pro.git
-    $ cd scikit-learn
+    $ cd HiC-pro
 ```
 
 - Create a branch to hold your development changes:
@@ -97,3 +97,10 @@ $ git merge upstream/master
 
 Subsequently, you need to solve the conflicts. You can refer to the Git
 documentation related to resolving merge conflict using the command line.
+
+## Contributing to related projects
+
+HiC-pro thrives in an ecosystem of several related projects, which also may
+have relevant issues to work on including:
+
+- [iced](https://github.com/hiclib/iced) 
