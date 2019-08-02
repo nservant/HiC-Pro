@@ -1,4 +1,4 @@
-BootStrap: debootstrap
+BootStrapl: debootstrap
 DistType "debian"
 MirrorURL: http://us.archive.ubuntu.com/ubuntu/
 OSVersion: xenial

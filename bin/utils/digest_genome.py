@@ -87,6 +87,22 @@ def find_chromsomose_lengths(reference_filename):
     return chromosome_names, np.array(chromosome_lengths)
 
 
+def replaceN(cs):
+    npos = int(cs.find('N'))
+    cseql = []
+    if npos!= -1:
+        for nuc in ["A","C","G","T"]:
+            tmp = cs.replace('N', nuc, 1)
+            tmpl = replaceN(tmp)
+            if type(tmpl)==list:
+                cseql = cseql + tmpl
+            else:
+                cseql.append(tmpl)
+    else:
+        cseql=cs
+    return cseql
+
+
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument('fastafile')
@@ -112,6 +128,7 @@ if __name__ == "__main__":
             cseq = ''.join(RE_cutsite[cs.lower()])
         else:
             cseq = cs
+
         offpos = int(cseq.find('^'))
         if offpos == -1:
             print "Unable to detect offset for", cseq
@@ -120,6 +137,13 @@ if __name__ == "__main__":
             sys.exit(-1)
         offset.append(offpos)
         sequences.append(re.sub('\^', '', cseq))
+
+    # replace all N in restriction motif
+    sequences_tmp = []
+    for cs in sequences:
+        sequences_tmp = sequences_tmp + replaceN(cs)
+
+    sequences = sequences_tmp
 
     if out is None:
         out = os.path.splitext(filename)[0] + "_fragments.bed"
