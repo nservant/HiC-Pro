@@ -3,6 +3,8 @@ CHANGES IN VERSION 2.11.3
 
 NEW FEATURES
 
+   o 'N' is now support in the digest_genome.py utility
+
    o 'N' is now supported in the ligation motif (for Arima Hi-C kit)
 
 SIGNIFICANT USER-VISIBLE CHANGES

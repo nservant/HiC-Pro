@@ -94,7 +94,7 @@ Copy and edit the configuration file *'config-hicpro.txt'* in your local folder.
 | DIGESTION Hi-C        |                                                                                                                                          |
 |-----------------------|------------------------------------------------------------------------------------------------------------------------------------------|
 | [GENOME_FRAGMENT]     | BED file with restriction fragments. Full path or name of file available in the ANNOTATION folder. *Default: HindIII_resfrag_hg19.bed*   |
-| [LIGATION SITE]       | Ligation site sequence used for reads trimming. Depends on the fill in strategy. Note that multiple ligation sites can be specified. *Example: AAGCTAGCTT*                                   |
+| [LIGATION SITE]       | Ligation site sequence(s) used for reads trimming. Depends on the fill in strategy. Note that multiple ligation sites can be specified (comma separated). *Example: AAGCTAGCTT*                                   |
 | [MIN_FRAG_SIZE]       | Maximum size of restriction fragments to consider for the Hi-C processing. *Example: 100*                                                |
 | [MAX_FRAG_SIZE]       | Maximum size of restriction fragments to consider for the Hi-C processing. *Example: 100000*                                             |
 | [MIN_INSERT_SIZE]     | Minimum sequenced insert size. Shorter 3C products are discarded. *Example: 100*                                                         |

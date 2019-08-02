@@ -47,6 +47,7 @@ def find_re_sites(filename, sequences, offset):
                 indices.sort()
                 all_indices.append(indices)
                 indices = []
+
             # This is a new chromosome. Empty the sequence string, and add the
             # correct chrom id
             big_str = ""
@@ -67,6 +68,7 @@ def find_re_sites(filename, sequences, offset):
                     for m in re.finditer(pattern, big_str)]
     indices.sort()
     all_indices.append(indices)
+    
     return contig_names, all_indices
 
 
@@ -135,16 +137,26 @@ if __name__ == "__main__":
             print "Please, use '^' to specified the cutting position,",
             print "i.e A^GATCT for HindIII digestion"
             sys.exit(-1)
+
+        for nuc in list(set(cs)):
+            if nuc != 'A' and nuc != 'C' and nuc != 'G' and nuc != 'T' and nuc != 'N' and nuc != '^':
+                print "Find unexpected character ['",nuc,"']in restriction motif"
+                print "Note that multiple motifs should be separated by a space (not a comma !)"
+                sys.exit(-1)
+
         offset.append(offpos)
         sequences.append(re.sub('\^', '', cseq))
 
     # replace all N in restriction motif
-    sequences_tmp = []
-    for cs in sequences:
-        sequences_tmp = sequences_tmp + replaceN(cs)
-
-    sequences = sequences_tmp
-
+    sequences_without_N = []
+    offset_without_N = []
+    for rs in range(len(sequences)):
+        sequences_without_N = sequences_without_N + replaceN(sequences[rs])
+        offset_without_N = offset_without_N + [offset[rs]] * len(sequences_without_N)
+          
+    sequences = sequences_without_N
+    offset = offset_without_N
+    
     if out is None:
         out = os.path.splitext(filename)[0] + "_fragments.bed"
 
@@ -153,8 +165,7 @@ if __name__ == "__main__":
     print "Offset(s)",  ','.join(str(x) for x in offset)
 
     # Read fasta file and look for rs per chromosome
-    contig_names, all_indices = find_re_sites(filename, sequences,
-                                              offset=offset)
+    contig_names, all_indices = find_re_sites(filename, sequences,  offset=offset)
     _, lengths = find_chromsomose_lengths(filename)
 
     valid_fragments = []
