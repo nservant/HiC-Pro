@@ -101,7 +101,7 @@ def replaceN(cs):
             else:
                 cseql.append(tmpl)
     else:
-        cseql=cs
+        cseql=[cs]
     return cseql
 
 
