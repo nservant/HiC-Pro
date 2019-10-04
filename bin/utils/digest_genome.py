@@ -101,7 +101,7 @@ def replaceN(cs):
             else:
                 cseql.append(tmpl)
     else:
-        cseql=cs
+        cseql.append(cs)
     return cseql
 
 
@@ -120,8 +120,13 @@ if __name__ == "__main__":
 
     filename = args.fastafile
     out = args.out
-    cutsites = args.res_sites
-
+    
+    # Split restriction sites if comma-separated
+    cutsites=[]
+    for s in args.res_sites:
+        for m in s.split(','):
+            cutsites.append(m)
+                
     # process args and get restriction enzyme sequences
     sequences = []
     offset = []
@@ -151,8 +156,9 @@ if __name__ == "__main__":
     sequences_without_N = []
     offset_without_N = []
     for rs in range(len(sequences)):
-        sequences_without_N = sequences_without_N + replaceN(sequences[rs])
-        offset_without_N = offset_without_N + [offset[rs]] * len(sequences_without_N)
+        nrs = replaceN(sequences[rs])
+        sequences_without_N = sequences_without_N + nrs
+        offset_without_N = offset_without_N + [offset[rs]] * len(nrs)
           
     sequences = sequences_without_N
     offset = offset_without_N
