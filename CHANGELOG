@@ -13,6 +13,10 @@ SIGNIFICANT USER-VISIBLE CHANGES
 
    o Update of Singularity image
 
+BUG FIXES
+
+   o Fix small printing bugs in mapped_2hic_fragments.py
+
 ***********************************
 CHANGES IN VERSION 2.11.2
 

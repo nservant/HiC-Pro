@@ -53,7 +53,7 @@ def get_args():
              "minInsertSize=", "maxInsertSize", 
              "minFragSize", "maxFragSize", 
              "minDist",
-             "gatg", "samOut", "verbose", "all", "help"])
+             "gatg", "sam", "verbose", "all", "help"])
     except getopt.GetoptError:
         usage()
         sys.exit(-1)
@@ -442,7 +442,7 @@ def get_interaction_type(read1, read1_chrom, resfrag1, read2,
     # If returned InteractionType=None -> Same restriction fragment
     # and same strand = Dump
     interactionType = None
- 
+      
     if not read1.is_unmapped and not read2.is_unmapped and resfrag1 is not None and resfrag2 is not None:
         # same restriction fragment
         if resfrag1 == resfrag2:
@@ -613,6 +613,7 @@ if __name__ == "__main__":
                 r2_chrom = None
 
             if r1_resfrag is not None or r2_resfrag is not None:
+
                 interactionType = get_interaction_type(r1, r1_chrom, r1_resfrag, r2, r2_chrom, r2_resfrag, verbose)
                 dist = get_PE_fragment_size(r1, r2, r1_resfrag, r2_resfrag, interactionType)
                 cdist = get_cis_dist(r1, r2)
@@ -724,10 +725,14 @@ if __name__ == "__main__":
 
                     if or1_resfrag is not None:
                         or1_fragname = or1_resfrag.value['name']
-                    
+                    else:
+                        or1_fragname = 'None'
+                        
                     if or2_resfrag is not None:
                         or2_fragname = or2_resfrag.value['name']
-                    
+                    else:
+                        or2_fragname = 'None'
+                        
                     cur_handler.write(
                         or1.qname + "\t" +
                         or1_chrom + "\t" +
