@@ -13,9 +13,17 @@ SIGNIFICANT USER-VISIBLE CHANGES
 
    o Update of Singularity image
 
+   o Update hicpro2juicebox.sh script for memory issue (#246)
+
+   o Update hicpro2higlass.sh script (#254)
+
 BUG FIXES
 
    o Fix small printing bugs in mapped_2hic_fragments.py
+
+   o N_CPU for LSF usage (#250)
+
+   o Update doc (#307, #273)
 
 ***********************************
 CHANGES IN VERSION 2.11.2

@@ -120,7 +120,7 @@ then
 #BSUB -e HiCpro_s2_${JOB_SUFFIX}.%J.e
 #BSUB -o HiCpro_s2_${JOB_SUFFIX}.%J.o
 #BSUB -q ${JOB_QUEUE}
-#BSUB -n ${PPN}
+#BSUB -n ${N_CPU}
 
 make --file ${SCRIPTS}/Makefile CONFIG_FILE=${conf_file} CONFIG_SYS=${INSTALL_PATH}/config-system.txt $make_target 2>&1
 EOF

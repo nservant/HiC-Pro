@@ -154,7 +154,7 @@ First have a look at the help message !
   usage : HiC-Pro -i INPUT -o OUTPUT -c CONFIG [-s ANALYSIS_STEP] [-p] [-h] [-v]
   Use option -h|--help for more information
 
-  HiC-Pro 2.10.0
+  HiC-Pro 2.11.3
   ---------------
   OPTIONS
 
@@ -163,11 +163,12 @@ First have a look at the help message !
    -c|--conf CONFIG : configuration file for Hi-C processing
    [-p|--parallel] : if specified run HiC-Pro on a cluster
    [-s|--step ANALYSIS_STEP] : run only a subset of the HiC-Pro workflow; if not specified the complete workflow is run
-      mapping: perform reads alignment
-      proc_hic: perform Hi-C filtering
+      mapping: perform reads alignment - require fast files
+      proc_hic: perform Hi-C filtering - require BAM files
       quality_checks: run Hi-C quality control plots
-      build_contact_maps: build raw inter/intrachromosomal contact maps
-      ice_norm: run ICE normalization on contact maps
+      merge_persample: merge multiple inputs and remove duplicates if specified - require .validPairs files
+      build_contact_maps: Build raw inter/intrachromosomal contact maps - require .allValidPairs files
+      ice_norm : run ICE normalization on contact maps - require .matrix files
    [-h|--help]: help
    [-v|--version]: version
 ```
