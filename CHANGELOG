@@ -21,7 +21,7 @@ BUG FIXES
 
    o Fix small printing bugs in mapped_2hic_fragments.py
 
-   o N_CPU for LSF usage (#250)
+   o N_CPU for LSF usage (#250) and bowtie2 (#262)
 
    o Update doc (#307, #273)
 

@@ -82,11 +82,18 @@ cut_and_align()
     if [[ $unmap == 1 ]]; then
 	BOWTIE2_LOCAL_OPTIONS=${BOWTIE2_LOCAL_OPTIONS}" --un ${odir}/${prefix}_${REFERENCE_GENOME}.bwt2glob.unmap.fastq"
     fi
-    
+
+    if [[ $N_CPU -lt 2 ]]; then
+        echo -e "Warning : HiC-Pro need at least 2 CPUs to run the mapping !!"
+        bwt_cpu=1
+    else
+        bwt_cpu=$(( $N_CPU / 2 ))
+    fi
+       
     ## Run bowtie
     echo "##HiC-Pro mapping" > ${ldir}/${prefix}_bowtie2.log
 
-    cmd="${BOWTIE2_PATH}/bowtie2 ${BOWTIE2_LOCAL_OPTIONS} --rg-id BML --rg SM:${prefix} -p ${N_CPU} -x ${BOWTIE2_IDX} -U ${odir}/${tfile} 2>> ${ldir}/${prefix}_bowtie2.log | ${SAMTOOLS_PATH}/samtools view -bS - > ${odir}/${prefix}_bwt2loc.bam"
+    cmd="${BOWTIE2_PATH}/bowtie2 ${BOWTIE2_LOCAL_OPTIONS} --rg-id BML --rg SM:${prefix} -p ${bwt_cpu} -x ${BOWTIE2_IDX} -U ${odir}/${tfile} 2>> ${ldir}/${prefix}_bowtie2.log | ${SAMTOOLS_PATH}/samtools view -bS - > ${odir}/${prefix}_bwt2loc.bam"
     exec_cmd "$cmd" 
 }
 
