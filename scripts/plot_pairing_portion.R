@@ -135,7 +135,6 @@ stats_per_sample<- rowSums(do.call(cbind,lapply(stats_per_fastq, "[", 1)))
 perc_per_sample<- rowMeans(do.call(cbind,lapply(stats_per_fastq, "[", 2)))
 
 print(stats_per_sample)
-
 ## Make plots
 mat <- getPairMat(stats_per_sample, perc_per_sample, rmMulti=rmMulti, rmSingle=rmSingle)
 mat$lab <- factor(mat$lab, levels=c("Unmapped_pairs", "Not_Reported_pairs", "Reported_pairs", "Low_qual_pairs",  "Pairs_with_singleton", "Multiple_pairs_alignments"))

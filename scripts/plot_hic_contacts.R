@@ -122,7 +122,6 @@ stopifnot(length(mergestat)>0)
 ## Get statistics summary
 stats_per_sample<- read.csv(mergestat, sep="\t", as.is=TRUE, comment.char="#", header=FALSE, row.names=1)
 print(stats_per_sample)
-
 mat <- getContactsStatMat(stats_per_sample)
 p1 <- plotDedup(mat, sampleName)
 ggsave(filename=file.path(picDir, paste0("plotHiCContactRanges_",sampleName,".pdf")), p1, width=5, height=5)
