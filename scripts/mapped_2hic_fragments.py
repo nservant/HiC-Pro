@@ -12,7 +12,6 @@
 Script to keep only valid 3C products - DE and SC are removed
 Output is : readname / 
 """
-
 import time
 import getopt
 import sys
@@ -24,20 +23,20 @@ from bx.intervals.intersection import Intersecter, Interval
 
 def usage():
     """Usage function"""
-    print "Usage : python mapped_2hic_fragments.py"
-    print "-f/--fragmentFile <Restriction fragment file GFF3>"
-    print "-r/--mappedReadsFile <BAM/SAM file of mapped reads>"
-    print "[-o/--outputDir] <Output directory. Default is current directory>"
-    print "[-s/--shortestInsertSize] <Shortest insert size of mapped reads to consider>"
-    print "[-l/--longestInsertSize] <Longest insert size of mapped reads to consider>"
-    print "[-t/--shortestFragmentLength] <Shortest restriction fragment length to consider>"
-    print "[-m/--longestFragmentLength] <Longest restriction fragment length to consider>"
-    print "[-d/--minCisDist] <Minimum distance between intrachromosomal contact to consider>"
-    print "[-g/--gtag] <Genotype tag. If specified, this tag will be reported in the valid pairs output for allele specific classification>"
-    print "[-a/--all] <Write all additional output files, with information about the discarded reads (self-circle, dangling end, etc.)>"
-    print "[-S/--sam] <Output an additional SAM file with flag 'CT' for pairs classification>"
-    print "[-v/--verbose] <Verbose>"
-    print "[-h/--help] <Help>"
+    print("Usage : python mapped_2hic_fragments.py")
+    print("-f/--fragmentFile <Restriction fragment file GFF3>")
+    print("-r/--mappedReadsFile <BAM/SAM file of mapped reads>")
+    print("[-o/--outputDir] <Output directory. Default is current directory>")
+    print("[-s/--shortestInsertSize] <Shortest insert size of mapped reads to consider>")
+    print("[-l/--longestInsertSize] <Longest insert size of mapped reads to consider>")
+    print("[-t/--shortestFragmentLength] <Shortest restriction fragment length to consider>")
+    print("[-m/--longestFragmentLength] <Longest restriction fragment length to consider>")
+    print("[-d/--minCisDist] <Minimum distance between intrachromosomal contact to consider>")
+    print("[-g/--gtag] <Genotype tag. If specified, this tag will be reported in the valid pairs output for allele specific classification>")
+    print("[-a/--all] <Write all additional output files, with information about the discarded reads (self-circle, dangling end, etc.)>")
+    print("[-S/--sam] <Output an additional SAM file with flag 'CT' for pairs classification>")
+    print("[-v/--verbose] <Verbose>")
+    print("[-h/--help] <Help>")
     return
 
 
@@ -67,7 +66,7 @@ def timing(function, *args):
     """
     startTime = time.time()
     result = function(*args)
-    print '%s function took %0.3f ms' % (function.func_name, (time.time() - startTime) * 1000)
+    print('{} function took {:.3f}ms'.format(function.__name__, (time.time() - startTime) * 1000))
     return result
 
 
@@ -96,8 +95,7 @@ def isIntraChrom(read1, read2):
     """
     if read1.tid == read2.tid:
         return True
-    else:
-        return False
+    return False
 
 
 def get_cis_dist(read1, read2):
@@ -114,8 +112,7 @@ def get_cis_dist(read1, read2):
      if not read1.is_unmapped and not read2.is_unmapped:         
          ## Contact distances can be calculated for intrachromosomal reads only
          if isIntraChrom(read1, read2):
-             r1pos = get_read_pos(read1)
-             r2pos = get_read_pos(read2)
+             r1pos, r2pos = get_read_pos(read1), get_read_pos(read2)
              dist = abs(r1pos - r2pos)
      return dist
 
@@ -138,11 +135,11 @@ def get_read_pos(read, st="start"):
     """
 
     if st == "middle":
-        pos = read.pos + int(read.alen/2)
+        pos = read.reference_start + int(read.alen/2)
     elif st =="start":
         pos = get_read_start(read)
     elif st == "left":
-        pos = read.pos
+        pos = read.reference_start
     
     return pos
 
@@ -152,9 +149,9 @@ def get_read_start(read):
     Return the 5' end of the read
     """
     if read.is_reverse:
-        pos = read.pos + read.alen -1
+        pos = read.reference_start + read.alen -1
     else:
-        pos = read.pos
+        pos = read.reference_start
     return pos
 
 def get_ordered_reads(read1, read2):
@@ -178,18 +175,14 @@ def get_ordered_reads(read1, read2):
     """
     if read1.tid == read2.tid:
         if get_read_pos(read1) < get_read_pos(read2):
-            r1 = read1
-            r2 = read2
+            r1, r2 = read1, read2
         else:
-            r1 = read2
-            r2 = read1
+            r1, r2 = read2, read1
     else:
         if read1.tid < read2.tid:
-            r1 = read1
-            r2 = read2
+            r1, r2 = read1, read2
         else:
-            r1 = read2
-            r2 = read1
+            r1, r2 = read2, read1
                 
     return r1, r2
 
@@ -206,46 +199,44 @@ def load_restriction_fragment(in_file, minfragsize=None, maxfragsize=None, verbo
     """
     resFrag = {}
     if verbose:
-        print "## Loading Restriction File Intervals '", in_file, "'..."
-
+        print("## Loading Restriction File Intervals {} ...".format(in_file))
     bed_handle = open(in_file)
     nline = 0
     nfilt = 0
     for line in bed_handle:
-        nline +=1
-        bedtab = line.split("\t")
-        try:
-            chromosome, start, end, name = bedtab[:4]
-        except ValueError:
-            print "Warning : wrong input format in line", nline,". Not a BED file !?"
-            continue
+         nline += 1
+         bedtab = line.split("\t")
+         try:
+              chromosome, start, end, name = bedtab[:4]
+         except ValueError:
+              print("Warning : wrong input format in line {}. Not a BED file ?!".format(nline))
+              continue
 
         # BED files are zero-based as Intervals objects
-        start = int(start)  # + 1
-        end = int(end)
-        fragl = abs(end - start)
-        name = name.strip()
+         start = int(start)  # + 1
+         end = int(end)
+         fragl = abs(end - start)
+         name = name.strip()
 
-        ## Discard fragments outside the size range
-        filt=False
-        if minfragsize != None and int(fragl) < int(minfragsize):
-            nfilt+=1
-            filt=True
-        elif maxfragsize != None and int(fragl) > int(maxfragsize):
-            nfilt+=1
-            filt=True
+         ## Discard fragments outside the size range
+         filt = False
+         if minfragsize != None and int(fragl) < int(minfragsize):
+             nfilt += 1
+             filt = True
+         elif maxfragsize != None and int(fragl) > int(maxfragsize):
+             nfilt += 1
+             filt = True
        
-        if chromosome in resFrag:
-            tree = resFrag[chromosome]
-            tree.add_interval(Interval(start, end, value={'name': name, 'filter': filt}))
-        else:
-            tree = Intersecter()
-            tree.add_interval(Interval(start, end, value={'name': name, 'filter': filt}))
-            resFrag[chromosome] = tree
+         if chromosome in resFrag:
+             tree = resFrag[chromosome]
+             tree.add_interval(Interval(start, end, value={'name': name, 'filter': filt}))
+         else:
+             tree = Intersecter()
+             tree.add_interval(Interval(start, end, value={'name': name, 'filter': filt}))
+             resFrag[chromosome] = tree
     
     if nfilt > 0:
-        print "Warning : ", nfilt ,"fragment(s) outside of range and discarded. ", nline - nfilt, " remaining."
-
+        print("Warning : {} fragment(s) outside of range and discarded. {} remaining.".format(nfilt, nline - nfilt))
     bed_handle.close()
     return resFrag
 
@@ -267,15 +258,15 @@ def get_overlapping_restriction_fragment(resFrag, chrom, read):
         # Overlap with the position of the read (zero-based)
         resfrag = resFrag[chrom].find(pos, pos+1)
         if len(resfrag) > 1:
-            print "Warning : ", len(resfrag), " restriction fragments found for ", read.qname, "- skipped"
+            print("Warning : {} restictions fragments found for {} -skipped".format(len(resfrag), read.query_name))
             return None
         elif len(resfrag) == 0:
-            print "Warning - no restriction fragments for ", read.qname ," at ", chrom, ":", pos
+            print("Warning - no restriction fragments for {} at {} : {}".format(read.query_name, chrom, pos))
             return None
         else:
             return resfrag[0]
     else:
-        print "Warning - no restriction fragments for ", read.qname," at ", chrom, ":", pos
+        print("Warning - no restriction fragments for {} at {} : {}".format(read.qname, chrom, pos))
         return None
 
 
@@ -301,11 +292,11 @@ def is_religation(read1, read2, frag1, frag2):
     Check the orientation of reads -><-
 
     """
-    ret=False
+    ret = False
     if are_contiguous_fragments(frag1, frag2, read1.tid, read2.tid):
         #r1, r2 = get_ordered_reads(read1, read2)
         #if get_read_strand(r1) == "+" and get_read_strand(r2) == "-":
-        ret=True
+        ret = True
     return ret
 
 
@@ -374,8 +365,8 @@ def get_PE_fragment_size(read1, read2, resFrag1, resFrag2, interactionType):
 
     read1 : [AlignedRead]
     read2 : [AlignedRead]
-    resfrag1 = restrictin fragment overlapping the R1 read [interval]
-    resfrag1 = restrictin fragment overlapping the R1 read [interval]
+    resfrag1 = restriction fragment overlapping the R1 read [interval]
+    resfrag1 = restriction fragment overlapping the R1 read [interval]
     interactionType : Type of interaction from get_interaction_type() [str]
 
     """
@@ -463,7 +454,7 @@ def get_interaction_type(read1, read1_chrom, resfrag1, read2,
 
 
 def get_read_tag(read, tag):
-    for t in read.tags:
+    for t in read.get_tags():
         if t[0] == tag:
             return t[1]
     return None
@@ -520,16 +511,16 @@ if __name__ == "__main__":
 
     # Verbose mode
     if verbose:
-        print "## overlapMapped2HiCFragments.py"
-        print "## mappedReadsFile=", mappedReadsFile
-        print "## fragmentFile=", fragmentFile
-        print "## minInsertSize=", minInsertSize
-        print "## maxInsertSize=", maxInsertSize
-        print "## minFragSize=", minFragSize
-        print "## maxFragSize=", maxFragSize
-        print "## allOuput=", allOutput
-        print "## SAM ouput=", samOut
-        print "## verbose=", verbose, "\n"
+        print("## overlapMapped2HiCFragments.py")
+        print("## mappedReadsFile=", mappedReadsFile)
+        print("## fragmentFile=", fragmentFile)
+        print("## minInsertSize=", minInsertSize)
+        print("## maxInsertSize=", maxInsertSize)
+        print("## minFragSize=", minFragSize)
+        print("## maxFragSize=", maxFragSize)
+        print("## allOuput=", allOutput)
+        print("## SAM ouput=", samOut)
+        print("## verbose={}\n".format(verbose))
 
     # Initialize variables
     reads_counter = 0
@@ -576,7 +567,7 @@ if __name__ == "__main__":
      
     # Read the SAM/BAM file
     if verbose:
-        print "## Opening SAM/BAM file '", mappedReadsFile, "'..."
+        print("## Opening SAM/BAM file {} ...".format(mappedReadsFile))
     samfile = pysam.Samfile(mappedReadsFile, "rb")
 
     if samOut:
@@ -585,7 +576,7 @@ if __name__ == "__main__":
     # Reads are 0-based too (for both SAM and BAM format)
     # Loop on all reads
     if verbose:
-        print "## Classifying Interactions ..."
+        print("## Classifying Interactions ...")
 
     for read in samfile.fetch(until_eof=True):
         reads_counter += 1
@@ -596,7 +587,7 @@ if __name__ == "__main__":
         if read.is_read1:
             r1 = read
             if not r1.is_unmapped:
-                r1_chrom = samfile.getrname(r1.tid)
+                r1_chrom = samfile.get_reference_name(r1.tid)
                 r1_resfrag = get_overlapping_restriction_fragment(resFrag, r1_chrom, r1)
             else:
                 r1_resfrag = None
@@ -606,7 +597,7 @@ if __name__ == "__main__":
         elif read.is_read2:
             r2 = read
             if not r2.is_unmapped:
-                r2_chrom = samfile.getrname(r2.tid)
+                r2_chrom = samfile.get_reference_name(r2.tid)
                 r2_resfrag = get_overlapping_restriction_fragment(resFrag, r2_chrom, r2)
             else:
                 r2_resfrag = None
@@ -706,8 +697,8 @@ if __name__ == "__main__":
                 if not r1.is_unmapped and not r2.is_unmapped:                 
                     ##reorient reads to ease duplicates removal
                     or1, or2 = get_ordered_reads(r1, r2)
-                    or1_chrom = samfile.getrname(or1.tid)
-                    or2_chrom = samfile.getrname(or2.tid)
+                    or1_chrom = samfile.get_reference_name(or1.tid)
+                    or2_chrom = samfile.get_reference_name(or2.tid)
                     
                     ##reset as tag now that the reads are oriented
                     r1as = get_read_tag(or1, gtag)
@@ -734,7 +725,7 @@ if __name__ == "__main__":
                         or2_fragname = 'None'
                         
                     cur_handler.write(
-                        or1.qname + "\t" +
+                        or1.query_name + "\t" +
                         or1_chrom + "\t" +
                         str(get_read_pos(or1)+1) + "\t" +
                         str(get_read_strand(or1)) + "\t" +
@@ -753,7 +744,7 @@ if __name__ == "__main__":
                         r1_fragname = r1_resfrag.value['name']
                           
                     cur_handler.write(
-                        r1.qname + "\t" +
+                        r1.query_name + "\t" +
                         r1_chrom + "\t" +
                         str(get_read_pos(r1)+1) + "\t" +
                         str(get_read_strand(r1)) + "\t" +
@@ -770,7 +761,7 @@ if __name__ == "__main__":
                         r2_fragname = r2_resfrag.value['name']
                     
                     cur_handler.write(
-                        r2.qname + "\t" +
+                        r2.query_name + "\t" +
                         "*" + "\t" +
                         "*" + "\t" +
                         "*" + "\t" +
@@ -791,7 +782,7 @@ if __name__ == "__main__":
                     handle_sam.write(r2)
 
             if (reads_counter % 100000 == 0 and verbose):
-                print "##", reads_counter
+                print("##", reads_counter)
 
     # Close handler
     handle_valid.close()
@@ -808,14 +799,10 @@ if __name__ == "__main__":
     handle_stat = open(outputDir + '/' + baseReadsFile + '.RSstat', 'w')
     handle_stat.write("## Hi-C processing\n")
     handle_stat.write("Valid_interaction_pairs\t" + str(valid_counter) + "\n")
-    handle_stat.write(
-        "Valid_interaction_pairs_FF\t" + str(valid_counter_FF) + "\n")
-    handle_stat.write(
-        "Valid_interaction_pairs_RR\t" + str(valid_counter_RR) + "\n")
-    handle_stat.write(
-        "Valid_interaction_pairs_RF\t" + str(valid_counter_RF) + "\n")
-    handle_stat.write(
-        "Valid_interaction_pairs_FR\t" + str(valid_counter_FR) + "\n")
+    handle_stat.write("Valid_interaction_pairs_FF\t" + str(valid_counter_FF) + "\n")
+    handle_stat.write("Valid_interaction_pairs_RR\t" + str(valid_counter_RR) + "\n")
+    handle_stat.write("Valid_interaction_pairs_RF\t" + str(valid_counter_RF) + "\n")
+    handle_stat.write("Valid_interaction_pairs_FR\t" + str(valid_counter_FR) + "\n")
     handle_stat.write("Dangling_end_pairs\t" + str(de_counter) + "\n")
     handle_stat.write("Religation_pairs\t" + str(re_counter) + "\n")
     handle_stat.write("Self_Cycle_pairs\t" + str(sc_counter) + "\n")
@@ -839,4 +826,3 @@ if __name__ == "__main__":
 
     if samOut:
         samfile.close()
-
