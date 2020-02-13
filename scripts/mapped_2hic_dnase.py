@@ -21,14 +21,14 @@ import pysam
 
 def usage():
     """Usage function"""
-    print "Usage : python mapped_2hic_dnase.py"
-    print "-r/--mappedReadsFile <BAM/SAM file of mapped reads>"
-    print "[-o/--outputDir] <Output directory. Default is current directory>"
-    print "[-d/--minCisDist] <Minimum distance between intrachromosomal contact to consider>"
-    print "[-g/--gtag] <Genotype tag. If specified, this tag will be reported in the valid pairs output for allele specific classification>"
-    print "[-a/--all] <Write all additional output files, with information about the discarded reads (self-circle, dangling end, etc.)>"
-    print "[-v/--verbose] <Verbose>"
-    print "[-h/--help] <Help>"
+    print("Usage : python mapped_2hic_dnase.py")
+    print("-r/--mappedReadsFile <BAM/SAM file of mapped reads>")
+    print("[-o/--outputDir] <Output directory. Default is current directory>")
+    print("[-d/--minCisDist] <Minimum distance between intrachromosomal contact to consider>")
+    print("[-g/--gtag] <Genotype tag. If specified, this tag will be reported in the valid pairs output for allele specific classification>")
+    print("[-a/--all] <Write all additional output files, with information about the discarded reads (self-circle, dangling end, etc.)>")
+    print("[-v/--verbose] <Verbose>")
+    print("[-h/--help] <Help>")
     return
 
 
@@ -78,11 +78,11 @@ def get_read_pos(read, st="start"):
         list of aligned reads
     """
     if st == "middle":
-        pos = read.pos + int(read.alen/2)
+        pos = read.reference_start + int(read.alen/2)
     elif st =="start":
         pos = get_read_start(read)
     elif st == "left":
-        pos = read.pos
+        pos = read.reference_start
 
     return pos
 
@@ -92,9 +92,9 @@ def get_read_start(read):
     Return the 5' end of the read                                                                                                                                                                              
     """
     if read.is_reverse:
-        pos = read.pos + read.alen -1
+        pos = read.reference_start + read.alen -1
     else:
-        pos = read.pos
+        pos = read.reference_start
     return pos
 
 
@@ -108,20 +108,16 @@ def get_ordered_reads(read1, read2):
     read1 = [AlignedRead]
     read2 = [AlignedRead]
     """
-    if read1.tid == read2.tid:
+    if read1.reference_id == read2.reference_id:
         if get_read_pos(read1) < get_read_pos(read2):
-            r1 = read1
-            r2 = read2
+            r1, r2 = read1, read2
         else:
-            r1 = read2
-            r2 = read1
+            r1, r2 = read2n read1
     else:
-        if read1.tid < read2.tid:
-            r1 = read1
-            r2 = read2
+        if read1.reference_id < read2.reference_id:
+            r1, r2 = read1, read2
         else:
-            r1 = read2
-            r2 = read1
+            r1, r2 = read2, read1
 
     return r1, r2
 
@@ -134,7 +130,7 @@ def isIntraChrom(read1, read2):
     read2 : [AlignedRead]
 
     """
-    if read1.tid == read2.tid:
+    if read1.reference_id == read2.reference_id:
         return True
     else:
         return False
@@ -187,7 +183,7 @@ def get_cis_dist(read1, read2):
 
 
 def get_read_tag(read, tag):
-    for t in read.tags:
+    for t in read.get_tags():
         if t[0] == tag:
             return t[1]
     return None
@@ -229,11 +225,11 @@ if __name__ == "__main__":
 
     # Verbose mode
     if verbose:
-        print "## overlapMapped2HiCFragments.py"
-        print "## mappedReadsFile=", mappedReadsFile
-        print "## minCisDist=", minDist
-        print "## allOuput=", allOutput
-        print "## verbose=", verbose, "\n"
+        print("## overlapMapped2HiCFragments.py")
+        print("## mappedReadsFile=", mappedReadsFile)
+        print("## minCisDist=", minDist)
+        print("## allOuput=", allOutput)
+        print("## verbose={}\n".format(verbose))
 
     # Initialize variables
     reads_counter = 0
@@ -271,7 +267,7 @@ if __name__ == "__main__":
 
     # Read the SAM/BAM file
     if verbose:
-        print "## Opening SAM/BAM file '", mappedReadsFile, "'..."
+        print("## Opening SAM/BAM file {} ...".format(mappedReadsFile))
     samfile = pysam.Samfile(mappedReadsFile, "rb")
 
     # Reads are 0-based too (for both SAM and BAM format)
@@ -286,7 +282,7 @@ if __name__ == "__main__":
         if read.is_read1:
             r1 = read
             if not r1.is_unmapped:
-                r1_chrom = samfile.getrname(r1.tid)
+                r1_chrom = samfile.get_reference_name(r1.reference_id)
             else:
                 r1_chrom = None
 
@@ -294,11 +290,11 @@ if __name__ == "__main__":
         elif read.is_read2:
             r2 = read
             if not r2.is_unmapped:
-                r2_chrom = samfile.getrname(r2.tid)
+                r2_chrom = samfile.get_reference_name(r2.reference_id)
             else:
                 r2_chrom = None
 
-            if isIntraChrom(r1,r2):
+            if isIntraChrom(r1, r2):
                 dist = get_cis_dist(r1, r2)
             else:
                 dist = None
@@ -368,8 +364,8 @@ if __name__ == "__main__":
                     
                     ##reorient reads to ease duplicates removal
                     or1, or2 = get_ordered_reads(r1, r2)
-                    or1_chrom = samfile.getrname(or1.tid)
-                    or2_chrom = samfile.getrname(or2.tid)
+                    or1_chrom = samfile.get_reference_name(or1.reference_id)
+                    or2_chrom = samfile.get_reference_name(or2.reference_id)
 
                     ##reset as tag now that the reads are oriented
                     r1as = get_read_tag(or1, gtag)
@@ -378,7 +374,7 @@ if __name__ == "__main__":
                         htag = str(r1as)+"-"+str(r2as)
                         
                     cur_handler.write(
-                        or1.qname + "\t" +
+                        or1.query_name + "\t" +
                         or1_chrom + "\t" +
                         str(get_read_pos(or1)+1) + "\t" +
                         str(get_read_strand(or1)) + "\t" +
@@ -394,7 +390,7 @@ if __name__ == "__main__":
                 
                 elif r2.is_unmapped and not r1.is_unmapped:
                     cur_handler.write(
-                        r1.qname + "\t" +
+                        r1.query_name + "\t" +
                         r1_chrom + "\t" +
                         str(get_read_pos(r1)+1) + "\t" +
                         str(get_read_strand(r1)) + "\t" +
@@ -408,7 +404,7 @@ if __name__ == "__main__":
                         "*" + "\n")
                 elif r1.is_unmapped and not r2.is_unmapped:
                     cur_handler.write(
-                        r2.qname + "\t" +
+                        r2.query_name + "\t" +
                         "*" + "\t" +
                         "*" + "\t" +
                         "*" + "\t" +
@@ -422,7 +418,7 @@ if __name__ == "__main__":
                         str(r2.mapping_quality) + "\n")
 
             if (reads_counter % 100000 == 0 and verbose):
-                print "##", reads_counter
+                print("##", reads_counter)
 
     # Close handler
     handle_valid.close()
@@ -432,33 +428,28 @@ if __name__ == "__main__":
         handle_filt.close()
 
     # Write stats file
-    handle_stat = open(outputDir + '/' + baseReadsFile + '.RSstat', 'w')
-    handle_stat.write("## Hi-C processing - no restriction fragments\n")
-    handle_stat.write("Valid_interaction_pairs\t" + str(valid_counter) + "\n")
-    handle_stat.write(
-        "Valid_interaction_pairs_FF\t" + str(valid_counter_FF) + "\n")
-    handle_stat.write(
-        "Valid_interaction_pairs_RR\t" + str(valid_counter_RR) + "\n")
-    handle_stat.write(
-        "Valid_interaction_pairs_RF\t" + str(valid_counter_RF) + "\n")
-    handle_stat.write(
-        "Valid_interaction_pairs_FR\t" + str(valid_counter_FR) + "\n")
-    handle_stat.write("Single-end_pairs\t" + str(single_counter) + "\n")
-    handle_stat.write("Filtered_pairs\t" + str(filt_counter) + "\n")
-    handle_stat.write("Dumped_pairs\t" + str(dump_counter) + "\n")
+    with open(outputDir + '/' + baseReadsFile + '.RSstat', 'w') as handle_stat:
+        handle_stat.write("## Hi-C processing - no restriction fragments\n")
+        handle_stat.write("Valid_interaction_pairs\t" + str(valid_counter) + "\n")
+        handle_stat.write("Valid_interaction_pairs_FF\t" + str(valid_counter_FF) + "\n")
+        handle_stat.write("Valid_interaction_pairs_RR\t" + str(valid_counter_RR) + "\n")
+        handle_stat.write("Valid_interaction_pairs_RF\t" + str(valid_counter_RF) + "\n")
+        handle_stat.write("Valid_interaction_pairs_FR\t" + str(valid_counter_FR) + "\n")
+        handle_stat.write("Single-end_pairs\t" + str(single_counter) + "\n")
+        handle_stat.write("Filtered_pairs\t" + str(filt_counter) + "\n")
+        handle_stat.write("Dumped_pairs\t" + str(dump_counter) + "\n")
 
     ## Write AS report
-    if gtag is not None:
-        handle_stat.write("## ======================================\n")
-        handle_stat.write("## Allele specific information\n")
-        handle_stat.write("Valid_pairs_from_ref_genome_(1-1)\t" + str(G1G1_ascounter) + "\n")
-        handle_stat.write("Valid_pairs_from_ref_genome_with_one_unassigned_mate_(0-1/1-0)\t" + str(UG1_ascounter+G1U_ascounter) + "\n")
-        handle_stat.write("Valid_pairs_from_alt_genome_(2-2)\t" + str(G2G2_ascounter) + "\n")
-        handle_stat.write("Valid_pairs_from_alt_genome_with_one_unassigned_mate_(0-2/2-0)\t" + str(UG2_ascounter+G2U_ascounter) + "\n")
-        handle_stat.write("Valid_pairs_from_alt_and_ref_genome_(1-2/2-1)\t" + str(G1G2_ascounter+G2G1_ascounter) + "\n")
-        handle_stat.write("Valid_pairs_with_both_unassigned_mated_(0-0)\t" + str(UU_ascounter) + "\n")
-        handle_stat.write("Valid_pairs_with_at_least_one_conflicting_mate_(3-)\t" + str(CF_ascounter) + "\n")
+        if gtag is not None:
+            handle_stat.write("## ======================================\n")
+            handle_stat.write("## Allele specific information\n")
+            handle_stat.write("Valid_pairs_from_ref_genome_(1-1)\t" + str(G1G1_ascounter) + "\n")
+            handle_stat.write("Valid_pairs_from_ref_genome_with_one_unassigned_mate_(0-1/1-0)\t" + str(UG1_ascounter+G1U_ascounter) + "\n")
+            handle_stat.write("Valid_pairs_from_alt_genome_(2-2)\t" + str(G2G2_ascounter) + "\n")
+            handle_stat.write("Valid_pairs_from_alt_genome_with_one_unassigned_mate_(0-2/2-0)\t" + str(UG2_ascounter+G2U_ascounter) + "\n")
+            handle_stat.write("Valid_pairs_from_alt_and_ref_genome_(1-2/2-1)\t" + str(G1G2_ascounter+G2G1_ascounter) + "\n")
+            handle_stat.write("Valid_pairs_with_both_unassigned_mated_(0-0)\t" + str(UU_ascounter) + "\n")
+            handle_stat.write("Valid_pairs_with_at_least_one_conflicting_mate_(3-)\t" + str(CF_ascounter) + "\n")
 
-    handle_stat.close()
 
 
