@@ -248,17 +248,33 @@ fi
 ## Check rawdata structure
 if [[ $NEED_FASTQ == 1 ]]; then
     nbin=$(find -L $INPUT -mindepth 2 -maxdepth 2 -name "*.fastq" -o -name "*.fastq.gz" -o -name "*.fq.gz" | wc -l)
-    nbin_r1=$(find -L $INPUT -mindepth 2 -maxdepth 2 -name "*.fastq*" -o -name "*.fq*" -and -name "*${PAIR1_EXT}*" | wc -l)
-    nbin_r2=$(find -L $INPUT -mindepth 2 -maxdepth 2 -name "*.fastq*" -o -name "*.fq*" -and -name "*${PAIR2_EXT}*" | wc -l)
+    nbin_r1a=$(find -L $INPUT -mindepth 2 -maxdepth 2 -name "*.fastq*" -and -name "*${PAIR1_EXT}*" | wc -l)
+    nbin_r1b=$(find -L $INPUT -mindepth 2 -maxdepth 2 -name "*.fq*" -and -name "*${PAIR1_EXT}*" | wc -l)
+    nbin_r2a=$(find -L $INPUT -mindepth 2 -maxdepth 2 -name "*.fastq*" -and -name "*${PAIR2_EXT}*" | wc -l)
+    nbin_r2b=$(find -L $INPUT -mindepth 2 -maxdepth 2 -name "*.fq*" -and -name "*${PAIR2_EXT}*" | wc -l)
+    nbin_r1=0
+    nbin_r2=0
+    let "nbin_r1 = nbin_r1a + nbin_r1b"
+    let "nbin_r2 = nbin_r2a + nbin_r2b"
     if [ $nbin == 0 ]; then
 	die "Error: Directory Hierarchy of rawdata '$INPUT' is not correct. No '.fastq(.gz)' files detected"
-	else
-		echo $nbin
-		echo $nbin_r1
-		echo $nbin_r2
     fi
     if [[ $nbin_r1 == 0 || $nbin_r2 == 0 || $nbin_r1 != $nbin_r2 ]]; then
         die "Error: Directory Hierarchy of rawdata '$INPUT' is not correct. Paired '.fastq' files with ${PAIR1_EXT}/${PAIR2_EXT} are required !"
+    fi
+    if [[ $nbin_r1b != $nbin_r2b ]]
+    then
+        if [[ $nbin_r1b == 0 && $nbin_r1a == 1 ]]
+        then
+            old_name=$(find -L $INPUT -mindepth 2 -maxdepth 2 -name "*.fq*" -and -name "*${PAIR1_EXT}*")
+            new_name=$(echo $old_name | sed -e "s/\.fq.gz$/.fastq.gz/")
+            mv $old_name $new_name
+        elif [[ $nbin_r2b == 0 && $nbin_r2a == 1 ]]
+        then
+            old_name=$(find -L $INPUT -mindepth 2 -maxdepth 2 -name "*.fq*" -and -name "*${PAIR2_EXT}*")
+            new_name=$(echo $old_name | sed -e "s/\.fq.gz$/.fastq.gz/")
+            mv $old_name $new_name
+        fi
     fi
 
 elif [[ $NEED_BAM == 1 ]]; then
