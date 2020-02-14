@@ -50,7 +50,7 @@ def get_args():
     return opts
 
 
-def get_snp_gt(gt, ref, alt):          
+def get_snp_gt(gt, ref, alt): #!gt = ['0/1']         
     gtsnp = []
     
     ## gtsnp.append(ref)
@@ -58,7 +58,9 @@ def get_snp_gt(gt, ref, alt):
     ## '.' are not considered
     if len(snp_geno) != 2:
         return [None, None]
-    
+    if (snp_geno[0] == '.') or (snp_geno[1] == '.'):
+        return [None, None]
+
     ## First Allele
     if int(snp_geno[0]) == 0:
         gtsnp.append(ref)
@@ -103,43 +105,39 @@ def load_vcf(in_file, filter_qual=False, verbose=False, debug=False):
         if line.startswith('##'):
             continue
         elif line.startswith('#'):
-            header  = header = line.split('\t')
-            header[0]    = header[0][1:]
+            header = line.split('\t')
+            header[0] = header[0][1:]
             samples = [s.split('.')[0] for s in header[9:]]
             if len(samples) > 1:
                 print("Warning : Multisamples VCF detected. Only the first genotype will be used !", file=sys.stderr)
             continue
         else:
-            fields = line.split('\t',9)
+            fields = line.split('\t', 9)
             var_counter += 1
             n = len(fields)
-            chrom = fields[0]
-            start = int(fields[1]) - 1 ## 0-based
-            ref = fields[3]
-            alt = fields[4]
-            qfilter = fields[6]
+            chrom, start, ref, alt, qfilter = fields[0], int(fields[1]) - 1, fields[3], fields[4], fields[6]
             ## Check format for first variant
             if var_counter == 1:
-                format = fields[8] if n>8 else None
-                if format.split(':')[0] != "GT":
+                formate = fields[8] if n>8 else None
+                if formate.split(':')[0] != "GT":
                     print("Error : Invalid format - GT not detected at first position in ", file=sys.stderr)        
                     sys.exit(-1)
 
             genotypes  = fields[9].split('\t') if fields[9] else []
             geno = get_snp_gt(genotypes[0].split(':')[0], ref, alt)      
-            if filter_qual == False or (filter_qual == True and qfilter == "PASS"):
+            if (filter_qual == False) or (filter_qual == True and qfilter == "PASS"):
                 if debug:
-                    print(str(chrom) + " - " + str(start) + " - "+ str(qfilter) +" -REF= " + str(ref) + 
-                          " -ALT= " + str(alt) + " - G1=" + str(geno[0]) + " - G2=" + str(geno[1], file=sys.stderr)
+                    print("{} - {} - {} -REF= {} -ALT= {} -G1= {} -G2= {}".format(str(chrom), str(start),
+                          str(qfilter), str(ref), str(alt), str(geno[0]), str(geno[1])), file=sys.stderr)
                 ## store only discriminant SNP
                 if geno[0] != geno[1]:
                     snp_counter += 1
-                    chrn = re.sub("^[Cc]hr","",chrom)
+                    chrn = re.sub("^[Cc]hr","", chrom)
                     snps[(str(chrn), int(start), '1')] = geno[0]
                     snps[(str(chrn), int(start), '2')] = geno[1]
 
         if (var_counter % 100000 == 0 and verbose):
-                print ("##", var_counter)
+                print("##", var_counter)
  
     vcf_handle.close()
     if verbose:
@@ -248,16 +246,13 @@ def getBaseAt(read, pos):
     pos = positions to convert [list]
 
     """
-    nuc = []
-    for p in pos:
-        #print (p)
-        nuc.append(read.seq[p])
+    nuc = [read.seq[p] for p in pos]
     return nuc
 
 
 def getAllelicStatus(chrom, gpos, genotype, snps, debug=False):
     """
-    For a given set of genomic position and assoctiated genotype, compare to a snp file and return a code status
+    For a given set of genomic position and associated genotype, compare to a snp file and return a code status
     0 : unassigned - no snp information extracted from the read
     1 : genotype from REF genome is found
     2 : genotype from ALT genome is found
@@ -269,15 +264,14 @@ def getAllelicStatus(chrom, gpos, genotype, snps, debug=False):
     """
 
     code = None
-    g1_count = 0
-    g2_count = 0
+    g1_count, g2_count = 0, 0
     l = len(genotype)
     chrn = re.sub("^[Cc]hr","",chrom)
 
     for i in range(len(genotype)):
         #print >> sys.stderr, chrn, gpos[i], genotype[i]
         if gpos[i] != None:
-            if snps.has_key((str(chrn), int(gpos[i]), '1')) and snps.has_key((str(chrn), int(gpos[i]), '2')):
+            if ((str(chrn), int(gpos[i]), '1') in snps) and ((str(chrn), int(gpos[i]), '2') in snps):
                 if snps[(str(chrn), int(gpos[i]), '1')] == genotype[i]:
                     g1_count += 1
                 elif snps[(str(chrn), int(gpos[i]), '2')] == genotype[i]:
@@ -371,9 +365,9 @@ if __name__ == "__main__":
     for read in infile.fetch(until_eof=True):
         reads_counter += 1
         if not read.is_unmapped:## and read.cigarstring.find("D") != -1:
-            read_chrom = infile.getrname(read.reference_id)
+            read_chrom = infile.get_reference_name(read.tid)
             Nreadpos = get_mismatches_positions(read, base="N")
-            if (len(Nreadpos)>0):
+            if (len(Nreadpos) > 0):
                 N_counter += len(Nreadpos)
                 Ngenomepos = getGenomePos(read, Nreadpos)
                 Nbase = getBaseAt(read, Nreadpos)
@@ -383,8 +377,8 @@ if __name__ == "__main__":
                 if debug:
                     for i in range(len(Nreadpos)):
                         if Ngenomepos[i] != None:
-                            print(str(read_chrom) +"\t"+ str(Ngenomepos[i]) + "\t" + str(Ngenomepos[i]+1) 
-                                  + "\t" + str(read.qname) + "/N/" + str(Nbase[i]) + "\t" + str(tagval), file=sys.stderr)
+                            print("{}\t{}\t{}\t{}/N/{}\t{}".format(str(read_chrom), str(Ngenomepos[i]),
+                                  str(Ngenomepos[i]+1), str(read.query_name), str(Nbase[i]), str(tagval)), file=sys.stderr)
                 if tagval == 0:
                     ua_counter += 1
                 elif tagval == 1:
