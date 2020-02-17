@@ -264,16 +264,18 @@ if [[ $NEED_FASTQ == 1 ]]; then
     fi
     if [[ $nbin_r1b != $nbin_r2b ]]
     then
-        echo "Your fastq files doesn't have the same extension ! Renaming..."
-        if [[ $nbin_r1b == 0 && $nbin_r1a == 1 ]]
+        echo "Your fastq files doesn't have the same extension !"
+        if [[ $nbin_r1b == 1 && $nbin_r1a == 0 ]]
         then
             old_name=$(find -L $INPUT -mindepth 2 -maxdepth 2 -name "*.fq*" -and -name "*${PAIR1_EXT}*")
             new_name=$(echo $old_name | sed -e "s/\.fq.gz$/.fastq.gz/")
+            echo "Renaming $old_name in $new_name"
             mv $old_name $new_name
-        elif [[ $nbin_r2b == 0 && $nbin_r2a == 1 ]]
+        elif [[ $nbin_r2b == 1 && $nbin_r2a == 0 ]]
         then
             old_name=$(find -L $INPUT -mindepth 2 -maxdepth 2 -name "*.fq*" -and -name "*${PAIR2_EXT}*")
             new_name=$(echo $old_name | sed -e "s/\.fq.gz$/.fastq.gz/")
+            echo "Renaminf $old_name in $new_name"
             mv $old_name $new_name
         fi
     fi
