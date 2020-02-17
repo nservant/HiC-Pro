@@ -264,6 +264,7 @@ if [[ $NEED_FASTQ == 1 ]]; then
     fi
     if [[ $nbin_r1b != $nbin_r2b ]]
     then
+        echo "Your fastq files doesn't have the same extension ! Renaming..."
         if [[ $nbin_r1b == 0 && $nbin_r1a == 1 ]]
         then
             old_name=$(find -L $INPUT -mindepth 2 -maxdepth 2 -name "*.fq*" -and -name "*${PAIR1_EXT}*")
