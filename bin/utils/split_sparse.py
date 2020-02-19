@@ -43,8 +43,7 @@ def load_lengths_perchr(filename, add_name=True):
     lengths = [(data[:, 0] == i).sum() for i in u[np.argsort(idx)]]
     if add_name:
         return (np.array(lengths), u[np.argsort(idx)])
-    else:
-        return np.array(lengths)
+    return np.array(lengths)
 
 
 if __name__ == "__main__":
@@ -74,7 +73,7 @@ if __name__ == "__main__":
     
     for i in range(1, len(lc)):
         if args.chr is None or (args.chr is not None and str(chrnames[i-1]) == args.chr):
-            print str(chrnames[i-1]) + "..."
+            print(str(chrnames[i-1]) + "...")
             idxintra = np.where(((counts.row >= lc[i-1]) & (counts.row<lc[i])) & ((counts.col>=lc[i-1]) & (counts.col<lc[i])))[0]
          
             ## Subset the counts array and rescale the index based on cumulative lengths

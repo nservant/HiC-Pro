@@ -22,17 +22,17 @@ import gzip
 
 
 def usage():
-    print "This script was designed to extract informative SNPs information from two parental genotypes, and return the F1 genotype."
+    print("This script was designed to extract informative SNPs information from two parental genotypes, and return the F1 genotype.")
 
     """Usage function"""
-    print "Usage : python extract_snps.py"
-    print "-i/--vcf <input VCF file information>"
-    print "-a/--alt <sample name for alternative allele>"
-    print "[-r/--ref] <sample name for reference allele. Default is the same as in the initial file>"
-    print "[-f/--filt] <Filtering level. 0 - no filtering. 1 - based on FI information. 2 - based on FILTER information. Default is 2>"
-    print "[-x/--exclude] <Exclude potential contaminants from the list of SNPs which are equal to ALT genotype, i.e REF is expected to be contaminated>"
-    print "[-v/--verbose] <Verbose>"
-    print "[-h/--help] <Help>"
+    print("Usage : python extract_snps.py")
+    print("-i/--vcf <input VCF file information>")
+    print("-a/--alt <sample name for alternative allele>")
+    print("[-r/--ref] <sample name for reference allele. Default is the same as in the initial file>")
+    print("[-f/--filt] <Filtering level. 0 - no filtering. 1 - based on FI information. 2 - based on FILTER information. Default is 2>")
+    print("[-x/--exclude] <Exclude potential contaminants from the list of SNPs which are equal to ALT genotype, i.e REF is expected to be contaminated>")
+    print("[-v/--verbose] <Verbose>")
+    print("[-h/--help] <Help>")
     return
 
 def get_args():
@@ -97,6 +97,23 @@ def get_filter_snp_gt(gref, galt, ref, alt, conta):
         return [alleles[int(ref_snp)], alleles[int(alt_snp)]]
 
 
+#class Check_input_parameters:
+    #def ref_integrity(self, refSample, refidx):
+        #assert (refSample != None and refidx == -1)
+        #print("Error: REF sample not found", file=sys.stderr)
+        #sys.exit(-1)
+    #def ref_alt_coherence(refSample, altSample):
+        #assert refSample != None and altSample == None
+        #print("Error : Cannot change the REF allele without changing the ALT allele", file=sys.stderr)
+        #sys.exit(-1)
+    #def alt_integrity(self, altSample, altidx):
+        #assert altSample != None and altidx == -1
+        #print("Error : ALT sample not found", file=sys.stderr)
+        #sys.exit(-1)
+
+
+
+
 if __name__ == "__main__":
 
     # Read command line arguments
@@ -105,9 +122,11 @@ if __name__ == "__main__":
     refSample = None
     altSample = None
     exclusion = None
-    filt_qual=2
+    filt_qual = 2
     verbose = False
-       
+
+    #test_input_params = Check_input_parameters()
+   
     if len(opts) == 0:
         usage()
         sys.exit()
@@ -131,21 +150,22 @@ if __name__ == "__main__":
         else:
             assert False, "unhandled option"
 
-    if verbose:
-        print >> sys.stderr, "## Loading VCF file '", vcfFile, "'..."
-        print >> sys.stderr, "## Alt = ", altSample
-        print >> sys.stderr, "## Filtering level = ", filt_qual
-   
+    if verbose:        
+        print("## Loading VCF file {} ...".format(vcfFile), file=sys.stderr)
+        print("## Loading VCF file {} ...".format(vcfFile), file=sys.stderr)
+        print("## Alt = {}".format(altSample), file=sys.stderr)
+        print("## Filtering level = {}".format(filt_qual), file=sys.stderr)
+    
     if filt_qual > 2:
-        print  >> sys.stderr, "Error: --filt"
+        print("Error: --filt", file=sys.stderr)
         usage()
         sys.exit()
-    
+
     if vcfFile.endswith('.gz') or vcfFile.endswith('.gzip'):
         vcf_handle = gzip.open(vcfFile)
     else:
         vcf_handle = open(vcfFile)
-
+    print("type of file: {}".format(type(vcf_handle)), file=sys.stderr)
     header = []
     samples = []
     altidx = -1
@@ -161,19 +181,22 @@ if __name__ == "__main__":
     conta_counter = 0
 
     for line in vcf_handle:
-        line = line.rstrip()
+        try:
+            line = line.rstrip().decode() #in case of bytes object
+        except TypeError:
+             continue
         #print >> sys.stderr, line
-
         ## for now we don't care about the header 
         if line.startswith('##'):
             if refSample is not None and line.startswith("##reference="):
-                print "##reference=" + vcfFile + "[" + refSample + "]"
+                print("##reference= {} [ {} ]".format(vcfFile, refSample))
             else:
-                print line
+                print(line)
             continue
         elif line.startswith('#'):
             header = line.split('\t')
-            samples = [ s.split('.')[0] for s in header[9:] ]
+            samples = [s.split('.')[0] for s in header[9:]]
+            print("samples = [ {} ]".format(samples), file=sys.stderr)
             for  i in range(len(samples)):
                 if samples[i] == refSample:
                     refidx = i
@@ -181,62 +204,63 @@ if __name__ == "__main__":
                     altidx = i
                 elif exclusion is not None:
                     ## conta idx
-                    exs=exclusion.split(",")
+                    exs = exclusion.split(",")
                     for i in range(len(exs)):
                         ct = exs[i]
                         if samples[i] == ct:
                             contaidx.append(i)
                             if verbose:
-                                print >> sys.stderr, "## Potential Contaminant(s) = " + ct                           
+                                print("## Potential Contaminant(s) = {}".format(ct), file=sys.stderr)                           
 
 
             ## Check if Bl6 is in the conta list
             if exclusion is not None:
-                exs=exclusion.split(",")
+                exs = exclusion.split(",")
+
                 for i in range(len(exs)):
                     ct = exs[i]
                     if ct == "REF":
                         contaidx.append(-1)
                         if verbose:
-                            print >> sys.stderr, "## Potential Contaminant(s) = REF"
-
-
+                            print("## Potential Contaminant(s) = REF", file=sys.stderr)
 
             ## Check input parameters
+            #test_input_params.ref_integrity(refSample, refidx)
+            #test_input_params.ref_alt_coherence(refSample, altSample)
+            #test_input_params.akt_integrity(altSample, altidx)
             if refSample != None and refidx == -1:
-                print   >> sys.stderr, "Error : REF sample not found"
-                sys.exit(-1)
-                
-            if refSample != None and altSample == None:
-                print   >> sys.stderr, "Error : Cannot change the REF allele without changing the ALT allele"
-                sys.exit(-1)
-                    
-            if altSample != None and altidx == -1:
-                print   >> sys.stderr, "Error : ALT sample not found"
+                print("Error : REF sample not found", file=sys.stderr)
                 sys.exit(-1)
 
-            
+            if refSample != None and altSample == None:
+                print("Error : Cannot change the REF allele without changing the ALT allele", file=sys.stderr)
+                sys.exit(-1)
+
+            if altSample != None and altidx == -1:
+                print("Error : ALT sample not found", file=sys.stderr)
+                sys.exit(-1)
+
             if refidx != -1:
-                print str(' '.join(header[0:9])) + " " + refSample + "-" + altSample + "-F1"
+                print(str(' '.join(header[0:9])) + " " + refSample + "-" + altSample + "-F1")
             else:
-                print str(' '.join(header[0:9])) + " " + "REF-" + altSample + "-F1"
+                print(str(' '.join(header[0:9])) + " " + "REF-" + altSample + "-F1")
             continue
         else:
             if altidx == -1 :
-                print   >> sys.stderr, "Error : ALT name not found"
+                print("Error : ALT name not found", file=sys.stderr)
                 sys.exit(-1)
 
             fields = line.split('\t',9)
-            var_counter+=1
+            var_counter += 1
 
             ## init list of contaminant
-            contg=[]
+            contg = []
 
             ## check chromosomes name
             if re.compile('^chr').match(fields[0]):
-                chrom=fields[0]
+                chrom = fields[0]
             else:
-                chrom="chr"+str(fields[0])
+                chrom = "chr" + str(fields[0])
 
             ## Filter on PASS
             if filt_qual != 2 or (filt_qual == 2 and fields[6]=="PASS"):
@@ -244,10 +268,10 @@ if __name__ == "__main__":
                 if var_counter == 1:
                     f = fields[8].split(':')
                     if f[0] != "GT":
-                        print   >> sys.stderr, "Error : GT is expected to be at first index"
+                        print("Error : GT is expected to be at first index", file=sys.stderr)
                         sys.exit(-1)
                     if filt_qual == 1 and f[len(f)-1] != "FI":
-                        print   >> sys.stderr, "Error : FI is expected to be at the last index"
+                        print("Error : FI is expected to be at the last index", file=sys.stderr)
                         sys.exit(-1)
             
                 genotypes  = fields[9].split('\t')
@@ -266,7 +290,7 @@ if __name__ == "__main__":
                         if contaidx[i] == -1:
                             contg.append("0/0")
                         else:
-                            cg=genotypes[contaidx[i]].split(':')
+                            cg = genotypes[contaidx[i]].split(':')
                             cfi = cg[len(cg)-1]
                             if filt_qual != 1 or filt_qual == 1 and cfi == str(1):
                                 contg.append(cg[0])
@@ -291,27 +315,29 @@ if __name__ == "__main__":
                         snp_counter += 1
                         #altg[0]="1/1"
                         ##print chrom + "\t" + fields[1] + "\t" + fields[2] + "\t" + geno[0] + "\t" + geno[1] + "\t" + fields[5] + "\t" + fields[6] + "\t" + fields[7] + "\t" + fields[8] + "\t" + ":".join(altg)
-                        print chrom + "\t" + fields[1] + "\t" + fields[2] + "\t" + geno[0] + "\t" + geno[1] + "\t" + fields[5] + "\t" + fields[6] + "\t" + fields[7] + "\t" + "GT" + "\t" + "0/1"
+                        print("{}\t{}\t{}\t{}\t{}\
+                              \t{}\t{}\t{}\tGT\t0/1".format(chrom, fields[1], fields[2],\
+                                                            geno[0], geno[1], fields[5], fields[6], fields[7]))
 
                 else:
-                    badqual_counter+=1
+                    badqual_counter += 1
             else:
-                badqual_counter+=1
+                badqual_counter += 1
            
             if (verbose and var_counter % 100000 == 0):
-                print >> sys.stderr, "##", var_counter
+                print("##{}".format(var_counter), file=sys.stderr)
 
 
     if verbose:
-         print >> sys.stderr, "## extract SNPs report"
-         print >> sys.stderr, "## Total Number of SNPs =", var_counter
-         print >> sys.stderr, "## Number of reported SNPs =", snp_counter
-         print >> sys.stderr, "## -------------------------"
-         print >> sys.stderr, "## Number of non discriminant SNPs =", nonspe_counter
-         print >> sys.stderr, "## Number of heterozygous SNPs =", hetero_counter
-         print >> sys.stderr, "## Number of undefined genotype SNPs =", undefined_counter
-         print >> sys.stderr, "## Number of bad quality SNPs =", badqual_counter
-         print >> sys.stderr, "## Number of potential contaminant SNPs =", conta_counter
+         print("## extract SNPs report", file=sys.stderr)
+         print("## Total Number of SNPs ={}".format(var_counter), file=sys.stderr)
+         print("## Number of reported SNPs ={}".format(snp_counter), file=sys.stderr)
+         print("## -------------------------", file=sys.stderr)
+         print("## Number of non discriminant SNPs ={}".format(nonspe_counter), file=sys.stderr)
+         print("## Number of heterozygous SNPs ={}".format(hetero_counter), file=sys.stderr)
+         print("## Number of undefined genotype SNPs ={}".format(undefined_counter), file=sys.stderr)
+         print("## Number of bad quality SNPs =".format(badqual_counter), file=sys.stderr)
+         print("## Number of potential contaminant SNPs ={}".format(conta_counter), file=sys.stderr)
 
 
     vcf_handle.close()
