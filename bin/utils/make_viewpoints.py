@@ -122,20 +122,20 @@ def get_overlapping_fragment(frag, chrom, pos, quiet=False):
         ifrag = frag[chrom].find(int(pos), int(pos+1))
         if len(ifrag) > 1:
             if not quiet:
-                print(file=sys.stderr, "Warning : {} fragments found for read at {}
-                                       : {} - skipped {}".format(len(ifrag), chrom, pos, ifrag))
+                print(file=sys.stderr, "Warning : {} fragments found for read at {}:\
+                                        {} -skipped {}".format(len(ifrag), chrom, pos, ifrag))
             return None
         elif len(ifrag) == 0:
             if not quiet:
-                print(file=sys.stderr, "Warning - no fragments found for read at {}
-                                       : {} -skipped".format(chrom, pos))
+                print(file=sys.stderr, "Warning - no fragments found for read at {}:\
+                                        {} -skipped".format(chrom, pos))
             return None
         else:
             return ifrag[0]
     else:
         if not quiet:
-            print(file=sys.stderr, "Warning - no fragments found for read at {}
-                                   : {} -skipped".format(chrom, pos))
+            print(file=sys.stderr, "Warning - no fragments found for read at {}:\
+                                    {} -skipped".format(chrom, pos))
         return None
 
 
@@ -204,8 +204,8 @@ if __name__ == "__main__":
             try:
                 readname, r1_chr, r1_start, r1_strand, r2_chr, r2_start, r2_strand = intab[:7]
             except ValueError:
-                print(file=sys.stderr, "Warning : wrong input format in line {}
-                                        . Not a validPairs file !?".format(nline))
+                print(file=sys.stderr, "Warning : wrong input format in line {}\
+                                        .Not a validPairs file !?".format(nline))
                 continue
 
             r1_resfrag, r2_resfrag, reporter = None, None, None
@@ -264,10 +264,10 @@ if __name__ == "__main__":
         sys.stdout = open(output, 'w')
 
     for k in repdict:
-        print("track type=bedGraph name='hicpro {k}' description='hicpro {k}' visibility=full 
+        print("track type=bedGraph name='hicpro {k}' description='hicpro {k}' visibility=full\
                color=200,100,0 altColor=0,100,200 priority=20".format(k, k))
         for key, value in repdict[k].iteritems():
-            print("{}\t{}\t{}\t{}".format(value['chr'], str(value['start']),
+            print("{}\t{}\t{}\t{}".format(value['chr'], str(value['start']),\
                                           str(value['end']), str(value['count'])))
 
 

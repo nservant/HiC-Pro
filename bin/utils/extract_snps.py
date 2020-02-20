@@ -97,19 +97,19 @@ def get_filter_snp_gt(gref, galt, ref, alt, conta):
         return [alleles[int(ref_snp)], alleles[int(alt_snp)]]
 
 
-#class Check_input_parameters:
-    #def ref_integrity(self, refSample, refidx):
-        #assert (refSample != None and refidx == -1)
-        #print("Error: REF sample not found", file=sys.stderr)
-        #sys.exit(-1)
-    #def ref_alt_coherence(refSample, altSample):
-        #assert refSample != None and altSample == None
-        #print("Error : Cannot change the REF allele without changing the ALT allele", file=sys.stderr)
-        #sys.exit(-1)
-    #def alt_integrity(self, altSample, altidx):
-        #assert altSample != None and altidx == -1
-        #print("Error : ALT sample not found", file=sys.stderr)
-        #sys.exit(-1)
+class Check_input_parameters:
+    def ref_integrity(self, refSample, refidx):
+        if refSample != None and refidx == -1:
+            print("Error: REF sample not found", file=sys.stderr)
+            sys.exit(-1)
+    def ref_alt_coherence(self, refSample, altSample):
+        if refSample != None and altSample == None:
+            print("Error : Cannot change the REF allele without changing the ALT allele", file=sys.stderr)
+            sys.exit(-1)
+    def alt_integrity(self, altSample, altidx):
+        if altSample != None and altidx == -1:
+            print("Error : ALT sample not found", file=sys.stderr)
+            sys.exit(-1)
 
 
 
@@ -125,7 +125,7 @@ if __name__ == "__main__":
     filt_qual = 2
     verbose = False
 
-    #test_input_params = Check_input_parameters()
+    test_input_params = Check_input_parameters()
    
     if len(opts) == 0:
         usage()
@@ -225,20 +225,20 @@ if __name__ == "__main__":
                             print("## Potential Contaminant(s) = REF", file=sys.stderr)
 
             ## Check input parameters
-            #test_input_params.ref_integrity(refSample, refidx)
-            #test_input_params.ref_alt_coherence(refSample, altSample)
-            #test_input_params.akt_integrity(altSample, altidx)
-            if refSample != None and refidx == -1:
-                print("Error : REF sample not found", file=sys.stderr)
-                sys.exit(-1)
+            test_input_params.ref_integrity(refSample, refidx)
+            test_input_params.ref_alt_coherence(refSample, altSample)
+            test_input_params.alt_integrity(altSample, altidx)
+            #if refSample != None and refidx == -1:
+                #print("Error : REF sample not found", file=sys.stderr)
+                #sys.exit(-1)
 
-            if refSample != None and altSample == None:
-                print("Error : Cannot change the REF allele without changing the ALT allele", file=sys.stderr)
-                sys.exit(-1)
+            #if refSample != None and altSample == None:
+                #print("Error : Cannot change the REF allele without changing the ALT allele", file=sys.stderr)
+                #sys.exit(-1)
 
-            if altSample != None and altidx == -1:
-                print("Error : ALT sample not found", file=sys.stderr)
-                sys.exit(-1)
+            #if altSample != None and altidx == -1:
+                #print("Error : ALT sample not found", file=sys.stderr)
+                #sys.exit(-1)
 
             if refidx != -1:
                 print(str(' '.join(header[0:9])) + " " + refSample + "-" + altSample + "-F1")
