@@ -225,7 +225,7 @@ if [[ $DATATYPE == "MATRIX" ]]; then
     if [[ $NORMALIZE == 1 ]]; then
 	cooler zoomify --balance $tmp_dir/$out
     else
-	cooler zoomify --no-balance $tmp_dir/$out
+	cooler zoomify $tmp_dir/$out
     fi
     out=$(basename $INPUT_HICPRO | sed -e 's/.mat.*/.mcool/')
     
@@ -245,7 +245,7 @@ elif [[ $DATATYPE == "VALID" ]]; then
     if [[ $NORMALIZE == 1 ]]; then
 	cooler zoomify --balance $tmp_dir/$out
     else
-	cooler zoomify --no-balance $tmp_dir/$out
+	cooler zoomify $tmp_dir/$out
     fi
     out=$(basename $INPUT_HICPRO | sed -e 's/.allValidPairs.*/.mcool/')
 fi
