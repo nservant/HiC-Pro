@@ -19,6 +19,12 @@ SIGNIFICANT USER-VISIBLE CHANGES
 
 BUG FIXES
 
+   o If RM_DUP is unset, the duplicates are not filtered (#256)
+
+   o Support both .fastq.gz and .fq.gz files (#311)
+
+   o Bug in R plots legends (#257, #250, #240)
+
    o Fix small printing bugs in mapped_2hic_fragments.py
 
    o N_CPU for LSF usage (#250) and bowtie2 (#262)
