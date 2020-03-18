@@ -143,7 +143,7 @@ if __name__ == "__main__":
             print "i.e A^GATCT for HindIII digestion"
             sys.exit(-1)
 
-        for nuc in list(set(cs)):
+        for nuc in list(set(cseq)):
             if nuc != 'A' and nuc != 'C' and nuc != 'G' and nuc != 'T' and nuc != 'N' and nuc != '^':
                 print "Find unexpected character ['",nuc,"']in restriction motif"
                 print "Note that multiple motifs should be separated by a space (not a comma !)"

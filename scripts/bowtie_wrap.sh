@@ -24,7 +24,7 @@ end_to_end_align()
     fi
     
     ## Output
-    prefix=$(basename ${infile} | sed -e 's/.fastq\(.gz\)*$//')
+    prefix=$(basename ${infile} | sed -e 's/.fastq\(.gz\)*$//' -e 's/.fq\(.gz\)*$//')
     
     ## Unmapped reads
     if [[ $unmap == 1 ]]; then
@@ -70,7 +70,7 @@ cut_and_align()
 	exit -1
     fi
     ## Output
-    prefix=$(basename ${infile} | sed -e 's/.fastq\(.gz\)*$//')
+    prefix=$(basename ${infile} | sed -e 's/.fastq\(.gz\)*$//' -e 's/.fq\(.gz\)*$//')
 
     ## Starts trimming reads from the ligation site
     tfile=`basename $infile | sed -e s/.fastq$/_trimmed.fastq/`
