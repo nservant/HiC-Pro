@@ -19,6 +19,8 @@ SIGNIFICANT USER-VISIBLE CHANGES
 
 BUG FIXES
 
+   o Check if annotation files are readable (#282)
+
    o If RM_DUP is unset, the duplicates are not filtered (#256)
 
    o Support both .fastq.gz and .fq.gz files (#311)

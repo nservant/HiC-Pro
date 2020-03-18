@@ -9,7 +9,7 @@
 
                                                                    
 SOFT="HiC-Pro"
-VERSION="2.11.3-beta"
+VERSION="2.11.3"
 
 function usage {
     echo -e "usage : $SOFT -i INPUT -o OUTPUT -c CONFIG [-s ANALYSIS_STEP] [-p] [-h] [-v]"
@@ -161,11 +161,11 @@ if [[ ! -e $GENOME_FRAGMENT_FILE ]]; then
 fi
 
 ## check other annotation files
-if [[ ! -z $GENOME_SIZE_FILE && ! -e $GENOME_SIZE_FILE ]]; then
+if [[ ! -z $GENOME_SIZE_FILE && ! -r $GENOME_SIZE_FILE ]]; then
     die "GENOME_FILE $GENOME_SIZE_FILE not found. Exit"
 fi
 
-if [[ ! -z $GENOME_FRAGMENT_FILE && ! -e $GENOME_FRAGMENT_FILE ]]; then
+if [[ ! -z $GENOME_FRAGMENT_FILE && ! -r $GENOME_FRAGMENT_FILE ]]; then
     die "GENOME_FRAGMENT $GENOME_FRAGMENT_FILE not found. Exit"
 fi
 
@@ -173,11 +173,11 @@ if [[ ! -z $BOWTIE2_IDX_PATH && ! -d $BOWTIE2_IDX_PATH ]]; then
     die "BOWTIE2_IDX $BOWTIE2_IDX_PATH directory not found. Exit"
 fi
 
-if [[ ! -z $CAPTURE_TARGET && ! -e $CAPTURE_TARGET ]]; then
+if [[ ! -z $CAPTURE_TARGET && ! -r $CAPTURE_TARGET ]]; then
     die "CAPTURE_TARGET $CAPTURE_TARGET not found. Exit"
 fi
 
-if [[ ! -z $ALLELE_SPECIFIC_SNP && ! -e $ALLELE_SPECIFIC_SNP ]]; then
+if [[ ! -z $ALLELE_SPECIFIC_SNP && ! -r $ALLELE_SPECIFIC_SNP ]]; then
     die "ALLELE_SPECIFIC_SNP $ALLELE_SPECIFIC_SNP not found. Exit"
 fi
 
