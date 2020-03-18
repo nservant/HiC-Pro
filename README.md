@@ -7,8 +7,6 @@
 [![Forum](https://img.shields.io/badge/Groups-%20join%20chat%20%E2%86%92-4fb99a.svg?style=flat-square)](https://groups.google.com/forum/#!forum/hic-pro)
 [![DOI](https://img.shields.io/badge/DOI-10.1186%2Fs13059--015--0831--x-lightgrey.svg?style=flat-square)](https://doi.org/10.1186/s13059-015-0831-x)
 
-<span class="__dimensions_badge_embed__" data-doi="10.1001/jama.2016.9797" data-legend="always"></span>
-
 ## An optimized and flexible pipeline for Hi-C data processing
 
 Find documentation and examples at [http://nservant.github.io/HiC-Pro/](http://nservant.github.io/HiC-Pro/)
