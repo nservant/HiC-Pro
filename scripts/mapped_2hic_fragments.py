@@ -260,7 +260,7 @@ def get_overlapping_restriction_fragment(resFrag, chrom, read):
     read = the read to intersect [AlignedRead]
 
     """
-    # Get read position (middle or 5' end)
+    # Get read position (middle or start)
     pos = get_read_pos(read, st="middle")
     
     if chrom in resFrag:

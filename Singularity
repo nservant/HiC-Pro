@@ -53,10 +53,10 @@ From: ubuntu:latest
     # Install R
     conda update readline
     #conda install -c conda-forge readline=6.2
-    conda install -c r r-base 
+    conda install -c r r-base=3.5.1
     conda install -c r r-ggplot2=2.2.1
-    conda install -c r r-rcolorbrewer
-    conda install -c r r-gridbase	
+    conda install -c r r-rcolorbrewer=1.1_2
+    conda install -c r r-gridbase=0.4_7	
 
     # Install MultiQC
     conda install -c bioconda multiqc=1.7 
