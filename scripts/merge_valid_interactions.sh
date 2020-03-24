@@ -72,14 +72,14 @@ do
 	if [[ $nbf == 0 ]]; then die "Error : no valid interaction files found in ${DATA_DIR}/${RES_FILE_NAME}."; fi
 
 	## Rm duplicates
-	if [[ ${RM_DUP} == 0 ]]
+	if [[ ${RM_DUP} == 0 || -z ${RM_DUP} ]]
 	then
 	    echo "## Do NOT remove duplicates ..." >> ${logfile}
 	    cmd="cat ${IN_DIR}/${RES_FILE_NAME}/*.validPairs > ${DATA_DIR}/${RES_FILE_NAME}/${RES_FILE_NAME}.allValidPairs"
 	    exec_cmd $cmd >> ${logfile} 2>&1
-	else
-	    echo "## Remove duplicates ..." >> ${logfile}
-	    cmd="LANG=en; sort -T ${TMP_DIR} -S 50% -k2,2V -k3,3n -k5,5V -k6,6n -m ${IN_DIR}/${RES_FILE_NAME}/*.validPairs | \
+	elif [[ ${RM_DUP} == 1 ]]; then
+	     echo "## Remove duplicates ..." >> ${logfile}
+	     cmd="LANG=en; sort -T ${TMP_DIR} -S 50% -k2,2V -k3,3n -k5,5V -k6,6n -m ${IN_DIR}/${RES_FILE_NAME}/*.validPairs | \
 awk -F\"\t\" 'BEGIN{c1=0;c2=0;s1=0;s2=0}(c1!=\$2 || c2!=\$5 || s1!=\$3 || s2!=\$6){print;c1=\$2;c2=\$5;s1=\$3;s2=\$6}' > ${DATA_DIR}/${RES_FILE_NAME}/${RES_FILE_NAME}.allValidPairs"
 	    exec_cmd $cmd >> ${logfile} 2>&1
 	fi

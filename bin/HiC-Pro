@@ -9,7 +9,7 @@
 
                                                                    
 SOFT="HiC-Pro"
-VERSION="2.11.3-beta"
+VERSION="2.11.3"
 
 function usage {
     echo -e "usage : $SOFT -i INPUT -o OUTPUT -c CONFIG [-s ANALYSIS_STEP] [-p] [-h] [-v]"
@@ -161,11 +161,11 @@ if [[ ! -e $GENOME_FRAGMENT_FILE ]]; then
 fi
 
 ## check other annotation files
-if [[ ! -z $GENOME_SIZE_FILE && ! -e $GENOME_SIZE_FILE ]]; then
+if [[ ! -z $GENOME_SIZE_FILE && ! -r $GENOME_SIZE_FILE ]]; then
     die "GENOME_FILE $GENOME_SIZE_FILE not found. Exit"
 fi
 
-if [[ ! -z $GENOME_FRAGMENT_FILE && ! -e $GENOME_FRAGMENT_FILE ]]; then
+if [[ ! -z $GENOME_FRAGMENT_FILE && ! -r $GENOME_FRAGMENT_FILE ]]; then
     die "GENOME_FRAGMENT $GENOME_FRAGMENT_FILE not found. Exit"
 fi
 
@@ -173,11 +173,11 @@ if [[ ! -z $BOWTIE2_IDX_PATH && ! -d $BOWTIE2_IDX_PATH ]]; then
     die "BOWTIE2_IDX $BOWTIE2_IDX_PATH directory not found. Exit"
 fi
 
-if [[ ! -z $CAPTURE_TARGET && ! -e $CAPTURE_TARGET ]]; then
+if [[ ! -z $CAPTURE_TARGET && ! -r $CAPTURE_TARGET ]]; then
     die "CAPTURE_TARGET $CAPTURE_TARGET not found. Exit"
 fi
 
-if [[ ! -z $ALLELE_SPECIFIC_SNP && ! -e $ALLELE_SPECIFIC_SNP ]]; then
+if [[ ! -z $ALLELE_SPECIFIC_SNP && ! -r $ALLELE_SPECIFIC_SNP ]]; then
     die "ALLELE_SPECIFIC_SNP $ALLELE_SPECIFIC_SNP not found. Exit"
 fi
 
@@ -247,19 +247,96 @@ fi
 
 ## Check rawdata structure
 if [[ $NEED_FASTQ == 1 ]]; then
-    nbin=$(find -L $INPUT -mindepth 2 -maxdepth 2 -name "*.fastq" -o -name "*.fastq.gz" -o -name "*.fq.gz" | wc -l)
-    nbin_r1=$(find -L $INPUT -mindepth 2 -maxdepth 2 -name "*.fastq*" -o -name "*.fq*" -and -name "*${PAIR1_EXT}*" | wc -l)
-    nbin_r2=$(find -L $INPUT -mindepth 2 -maxdepth 2 -name "*.fastq*" -o -name "*.fq*" -and -name "*${PAIR2_EXT}*" | wc -l)
+    nbin=$(find -L $INPUT -mindepth 2 -maxdepth 2 -name "*.fastq" -o -name "*.fastq.gz" -o -name "*.fq" -o -name "*.fq.gz" | wc -l) #!
+    nbin_r1a=$(find -L $INPUT -mindepth 2 -maxdepth 2 -name "*.fastq*" -and -name "*${PAIR1_EXT}*" | wc -l)
+    nbin_r1b=$(find -L $INPUT -mindepth 2 -maxdepth 2 -name "*.fq*" -and -name "*${PAIR1_EXT}*" | wc -l)
+    nbin_r2a=$(find -L $INPUT -mindepth 2 -maxdepth 2 -name "*.fastq*" -and -name "*${PAIR2_EXT}*" | wc -l)
+    nbin_r2b=$(find -L $INPUT -mindepth 2 -maxdepth 2 -name "*.fq*" -and -name "*${PAIR2_EXT}*" | wc -l)
+    nbin_r1=0
+    nbin_r2=0
+    let "nbin_r1 = nbin_r1a + nbin_r1b"
+    let "nbin_r2 = nbin_r2a + nbin_r2b"
+    #echo "nbin_r1b = $nbin_r1b"
+	#echo "nbin_r1a = $nbin_r1a"
+	#echo "nbin_r1 = $nbin_r1"
+	#echo "nbin_r2b = $nbin_r2b"
+	#echo "nbin_r2a = $nbin_r2a"
+	#echo "nbin_r2 = $nbin_r2"
     if [ $nbin == 0 ]; then
 	die "Error: Directory Hierarchy of rawdata '$INPUT' is not correct. No '.fastq(.gz)' files detected"
-	else
-		echo $nbin
-		echo $nbin_r1
-		echo $nbin_r2
     fi
     if [[ $nbin_r1 == 0 || $nbin_r2 == 0 || $nbin_r1 != $nbin_r2 ]]; then
         die "Error: Directory Hierarchy of rawdata '$INPUT' is not correct. Paired '.fastq' files with ${PAIR1_EXT}/${PAIR2_EXT} are required !"
     fi
+    if [[ $nbin_r1b != $nbin_r2b || $nbin_r1a != $nbin_r2a ]] #! Intra sample
+    then
+        echo "Your fastq files doesn't have the same extension !"
+        if [[ $nbin_r1b == 1 && $nbin_r1a == 0 ]]
+        then
+            with_gz_name=$(find -L $INPUT -mindepth 2 -maxdepth 2 -name "*.fq.gz" -and -name "*${PAIR1_EXT}*")
+            without_gz_name=$(find -L $INPUT -mindepth 2 -maxdepth 2 -name "*.fq" -and -name "*${PAIR1_EXT}*")
+            #echo "with_gz_name: $with_gz_name"
+			#echo "without_gz_name: $without_gz_name"
+            if [[ -z $with_gz_name && -r $without_gz_name ]] #if nbin_r1b doesn't have gz extension, so if it is a .fq
+            then
+            	new_name=$(echo $without_gz_name | sed -e "s/\.fq$/.fastq/") #!
+            	echo "Renaming $old_name in $new_name"
+            	mv $without_gz_name $new_name
+            elif [[ -z $without_gz_name && -r $with_gz_name ]]
+            then
+            	new_name=$(echo $with_gz_name | sed -e "s/\.fq.gz$/.fastq.gz/") #!
+            	echo "Renaming $old_name in $new_name"
+            	mv $with_gz_name $new_name
+            fi	
+        elif [[ $nbin_r2b == 1 && $nbin_r2a == 0 ]]
+        then
+            with_gz_name=$(find -L $INPUT -mindepth 2 -maxdepth 2 -name "*.fq.gz" -and -name "*${PAIR2_EXT}*")
+            without_gz_name=$(find -L $INPUT -mindepth 2 -maxdepth 2 -name "*.fq" -and -name "*${PAIR2_EXT}*")
+            #echo "with_gz_name: $with_gz_name"
+			#echo "without_gz_name: $without_gz_name"
+            if [[ -z $with_gz_name && -r $without_gz_name ]]
+            then
+            	new_name=$(echo $without_gz_name | sed -e "s/\.fq$/.fastq/") #!
+            	echo "Renaming $old_name in $new_name"
+            	mv $without_gz_name $new_name
+            elif [[ -z $without_gz_name && -r $with_gz_name ]]
+            then
+            	new_name=$(echo $with_gz_name | sed -e "s/\.fq.gz$/.fastq.gz/") #!
+            	echo "Renaming $old_name in $new_name"
+            	mv $with_gz_name $new_name
+            fi
+		fi	
+	elif [[ $nbin_r1b == $nbin_r2b && $nbin_r1a == $nbin_r2a ]] #! Inter Sample
+	then
+		if [[ $nbin_r1 -gt 1 && $nbin_r2 -gt 1 ]] #If we really have multiple samples
+		then
+			tab_ext=(${PAIR1_EXT} ${PAIR2_EXT})
+			for i in `seq 0 1`;
+			do
+            	with_gz_name=$(find -L $INPUT -mindepth 2 -maxdepth 2 -name "*.fq.gz" -and -name "*${tab_ext[$i]}*")
+            	without_gz_name=$(find -L $INPUT -mindepth 2 -maxdepth 2 -name "*.fq" -and -name "*${tab_ext[$i]}*")
+            	#echo "with_gz_name_r1: $with_gz_name"
+				#echo "without_gz_name_r1: $without_gz_name"
+            	if [[ -z $with_gz_name && -r $without_gz_name ]]
+            	then
+					for i in $without_gz_name
+					do
+            			new_name=$(echo $i | sed -e "s/\.fq$/.fastq/") #!
+            			echo "Renaming $i in $new_name"
+            			mv $i $new_name
+					done
+            	elif [[ -z $without_gz_name && -r $with_gz_name ]]
+            	then
+					for i in $with_gz_name
+					do
+            			new_name=$(echo $i | sed -e "s/\.fq.gz$/.fastq.gz/") #!
+            			echo "Renaming $i in $new_name"
+            			mv $i $new_name
+					done
+            	fi
+			done
+		fi
+	fi
 
 elif [[ $NEED_BAM == 1 ]]; then
     nbin=$(find -L $INPUT -mindepth 2 -maxdepth 2 -name "*.bam" | wc -l)
@@ -320,8 +397,8 @@ cd $OUTPUT
 #####################
 
 if [[ $NEED_FASTQ == 1 ]]; then
-    r1files=$(find -L $RAW_DIR -mindepth 2 -maxdepth 2 -name "*.fastq" -o -name "*.fastq.gz" -o -name "*.fq.gz" | grep "$PAIR1_EXT" | wc -l)
-    r2files=$(find -L $RAW_DIR -mindepth 2 -maxdepth 2 -name "*.fastq" -o -name "*.fastq.gz" -o -name "*.fq.gz" | grep "$PAIR2_EXT" | wc -l)
+    r1files=$(find -L $RAW_DIR -mindepth 2 -maxdepth 2 -name "*.fastq" -o -name "*.fastq.gz" -o -name "*.fq.gz" -o -name "*.fq" | grep "$PAIR1_EXT" | wc -l) #!
+    r2files=$(find -L $RAW_DIR -mindepth 2 -maxdepth 2 -name "*.fastq" -o -name "*.fastq.gz" -o -name "*.fq.gz" -o -name "*.fq" | grep "$PAIR2_EXT" | wc -l) #!
     if [[ "$r1files" != "$r2files" ]]; then
 	die "Number of $PAIR1_EXT files is different from $PAIR2_EXT [$r1files vs $r2files]. \
 Please, note that the paired-end files are detected using the PAIR1_EXT/PAIR2_EXT parameters. Be sure that there is no conflict with files/dir names."
