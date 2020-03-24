@@ -45,8 +45,8 @@ OSVersion: xenial
     conda install -y bowtie2
     conda install -y samtools
 
-    # Python (>2.7) with *pysam (>=0.8.3)*, *bx(>=0.5.0)*, *numpy(>=1.8.2)*, and *scipy(>=0.15.1)* libraries
-    conda install -y python=2.7.11
+    # Python (>3.7.0) with *pysam (>=0.8.3)*, *bx(>=0.5.0)*, *numpy(>=1.8.2)*, and *scipy(>=0.15.1)* libraries
+    conda install -y python=3.7.6
     conda install -y -c anaconda scipy 
     conda install -y -c anaconda numpy 
     conda install -y -c bcbio bx-python 
