@@ -1,13 +1,14 @@
 
 # HiC-Pro
 
+### An optimized and flexible pipeline for Hi-C data processing
+
 ![MultiQC](https://img.shields.io/badge/MultiQC-1.6-blue.svg)
 ![Singularity](https://img.shields.io/badge/Singularity-build-brightgreen.svg)
-
 [![Forum](https://img.shields.io/badge/Groups-%20join%20chat%20%E2%86%92-4fb99a.svg?style=flat-square)](https://groups.google.com/forum/#!forum/hic-pro)
 [![DOI](https://img.shields.io/badge/DOI-10.1186%2Fs13059--015--0831--x-lightgrey.svg?style=flat-square)](https://doi.org/10.1186/s13059-015-0831-x)
 
-## An optimized and flexible pipeline for Hi-C data processing
+----
 
 Find documentation and examples at [http://nservant.github.io/HiC-Pro/](http://nservant.github.io/HiC-Pro/)
 
@@ -237,76 +238,77 @@ Small fastq files (2M reads) extracted from the Dixon et al. 2012 paper are avai
  ## Run HiC-Pro
  time HICPRO_INSTALL_DIR/bin/HiC-Pro -c config_test_latest.txt -i test_data -o hicpro_latest_test
 
- Run HiC-Pro 2.11.0-beta
- --------------------------------------------
- vendredi 13 juillet 2018, 14:55:21 (UTC+0200)
- Bowtie2 alignment step1 ...
- Logs: logs/dixon_2M_2/mapping_step1.log
- Logs: logs/dixon_2M/mapping_step1.log
+Run HiC-Pro 2.11.3
+--------------------------------------------
+Thu Mar 19, 12:18:10 (UTC+0100)
+Bowtie2 alignment step1 ...
+Logs: logs/dixon_2M_2/mapping_step1.log
+Logs: logs/dixon_2M/mapping_step1.log
 
- --------------------------------------------
- vendredi 13 juillet 2018, 14:56:06 (UTC+0200)
- Bowtie2 alignment step2 ...
- Logs: logs/dixon_2M_2/mapping_step2.log
- Logs: logs/dixon_2M/mapping_step2.log
+--------------------------------------------
+Thu Mar 19, 12:18:57 (UTC+0100)
+Bowtie2 alignment step2 ...
+Logs: logs/dixon_2M_2/mapping_step2.log
+Logs: logs/dixon_2M/mapping_step2.log
 
- --------------------------------------------
- vendredi 13 juillet 2018, 14:56:15 (UTC+0200)
- Combine R1/R2 alignment files ...
- Logs: logs/dixon_2M_2/mapping_combine.log
- Logs: logs/dixon_2M/mapping_combine.log
+--------------------------------------------
+Thu Mar 19, 12:19:08 (UTC+0100)
+Combine R1/R2 alignment files ...
+Logs: logs/dixon_2M_2/mapping_combine.log
+Logs: logs/dixon_2M/mapping_combine.log
 
- --------------------------------------------
- vendredi 13 juillet 2018, 14:56:20 (UTC+0200)
- Mapping statistics for R1 and R2 tags ...
- Logs: logs/dixon_2M_2/mapping_stats.log
- Logs: logs/dixon_2M/mapping_stats.log
+--------------------------------------------
+Thu Mar 19, 12:19:13 (UTC+0100)
+Mapping statistics for R1 and R2 tags ...
+Logs: logs/dixon_2M_2/mapping_stats.log
+Logs: logs/dixon_2M/mapping_stats.log
 
- --------------------------------------------
- vendredi 13 juillet 2018, 14:56:21 (UTC+0200)
- Pairing of R1 and R2 tags ...
- Logs: logs/dixon_2M_2/mergeSAM.log
- Logs: logs/dixon_2M/mergeSAM.log
+--------------------------------------------
+Thu Mar 19, 12:19:15 (UTC+0100)
+Pairing of R1 and R2 tags ...
+Logs: logs/dixon_2M_2/mergeSAM.log
+Logs: logs/dixon_2M/mergeSAM.log
 
- --------------------------------------------
- vendredi 13 juillet 2018, 14:56:29 (UTC+0200)
- Assign alignments to restriction fragments ...
- Logs: logs/dixon_2M_2/mapped_2hic_fragments.log
- Logs: logs/dixon_2M/mapped_2hic_fragments.log
+--------------------------------------------
+Thu Mar 19, 12:19:25 (UTC+0100)
+Assign alignments to restriction fragments ...
+Logs: logs/dixon_2M_2/mapped_2hic_fragments.log
+Logs: logs/dixon_2M/mapped_2hic_fragments.log
 
- --------------------------------------------
- vendredi 13 juillet 2018, 14:57:09 (UTC+0200)
- Merge chunks from the same sample ...
- Logs: logs/dixon_2M/merge_valid_interactions.log
- Logs: logs/dixon_2M_2/merge_valid_interactions.log
+--------------------------------------------
+Thu Mar 19, 12:20:10 (UTC+0100)
+Merge chunks from the same sample ...
+Logs: logs/dixon_2M/merge_valid_interactions.log
+Logs: logs/dixon_2M_2/merge_valid_interactions.log
 
- --------------------------------------------
- vendredi 13 juillet 2018, 14:57:09 (UTC+0200)
- Merge stat files per sample ...
- Logs: logs/dixon_2M/merge_stats.log
- Logs: logs/dixon_2M_2/merge_stats.log
+--------------------------------------------
+Thu Mar 19, 12:20:11 (UTC+0100)
+Merge stat files per sample ...
+Logs: logs/dixon_2M/merge_stats.log
+Logs: logs/dixon_2M_2/merge_stats.log
 
- --------------------------------------------
- vendredi 13 juillet 2018, 14:57:10 (UTC+0200)
- Run quality checks for all samples ...
- Logs: logs/dixon_2M/make_Rplots.log
- Logs: logs/dixon_2M_2/make_Rplots.log
+--------------------------------------------
+Thu Mar 19, 12:20:11 (UTC+0100)
+Run quality checks for all samples ...
+Logs: logs/dixon_2M/make_Rplots.log
+Logs: logs/dixon_2M_2/make_Rplots.log
 
- --------------------------------------------
- vendredi 13 juillet 2018, 14:57:22 (UTC+0200)
- Generate binned matrix files ...
- Logs: logs/dixon_2M/build_raw_maps.log
- Logs: logs/dixon_2M_2/build_raw_maps.log
+--------------------------------------------
+Thu Mar 19, 12:20:22 (UTC+0100)
+Generate binned matrix files ...
+Logs: logs/dixon_2M/build_raw_maps.log
+Logs: logs/dixon_2M_2/build_raw_maps.log
 
- --------------------------------------------
- vendredi 13 juillet 2018, 14:57:23 (UTC+0200)
- Run ICE Normalization ...
- Logs: logs/dixon_2M/ice_500000.log
- Logs: logs/dixon_2M/ice_1000000.log
- Logs: logs/dixon_2M_2/ice_500000.log
- Logs: logs/dixon_2M_2/ice_1000000.log
+--------------------------------------------
+Thu Mar 19, 12:20:22 (UTC+0100)
+Run ICE Normalization ...
+Logs: logs/dixon_2M/ice_500000.log
+Logs: logs/dixon_2M/ice_1000000.log
+Logs: logs/dixon_2M_2/ice_500000.log
+Logs: logs/dixon_2M_2/ice_1000000.log
 
- real	2m5.660s
- user	3m44.816s
- sys	0m25.612s
+real	2m15,736s
+user	4m3,277s
+sys	0m24,423s
+
 ```

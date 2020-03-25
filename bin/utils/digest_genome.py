@@ -145,6 +145,7 @@ if __name__ == "__main__":
             if nuc not in ['A','T','G','C','N','^']:
                 print("Find unexpected character ['{}']in restriction motif".format(nuc))
                 print("Note that multiple motifs should be separated by a space (not a comma !)")
+
                 sys.exit(-1)
 
         offset.append(offpos)

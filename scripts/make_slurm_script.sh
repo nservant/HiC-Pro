@@ -120,7 +120,7 @@ then
 
 #SBATCH --mail-user=${JOB_MAIL}
 #SBATCH --mail-type=end
-#SBATCH --job-name=HiCpro_s1_${JOB_NAME}
+#SBATCH --job-name=HiCpro_s2_${JOB_NAME}
 #SBATCH --export=ALL
 
 cd \$SLURM_SUBMIT_DIR

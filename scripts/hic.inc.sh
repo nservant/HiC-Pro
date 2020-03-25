@@ -134,8 +134,8 @@ filter_pairs()
 get_data_type()
 {
     ## return the highest possible input files type
-    nb_fqa=$(find -L $RAW_DIR -mindepth 2 -maxdepth 2 -name "*.fastq" -o -name "*.fastq.gz" | wc -l)
-    nb_fqb=$(find -L $RAW_DIR -mindepth 2 -maxdepth 2 -name "*.fq" -o -name "*.fq.gz" | wc -l) #!
+
+    nb_fq=$(find -L $RAW_DIR -mindepth 2 -maxdepth 2 -name "*.fastq" -o -name "*.fastq.gz" -o -name ".fq" -o -name ".fq.gz"| wc -l)
     nb_bam=$(find -L $RAW_DIR -mindepth 2 -maxdepth 2 -name "*.bam" -o -name "*.sam" | wc -l)
     nb_vpairs=$(find -L $RAW_DIR -mindepth 2 -maxdepth 2 -name "*.validPairs" | wc -l)
     nb_allvpairs=$(find -L $RAW_DIR -mindepth 2 -maxdepth 2 -name "*.allValidPairs" | wc -l)
@@ -225,15 +225,13 @@ get_sample_dir()
 
 get_fastq_for_bowtie_global()
 {
-    local input_data_type=$(get_data_type)
+    local input_data_type=$(get_data_type)    
     if [[ $input_data_type == "fastq" ]]
     then
         ifastq=$(get_hic_files $RAW_DIR .fastq | grep "$PAIR1_EXT")
-    elif [[ $input_data_type == "fq" ]]
-    then
-        ifastq=$(get_hic_files $RAW_DIR .fq | grep "$PAIR1_EXT") #!
+        ifq=$(get_hic_files $RAW_DIR .fq | grep "$PAIR1_EXT")
     fi
-    echo $ifastq
+    echo "$ifastq $ifq"
 }
 
 get_fastq_for_bowtie_local()

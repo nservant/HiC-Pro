@@ -1,7 +1,5 @@
-BootStrapl: debootstrap
-DistType "debian"
-MirrorURL: http://us.archive.ubuntu.com/ubuntu/
-OSVersion: xenial
+BootStrap: docker
+From: ubuntu:latest
 
 %labels
     AUTHOR Nicolas Servant
@@ -9,8 +7,8 @@ OSVersion: xenial
 %pre
     apt-get install -y debootstrap
 
-
 %post
+    apt-get update
     apt-get install -y wget
     apt-get install -y gzip
     apt-get install -y bzip2
@@ -53,15 +51,15 @@ OSVersion: xenial
     conda install -y -c bioconda pysam 
 
     # Install R
-    conda update readline	
+    conda update readline
     #conda install -c conda-forge readline=6.2
-    conda install -c r r-base 
+    conda install -c r r-base=3.5.1
     conda install -c r r-ggplot2=2.2.1
-    conda install -c r r-rcolorbrewer
-    conda install -c r r-gridbase	
+    conda install -c r r-rcolorbrewer=1.1_2
+    conda install -c r r-gridbase=0.4_7	
 
     # Install MultiQC
-    conda install -c bioconda multiqc 
+    conda install -c bioconda multiqc=1.7 
    
     # Install HiC-pro
     echo "Installing latest HiC-Pro release ..."
