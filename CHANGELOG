@@ -9,6 +9,8 @@ NEW FEATURES
 
 SIGNIFICANT USER-VISIBLE CHANGES
 
+   o Update ice usage. Pull request from NVaroquaux (#323)
+
    o Update of the sparse2dense.py utils to include insulation score (Crane et al.) format
 
    o Update of Singularity image
