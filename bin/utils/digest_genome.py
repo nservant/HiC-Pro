@@ -26,48 +26,47 @@ RE_cutsite = {
 
 
 def find_re_sites(filename, sequences, offset):
-    infile = open(filename)
-    chr_id = None
-    big_str = ""
-    indices = []
-    all_indices = []
-    contig_names = []
-    c = 0
-    for line in infile:
-        c += 1
-        if line.startswith(">"):
-            print line.split()[0][1:], "..."
-            # If this is not the first chromosome, find the indices and append
-            # them to the list
-            if chr_id is not None:
-                for rs in range(len(sequences)):
-                    pattern = "(?=%s)" % sequences[rs].lower()
-                    indices += [m.start() + offset[rs]
-                                for m in re.finditer(pattern, big_str)]
-                indices.sort()
-                all_indices.append(indices)
-                indices = []
+    with open(filename, 'r') as infile:
+        chr_id = None
+        big_str = ""
+        indices = []
+        all_indices = []
+        contig_names = []
+        c = 0
+        for line in infile:
+            c += 1
+            if line.startswith(">"):
+                print("{}...".format(line.split()[0][1:]))
+                # If this is not the first chromosome, find the indices and append
+                # them to the list
+                if chr_id is not None:
+                     for rs in range(len(sequences)):
+                         pattern = "(?={})".format(sequences[rs].lower())
+                         indices += [m.start() + offset[rs]\
+                         for m in re.finditer(pattern, big_str)]
+                     indices.sort()
+                     all_indices.append(indices)
+                     indices = []
 
-            # This is a new chromosome. Empty the sequence string, and add the
-            # correct chrom id
-            big_str = ""
-            chr_id = line.split()[0][1:]
-            if chr_id in contig_names:
-                print "The fasta file contains several instance of",
-                print chr_id, ". Exit."
-                sys.exit(-1)
-            contig_names.append(chr_id)
-        else:
-            # As long as we don't change chromosomes, continue reading the
-            # file, and appending the sequences
-            big_str += line.lower().strip()
-    # Add the indices for the last chromosome
-    for rs in range(len(sequences)):
-        pattern = "(?=%s)" % sequences[rs].lower()
-        indices += [m.start() + offset[rs]
-                    for m in re.finditer(pattern, big_str)]
-    indices.sort()
-    all_indices.append(indices)
+                # This is a new chromosome. Empty the sequence string, and add the
+                # correct chrom id
+                big_str = ""
+                chr_id = line.split()[0][1:]
+                if chr_id in contig_names:
+                    print("The fasta file contains several instance of {}. Exit.".format(chr_id))
+                    sys.exit(-1)
+                contig_names.append(chr_id)
+            else:
+                # As long as we don't change chromosomes, continue reading the
+                # file, and appending the sequences
+                big_str += line.lower().strip()
+        # Add the indices for the last chromosome
+        for rs in range(len(sequences)):
+            pattern = "(?={})".format(sequences[rs].lower())
+            indices += [m.start() + offset[rs]
+                        for m in re.finditer(pattern, big_str)]
+        indices.sort()
+        all_indices.append(indices)
     
     return contig_names, all_indices
 
@@ -76,27 +75,27 @@ def find_chromsomose_lengths(reference_filename):
     chromosome_lengths = []
     chromosome_names = []
     length = None
-    infile = open(reference_filename)
-    for line in infile:
-        if line.startswith(">"):
-            chromosome_names.append(line[1:].strip())
-            if length is not None:
-                chromosome_lengths.append(length)
-            length = 0
-        else:
-            length += len(line.strip())
-    chromosome_lengths.append(length)
+    with open(reference_filename, 'r') as infile:
+        for line in infile:
+            if line.startswith(">"):
+                chromosome_names.append(line[1:].strip())
+                if length is not None:
+                    chromosome_lengths.append(length)
+                length = 0
+            else:
+                length += len(line.strip())
+        chromosome_lengths.append(length)
     return chromosome_names, np.array(chromosome_lengths)
 
 
 def replaceN(cs):
     npos = int(cs.find('N'))
     cseql = []
-    if npos!= -1:
+    if npos != -1:
         for nuc in ["A","C","G","T"]:
             tmp = cs.replace('N', nuc, 1)
             tmpl = replaceN(tmp)
-            if type(tmpl)==list:
+            if type(tmpl) == list:
                 cseql = cseql + tmpl
             else:
                 cseql.append(tmpl)
@@ -138,15 +137,15 @@ if __name__ == "__main__":
 
         offpos = int(cseq.find('^'))
         if offpos == -1:
-            print "Unable to detect offset for", cseq
-            print "Please, use '^' to specified the cutting position,",
-            print "i.e A^GATCT for HindIII digestion"
+            print("Unable to detect offset for {}. Please, use '^' to specify the cutting position,\
+                   i.e A^GATCT for HindIII digestion.".format(cseq))
             sys.exit(-1)
 
-        for nuc in list(set(cseq)):
-            if nuc != 'A' and nuc != 'C' and nuc != 'G' and nuc != 'T' and nuc != 'N' and nuc != '^':
-                print "Find unexpected character ['",nuc,"']in restriction motif"
-                print "Note that multiple motifs should be separated by a space (not a comma !)"
+        for nuc in list(set(cs)):
+            if nuc not in ['A','T','G','C','N','^']:
+                print("Find unexpected character ['{}']in restriction motif".format(nuc))
+                print("Note that multiple motifs should be separated by a space (not a comma !)")
+
                 sys.exit(-1)
 
         offset.append(offpos)
@@ -166,9 +165,9 @@ if __name__ == "__main__":
     if out is None:
         out = os.path.splitext(filename)[0] + "_fragments.bed"
 
-    print "Analyzing", filename
-    print "Restriction site(s)", ",".join(sequences)
-    print "Offset(s)",  ','.join(str(x) for x in offset)
+    print("Analyzing", filename)
+    print("Restriction site(s)", ",".join(sequences))
+    print("Offset(s)",  ','.join(str(x) for x in offset))
 
     # Read fasta file and look for rs per chromosome
     contig_names, all_indices = find_re_sites(filename, sequences,  offset=offset)
@@ -183,17 +182,15 @@ if __name__ == "__main__":
         valid_fragments.append(valid_fragments_chr)
 
     # Write results
-    print "Writing to", out, "..."
-    outfile = open(out, "w")
-    for chrom_name, indices in zip(contig_names, valid_fragments):
-        frag_id = 0
-        for begin, end in indices:
-            # allow to remove cases where the enzyme cut at
-            # the first position of the chromosome
-            if end > begin:
-                frag_id += 1
-                frag_name = "HIC_%s_%d" % (chrom_name, frag_id)
-                outfile.write(
-                    "%s\t%d\t%d\t%s\t0\t+\n" % (chrom_name, begin,
+    print("Writing to {} ...".format(out))
+    with open(out, 'w') as outfile:
+        for chrom_name, indices in zip(contig_names, valid_fragments):
+            frag_id = 0
+            for begin, end in indices:
+                # allow to remove cases where the enzyme cut at
+                # the first position of the chromosome
+                if end > begin:
+                    frag_id += 1
+                    frag_name = "HIC_{}_{}".format(chrom_name, frag_id)
+                    outfile.write("{}\t{}\t{}\t{}\t0\t+\n".format(chrom_name, begin,
                                                 end, frag_name))
-    outfile.close()

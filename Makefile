@@ -14,7 +14,8 @@ CONFIGURE_OUT=$(wildcard ./config-system.txt)
 CONFIG_SYS=$(wildcard ./config-install.txt)
 RUNNER=$(shell whoami)
 
-install : config_check mapbuilder readstrimming iced cp
+#install : config_check mapbuilder readstrimming iced cp
+install : config_check mapbuilder readstrimming cp
 
 ######################################
 ## Config file

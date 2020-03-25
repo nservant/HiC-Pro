@@ -257,7 +257,6 @@ if [[ $NEED_FASTQ == 1 ]]; then
     if [[ $nbin_r1 == 0 || $nbin_r2 == 0 || $nbin_r1 != $nbin_r2 ]]; then
         die "Error: Directory Hierarchy of rawdata '$INPUT' is not correct. Paired '.fastq' files with ${PAIR1_EXT}/${PAIR2_EXT} are required !"
     fi
-    
 elif [[ $NEED_BAM == 1 ]]; then
     nbin=$(find -L $INPUT -mindepth 2 -maxdepth 2 -name "*.bam" | wc -l)
     nbin_r1=$(find -L $INPUT -mindepth 2 -maxdepth 2 -name "*.bam" -and -name "*${PAIR1_EXT}* | wc -l")

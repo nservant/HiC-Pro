@@ -16,15 +16,14 @@ import sys
 import os
 import re
 import pysam
-from itertools import izip
 
 def usage():
     """Usage function"""
-    print "Usage : python split_valid_interactions.py"
-    print "-i/--input <valid interaction file>"
-    print "[-s/--stats] <stats file>"
-    print "[-v/--verbose] <Verbose>"
-    print "[-h/--help] <Help>"
+    print("Usage : python split_valid_interactions.py")
+    print("-i/--input <valid interaction file>")
+    print("[-s/--stats] <stats file>")
+    print("[-v/--verbose] <Verbose>")
+    print("[-h/--help] <Help>")
     return
 
 
@@ -68,10 +67,10 @@ if __name__ == "__main__":
 
     ## Verbose mode
     if verbose:
-        print "## split_valid_interactions.py"
-        print "## input=", inputfile
-        print "## statsFile=", statsFile
-        print "## verbose=", verbose
+        print("## split_valid_interactions.py")
+        print("## input=", inputfile)
+        print("## statsFile=", statsFile)
+        print("## verbose=", verbose)
 
     ## AS counter
     vp_counter = 0
@@ -98,14 +97,14 @@ if __name__ == "__main__":
     handle_g2 = open(inputfile.replace(".allValidPairs", "_G2.allValidPairs"), 'w')
 
     if verbose:
-        print "## Splitting valid pairs interactions ..."
+        print("## Splitting valid pairs interactions ...")
   
     with open(inputfile) as hr:
         for line in hr:
             isG1 = False
             isG2 = False
 
-            vp_counter +=1
+            vp_counter += 1
             h = line.rstrip().split("\t")
             haplotype = h[len(h)-1].split("-") ## always last column
 
@@ -172,7 +171,7 @@ if __name__ == "__main__":
                     G2trans += 1
                 
             if (vp_counter % 100000 == 0 and verbose):
-                print "##", vp_counter
+                print("##", vp_counter)
 
     if statsFile is not None:
         handle_stat = open(statsFile, 'w')            

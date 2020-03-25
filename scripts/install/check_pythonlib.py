@@ -9,6 +9,9 @@
 
 import re
 
+def cmp(a, b):
+	return (a > b) - (a < b)
+
 def vcmp(version1, version2):
     def normalize(v):
         ## 0.18.0.dev0+609facc

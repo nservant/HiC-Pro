@@ -43,12 +43,12 @@ From: ubuntu:latest
     conda install -y bowtie2
     conda install -y samtools
 
-    # Python (>2.7) with *pysam (>=0.8.3)*, *bx(>=0.5.0)*, *numpy(>=1.8.2)*, and *scipy(>=0.15.1)* libraries
-    conda install -y -c conda-forge python=2.7.15
-    conda install -y -c anaconda scipy=1.2.1 
-    conda install -y -c anaconda numpy=1.16.3
-    conda install -y -c bcbio bx-python=0.8.2
-    conda install -y -c bioconda pysam=0.15.2 
+    # Python (>3.7.0) with *pysam (>=0.8.3)*, *bx(>=0.5.0)*, *numpy(>=1.8.2)*, and *scipy(>=0.15.1)* libraries
+    conda install -y python=3.7.6
+    conda install -y -c anaconda scipy 
+    conda install -y -c anaconda numpy 
+    conda install -y -c bcbio bx-python 
+    conda install -y -c bioconda pysam 
 
     # Install R
     conda update readline

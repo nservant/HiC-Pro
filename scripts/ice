@@ -8,7 +8,6 @@ from scipy import sparse
 import iced
 from iced.io import loadtxt, savetxt
 
-
 parser = argparse.ArgumentParser("ICE normalization")
 parser.add_argument('filename',
                     metavar='File to load',
@@ -46,6 +45,7 @@ parser.add_argument("--verbose", "-v", default=False)
 
 args = parser.parse_args()
 filename = args.filename
+filename = filename.encode()
 
 # Deprecating filtering_perc option
 filter_low_counts = None
@@ -55,8 +55,8 @@ if "--filtering_perc" in sys.argv:
         "'--filter_low_counts_perc' instead.'")
     # And print it again because deprecation warnings are not displayed for
     # recent versions of python
-    print "--filtering_perc is deprecated. Please use filter_low_counts_perc"
-    print "instead. This option will be removed in ice 0.3"
+    print("--filtering_perc is deprecated. Please use filter_low_counts_perc")
+    print("instead. This option will be removed in ice 0.3")
     filter_low_counts = args.filtering_perc
 if "--filter_low_counts_perc" in sys.argv and "--filtering_perc" in sys.argv:
     raise Warning("This two options are incompatible")
@@ -67,7 +67,7 @@ elif args.filter_low_counts_perc is not None:
 
 if args.verbose:
     print("Using iced version %s" % iced.__version__)
-    print "Loading files..."
+    print("Loading files...")
 
 # Loads file as i, j, counts
 i, j, data = loadtxt(filename).T
@@ -88,7 +88,7 @@ else:
     counts = sparse.csr_matrix(counts)
 
 if args.verbose:
-    print "Normalizing..."
+    print("Normalizing...")
 
 if filter_low_counts_perc != 0:
     counts = iced.filter.filter_low_counts(counts,
@@ -103,22 +103,24 @@ if args.filter_high_counts_perc != 0:
 
 counts, bias = iced.normalization.ICE_normalization(
     counts, max_iter=args.max_iter, copy=False,
-    verbose=args.verbose, eps=args.eps, output_bias=True)
+    verbose=int(args.verbose), eps=args.eps, output_bias=True)
 
 if args.results_filename is None:
     results_filename = ".".join(
         filename.split(".")[:-1]) + "_normalized." + filename.split(".")[-1]
+    results_filename = results_filename.encode()
 else:
     results_filename = args.results_filename
+    results_filename = results_filename.encode()
 
 counts = sparse.coo_matrix(counts)
 
 if args.verbose:
-    print "Writing results..."
+    print("Writing results...")
 
 savetxt(
     results_filename, counts.col + index_base, counts.row + index_base, counts.data)
 
 
 if args.output_bias:
-    np.savetxt(results_filename + ".biases", bias)
+    np.savetxt(results_filename.decode() + ".biases", bias)
