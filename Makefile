@@ -54,10 +54,10 @@ readstrimming: $(INST_SOURCES)/cutsite_trimming.cpp
 iced: $(INST_SOURCES)/ice_mod
 ifeq ("$(RUNNER)","root")
 	@echo "Installing the iced package as root"     
-	(cp $(INST_SOURCES)/ice_mod/iced/scripts/ice ${INST_SCRIPTS}; cd $(INST_SOURCES)/ice_mod/; ${PYTHON_PATH}/python setup.py install;)
+	(cd $(INST_SOURCES)/ice_mod/; ${PYTHON_PATH}/python setup.py install;)
 else
 	@echo "Installing the iced package in --user repository [runner=$(RUNNER)]"
-	(cp $(INST_SOURCES)/ice_mod/iced/scripts/ice ${INST_SCRIPTS}; cd $(INST_SOURCES)/ice_mod/; ${PYTHON_PATH}/python setup.py install --user;)
+	(cd $(INST_SOURCES)/ice_mod/; ${PYTHON_PATH}/python setup.py install --user;)
 endif
 
 test: config_check
