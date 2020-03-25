@@ -42,13 +42,13 @@ Iced is part of the HiC-Pro source code, but can also be installed independantly
 +===============+========================================================================+
 | PREFIX        | Installation path                                                      |
 +---------------+------------------------------------------------------------------------+
-| BOWTIE2_PATH  | Full path the bowtie2 installation directory                           |
+| BOWTIE2_PATH  | Full path the bowtie2 binary                                           |
 +---------------+------------------------------------------------------------------------+
-| SAMTOOLS_PATH | Full path to the samtools installation directory (>0.1.19)             |
+| SAMTOOLS_PATH | Full path to the samtools binary (>0.1.19)                             |
 +---------------+------------------------------------------------------------------------+
-| R_PATH        | Full path to the R installation directory                              |
+| R_PATH        | Full path to the R binary                                              |
 +---------------+------------------------------------------------------------------------+
-| PYTHON_PATH   | Full path to the python installation directory (>2.7)                  |
+| PYTHON_PATH   | Full path to the python binary (>2.7)                                  |
 +---------------+------------------------------------------------------------------------+
 | CLUSTER_SYS   | Scheduler to use for cluster submission. Must be TORQUE, SGE or SLURM  |
 +---------------+------------------------------------------------------------------------+

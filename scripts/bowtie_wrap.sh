@@ -24,7 +24,7 @@ end_to_end_align()
     fi
     
     ## Output
-    prefix=$(basename ${infile} | sed -e 's/.fastq\(.gz\)*$//')
+    prefix=$(basename ${infile} | sed -e 's/.fastq\(.gz\)*$//' -e 's/.fq\(.gz\)*$//')
     
     ## Unmapped reads
     if [[ $unmap == 1 ]]; then
@@ -45,7 +45,7 @@ end_to_end_align()
     fi
     
     echo "##HiC-Pro mapping" > ${ldir}/${prefix}_bowtie2.log
-    cmd="${BOWTIE2_PATH}/bowtie2 ${BOWTIE2_GLOBAL_OPTIONS} --rg-id BMG --rg SM:${prefix} -p ${N_CPU} -x ${BOWTIE2_IDX} -U ${infile} 2>> ${ldir}/${prefix}_bowtie2.log"
+    cmd="${BOWTIE2_PATH}/bowtie2 ${BOWTIE2_GLOBAL_OPTIONS} --rg-id BMG --rg SM:${prefix} -p ${bwt_cpu} -x ${BOWTIE2_IDX} -U ${infile} 2>> ${ldir}/${prefix}_bowtie2.log"
     if [[ $filtunmap == 1 ]]; then
 	cmd=$cmd"| ${SAMTOOLS_PATH}/samtools view -F 4 -bS - > ${odir}/${prefix}_${REFERENCE_GENOME}.bwt2glob.bam"
     else
@@ -70,7 +70,7 @@ cut_and_align()
 	exit -1
     fi
     ## Output
-    prefix=$(basename ${infile} | sed -e 's/.fastq\(.gz\)*$//')
+    prefix=$(basename ${infile} | sed -e 's/.fastq\(.gz\)*$//' -e 's/.fq\(.gz\)*$//')
 
     ## Starts trimming reads from the ligation site
     tfile=`basename $infile | sed -e s/.fastq$/_trimmed.fastq/`
@@ -82,11 +82,18 @@ cut_and_align()
     if [[ $unmap == 1 ]]; then
 	BOWTIE2_LOCAL_OPTIONS=${BOWTIE2_LOCAL_OPTIONS}" --un ${odir}/${prefix}_${REFERENCE_GENOME}.bwt2glob.unmap.fastq"
     fi
-    
+
+    if [[ $N_CPU -lt 2 ]]; then
+        echo -e "Warning : HiC-Pro need at least 2 CPUs to run the mapping !!"
+        bwt_cpu=1
+    else
+        bwt_cpu=$(( $N_CPU / 2 ))
+    fi
+       
     ## Run bowtie
     echo "##HiC-Pro mapping" > ${ldir}/${prefix}_bowtie2.log
 
-    cmd="${BOWTIE2_PATH}/bowtie2 ${BOWTIE2_LOCAL_OPTIONS} --rg-id BML --rg SM:${prefix} -p ${N_CPU} -x ${BOWTIE2_IDX} -U ${odir}/${tfile} 2>> ${ldir}/${prefix}_bowtie2.log | ${SAMTOOLS_PATH}/samtools view -bS - > ${odir}/${prefix}_bwt2loc.bam"
+    cmd="${BOWTIE2_PATH}/bowtie2 ${BOWTIE2_LOCAL_OPTIONS} --rg-id BML --rg SM:${prefix} -p ${bwt_cpu} -x ${BOWTIE2_IDX} -U ${odir}/${tfile} 2>> ${ldir}/${prefix}_bowtie2.log | ${SAMTOOLS_PATH}/samtools view -bS - > ${odir}/${prefix}_bwt2loc.bam"
     exec_cmd "$cmd" 
 }
 

@@ -9,7 +9,6 @@
 ##
 ## Plot mapping proportion
 ##
-
 rm(list=ls())
 
 args <- commandArgs(TRUE)
@@ -108,7 +107,7 @@ ploMapStat <- function(mat, sampleName="", tag="", legend=TRUE){
   sel.colours <- brewer.pal(6,"Blues")
   tit <- "Statistics of Read Alignments"
   if (tag != ""){
-    tit <- paste0(tit," - ", tag," Tags")
+    tit <- paste0(tit," - ", tag," Tags") 
   }
    
   
@@ -119,12 +118,12 @@ ploMapStat <- function(mat, sampleName="", tag="", legend=TRUE){
                       ggtitle(tit) + theme(plot.title = element_text(lineheight=.8, face="bold", size=8))
 
   if (legend){
-    gp = gp + scale_fill_manual(values=c("darkgray", sel.colours[2:4]), labels = c("Full read mapping (%)",  "Trimmed read Mapping (%)", "Aligned reads (%)", "Not aligned (%)")) + guides(fill=guide_legend(title="")) + theme(plot.margin=unit(x=c(1,0,0,0), units="cm"), legend.position="bottom", legend.text=element_text(size=5))
+    gp = gp + scale_fill_manual(values=c("darkgray", sel.colours[2:4]), labels = c("Not aligned (%)", "Trimmed read Mapping (%)","Full read mapping (%)","Aligned reads (%)")) + guides(fill=guide_legend(title="")) + theme(plot.margin=unit(x=c(1,0,0,0), units="cm"), legend.position="bottom", legend.text=element_text(size=5))
   }else{
     gp = gp + scale_fill_manual(values=c("darkgray", sel.colours[2:4])) + theme(plot.margin=unit(c(1,0,1.45,0),"cm"))+ guides(fill=FALSE)
   }
   gp
-}
+}                   
 
 
 ####################################
@@ -132,7 +131,6 @@ ploMapStat <- function(mat, sampleName="", tag="", legend=TRUE){
 ## plotMappingPortion.R
 ##
 ####################################
-
 ## Get Mapping stat files for all fastq files of a given sample
 allmapstat_r1 <- list.files(path=bwtDir, pattern=paste0("^[[:print:]]*",r1tag,"[[:print:]]*\\.mapstat$"), full.names=TRUE)
 allmapstat_r2 <- list.files(path=bwtDir, pattern=paste0("^[[:print:]]*",r2tag,"[[:print:]]*\\.mapstat$"), full.names=TRUE)
@@ -156,7 +154,7 @@ p1 <- ploMapStat(mat_r1, sampleName=sampleName, tag="R1")
 mat_r2 <- getMapMat(stats_per_sample_r2[1], stats_per_sample_r2[2], stats_per_sample_r2[3], stats_per_sample_r2[4])
 mat_r2$lab <- factor(mat_r2$lab, levels=c("n.un","n.loc","n.glob","n.map"))
 p2 <- ploMapStat(mat_r2, sampleName=sampleName, tag="R2", legend=FALSE)
-
 pdf(file.path(picDir, paste0("plotMapping_",sampleName,".pdf")), width=7, height=4)
 multiplot(p1, p2, cols=2)
 dev.off()
+

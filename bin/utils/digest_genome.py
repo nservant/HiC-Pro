@@ -47,6 +47,7 @@ def find_re_sites(filename, sequences, offset):
                 indices.sort()
                 all_indices.append(indices)
                 indices = []
+
             # This is a new chromosome. Empty the sequence string, and add the
             # correct chrom id
             big_str = ""
@@ -67,6 +68,7 @@ def find_re_sites(filename, sequences, offset):
                     for m in re.finditer(pattern, big_str)]
     indices.sort()
     all_indices.append(indices)
+    
     return contig_names, all_indices
 
 
@@ -87,6 +89,22 @@ def find_chromsomose_lengths(reference_filename):
     return chromosome_names, np.array(chromosome_lengths)
 
 
+def replaceN(cs):
+    npos = int(cs.find('N'))
+    cseql = []
+    if npos!= -1:
+        for nuc in ["A","C","G","T"]:
+            tmp = cs.replace('N', nuc, 1)
+            tmpl = replaceN(tmp)
+            if type(tmpl)==list:
+                cseql = cseql + tmpl
+            else:
+                cseql.append(tmpl)
+    else:
+        cseql.append(cs)
+    return cseql
+
+
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument('fastafile')
@@ -102,8 +120,13 @@ if __name__ == "__main__":
 
     filename = args.fastafile
     out = args.out
-    cutsites = args.res_sites
-
+    
+    # Split restriction sites if comma-separated
+    cutsites=[]
+    for s in args.res_sites:
+        for m in s.split(','):
+            cutsites.append(m)
+                
     # process args and get restriction enzyme sequences
     sequences = []
     offset = []
@@ -112,15 +135,34 @@ if __name__ == "__main__":
             cseq = ''.join(RE_cutsite[cs.lower()])
         else:
             cseq = cs
+
         offpos = int(cseq.find('^'))
         if offpos == -1:
             print "Unable to detect offset for", cseq
             print "Please, use '^' to specified the cutting position,",
             print "i.e A^GATCT for HindIII digestion"
             sys.exit(-1)
+
+        for nuc in list(set(cseq)):
+            if nuc != 'A' and nuc != 'C' and nuc != 'G' and nuc != 'T' and nuc != 'N' and nuc != '^':
+                print "Find unexpected character ['",nuc,"']in restriction motif"
+                print "Note that multiple motifs should be separated by a space (not a comma !)"
+                sys.exit(-1)
+
         offset.append(offpos)
         sequences.append(re.sub('\^', '', cseq))
 
+    # replace all N in restriction motif
+    sequences_without_N = []
+    offset_without_N = []
+    for rs in range(len(sequences)):
+        nrs = replaceN(sequences[rs])
+        sequences_without_N = sequences_without_N + nrs
+        offset_without_N = offset_without_N + [offset[rs]] * len(nrs)
+          
+    sequences = sequences_without_N
+    offset = offset_without_N
+    
     if out is None:
         out = os.path.splitext(filename)[0] + "_fragments.bed"
 
@@ -129,8 +171,7 @@ if __name__ == "__main__":
     print "Offset(s)",  ','.join(str(x) for x in offset)
 
     # Read fasta file and look for rs per chromosome
-    contig_names, all_indices = find_re_sites(filename, sequences,
-                                              offset=offset)
+    contig_names, all_indices = find_re_sites(filename, sequences,  offset=offset)
     _, lengths = find_chromsomose_lengths(filename)
 
     valid_fragments = []

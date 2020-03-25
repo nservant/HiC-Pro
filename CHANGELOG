@@ -1,4 +1,56 @@
 ***********************************
+CHANGES IN VERSION 2.11.3
+
+NEW FEATURES
+
+   o 'N' is now support in the digest_genome.py utility
+
+   o 'N' is now supported in the ligation motif (for Arima Hi-C kit)
+
+SIGNIFICANT USER-VISIBLE CHANGES
+
+   o Update of the sparse2dense.py utils to include insulation score (Crane et al.) format
+
+   o Update of Singularity image
+
+   o Update hicpro2juicebox.sh script for memory issue (#246)
+
+   o Update hicpro2higlass.sh script (#254)
+
+BUG FIXES
+
+   o Check if annotation files are readable (#282)
+
+   o If RM_DUP is unset, the duplicates are not filtered (#256)
+
+   o Support both .fastq.gz and .fq.gz files (#311)
+
+   o Bug in R plots legends (#257, #250, #240)
+
+   o Fix small printing bugs in mapped_2hic_fragments.py
+
+   o N_CPU for LSF usage (#250) and bowtie2 (#262)
+
+   o Update doc (#307, #273)
+
+***********************************
+CHANGES IN VERSION 2.11.2
+
+SIGNIFICANT USER-VISIBLE CHANGES
+
+   o add SORT_RAM parameter to set the maximum memory per thread used by samtools.
+     Default is 768M (pull request F. Reinecke)
+
+   o update of Singularity file adding MultiQC
+
+BUG FIXES
+
+   o fix bug in bowtie2 cpu usage (pull request F. Reinecke)
+
+   o Fix bug in build_contact_maps.sh when capture and allele-specific analysis are combined
+
+
+***********************************
 CHANGES IN VERSION 2.11.1
 
 SIGNIFICANT USER-VISIBLE CHANGES
@@ -152,7 +204,7 @@ SIGNIFICANT USER-VISIBLE CHANGES
    o Update iced version (-> 0.4.0). This version includes a major changes on matrix filtering before iced normalization
 
    o sparseToDense.py utils. Create output file in the current folder by default
-   
+
 BUG FIXES
 
    o Fix bug in the help message of digest_genome.py

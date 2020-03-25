@@ -7,13 +7,12 @@
 
 ## DO NOT EDIT THE REST OF THIS FILE!!
 
-MK_PATH = $(shell dirname $(abspath $(lastword $(MAKEFILE_LIST))))
-
+MK_PATH=$(shell dirname $(abspath $(lastword $(MAKEFILE_LIST))))
 INST_SCRIPTS=$(MK_PATH)/scripts
 INST_SOURCES=$(INST_SCRIPTS)/src
 CONFIGURE_OUT=$(wildcard ./config-system.txt)
 CONFIG_SYS=$(wildcard ./config-install.txt)
-
+RUNNER=$(shell whoami)
 
 install : config_check mapbuilder readstrimming iced cp
 
@@ -53,14 +52,12 @@ readstrimming: $(INST_SOURCES)/cutsite_trimming.cpp
 
 ## Build Python lib
 iced: $(INST_SOURCES)/ice_mod
-	runner=$(shell whoami)
-	@echo $(runner) 
-ifneq ("$(runner)","root")
-	@echo "Installing the iced package in --user repository"
-	(cp $(INST_SOURCES)/ice_mod/iced/scripts/ice ${INST_SCRIPTS}; cd $(INST_SOURCES)/ice_mod/; ${PYTHON_PATH}/python setup.py install --user;)
-else
-	@echo "Installing the iced package as root"	
+ifeq ("$(RUNNER)","root")
+	@echo "Installing the iced package as root"     
 	(cp $(INST_SOURCES)/ice_mod/iced/scripts/ice ${INST_SCRIPTS}; cd $(INST_SOURCES)/ice_mod/; ${PYTHON_PATH}/python setup.py install;)
+else
+	@echo "Installing the iced package in --user repository [runner=$(RUNNER)]"
+	(cp $(INST_SOURCES)/ice_mod/iced/scripts/ice ${INST_SCRIPTS}; cd $(INST_SOURCES)/ice_mod/; ${PYTHON_PATH}/python setup.py install --user;)
 endif
 
 test: config_check

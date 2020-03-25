@@ -1,7 +1,5 @@
-BootStrap: debootstrap
-DistType "debian"
-MirrorURL: http://us.archive.ubuntu.com/ubuntu/
-OSVersion: xenial
+BootStrap: docker
+From: ubuntu:latest
 
 %labels
     AUTHOR Nicolas Servant
@@ -9,8 +7,8 @@ OSVersion: xenial
 %pre
     apt-get install -y debootstrap
 
-
 %post
+    apt-get update
     apt-get install -y wget
     apt-get install -y gzip
     apt-get install -y bzip2
@@ -46,31 +44,34 @@ OSVersion: xenial
     conda install -y samtools
 
     # Python (>2.7) with *pysam (>=0.8.3)*, *bx(>=0.5.0)*, *numpy(>=1.8.2)*, and *scipy(>=0.15.1)* libraries
-    conda install -y python=2.7.11
-    conda install -y -c anaconda scipy 
-    conda install -y -c anaconda numpy 
-    conda install -y -c bcbio bx-python 
-    conda install -y -c bioconda pysam 
+    conda install -y -c conda-forge python=2.7.15
+    conda install -y -c anaconda scipy=1.2.1 
+    conda install -y -c anaconda numpy=1.16.3
+    conda install -y -c bcbio bx-python=0.8.2
+    conda install -y -c bioconda pysam=0.15.2 
 
     # Install R
-    conda update readline	
+    conda update readline
     #conda install -c conda-forge readline=6.2
-    conda install -c r r-base 
+    conda install -c r r-base=3.5.1
     conda install -c r r-ggplot2=2.2.1
-    conda install -c r r-rcolorbrewer
-    conda install -c r r-gridbase	
+    conda install -c r r-rcolorbrewer=1.1_2
+    conda install -c r r-gridbase=0.4_7	
 
+    # Install MultiQC
+    conda install -c bioconda multiqc=1.7 
+   
     # Install HiC-pro
     echo "Installing latest HiC-Pro release ..."
-    VERSION=$(curl -s https://github.com/nservant/HiC-Pro/releases/latest | egrep -o '2.[0-9]*.[0-9]*')
-    echo "v"$VERSION".zip" | wget --base=http://github.com/nservant/HiC-Pro/archive/ -i - -O hicpro_latest.zip && unzip hicpro_latest.zip
-    #VERSION="devel"
-    #echo $VERSION".zip" | wget --base=http://github.com/nservant/HiC-Pro/archive/ -i - -O hicpro_latest.zip && unzip hicpro_latest.zip
+    #VERSION=$(curl -s https://github.com/nservant/HiC-Pro/releases/latest | egrep -o '2.[0-9]*.[0-9]*')
+    #echo "v"$VERSION".zip" | wget --base=http://github.com/nservant/HiC-Pro/archive/ -i - -O hicpro_latest.zip && unzip hicpro_latest.zip
+    VERSION="devel"
+    echo $VERSION".zip" | wget --base=http://github.com/nservant/HiC-Pro/archive/ -i - -O hicpro_latest.zip && unzip hicpro_latest.zip
     
     cd $(echo HiC-Pro-$VERSION)
     make configure
     make install
-    
+ 
     # Let us save some space
     conda clean --packages -y
     conda clean --all -y

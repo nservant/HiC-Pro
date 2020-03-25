@@ -29,7 +29,7 @@ filter_config()
     sed -e 's/#.*//' | egrep '^[ \t]*[a-zA-Z_][a-zA-Z0-9_]*[ \t]*:?=' | sed -e 's/[ \t]*:=[ \t]*/ :=/' -e 's/[ \t][^:]*=[ \t]*/ =/' -e 's/\([^ \t]*\)=/\1 =/' -e 's/ *$//g' | sort -u -k 1b,1
 }
 
-read_config()
+ read_config()
 {
     local conf=$1
     cat $conf > $tmpmkfile
@@ -134,7 +134,7 @@ filter_pairs()
 get_data_type()
 {
     ## return the highest possible input files type
-    nb_fq=$(find -L $RAW_DIR -mindepth 2 -maxdepth 2 -name "*.fastq" -o -name "*.fastq.gz" | wc -l)
+    nb_fq=$(find -L $RAW_DIR -mindepth 2 -maxdepth 2 -name "*.fastq" -o -name "*.fastq.gz" -o -name ".fq" -o -name ".fq.gz"| wc -l)
     nb_bam=$(find -L $RAW_DIR -mindepth 2 -maxdepth 2 -name "*.bam" -o -name "*.sam" | wc -l)
     nb_vpairs=$(find -L $RAW_DIR -mindepth 2 -maxdepth 2 -name "*.validPairs" | wc -l)
     nb_allvpairs=$(find -L $RAW_DIR -mindepth 2 -maxdepth 2 -name "*.allValidPairs" | wc -l)
@@ -151,7 +151,7 @@ get_data_type()
     elif (( $nb_fq > 0 )); then
         INPUT_DATA_TYPE="fastq"
     else
-	die "Error in input type.'.fastq|.bam|.validPairs|.allValidPairs|.matrix' files are expected."
+	die "Error in input type.'.fastq|.fq|.bam|.validPairs|.allValidPairs|.matrix' files are expected." #!
     fi
     echo $INPUT_DATA_TYPE
 }
@@ -164,7 +164,7 @@ set_ext2fastq()
 {
     local file=$1
     local ext=$2
-    file=$(echo $file | sed -e "s/\.fastq$//" -e "s/\.fastq.gz$//")
+    file=$(echo $file | sed -e "s/\.fastq$//" -e "s/\.fastq.gz$//" -e "s/\.fq$//" -e "s/\.fq.gz$//") #!
     echo ${file}${ext}
 }
 
@@ -222,7 +222,13 @@ get_sample_dir()
 
 get_fastq_for_bowtie_global()
 {
-    get_hic_files $RAW_DIR .fastq | grep "$PAIR1_EXT"
+    local input_data_type=$(get_data_type)    
+    if [[ $input_data_type == "fastq" ]]
+    then
+        ifastq=$(get_hic_files $RAW_DIR .fastq | grep "$PAIR1_EXT")
+        ifq=$(get_hic_files $RAW_DIR .fq | grep "$PAIR1_EXT")
+    fi
+    echo "$ifastq $ifq"
 }
 
 get_fastq_for_bowtie_local()

@@ -50,7 +50,10 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument("filename")
     parser.add_argument("-b", "--bins", help="BED file with bins coordinates. If provided the chromosome lengths are used to define the output matrix size")
-    parser.add_argument("-d", "--di", help="If specified the output matrix is formatted for Dixon et al. TADs calling. In this case --bins is required", action='store_true')
+    parser.add_argument("-g", "--org", help="Reference genome. Used if --ins is specified", default='org')
+
+    parser.add_argument("-d", "--di", help="If specified the output matrix is formatted for Dixon et al. TADs calling (directionality index). In this case --bins is required", action='store_true')
+    parser.add_argument("-i", "--ins", help="If specified the output matrix is formatted for Crane et al. TADs calling (insulation score). In this case --bins is required", action='store_true')
     parser.add_argument("-c", "--perchr", help="If specified intrachromosomal maps are written per chromosome as individual dense matrices. In this case, --bins must also be specified", action='store_true')
     parser.add_argument("-o", "--output", help="Output filename")
 
@@ -59,7 +62,11 @@ if __name__ == "__main__":
     if args.di is True and args.bins is None:
         print "--bins parameter is required when --di is specified"
         sys.exit(1)
-        
+
+    if args.ins is True and args.bins is None:
+        print "--bins parameter is required when --is is specified"
+        sys.exit(1)
+
     if args.perchr is True and args.bins is None:
         print "--bins parameter is required when --perchr is specified"
         sys.exit(1)
@@ -74,14 +81,24 @@ if __name__ == "__main__":
 
     ## Load counts in sparse format
     counts = io.load_counts(args.filename, lengths=lengths)
- 
-    ## di option
-    if args.di is True:
+
+    ## transform to integer if possible
+    if counts.data[0].is_integer():
+        counts.data = counts.data.astype(int)
+    
+    ## di/is option
+    if args.di is True or args.ins is True:
         bins = load_bed(args.bins)
         if len(bins) != counts.shape[1]:
             print "Error -  number of rows in BED and matrix files are not equal"
             sys.exit(1)
-    
+
+    if args.ins is True:
+        def myfunc( x, idx, org):
+            return "bin" + str(idx) + "|" + org + "|" + x[0] + ":" + x[1] + "-" + x[2]
+        bins_ins = np.array([myfunc(v, i, args.org) for i,v in enumerate(bins)])
+        bins_ins = bins_ins.reshape(len(bins_ins), 1)
+        
     ## Genome-wide dense matrix
     if args.perchr is False:
         counts = counts.toarray()
@@ -98,7 +115,12 @@ if __name__ == "__main__":
         
         if args.di is True:
             counts = np.hstack((bins, counts))
-
+        elif args.ins is True:
+            ## add col header
+            counts = np.hstack((bins_ins, counts))
+            ## add row header
+            counts = np.vstack((np.insert(bins_ins, 0, ''), counts))
+            
         ## Save
         np.savetxt(output_name, counts, '%s', delimiter="\t")
         
@@ -106,8 +128,6 @@ if __name__ == "__main__":
     else:
         ## indexes of intra chrom maps
         lc = np.concatenate([np.array([0]), lengths.cumsum()])
-        #print lc
-        #print lengths
 
         for i in range(1, len(lc)):
             print str(chrnames[i-1]) + "..."
@@ -122,12 +142,18 @@ if __name__ == "__main__":
             
             ## Output name for save
             if args.output is None:
-                output_name = args.filename.replace(".matrix", "_" + str(chrnames[i-1]) + "_dense.matrix")
+                output_name = os.path.basename(args.filename)
+                output_name = output_name.replace(".matrix", "_" + str(chrnames[i-1]) + "_dense.matrix")
             else:
                 output_name = str(chrnames[i-1]) + "_" + args.output 
         
             if args.di is True:
                 counts_perchr = np.hstack((bins[np.where(bins==str(chrnames[i-1]))[0]], counts_perchr))
+            elif args.ins is True:
+                ## add col header
+                counts_perchr = np.hstack((bins_ins[np.where(bins==str(chrnames[i-1]))[0]], counts_perchr))
+                ## add row header
+                counts_perchr = np.vstack((np.insert(bins_ins[np.where(bins==str(chrnames[i-1]))[0]], 0, ''), counts_perchr))
 
             ## Save
             np.savetxt(output_name, counts_perchr, '%s', delimiter="\t")

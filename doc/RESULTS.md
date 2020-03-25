@@ -30,7 +30,7 @@ The *hic_results* folder contains all Hi-C processed data, and is further divide
 The *hic_results/data* folder is used to store the valid interaction products (*'.validPairs'*), as well as other statisics files.  
 The *validPairs* are stored using a simple tab-delimited text format ;
 ```
-read name / chr_reads1 / pos_reads1 / strand_reads1 / chr_reads2 / pos_reads2 / strand_reads2 / fragment_size [/ allele_specific_tag]
+read name / chr_reads1 / pos_reads1 / strand_reads1 / chr_reads2 / pos_reads2 / strand_reads2 / fragment_size / res_frag_name1/ res_frag_name2 / mapq_read1 / mapq_read2 / [allele_specific_tag]
 ```
 
 One *validPairs* file is generated per reads chunck. These files are then merged in the *allValidPairs*, and duplicates are removed if specified in the configuration file.
