@@ -134,7 +134,7 @@ filter_pairs()
 get_data_type()
 {
     ## return the highest possible input files type
-    nb_fq=$(find -L $RAW_DIR -mindepth 2 -maxdepth 2 -name "*.fastq" -o -name "*.fastq.gz" -o -name ".fq" -o -name ".fq.gz"| wc -l)
+    nb_fq=$(find -L $RAW_DIR -mindepth 2 -maxdepth 2 -name "*.fastq" -o -name "*.fastq.gz" -o -name "*.fq" -o -name "*.fq.gz"| wc -l)
     nb_bam=$(find -L $RAW_DIR -mindepth 2 -maxdepth 2 -name "*.bam" -o -name "*.sam" | wc -l)
     nb_vpairs=$(find -L $RAW_DIR -mindepth 2 -maxdepth 2 -name "*.validPairs" | wc -l)
     nb_allvpairs=$(find -L $RAW_DIR -mindepth 2 -maxdepth 2 -name "*.allValidPairs" | wc -l)
@@ -195,18 +195,45 @@ get_hic_files()
     if [ ! -z "$FASTQFILE" ]; then
 	if [ ! -z "$TASKID" ]; then
 	    local input_data_type=$(get_data_type)
-	    cat $FASTQFILE | filter_rawdir | filter_pairs | awk "NR == $TASKID {printf(\"%s/%s${ext}\n\", \"$idir\", gensub(\".${input_data_type}(.gz)*\", \"\", \$1));}"
+	    ## deal with fq/fastq extension
+	    if [ ${input_data_type} == "fastq" ]; then
+		pattern=".fastq(.gz)*$|.fq(.gz)*$"
+	    else
+		pattern=".${input_data_type}$"
+	    fi
+	    ## raw data for mapping
+	    if [[ $ext == ".fastq" || $ext == ".fq" ]]; then
+                cat $FASTQFILE | filter_rawdir | filter_pairs | awk "NR == $TASKID && \$1 ~ \"${ext}(.gz)*$\"{printf(\"%s/%s${ext}\n\", \"$idir\", gensub(\"${ext}(.gz)*$\", \"\", \$1));}"
+	    else
+		cat $FASTQFILE | filter_rawdir | filter_pairs | awk "NR == $TASKID {printf(\"%s/%s${ext}\n\", \"$idir\", gensub(\"${pattern}\", \"\", \$1));}"
+    	    fi
 	    return
 	fi
 	local list=
 	for fastq in $(cat $FASTQFILE | filter_rawdir ); do
-	    get_hic_files_build_list
+	    if [[ ${ext} == ".fastq" || ${ext} == ".fq" ]]
+	    then
+		if [[ $fastq =~ "${ext}" ]]
+		then
+		    get_hic_files_build_list
+		fi
+	    else
+		get_hic_files_build_list
+	    fi
 	done
 	echo "$list" | filter_pairs
     elif [ ! -z "$FASTQLIST" ]; then
 	local list=
 	for fastq in $(echo $FASTQLIST | filter_rawdir | sed -e 's/[,;]/ /g'); do
-	    get_hic_files_build_list
+           if [[ ${ext} == ".fastq" || ${ext} == ".fq" ]]
+           then
+               if [[ $fastq =~ "${ext}" ]]
+               then
+                   get_hic_files_build_list
+               fi
+           else
+               get_hic_files_build_list
+           fi
 	done
 	echo "$list" | filter_pairs
     else
@@ -227,8 +254,8 @@ get_fastq_for_bowtie_global()
     then
         ifastq=$(get_hic_files $RAW_DIR .fastq | grep "$PAIR1_EXT")
         ifq=$(get_hic_files $RAW_DIR .fq | grep "$PAIR1_EXT")
+	echo "$ifastq $ifq"
     fi
-    echo "$ifastq $ifq"
 }
 
 get_fastq_for_bowtie_local()

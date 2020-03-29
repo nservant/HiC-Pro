@@ -9,7 +9,7 @@
 
                                                                    
 SOFT="HiC-Pro"
-VERSION="2.11.3"
+VERSION="2.11.4"
 
 function usage {
     echo -e "usage : $SOFT -i INPUT -o OUTPUT -c CONFIG [-s ANALYSIS_STEP] [-p] [-h] [-v]"
@@ -248,9 +248,9 @@ fi
 ## Check rawdata structure
 if [[ $NEED_FASTQ == 1 ]]; then
     nbin=$(find -L $INPUT -mindepth 2 -maxdepth 2 -name "*.fastq" -o -name "*.fastq.gz" -o -name "*.fq" -o -name "*.fq.gz" | wc -l) #!
-    nbin_r1=$(find -L $INPUT -mindepth 2 -maxdepth 2 -name "*.fastq*" -o -name ".fq*" -and -name "*${PAIR1_EXT}*" | wc -l)
-    nbin_r2=$(find -L $INPUT -mindepth 2 -maxdepth 2 -name "*.fastq*" -o -name ".fq*" -and -name "*${PAIR2_EXT}*" | wc -l)
- 
+    nbin_r1=$(find -L $INPUT -mindepth 2 -maxdepth 2 -name "*.fastq*" -o -name "*.fq*" -and -name "*${PAIR1_EXT}*" | wc -l)
+    nbin_r2=$(find -L $INPUT -mindepth 2 -maxdepth 2 -name "*.fastq*" -o -name "*.fq*" -and -name "*${PAIR2_EXT}*" | wc -l)
+
     if [ $nbin == 0 ]; then
 	die "Error: Directory Hierarchy of rawdata '$INPUT' is not correct. No '.fastq(.gz)' files detected"
     fi

@@ -1,4 +1,11 @@
 ***********************************
+CHANGES IN VERSION 2.11.4
+
+BUG FIXES
+
+  o Fix major bug in parallel mode from 2.11.3
+
+***********************************
 CHANGES IN VERSION 2.11.3
 
 NEW FEATURES
