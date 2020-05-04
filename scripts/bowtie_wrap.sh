@@ -51,7 +51,7 @@ end_to_end_align()
     else
 	cmd=$cmd"> ${odir}/${prefix}_${REFERENCE_GENOME}.bwt2glob.bam"
     fi
-    
+   
     exec_cmd $cmd 
 }
 

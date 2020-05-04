@@ -127,6 +127,15 @@ if [[ -z $INPUT || -z $OUTPUT || -z $CONF ]]; then
 fi
 
 
+## check if ice is in the PATH
+if [[ $MAKE_OPTS == "" || $MAKE_OPTS =~ "ice_norm" ]]; then
+    which ice > /dev/null
+    if [ $? != "0" ]; then
+	echo -e "Error: The 'ice' command is not in your path. Please check where the 'iced' python package has been installed and update your PATH !"
+	exit 1;
+    fi
+fi
+
 #####################
 ## Check Config file
 #####################
@@ -180,7 +189,6 @@ fi
 if [[ ! -z $ALLELE_SPECIFIC_SNP && ! -r $ALLELE_SPECIFIC_SNP ]]; then
     die "ALLELE_SPECIFIC_SNP $ALLELE_SPECIFIC_SNP not found. Exit"
 fi
-
 
 #####################
 ## Check step option
@@ -248,9 +256,9 @@ fi
 ## Check rawdata structure
 if [[ $NEED_FASTQ == 1 ]]; then
     nbin=$(find -L $INPUT -mindepth 2 -maxdepth 2 -name "*.fastq" -o -name "*.fastq.gz" -o -name "*.fq" -o -name "*.fq.gz" | wc -l) #!
-    nbin_r1=$(find -L $INPUT -mindepth 2 -maxdepth 2 -name "*.fastq*" -o -name ".fq*" -and -name "*${PAIR1_EXT}*" | wc -l)
-    nbin_r2=$(find -L $INPUT -mindepth 2 -maxdepth 2 -name "*.fastq*" -o -name ".fq*" -and -name "*${PAIR2_EXT}*" | wc -l)
- 
+    nbin_r1=$(find -L $INPUT -mindepth 2 -maxdepth 2 -name "*.fastq*" -o -name "*.fq*" -and -name "*${PAIR1_EXT}*" | wc -l)
+    nbin_r2=$(find -L $INPUT -mindepth 2 -maxdepth 2 -name "*.fastq*" -o -name "*.fq*" -and -name "*${PAIR2_EXT}*" | wc -l)
+
     if [ $nbin == 0 ]; then
 	die "Error: Directory Hierarchy of rawdata '$INPUT' is not correct. No '.fastq(.gz)' files detected"
     fi
