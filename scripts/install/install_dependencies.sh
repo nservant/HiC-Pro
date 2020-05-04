@@ -148,9 +148,9 @@ if [ $? != "0" ]; then
     exit 1;
 else
     pver=`python --version 2>&1 | cut -d" " -f2`
-    vercomp $pver "2.7.0"
+    vercomp $pver "3.6.0"
     if [[ $? == 2 ]]; then
-	echo -e "$RED""Python v2.7.0 or higher is needed [$pver detected].""$NORMAL"
+	echo -e "$RED""Python v3.6.0 or higher is needed [$pver detected].""$NORMAL"
 	exit 1;
     fi
 fi
@@ -269,13 +269,13 @@ fi
 
 if [ $wasInstalled == 0 ]; then
     echo "Installing Bowtie2 ..."
-    $get bowtie2-2.2.4-source.zip http://sourceforge.net/projects/bowtie-bio/files/bowtie2/2.2.4/bowtie2-2.2.4-source.zip/download
-    unzip bowtie2-2.2.4-source.zip
-    cd bowtie2-2.2.4
+    $get bowtie2-2.3.5-source.zip http://sourceforge.net/projects/bowtie-bio/files/bowtie2/2.3.5/bowtie2-2.3.5-source.zip/download
+    unzip bowtie2-2.3.5-source.zip
+    cd bowtie2-2.3.5
     make
     cd ..
-    mv bowtie2-2.2.4 $PREFIX_BIN
-    export PATH=$PREFIX_BIN/bowtie2-2.2.4/:$PATH
+    mv bowtie2-2.3.5 $PREFIX_BIN
+    export PATH=$PREFIX_BIN/bowtie2-2.3.5/:$PATH
     wasInstalled=0;
 fi
  
@@ -309,13 +309,13 @@ fi
 if [ $wasInstalled == 0 ]; then
     echo "Installing samtools ..."
     #From sources
-    $get samtools-1.1.tar.bz2  http://sourceforge.net/projects/samtools/files/samtools/1.1/samtools-1.1.tar.bz2/download
-    tar -xvjpf samtools-1.1.tar.bz2
-    cd samtools-1.1
+    $get samtools-1.10.tar.bz2  http://sourceforge.net/projects/samtools/files/samtools/1.10/samtools-1.10.tar.bz2/download
+    tar -xvjpf samtools-1.10.tar.bz2
+    cd samtools-1.10
     make
     cd ..
-    mv samtools-1.1 $PREFIX_BIN
-    export PATH=$PREFIX_BIN/samtools-1.1/:$PATH
+    mv samtools-1.10 $PREFIX_BIN
+    export PATH=$PREFIX_BIN/samtools-1.10/:$PATH
     wasInstalled=0;
 fi
 

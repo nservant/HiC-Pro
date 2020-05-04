@@ -40,8 +40,8 @@ From: ubuntu:latest
 
     # external tools
     echo "Installing dependancies ... "
-    conda install -y bowtie2
-    conda install -y samtools
+    conda install -y bowtie2=2.3.5
+    conda install -y samtools=1.9
 
     # Python (>3.7.0) with *pysam (>=0.8.3)*, *bx(>=0.5.0)*, *numpy(>=1.8.2)*, and *scipy(>=0.15.1)* libraries
     conda install -y python=3.7.6
@@ -59,7 +59,7 @@ From: ubuntu:latest
     conda install -c r r-gridbase=0.4_7	
 
     # Install MultiQC
-    conda install -c bioconda multiqc=1.7 
+    conda install -c bioconda multiqc=1.8
    
     # Install HiC-pro
     echo "Installing latest HiC-Pro release ..."
