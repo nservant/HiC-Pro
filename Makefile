@@ -34,7 +34,11 @@ endif
 ######################################
 configure:
 ifneq ("$(CONFIG_SYS)","")
+ifneq ("$(prefix)","")
+	make -f ./scripts/install/Makefile CONFIG_SYS=$(CONFIG_SYS) prefix=$(prefix)
+else
 	make -f ./scripts/install/Makefile CONFIG_SYS=$(CONFIG_SYS)
+endif
 else
 	$(error config-install.txt file not found !)
 endif

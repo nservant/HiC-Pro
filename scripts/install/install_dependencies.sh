@@ -61,6 +61,7 @@ die() {
 function usage {
     echo -e "Usage : ./install_all.sh"
     echo -e "-c"" <configuration install file>"
+    echo -e "-p"" <prefix>"
     echo -e "-o"" <installation folder>"
     echo -e "-q"" <quiet>"
     echo -e "-h"" <help>"
@@ -73,11 +74,12 @@ echo -e "$BLUE""Starting $SOFT installation ...""$NORMAL";
 
 ################### Initialize ###################
 quiet=0
-set -- $(getopt c:o:qh "$@")
+set -- $(getopt c:p:o:qh "$@")
 while [ $# -gt 0 ]
 do
     case "$1" in
 	(-c) conf=$2; shift;;
+	(-p) prefix=$2 shift;;
 	(-o) install_dir=$2; shift;;
 	(-q) quiet=1; shift;;
 	(-h) usage;;
@@ -178,6 +180,9 @@ cd ./tmp
 ################ Install dependencies  ###################
 
 ## By default, dependencies will be installed in the same path than HiC-Pro
+if [[ ! -z ${prefix} ]]; then
+    PREFIX=${prefix}
+fi
 PREFIX_BIN=${PREFIX}
 
 if [ ! -w $PREFIX_BIN ]; then
@@ -407,7 +412,7 @@ else
 fi
 
 ## check rights in PREFIX folder
-if [[ -z $PREFIX ]]; then PREFIX=/usr/local/bin; fi
+#if [[ -z $PREFIX ]]; then PREFIX=/usr/local/bin; fi
 if [ ! -w $PREFIX ]; then
     die "Cannot install HiCPro in $PREFIX directory. Maybe missing super-user (root) permissions to write there. Please specify another directory in the config-install.txt file (PREFIX=)";
 fi 

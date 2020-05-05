@@ -26,7 +26,11 @@ else
 include $(CONFIG_SYS)
 endif
 ifndef PREFIX
+ifdef prefix
+PREFIX = $(prefix)
+else
 PREFIX = /usr/local/bin/
+endif
 endif
 
 ######################################
@@ -34,6 +38,6 @@ endif
 ##
 ######################################
 configure: config_check
-	./scripts/install/install_dependencies.sh -c $(CONFIG_SYS) -o  $(realpath $(PREFIX))/HiC-Pro_$(VNUM) -q
+	./scripts/install/install_dependencies.sh -c $(CONFIG_SYS) -p ${PREFIX} -o $(PREFIX)/HiC-Pro_$(VNUM) -q
 
 
