@@ -1,4 +1,14 @@
 ***********************************
+CHANGES IN VERSION 3.0.0
+
+NEW FEATURES
+
+  o Add a conda.yml file for installation with conda
+
+  o HiC-Pro is now based on python3 as python2 is no longer maintained
+
+
+***********************************
 CHANGES IN VERSION 2.11.4
 
 BUG FIXES
