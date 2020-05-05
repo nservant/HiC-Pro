@@ -8,16 +8,20 @@ matrix:
   fast_finish: true
 
 before_install:
-  # Here we just install Miniconda
-  - wget http://repo.continuum.io/miniconda/Miniconda-latest-Linux-x86_64.sh -O miniconda.sh
-  - chmod +x miniconda.sh
-  - ./miniconda.sh -b
-  - export PATH=/home/travis/miniconda/bin:$PATH
-  - conda update --yes conda
+  # Install conda
+  - sudo pip install conda
+  # install deps
+  - sudo conda init
+  - sudo conda update conda --yes
 
 install:
-  - conda create env -n hicpro -f envs/conda.yml
-  - source activate hicpro
+  # use the conda env to install all dependencies
+  - mkdir -p $HOME/conda
+  - conda create env -p $HOME/conda/hicpro -f envs/conda.yml
+  - source activate $HOME/hicpro
 
 script:
-  - HiC-pro -h
+  # Get test data
+  - wget https://zerkalo.curie.fr/partage/HiC-Pro/HiCPro_testdata.tar.gz && tar -zxvf HiCPro_testdata.tar.gz
+  - /bin/rm -f HiCPro_testdata.tar.gz
+  - time HiC-Pro -i test_data -o results -c config-hicpro.txt
