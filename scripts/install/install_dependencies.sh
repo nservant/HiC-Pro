@@ -148,9 +148,9 @@ if [ $? != "0" ]; then
     exit 1;
 else
     pver=`python --version 2>&1 | cut -d" " -f2`
-    vercomp $pver "3.6.0"
+    vercomp $pver "3.7.0"
     if [[ $? == 2 ]]; then
-	echo -e "$RED""Python v3.6.0 or higher is needed [$pver detected].""$NORMAL"
+	echo -e "$RED""Python v3.7.X or higher is needed [$pver detected].""$NORMAL"
 	exit 1;
     fi
 fi
