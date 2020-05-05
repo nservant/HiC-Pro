@@ -130,7 +130,19 @@ Copy and edit the configuration file *'config-hicpro.txt'* in your local folder.
 | EPS                               | The relative increment in the results before declaring convergence. *Default: 0.1*                                      |
 
 
-## Run HiC-Pro through Singularity
+## Containers
+
+### Bulid a `conda` environment
+                                                                                                                                                                                      
+In order to ease the installation of HiC-Pro dependancies, we provide a `.yml` file for conda with all required tools.
+In order to build your conda environment, first install [miniconda](https://docs.conda.io/en/latest/miniconda.html) and use :
+
+```
+conda create env -f MY_INSTALL_PATH/HiC-Pro/envs/conda.yml -p WHERE_TO_INSTALL_MY_ENV
+conda activate WHERE_TO_INSTALL_MY_ENV
+```
+
+### Run HiC-Pro through `Singularity`
 
 HiC-Pro provides a Singularity container to ease its installation process.
 A ready-to-use container is available [here](https://zerkalo.curie.fr/partage/HiC-Pro/singularity_images/hicpro_latest_ubuntu.img).
