@@ -20,7 +20,7 @@ install:
   - conda env create -p $HOME/conda/hicpro -f envs/conda.yml
   - export PATH=$HOME/conda/hicpro/bin:$PATH
   # Install HiC-Pro
-  - make configure --prefix $HOME/hicpro
+  - make configure prefix=$HOME/hicpro
   - make install
 
 script:
