@@ -20,7 +20,7 @@ install:
   # use the conda env to install all dependencies
   - mkdir -p $HOME/conda
   - conda env create -p $HOME/conda/hicpro -f envs/conda.yml
-  - source activate $HOME/hicpro
+  - source activate $HOME/conda/hicpro
 
 script:
   # Get test data
