@@ -3,6 +3,8 @@ CHANGES IN VERSION 3.0.0
 
 NEW FEATURES
 
+  o iced has been removed from HiC-Pro and is now an independant module
+
   o Add a conda.yml file for installation with conda
 
   o HiC-Pro is now based on python3 as python2 is no longer maintained
