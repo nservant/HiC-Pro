@@ -34,7 +34,7 @@ In order to ease the installation of HiC-Pro dependancies, we provide a `yml` fi
 In order to build your conda environment, first install [miniconda](https://docs.conda.io/en/latest/miniconda.html) and use :
 
 ```
-conda create env -f conda.yml -p WHERE_TO_INSTALL_MY_ENV
+conda create env -f MY_INSTALL_PATH/HiC-Pro/envs/conda.yml -p WHERE_TO_INSTALL_MY_ENV
 conda activate WHERE_TO_INSTALL_MY_ENV
 ```
 
@@ -54,7 +54,7 @@ In order to build you own Singularity image;
 2- Build the singularity HiC-Pro image using the 'Singularity' file available in the HiC-Pro root directory.
 
 ```
-sudo singularity build hicpro_latest_ubuntu.img MY_INSTALL_PATH/HiC-Pro/Singularity
+sudo singularity build hicpro_latest_ubuntu.img MY_INSTALL_PATH/HiC-Pro/envs/Singularity
 ```
 
 3- Run HiC-pro
@@ -78,7 +78,7 @@ The HiC-Pro pipeline requires the following dependencies :
 
 - The [bowtie2](http://bowtie-bio.sourceforge.net/bowtie2/index.shtml) mapper
 - Python (>3.7) with *pysam (>=0.15.4)*, *bx-python(>=0.8.8)*, *numpy(>=1.18.1)*, and *scipy(>=1.4.1)* libraries.  
-**Note that the current version no longer support python 2**
+**Note that the current version no longer supports python 2**
 - R with the *RColorBrewer* and *ggplot2 (>2.2.1)* packages
 - g++ compiler
 - samtools (>1.9)
