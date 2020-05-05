@@ -1,7 +1,5 @@
-sudo: false
+sudo: required
 language: python
-jdk: openjdk8
-services: docker
 python: '3.7'
 cache: pip
 matrix:
@@ -20,6 +18,8 @@ install:
   # use the conda env to install all dependencies
   - mkdir -p $HOME/conda
   - conda env create -p $HOME/conda/hicpro -f envs/conda.yml
+
+  - sudo su
   - export PATH=$HOME/conda/hicpro/bin:$PATH
   # Install HiC-Pro
   - make configure
