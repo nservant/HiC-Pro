@@ -1,0 +1,23 @@
+sudo: required
+language: python
+jdk: openjdk8
+services: docker
+python: '3.7'
+cache: pip
+matrix:
+  fast_finish: true
+
+before_install:
+  # Here we just install Miniconda
+  - wget http://repo.continuum.io/miniconda/Miniconda-latest-Linux-x86_64.sh -O miniconda.sh
+  - chmod +x miniconda.sh
+  - ./miniconda.sh -b
+  - export PATH=/home/travis/miniconda/bin:$PATH
+  - conda update --yes conda
+
+install:
+  - conda create env -n hicpro -f envs/conda.yml
+  - source activate hicpro
+
+script:
+  - HiC-pro -h
