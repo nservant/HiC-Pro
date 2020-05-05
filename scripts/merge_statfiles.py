@@ -94,7 +94,7 @@ if __name__ == "__main__":
                 if not line.startswith("#"):
                     lsp = line.strip().split("\t")
                     data = map(num, lsp[1:len(lsp)])
-                    template[str(lsp[0])] = data
+                    template[str(lsp[0])] = list(data)
                 
         if len(template) == 0:
             print("Cannot find template files !")
@@ -111,10 +111,12 @@ if __name__ == "__main__":
                                 if isinstance(num(lsp[i]), int):
                                     template[lsp[0]][i-1] += num(lsp[i])
                                 else:
-                                    template[lsp[0]][i-1] = round((template[lsp[0]][i-1] + num(lsp[i]))/2,3)
+                                    template[lsp[0]][i-1] = round(template[lsp[0]][i-1] + num(lsp[i])/2,3)
                         else:
                             sys.stderr.write("Warning : '"+lsp[0]+"' not found in template ["+infiles[fidx]+"]\n")
-                            
+
+
+        
         ## Print template
         for x in template:
             sys.stdout.write(x)

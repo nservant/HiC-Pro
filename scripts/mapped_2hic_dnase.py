@@ -112,7 +112,7 @@ def get_ordered_reads(read1, read2):
         if get_read_pos(read1) < get_read_pos(read2):
             r1, r2 = read1, read2
         else:
-            r1, r2 = read2n read1
+            r1, r2 = read2, read1
     else:
         if read1.reference_id < read2.reference_id:
             r1, r2 = read1, read2
