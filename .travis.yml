@@ -8,11 +8,13 @@ matrix:
   fast_finish: true
 
 before_install:
-  # Install conda
-  - sudo pip install conda
-  # install deps
-  - sudo conda init
-  - sudo conda update conda --yes
+  # install conda
+  - wget http://repo.continuum.io/miniconda/Miniconda-latest-Linux-x86_64.sh -O miniconda.sh
+  - chmod +x miniconda.sh
+  - ./miniconda.sh -b
+  - export PATH=/home/travis/miniconda/condabin:$PATH
+  - conda update --yes conda
+
 
 install:
   # use the conda env to install all dependencies
