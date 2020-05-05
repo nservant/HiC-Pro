@@ -20,12 +20,13 @@ install:
   - conda env create -p $HOME/conda/hicpro -f envs/conda.yml
   - export PATH=$HOME/conda/hicpro/bin:$PATH
   # Install HiC-Pro
-  - make configure prefix=$HOME/hicpro
+  - mkdir $HOME/apps
+  - make configure prefix=$HOME/apps
   - make install
 
 script:
   # Get test data
   - wget https://zerkalo.curie.fr/partage/HiC-Pro/HiCPro_testdata.tar.gz && tar -zxvf HiCPro_testdata.tar.gz
   - /bin/rm -f HiCPro_testdata.tar.gz
-  - INSTALLED_HICPRO_VERSION=$(find $HOME/hicpro -name HiC-Pro | xargs dirname)
+  - INSTALLED_HICPRO_VERSION=$(find $HOME/apps -name HiC-Pro | xargs dirname)
   - time $INSTALLED_HICPRO_VERSION/HiC-Pro -i test_data -o $HOME/results -c config-hicpro.txt
