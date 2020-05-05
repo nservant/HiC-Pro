@@ -44,11 +44,12 @@ From: ubuntu:latest
     conda install -y samtools=1.9
 
     # Python (>3.7.0) with *pysam (>=0.8.3)*, *bx(>=0.5.0)*, *numpy(>=1.8.2)*, and *scipy(>=0.15.1)* libraries
-    conda install -y python=3.7.6
-    conda install -y -c anaconda scipy 
-    conda install -y -c anaconda numpy 
-    conda install -y -c bcbio bx-python 
+    conda install -y -c conda-forge python=3.7.6
+    conda install -y -c conda-forge scipy 
+    conda install -y -c conda-forge numpy 
+    conda install -y -c bioconda bx-python 
     conda install -y -c bioconda pysam 
+    conda install -y -c bioconda iced
 
     # Install R
     conda update readline
