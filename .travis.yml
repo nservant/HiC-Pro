@@ -1,4 +1,4 @@
-sudo: required
+sudo: false
 language: python
 jdk: openjdk8
 services: docker
@@ -22,8 +22,8 @@ install:
   - conda env create -p $HOME/conda/hicpro -f envs/conda.yml
   - source activate $HOME/conda/hicpro
   # Install HiC-Pro
-  - sudo make configure
-  - sudo make install
+  - make configure
+  - make install
 
 script:
   # Get test data
