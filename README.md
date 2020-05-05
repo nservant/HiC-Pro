@@ -34,7 +34,7 @@ In order to ease the installation of HiC-Pro dependancies, we provide a `yml` fi
 In order to build your conda environment, first install [miniconda](https://docs.conda.io/en/latest/miniconda.html) and use :
 
 ```
-conda create env -f MY_INSTALL_PATH/HiC-Pro/envs/conda.yml -p WHERE_TO_INSTALL_MY_ENV
+conda env create -f MY_INSTALL_PATH/HiC-Pro/envs/conda.yml -p WHERE_TO_INSTALL_MY_ENV
 conda activate WHERE_TO_INSTALL_MY_ENV
 ```
 
