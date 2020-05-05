@@ -112,7 +112,7 @@ if __name__ == "__main__":
     if args.perchr is False:
         counts = counts.toarray()
         counts = counts + counts.T
-        counts[np.diag_indices_from(counts)] /= 2
+        counts[np.diag_indices_from(counts)] = counts[np.diag_indices_from(counts)] / 2
         counts = np.round(counts, 3)
 
         ## Output name for save
