@@ -6,7 +6,8 @@ LABEL authors="Nicolas Servant" \
 
 
 # Install miniconda. Copied from https://hub.docker.com/r/continuumio/miniconda/~/dockerfile/ (because we need debian:stretch to install gcc 6 which is needed for HiCPro)
-RUN apt-get install -y wget bzip2 ca-certificates \
+RUN apt-get update --fix-missing && \
+    apt-get install -y wget bzip2 ca-certificates \
     libglib2.0-0 libxext6 libsm6 libxrender1 \
     git mercurial subversion
 
