@@ -1,4 +1,4 @@
-FROM ubuntu:latest
+FROM ubuntu:16.04
 ENV LANG=C.UTF-8 LC_ALL=C.UTF-8
 
 LABEL authors="Nicolas Servant" \
