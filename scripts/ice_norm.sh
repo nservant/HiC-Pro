@@ -78,7 +78,7 @@ do
 	    then
 		input=$(find -L $IN_DIR/${RES_FILE_NAME}/ -name "*_$bsize.matrix*" ! -name "*iced*")
 		if [ ! -z $input ]; then
-		    cmd="ice --results_filename ${NORM_DIR}/${bsize}/${RES_FILE_NAME}_${bsize}_iced.matrix --filter_low_counts_perc ${FILTER_LOW_COUNT_PERC} --filter_high_counts_perc ${FILTER_HIGH_COUNT_PERC} --max_iter ${MAX_ITER} --eps ${EPS} --remove-all-zeros-loci --output-bias 1 --verbose 1 ${input}"
+		    cmd="ice --results_filename ${NORM_DIR}/${bsize}/${RES_FILE_NAME}_${bsize}_iced.matrix --filter_low_counts_perc ${FILTER_LOW_COUNT_PERC} --filter_high_counts_perc ${FILTER_HIGH_COUNT_PERC} --max_iter ${MAX_ITER} --eps ${EPS} --remove-all-zeros-loci --output-bias 1 --verbose ${input}"
                     exec_cmd $cmd >> ${ldir}/ice_${bsize}.log
                 else
 		    echo "Warning : Matrix not found at $bsize resolution in $IN_DIR/${RES_FILE_NAME} - skip"
@@ -87,7 +87,7 @@ do
 		for r in $(find -L ${IN_DIR}/${RES_FILE_NAME}/raw/${bsize}/ -name "*_$bsize.matrix*")
 		do
 		    ofile=$(basename ${r} | sed -e 's/.matrix/_iced.matrix/')
-		    cmd="ice --results_filename ${NORM_DIR}/${bsize}/${ofile} --filter_low_counts_perc ${FILTER_LOW_COUNT_PERC} --filter_high_counts_perc ${FILTER_HIGH_COUNT_PERC} --max_iter ${MAX_ITER} --eps ${EPS} --remove-all-zeros-loci --output-bias 1 --verbose 1 ${r}"
+		    cmd="ice --results_filename ${NORM_DIR}/${bsize}/${ofile} --filter_low_counts_perc ${FILTER_LOW_COUNT_PERC} --filter_high_counts_perc ${FILTER_HIGH_COUNT_PERC} --max_iter ${MAX_ITER} --eps ${EPS} --remove-all-zeros-loci --output-bias 1 --verbose ${r}"
 		    exec_cmd $cmd >> ${ldir}/ice_${bsize}.log 2>&1
 		done
 	    fi
