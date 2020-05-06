@@ -7,7 +7,7 @@
 
 ![Conda](https://img.shields.io/badge/Conda-build-brightgreen.svg)
 ![Singularity](https://img.shields.io/badge/Singularity-build-brightgreen.svg) 
-[![Docker](https://img.shields.io/badge/Docker-manual-brightyellow.svg)](https://hub.docker.com/repository/docker/nservant/hicpro)
+[![Docker](https://img.shields.io/badge/Docker-manual-yellow.svg)](https://hub.docker.com/repository/docker/nservant/hicpro)
 
 ![MultiQC](https://img.shields.io/badge/MultiQC-1.8-blue.svg)
 [![Forum](https://img.shields.io/badge/Groups-%20join%20chat%20%E2%86%92-4fb99a.svg?style=flat-square)](https://groups.google.com/forum/#!forum/hic-pro)
