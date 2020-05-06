@@ -17,7 +17,7 @@ before_install:
 install:
   # use the conda env to install all dependencies
   - mkdir -p /tmp/conda
-  - conda env create -p /tmp/conda/hicpro -f envs/conda.yml
+  - conda env create -p /tmp/conda/hicpro -f environment.yml
   - export PATH=/tmp/conda/hicpro/bin:$PATH
   # Install HiC-Pro
   - mkdir /tmp/apps
