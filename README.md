@@ -3,6 +3,7 @@
 
 ### An optimized and flexible pipeline for Hi-C data processing
 
+[![Build Status](https://travis-ci.com/nservant/HiC-Pro.svg?branch=devel_py3)](https://travis-ci.com/nservant/HiC-Pro)
 ![MultiQC](https://img.shields.io/badge/MultiQC-1.8-blue.svg)
 ![Singularity](https://img.shields.io/badge/Singularity-build-brightgreen.svg)
 ![Conda](https://img.shields.io/badge/Conda-build-brightgreen.svg)
