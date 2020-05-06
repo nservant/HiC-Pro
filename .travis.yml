@@ -29,7 +29,8 @@ script:
   - wget https://zerkalo.curie.fr/partage/HiC-Pro/hicpro_testop_travis.tar.gz && tar -zxvf hicpro_testop_travis.tar.gz
   - /bin/rm -f hicpro_testop_travis.tar.gz
   # Run HiC-Pro
-  - ls $HOME/annotations_yeast/chrom_W303_SGD_2015_JRIU00000000.sizes
+  - ls $HOME
+  - ls $HOME/annotations_yeast/
   - INSTALLED_HICPRO_VERSION=$(find $HOME/apps -name HiC-Pro | xargs dirname)
   - time $INSTALLED_HICPRO_VERSION/HiC-Pro -i test_data -o $HOME/results -c config_testop_yeast.txt
 
