@@ -16,21 +16,21 @@ before_install:
 
 install:
   # use the conda env to install all dependencies
-  - mkdir -p $HOME/conda
-  - conda env create -p $HOME/conda/hicpro -f envs/conda.yml
-  - export PATH=$HOME/conda/hicpro/bin:$PATH
+  - mkdir -p /tmp/conda
+  - conda env create -p /tmp/conda/hicpro -f envs/conda.yml
+  - export PATH=/tmp/conda/hicpro/bin:$PATH
   # Install HiC-Pro
-  - mkdir $HOME/apps
-  - make configure prefix=$HOME/apps
+  - mkdir /tmp/apps
+  - make configure prefix=/tmp/apps
   - make install
 
 script:
   # Get test data
-  - wget https://zerkalo.curie.fr/partage/HiC-Pro/hicpro_testop_travis.tar.gz && tar -zxvf hicpro_testop_travis.tar.gz
+  - mkdir -p $HOME/test-op && cd $HOME/test-op
+  - wget https://zerkalo.curie.fr/partage/HiC-Pro/hicpro_testop_travis.tar.gz -P $HOME/test-op/ && tar -zxvf hicpro_testop_travis.tar.gz
   - /bin/rm -f hicpro_testop_travis.tar.gz
   # Run HiC-Pro
-  - ls $HOME
-  - ls $HOME/annotations_yeast/
+  - ls $HOME/test-op/
   - INSTALLED_HICPRO_VERSION=$(find $HOME/apps -name HiC-Pro | xargs dirname)
-  - time $INSTALLED_HICPRO_VERSION/HiC-Pro -i test_data -o $HOME/results -c config_testop_yeast.txt
+  - time $INSTALLED_HICPRO_VERSION/HiC-Pro -i test_data -o $HOME/test-op/results -c config_testop_yeast.txt
 
