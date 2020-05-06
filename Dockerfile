@@ -1,4 +1,4 @@
-FROM ubuntu:16.04
+FROM ubuntu:18.04
 ENV LANG=C.UTF-8 LC_ALL=C.UTF-8
 
 LABEL authors="Nicolas Servant" \
@@ -15,7 +15,7 @@ RUN apt-get update \
 
 
 ## Install miniconda.
-RUN wget https://repo.continuum.io/miniconda/Miniconda3-4.5.4-Linux-x86_64.sh -O ~/anaconda.sh
+RUN wget https://repo.continuum.io/miniconda/Miniconda3-py37_4.8.2-Linux-x86_64.sh -O ~/anaconda.sh
 RUN bash ~/anaconda.sh -b -p /usr/local/anaconda
 RUN rm ~/anaconda.sh
 ENV PATH /usr/local/anaconda/bin:$PATH
@@ -24,7 +24,7 @@ ENV PATH /usr/local/anaconda/bin:$PATH
 ## Install all dependencies using conda
 COPY environment.yml /
 RUN conda env create -f /environment.yml && conda clean -a
-ENV PATH /opt/conda/envs/HiC-Pro_v3.0.0/bin:$PATH
+ENV PATH /usr/local/anaconda/envs/HiC-Pro_v3.0.0/bin:$PATH
 
 ## Install HiCPro
 RUN cd /tmp && \
