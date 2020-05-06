@@ -191,6 +191,5 @@ if __name__ == "__main__":
                 # the first position of the chromosome
                 if end > begin:
                     frag_id += 1
-                    frag_name = "HIC_{}_{}".format(chrom_name, frag_id)
-                    outfile.write("{}\t{}\t{}\t{}\t0\t+\n".format(chrom_name, begin,
-                                                end, frag_name))
+                    frag_name = "HIC_{}_{}".format(str(chrom_name), int(frag_id))
+                    outfile.write("{}\t{}\t{}\t{}\t0\t+\n".format(str(chrom_name), int(begin), int(end), str(frag_name)))
