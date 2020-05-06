@@ -4,7 +4,6 @@ ENV LANG=C.UTF-8 LC_ALL=C.UTF-8
 LABEL authors="Nicolas Servant" \
       description="Docker image containing all requirements for the HiC-Pro pipeline"
 
-
 ## Install system tools
 RUN apt-get update \
   && apt-get install -y build-essential \
@@ -27,7 +26,6 @@ COPY environment.yml /
 RUN conda env create -f /environment.yml && conda clean -a
 ENV PATH /opt/conda/envs/HiC-Pro_v3.0.0/bin:$PATH
 
-
 ## Install HiCPro
 RUN cd /tmp && \
     echo "devel_py3.zip" | wget --base=http://github.com/nservant/HiC-Pro/archive/ -i - -O hicpro_latest.zip && \
@@ -36,5 +34,6 @@ RUN cd /tmp && \
     make configure prefix=/ && \
     make install && \
     cd .. && \
-    rm -fr HiC-Pro* && \
-    ln -s /HiC-Pro_3.0.0 /HiC-Pro
+    rm -fr HiC-Pro*
+
+RUN /HiC-Pro_3.0.0/bin/HiC-Pro -h
