@@ -6,7 +6,7 @@ LABEL authors="Nicolas Servant" \
 
 
 # Install miniconda. Copied from https://hub.docker.com/r/continuumio/miniconda/~/dockerfile/ (because we need debian:stretch to install gcc 6 which is needed for HiCPro)
-RUN apt-get update --fix-missing && \
+RUN apt-get update && \
     apt-get install -y wget bzip2 ca-certificates \
     libglib2.0-0 libxext6 libsm6 libxrender1 \
     git mercurial subversion
@@ -17,7 +17,7 @@ RUN echo 'export PATH=/opt/conda/bin:$PATH' > /etc/profile.d/conda.sh && \
     rm ~/miniconda.sh
 
 ## Install gcc
-RUN apt-get update && apt-get install -y gcc && apt-get clean
+RUN apt-get update && apt-get install -y gcc g++ && apt-get clean
 
 ENV PATH /opt/conda/bin:$PATH
 
