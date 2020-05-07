@@ -142,6 +142,24 @@ conda env create -f MY_INSTALL_PATH/HiC-Pro/environment.yml -p WHERE_TO_INSTALL_
 conda activate WHERE_TO_INSTALL_MY_ENV
 ```
 
+### Using the HiC-Pro `Docker` image
+
+A docker image is automatically build and available on [Docker Hub](https://hub.docker.com/repository/docker/nservant/hicpro)
+To pull a Docker image, simply use :
+
+```
+docker pull nservant/hicpro:latest
+```
+
+Note that the `tag` may depend on the HiC-Pro version.
+
+You can also build your own image from the root folder using
+
+```
+docker build -t hicpro:3.0.0 .
+```
+
+
 ### Run HiC-Pro through `Singularity`
 
 HiC-Pro provides a Singularity container to ease its installation process.
