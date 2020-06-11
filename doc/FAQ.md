@@ -3,7 +3,7 @@
 ### Can I use HiC-Pro with the Arima Hi-C Kit ?
 
 Yes, the LIGATION_SITE variable from the configuration file can contain multiple ligation motifs (comma separated).
-Regarding the Arima kit, as there is two restiction motifs (GATC and GANT), the possible ligation motifs should be GATCGATC, GATCGANT, GANTGATC, GANTGANT.
+Regarding the Arima kit, as there is two restiction motifs (^GATC and G^ANTC), the possible ligation motifs should be  GATCGATC,GANTGATC,GANTANTC,GATCANTC
 Leading to 25 possible ligation motifs when the 'N' are replaced by 'A', 'C', 'G', 'T'.
 Since HiC-Pro version 2.11.3, 'N' base are automatically recognized.
 For older version, please specify all possible ligation motifs.
