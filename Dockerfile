@@ -28,9 +28,9 @@ ENV PATH /usr/local/anaconda/envs/HiC-Pro_v3.0.0/bin:$PATH
 
 ## Install HiCPro
 RUN cd /tmp && \
-    echo "devel_py3.zip" | wget --base=http://github.com/nservant/HiC-Pro/archive/ -i - -O hicpro_latest.zip && \
+    echo "devel.zip" | wget --base=http://github.com/nservant/HiC-Pro/archive/ -i - -O hicpro_latest.zip && \
     unzip hicpro_latest.zip && \
-    cd HiC-Pro-devel_py3  && \ 
+    cd HiC-Pro-devel  && \ 
     make configure prefix=/ && \
     make install && \
     cd .. && \
