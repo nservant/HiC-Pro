@@ -9,6 +9,9 @@
 
 import re
 
+def cmp(a, b):
+	return (a > b) - (a < b)
+
 def vcmp(version1, version2):
     def normalize(v):
         ## 0.18.0.dev0+609facc
@@ -22,8 +25,8 @@ def vcmp(version1, version2):
 ## bx
 try:
     import bx.intervals
-    if vcmp(bx.__version__, '0.5.0') == -1:
-        raise ValueError('bx-python '+bx.__version__+' detected. Version >= 0.5.0 required')
+    if vcmp(bx.__version__, '0.8.8') == -1:
+        raise ValueError('bx-python '+bx.__version__+' detected. Version >= 0.8.8 required')
 except ImportError:
     raise ImportError('Error - bx-python cannot be imported')  
 
@@ -31,8 +34,8 @@ except ImportError:
 ## numpy
 try:
     import numpy
-    if vcmp(numpy.__version__, '1.8.2') == -1:
-        raise ValueError('numpy '+numpy.__version__+' detected. Version >= 1.8.2 required')
+    if vcmp(numpy.__version__, '1.18.1') == -1:
+        raise ValueError('numpy '+numpy.__version__+' detected. Version >= 1.18.1 required')
 except ImportError:
     raise ImportError('Error - numpy cannot be imported')
 
@@ -40,8 +43,8 @@ except ImportError:
 ## scipy
 try:
     import scipy
-    if vcmp(scipy.version.version, '0.15.1') == -1:
-        raise ValueError('scipy '+scipy.version.version+' detected. Version >= 0.15.1 required')
+    if vcmp(scipy.version.version, '1.4.1') == -1:
+        raise ValueError('scipy '+scipy.version.version+' detected. Version >= 1.4.1 required')
 except ImportError:
     raise ImportError('Error - scipy cannot be imported')
 
@@ -55,8 +58,18 @@ except ImportError:
 ## pysam
 try:
     import pysam
-    if vcmp(pysam.__version__, '0.8.3') == -1:
-        raise ValueError('pysam '+pysam.__version__+' detected. Version >= 0.8.3 required')
+    if vcmp(pysam.__version__, '0.15.4') == -1:
+        raise ValueError('pysam '+pysam.__version__+' detected. Version >= 0.15.4 required')
 except ImportError:
     raise ImportError('Error - pysam cannot be imported')
 
+
+## iced
+try:
+   import iced
+   if vcmp(pysam.__version__, '0.5.4') == -1:
+           raise ValueError('iced '+pysam.__version__+' detected. Version >= 0.5.4 required')
+except ImportError:
+        raise ImportError('Error - iced cannot be imported')
+
+        

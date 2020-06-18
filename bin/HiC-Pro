@@ -9,7 +9,7 @@
 
                                                                    
 SOFT="HiC-Pro"
-VERSION="2.11.4"
+VERSION="3.0.0"
 
 function usage {
     echo -e "usage : $SOFT -i INPUT -o OUTPUT -c CONFIG [-s ANALYSIS_STEP] [-p] [-h] [-v]"
@@ -161,11 +161,13 @@ fi
 
 GENOME_SIZE_FILE=`abspath $GENOME_SIZE`
 if [[ ! -e $GENOME_SIZE_FILE ]]; then
+    echo -e "Warning: $GENOME_SIZE_FILE not found. Look into the annotation folder ..."
     GENOME_SIZE_FILE=$ANNOT_DIR/$GENOME_SIZE
 fi
 
 GENOME_FRAGMENT_FILE=`abspath $GENOME_FRAGMENT`
 if [[ ! -e $GENOME_FRAGMENT_FILE ]]; then
+    echo -e "Warning: $GENOME_FRAGMENT_FILE not found. Look into the annotation folder ..."
     GENOME_FRAGMENT_FILE=$ANNOT_DIR/$GENOME_FRAGMENT
 fi
 
@@ -265,7 +267,6 @@ if [[ $NEED_FASTQ == 1 ]]; then
     if [[ $nbin_r1 == 0 || $nbin_r2 == 0 || $nbin_r1 != $nbin_r2 ]]; then
         die "Error: Directory Hierarchy of rawdata '$INPUT' is not correct. Paired '.fastq' files with ${PAIR1_EXT}/${PAIR2_EXT} are required !"
     fi
-    
 elif [[ $NEED_BAM == 1 ]]; then
     nbin=$(find -L $INPUT -mindepth 2 -maxdepth 2 -name "*.bam" | wc -l)
     nbin_r1=$(find -L $INPUT -mindepth 2 -maxdepth 2 -name "*.bam" -and -name "*${PAIR1_EXT}* | wc -l")

@@ -14,7 +14,8 @@ CONFIGURE_OUT=$(wildcard ./config-system.txt)
 CONFIG_SYS=$(wildcard ./config-install.txt)
 RUNNER=$(shell whoami)
 
-install : config_check mapbuilder readstrimming iced cp
+#install : config_check mapbuilder readstrimming iced cp
+install : config_check mapbuilder readstrimming cp
 
 ######################################
 ## Config file
@@ -33,7 +34,11 @@ endif
 ######################################
 configure:
 ifneq ("$(CONFIG_SYS)","")
+ifneq ("$(prefix)","")
+	make -f ./scripts/install/Makefile CONFIG_SYS=$(CONFIG_SYS) prefix=$(prefix)
+else
 	make -f ./scripts/install/Makefile CONFIG_SYS=$(CONFIG_SYS)
+endif
 else
 	$(error config-install.txt file not found !)
 endif
@@ -51,14 +56,14 @@ readstrimming: $(INST_SOURCES)/cutsite_trimming.cpp
 	(g++ -Wall -O2 -std=c++0x -o cutsite_trimming ${INST_SOURCES}/cutsite_trimming.cpp; mv cutsite_trimming ${INST_SCRIPTS})
 
 ## Build Python lib
-iced: $(INST_SOURCES)/ice_mod
-ifeq ("$(RUNNER)","root")
-	@echo "Installing the iced package as root"     
-	(cd $(INST_SOURCES)/ice_mod/; ${PYTHON_PATH}/python setup.py install;)
-else
-	@echo "Installing the iced package in --user repository [runner=$(RUNNER)]"
-	(cd $(INST_SOURCES)/ice_mod/; ${PYTHON_PATH}/python setup.py install --user;)
-endif
+#iced: $(INST_SOURCES)/ice_mod
+#ifeq ("$(RUNNER)","root")
+#	@echo "Installing the iced package as root"     
+#	(cd $(INST_SOURCES)/ice_mod/; ${PYTHON_PATH}/python setup.py install;)
+#else
+#	@echo "Installing the iced package in --user repository [runner=$(RUNNER)]"
+#	(cd $(INST_SOURCES)/ice_mod/; ${PYTHON_PATH}/python setup.py install --user;)
+#endif
 
 test: config_check
 	@echo ${PYTHON_PATH}

@@ -1,4 +1,23 @@
 ***********************************
+CHANGES IN VERSION 3.0.0
+
+NEW FEATURES
+
+  o Add a Dockerfile for automatic Docker build on DockerHub
+
+  o Set up Travis continuous testing
+
+  o iced has been removed from HiC-Pro and is now an independant module
+
+  o Add a environment.yml file for installation with conda
+
+  o HiC-Pro is now based on python3. /!\ Python2 is no longer maintained /!\
+
+SIGNIFICANT USER-VISIBLE CHANGES
+
+  o Update of the Singularity image
+
+***********************************
 CHANGES IN VERSION 2.11.4
 
 BUG FIXES
