@@ -64,11 +64,11 @@ except ImportError:
     raise ImportError('Error - pysam cannot be imported')
 
 
-## iced
+# iced
 try:
    import iced
-   if vcmp(pysam.__version__, '0.5.4') == -1:
-           raise ValueError('iced '+pysam.__version__+' detected. Version >= 0.5.4 required')
+   if vcmp(iced.__version__, '0.5.4') == -1:
+           raise ValueError('iced '+iced.__version__+' detected. Version >= 0.5.4 required')
 except ImportError:
         raise ImportError('Error - iced cannot be imported')
 
