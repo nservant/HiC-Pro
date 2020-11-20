@@ -31,9 +31,6 @@ def usage():
     print("[-h/--help] <Help>")
     return
 
-class Error_handling:
-
-
 def get_args():
     """Get argument"""
     try:
@@ -46,8 +43,7 @@ def get_args():
              "exclusionSize=",
              "output=", 
              "verbose", "help"])
-    except getopt.GetoptError, err:
-        print("GetoptError: {}\n".format(str(err))
+    except getopt.GetoptError:
         usage()
         sys.exit(-1)
     return opts
@@ -72,7 +68,7 @@ def load_BED(in_file, exclusionSize=0, verbose=False):
     with open(in_file) as bed_handle:
         for line in bed_handle:
             if nline % 1000000 == 0 and verbose:
-                print("{} million lines loaded".format(int(nline/1000000))
+                sys.stderr.write("{} million lines loaded".format(int(nline/1000000)))
             nline += 1
             bedtab = line.split("\t")
             try:
@@ -122,20 +118,17 @@ def get_overlapping_fragment(frag, chrom, pos, quiet=False):
         ifrag = frag[chrom].find(int(pos), int(pos+1))
         if len(ifrag) > 1:
             if not quiet:
-                print(file=sys.stderr, "Warning : {} fragments found for read at {}:\
-                                        {} -skipped {}".format(len(ifrag), chrom, pos, ifrag))
+                sys.stderr.write("Warning : {} fragments found for read at {}:{} -skipped {}\n".format(len(ifrag), chrom, pos, ifrag))
             return None
         elif len(ifrag) == 0:
             if not quiet:
-                print(file=sys.stderr, "Warning - no fragments found for read at {}:\
-                                        {} -skipped".format(chrom, pos))
+                sys.stderr.write("Warning - no fragments found for read at {}:{} -skipped\n".format(chrom, pos))
             return None
         else:
             return ifrag[0]
     else:
         if not quiet:
-            print(file=sys.stderr, "Warning - no fragments found for read at {}:\
-                                    {} -skipped".format(chrom, pos))
+            sys.stderr.write("Warning - no fragments found for read at {}:{} -skipped\n".format(chrom, pos))
         return None
 
 
@@ -171,24 +164,24 @@ if __name__ == "__main__":
 
     # Verbose mode
     if verbose:
-        print(file=sys.stderr, "## make_viewpoints.py")
-        print(file=sys.stderr, "## validPairsFile={}".format(validPairsFile))
-        print(file=sys.stderr, "## fragmentFile={}".format(fragmentFile))
-        print(file=sys.stderr, "## targetFile={}".format(targetFile))
-        print(file=sys.stderr, "## exclusionSize={}".format(exclusionSize))
-        print(file=sys.stderr, "## verbose={}\n".format(verbose))
+        sys.stderr.write("## make_viewpoints.py\n")
+        sys.stderr.write("## validPairsFile={}\n".format(validPairsFile))
+        sys.stderr.write("## fragmentFile={}\n".format(fragmentFile))
+        sys.stderr.write("## targetFile={}\n".format(targetFile))
+        sys.stderr.write("## exclusionSize={}\n".format(exclusionSize))
+        sys.stderr.write("## verbose={}\n".format(verbose))
 
 
     # Read the BED files
     if verbose:
-        print(file=sys.stderr, "## Loading data ...")
+        sys.stderr.write("## Loading data ...\n")
 
     resFrag = load_BED(fragmentFile, verbose)[0]
     (target, exclu) =  load_BED(targetFile, exclusionSize=exclusionSize, verbose=verbose)
 
     # Read the validPairs file
     if verbose:
-        print(file=sys.stderr, "## Opening file {} ...".format(validPairsFile))
+        sys.stderr.write("## Opening file {} ...\n".format(validPairsFile))
    
     nline = 0
     repdict = {}
@@ -196,19 +189,23 @@ if __name__ == "__main__":
     c_c_counter, r_r_counter, c_r_counter, ua_counter, exclu_counter = 0, 0, 0, 0, 0
 
     with open(validPairsFile) as in_handle:
-        if nline % 1000000 == 0 and verbose:
-            print(file=sys.stderr, "{} million lines processed".format(int(nline/1000000)))
+        if nline % 1000000 == 0 and nline > 0 and verbose:
+            sys.stderr.write("{} lines processed\n".format(nline))
         for line in in_handle:
             nline += 1
             intab = line.split("\t")
             try:
                 readname, r1_chr, r1_start, r1_strand, r2_chr, r2_start, r2_strand = intab[:7]
             except ValueError:
-                print(file=sys.stderr, "Warning : wrong input format in line {}\
-                                        .Not a validPairs file !?".format(nline))
+                sys.stderr.write("Warning : wrong input format in line {}\
+                                  .Not a validPairs file !?\n".format(nline))
                 continue
 
-            r1_resfrag, r2_resfrag, reporter = None, None, None
+            r1_resfrag = None
+            r2_resfrag = None
+            reporter = None
+            reporter_chrom = None
+            capture = None
             
             ## Intersect with target
             if len(exclu) > 0:
@@ -225,6 +222,7 @@ if __name__ == "__main__":
                     r1_resfrag = get_overlapping_fragment(resFrag, r1_chr, int(r1_start))
                     if  r1_resfrag is not None:
                         reporter = r1_resfrag
+                        reporter_chrom = r1_chr
                     else:
                         ua_counter += 1
                         #print >> sys.stderr, "Warning : reads [", r1_chr, ":", r1_start, "] do not overlap with a capture nor a restriction fragment !"
@@ -236,6 +234,7 @@ if __name__ == "__main__":
                     r2_resfrag = get_overlapping_fragment(resFrag, r2_chr, int(r2_start))
                     if r2_resfrag is not None:
                         reporter = r2_resfrag
+                        reporter_chrom = r2_chr
                     else:
                         ua_counter += 1
                         #print >> sys.stderr, "Warning : reads [", r2_chr, ":", r2_start, "] do not overlap with a capture nor a restriction fragment !"
@@ -251,7 +250,7 @@ if __name__ == "__main__":
                 if reporter.value['name'] in repdict[capture.value['name']]:
                     repdict[capture.value['name']][reporter.value['name']]['count'] += 1                                                                             
                 else:
-                    repdict[capture.value['name']][reporter.value['name']] = {'chr':r1_chr, 'start':reporter.start, 'end':reporter.end, 'count':1}                  
+                    repdict[capture.value['name']][reporter.value['name']] = {'chr':reporter_chrom, 'start':reporter.start, 'end':reporter.end, 'count':1}                  
             elif capture is not None and reporter is None:
                 c_c_counter += 1
             elif capture is None and reporter is not None:
@@ -264,16 +263,16 @@ if __name__ == "__main__":
         sys.stdout = open(output, 'w')
 
     for k in repdict:
-        print("track type=bedGraph name='hicpro {k}' description='hicpro {k}' visibility=full\
+        print("track type=bedGraph name='hicpro {}' description='hicpro {}' visibility=full\
                color=200,100,0 altColor=0,100,200 priority=20".format(k, k))
-        for key, value in repdict[k].iteritems():
+        for key, value in repdict[k].items():
             print("{}\t{}\t{}\t{}".format(value['chr'], str(value['start']),\
                                           str(value['end']), str(value['count'])))
 
 
     ## stats
-    print(file=sys.stderr, "CAP-REP read pairs = {}".format(c_r_counter))
-    print(file=sys.stderr, "CAP-CAP read pairs = {}".format(c_c_counter))
-    print(file=sys.stderr, "REP-REP read pairs = ".format(r_r_counter))
-    print(file=sys.stderr, "Excluded reads =".format(exclu_counter))
-    print(file=sys.stderr, "UA reads =".format(ua_counter))
+    sys.stderr.write("CAP-REP read pairs = {}\n".format(c_r_counter))
+    sys.stderr.write("CAP-CAP read pairs = {}\n".format(c_c_counter))
+    sys.stderr.write("REP-REP read pairs = {}\n".format(r_r_counter))
+    sys.stderr.write("Excluded reads = {}\n".format(exclu_counter))
+    sys.stderr.write("UA reads = {}\n".format(ua_counter))
