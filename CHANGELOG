@@ -15,6 +15,10 @@ NEW FEATURES
 
 SIGNIFICANT USER-VISIBLE CHANGES
 
+  o Fix bug in make_viewpoints.py if multiple viewpoints are specified in the bed file
+
+  o Add '--float' option for hicpro2higlass to manage normalized Hi-C data
+
   o Update of the Singularity image
 
 ***********************************

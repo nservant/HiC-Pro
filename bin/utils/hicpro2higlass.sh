@@ -88,7 +88,7 @@ vercomp () {
 }
 
 function usage {
-    echo -e "usage : hicpro2higlass -i INPUT -r RESOLUTION -c CHROMSIZE [-n] [-o ODIR] [-t TEMP]  [-h]"
+    echo -e "usage : hicpro2higlass -i INPUT -r RESOLUTION -c CHROMSIZE [-n] [-o ODIR] [-t TEMP] [-f FLOAT] [-h]"
     echo -e "Use option -h|--help for more information"
 }
 
@@ -105,6 +105,7 @@ function help {
     echo "   -c|--chrom CHROMSIZE : chromosome size file"
     echo "   -p|--proc NB_CPU : number of CPUs for cooler"
     echo "   [-n|--norm] : run cooler matrix balancing algorithm"
+    echo "   [-f|--float] : cooler count as float for already normalized data"
     echo "   [-o|--out] : output path. Default is current path"
     echo "   [-t|--temp] TEMP : path to tmp folder. Default is current path"
     echo "   [-h|--help]: help"
@@ -130,6 +131,7 @@ for arg in "$@"; do
       "--out") set -- "$@" "-o" ;;
       "--temp") set -- "$@" "-t" ;;
       "--norm")   set -- "$@" "-n" ;;
+      "--float")   set -- "$@" "-f" ;;   
       "--help")   set -- "$@" "-h" ;;
        *)        set -- "$@" "$arg"
   esac
@@ -138,18 +140,20 @@ done
 INPUT_HICPRO=""
 INPUT_BED=""
 NORMALIZE=0
+FLOAT=0
 NPROC=1
 CHROMSIZES_FILE=""
 RES=10000
 OUT="./"
 TEMP="./"
 
-while getopts ":i:b:c:p:r:o:t:nh" OPT
+while getopts ":i:b:c:p:r:o:t:nfh" OPT
 do
     case $OPT in
 	i) INPUT_HICPRO=$OPTARG;;
 	b) INPUT_BED=$OPTARG;;
 	n) NORMALIZE=1;;
+	f) FLOAT=1;;
 	c) CHROMSIZES_FILE=$OPTARG;;
 	p) NPROC=$OPTARG;;
 	r) RES=$OPTARG;;
@@ -223,8 +227,12 @@ if [[ $DATATYPE == "MATRIX" ]]; then
     out=$(basename $INPUT_HICPRO | sed -e 's/.mat.*/.cool/')
     
     cooler makebins $CHROMSIZES_FILE $RES > $tmp_dir/bins.bed
-    cooler load -f coo --one-based $tmp_dir/bins.bed $INPUT_HICPRO $tmp_dir/$out
-
+    if [ $FLOAT == 1 ];
+    then
+	cooler load --count-as-float -f coo --one-based $tmp_dir/bins.bed $INPUT_HICPRO $tmp_dir/$out
+    else
+	cooler load -f coo --one-based $tmp_dir/bins.bed $INPUT_HICPRO $tmp_dir/$out
+    fi
     echo -e "\nZoomify .cool file ..."
     if [[ $NORMALIZE == 1 ]]; then
 	cooler zoomify --nproc ${NPROC} --balance $tmp_dir/$out
