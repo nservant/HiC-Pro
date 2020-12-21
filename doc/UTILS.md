@@ -52,12 +52,12 @@ Finally, note that multiple restriction enzymes can also be provided (space sepa
 ### make_viewpoints.py OR 'How can I generate a BED profile from a given viewpoints ?'
 
 The make_viewpoints.py script was initially designed in the context of capture-C data.  
-For a given anchor (i.e. capture site), it allows to generate a track file with all interacting fragments.  
+For a list of anchors (i.e. capture sites), it allows to generate track files with all interacting fragments.  
 Regions around the capture are usually excluded from the profile ('-e' parameter)
 
 ```
    ## Generate a viewpoints from capture site
-   HICPRO_PATH/bin/utils/make_viewpoints -i hicpro_res/hic_results/data/dixon_2M/dixon_2M_allValidPairs  -f HICPRO_PATH/data_info/HindIII_resfrag_hg19.bed -t mycapture.bed -e 1000 -v > capture.bedgraph
+   HICPRO_PATH/bin/utils/make_viewpoints -i hicpro_res/hic_results/data/dixon_2M/dixon_2M_allValidPairs -f HICPRO_PATH/data_info/HindIII_resfrag_hg19.bed -t mycapture.bed -e 1000 -o OUTPUT_DIR/output_ -v
 ```
 
 ### hicpro2juicebox.sh OR 'How can I load my HiC-Pro data into Juicebox visualization software ?'
@@ -68,10 +68,10 @@ This utility requires HiC-Pro version 2.7.6 or later, and the installation of [J
 
 ```
    ## Convert HiC-Pro output to Juicebox input
-   HICPRO_PATH/bin/utils/hicpro2juicebox.sh -i hicpro_res/hic_results/data/dixon_2M/dixon_2M_allValidPairs -g chrom_hg19.sizes -j /usr/local/juicebox/juicebox_clt_1.4.jar
+   HICPRO_PATH/bin/utils/hicpro2juicebox.sh -i hicpro_res/hic_results/data/dixon_2M/dixon_2M_allValidPairs -g chrom_hg19.sizes -j /usr/local/juicer/juicer_tools.1.7.5_linux_x64_jcuda.0.8.jar
 
    ## Convert HiC-Pro output to Juicebox input up to restriction fragment resolution
-   HICPRO_PATH/bin/utils/hicpro2juicebox.sh -i hicpro_res/hic_results/data/dixon_2M/dixon_2M_allValidPairs -g chrom_hg19.sizes -j /usr/local/juicebox/juicebox_clt_1.4.jar -f  HICPRO_PATH/data_info/HindIII_resfrag_hg19.bed
+   HICPRO_PATH/bin/utils/hicpro2juicebox.sh -i hicpro_res/hic_results/data/dixon_2M/dixon_2M_allValidPairs -g chrom_hg19.sizes -j /usr/local/juicer/juicer_tools.1.7.5_linux_x64_jcuda.0.8.jar -f  HICPRO_PATH/data_info/HindIII_resfrag_hg19.bed
 ```
 
 ### sparseToDense.py OR 'How can I convert HiC-Pro output into dense format ?'
@@ -111,6 +111,8 @@ See https://github.com/mirnylab/cooler for .cool Hi-C data format. The path to c
    ## Convert matrix file into .cool file
    HICPRO_PATH/bin/utils/hicpro2higlass.sh -i hic_results/data/dixon_2M/dixon_2M_allValidPairs -r 40000 -c chrom_hg19.sizes -n
 ```
+
+Note that you should use the `--float` option for iced normalized data.
 
 ### split_sparse.py OR 'How can I split my HiC-Pro sparse format ?'
 

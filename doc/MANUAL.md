@@ -45,14 +45,15 @@ In order to process the raw data, HiC-Pro requires three annotation files. Note 
 
 Copy and edit the configuration file *'config-hicpro.txt'* in your local folder. The '[]' options are optional and can be undefined.
 
-| SYSTEM         |                                        |
-|----------------|----------------------------------------|
-| N_CPU          | Number of CPU allows per job           |
-| LOGFILE        | Name of the main log file              |
-| [JOB_NAME  ]   | Name of the job on the custer          |
-| [JOB_MEM]      | Memory (RAM) required per job          |
-| [JOB_WALLTIME] | WallTime allows per job                |
-| [JOB_MAIL]     | User mail for PBS/Torque report        |
+| SYSTEM         |                                                                                                                      |
+|----------------|----------------------------------------------------------------------------------------------------------------------|
+| N_CPU          | Number of CPU allows per job                                                                                         |
+| SORT_RAM       | The memory for samtools sort (in Mo). Note that this number will be divided by the N_CPU to have a memory per thread |
+| LOGFILE        | Name of the main log file                                                                                            |
+| [JOB_NAME  ]   | Name of the job on the custer                                                                                        |
+| [JOB_MEM]      | Memory (RAM) required per job                                                                                        |
+| [JOB_WALLTIME] | WallTime allows per job                                                                                              |
+| [JOB_MAIL]     | User mail for PBS/Torque report                                                                                      |
 
 ----------------
 

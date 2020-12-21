@@ -14,7 +14,7 @@ RAW_DIR = rawdata
 ## SYSTEM AND SCHEDULER - Start Editing Here !!
 #######################################################################
 N_CPU = 2
-SORT_RAM = 768M
+SORT_RAM = 1000M
 LOGFILE = hicpro.log
 
 JOB_NAME = 
