@@ -93,8 +93,8 @@ def load_vcf(in_file, filter_qual=False, verbose=False, debug=False):
     if verbose:
         print("## Loading VCF file {} ...".format(in_file))
 
-    if ".gz" in in_file:
-        vcf_handle = gzip.open(in_file, 'r')
+    if in_file.endswith(".gz"):
+        vcf_handle = gzip.open(in_file, 'rt')
     else:
         vcf_handle = open(in_file)    
     header = []
