@@ -61,6 +61,7 @@ die() {
 function usage {
     echo -e "Usage : ./install_all.sh"
     echo -e "-c"" <configuration install file>"
+    echo -e "-p"" <prefix>"
     echo -e "-o"" <installation folder>"
     echo -e "-q"" <quiet>"
     echo -e "-h"" <help>"
@@ -73,11 +74,12 @@ echo -e "$BLUE""Starting $SOFT installation ...""$NORMAL";
 
 ################### Initialize ###################
 quiet=0
-set -- $(getopt c:o:qh "$@")
+set -- $(getopt c:p:o:qh "$@")
 while [ $# -gt 0 ]
 do
     case "$1" in
 	(-c) conf=$2; shift;;
+	(-p) prefix=$2 shift;;
 	(-o) install_dir=$2; shift;;
 	(-q) quiet=1; shift;;
 	(-h) usage;;
@@ -148,9 +150,9 @@ if [ $? != "0" ]; then
     exit 1;
 else
     pver=`python --version 2>&1 | cut -d" " -f2`
-    vercomp $pver "2.7.0"
+    vercomp $pver "3.7.0"
     if [[ $? == 2 ]]; then
-	echo -e "$RED""Python v2.7.0 or higher is needed [$pver detected].""$NORMAL"
+	echo -e "$RED""Python v3.7.X or higher is needed [$pver detected].""$NORMAL"
 	exit 1;
     fi
 fi
@@ -178,6 +180,9 @@ cd ./tmp
 ################ Install dependencies  ###################
 
 ## By default, dependencies will be installed in the same path than HiC-Pro
+if [[ ! -z ${prefix} ]]; then
+    PREFIX=${prefix}
+fi
 PREFIX_BIN=${PREFIX}
 
 if [ ! -w $PREFIX_BIN ]; then
@@ -269,13 +274,13 @@ fi
 
 if [ $wasInstalled == 0 ]; then
     echo "Installing Bowtie2 ..."
-    $get bowtie2-2.2.4-source.zip http://sourceforge.net/projects/bowtie-bio/files/bowtie2/2.2.4/bowtie2-2.2.4-source.zip/download
-    unzip bowtie2-2.2.4-source.zip
-    cd bowtie2-2.2.4
+    $get bowtie2-2.3.5-source.zip http://sourceforge.net/projects/bowtie-bio/files/bowtie2/2.3.5/bowtie2-2.3.5-source.zip/download
+    unzip bowtie2-2.3.5-source.zip
+    cd bowtie2-2.3.5
     make
     cd ..
-    mv bowtie2-2.2.4 $PREFIX_BIN
-    export PATH=$PREFIX_BIN/bowtie2-2.2.4/:$PATH
+    mv bowtie2-2.3.5 $PREFIX_BIN
+    export PATH=$PREFIX_BIN/bowtie2-2.3.5/:$PATH
     wasInstalled=0;
 fi
  
@@ -309,13 +314,13 @@ fi
 if [ $wasInstalled == 0 ]; then
     echo "Installing samtools ..."
     #From sources
-    $get samtools-1.1.tar.bz2  http://sourceforge.net/projects/samtools/files/samtools/1.1/samtools-1.1.tar.bz2/download
-    tar -xvjpf samtools-1.1.tar.bz2
-    cd samtools-1.1
+    $get samtools-1.10.tar.bz2  http://sourceforge.net/projects/samtools/files/samtools/1.10/samtools-1.10.tar.bz2/download
+    tar -xvjpf samtools-1.10.tar.bz2
+    cd samtools-1.10
     make
     cd ..
-    mv samtools-1.1 $PREFIX_BIN
-    export PATH=$PREFIX_BIN/samtools-1.1/:$PATH
+    mv samtools-1.10 $PREFIX_BIN
+    export PATH=$PREFIX_BIN/samtools-1.10/:$PATH
     wasInstalled=0;
 fi
 
@@ -407,7 +412,7 @@ else
 fi
 
 ## check rights in PREFIX folder
-if [[ -z $PREFIX ]]; then PREFIX=/usr/local/bin; fi
+#if [[ -z $PREFIX ]]; then PREFIX=/usr/local/bin; fi
 if [ ! -w $PREFIX ]; then
     die "Cannot install HiCPro in $PREFIX directory. Maybe missing super-user (root) permissions to write there. Please specify another directory in the config-install.txt file (PREFIX=)";
 fi 

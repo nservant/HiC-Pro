@@ -1,0 +1,35 @@
+sudo: required
+language: python
+python: '3.7'
+cache: pip
+matrix:
+  fast_finish: true
+
+before_install:
+  # install conda
+  - wget http://repo.continuum.io/miniconda/Miniconda-latest-Linux-x86_64.sh -O miniconda.sh
+  - chmod +x miniconda.sh
+  - ./miniconda.sh -b
+  - export PATH=/home/travis/miniconda2/bin:$PATH
+  - conda update --yes conda
+
+
+install:
+  # use the conda env to install all dependencies
+  - mkdir -p /tmp/conda
+  - conda env create -p /tmp/conda/hicpro -f environment.yml
+  - export PATH=/tmp/conda/hicpro/bin:$PATH
+  # Install HiC-Pro
+  - mkdir /tmp/apps
+  - make configure prefix=/tmp/apps
+  - make install
+
+script:
+  # Get test data
+  - mkdir -p $HOME/test-op && cd $HOME/test-op
+  - wget https://zerkalo.curie.fr/partage/HiC-Pro/hicpro_testop_travis.tar.gz -P $HOME/test-op/ && tar -zxvf hicpro_testop_travis.tar.gz
+  - /bin/rm -f hicpro_testop_travis.tar.gz
+  # Run HiC-Pro
+  - INSTALLED_HICPRO_VERSION=$(find /tmp/apps -name HiC-Pro | xargs dirname)
+  - time $INSTALLED_HICPRO_VERSION/HiC-Pro -i test_data -o $HOME/test-op/results -c config_testop_yeast.txt
+

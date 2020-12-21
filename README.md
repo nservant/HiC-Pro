@@ -3,8 +3,13 @@
 
 ### An optimized and flexible pipeline for Hi-C data processing
 
-![MultiQC](https://img.shields.io/badge/MultiQC-1.6-blue.svg)
-![Singularity](https://img.shields.io/badge/Singularity-build-brightgreen.svg)
+[![Build Status](https://travis-ci.com/nservant/HiC-Pro.svg?branch=devel_py3)](https://travis-ci.com/nservant/HiC-Pro)
+
+![Conda](https://img.shields.io/badge/Conda-build-brightgreen.svg)
+![Singularity](https://img.shields.io/badge/Singularity-build-brightgreen.svg) 
+[![Docker](https://img.shields.io/badge/Docker-manual-yellow.svg)](https://hub.docker.com/repository/docker/nservant/hicpro)
+
+![MultiQC](https://img.shields.io/badge/MultiQC-1.8-blue.svg)
 [![Forum](https://img.shields.io/badge/Groups-%20join%20chat%20%E2%86%92-4fb99a.svg?style=flat-square)](https://groups.google.com/forum/#!forum/hic-pro)
 [![DOI](https://img.shields.io/badge/DOI-10.1186%2Fs13059--015--0831--x-lightgrey.svg?style=flat-square)](https://doi.org/10.1186/s13059-015-0831-x)
 
@@ -25,7 +30,36 @@ If you use HiC-Pro, please cite :
 
 *Servant N., Varoquaux N., Lajoie BR., Viara E., Chen CJ., Vert JP., Dekker J., Heard E., Barillot E.* HiC-Pro: An optimized and flexible pipeline for Hi-C processing. Genome Biology 2015, 16:259 [doi:10.1186/s13059-015-0831-x](https://doi.org/10.1186/s13059-015-0831-x)
 
-## Using HiC-Pro through Singularity
+## Containers
+
+### Using HiC-Pro through `conda`
+
+In order to ease the installation of HiC-Pro dependancies, we provide a `yml` file for conda with all required tools.
+In order to build your conda environment, first install [miniconda](https://docs.conda.io/en/latest/miniconda.html) and use :
+
+```
+conda env create -f MY_INSTALL_PATH/HiC-Pro/environment.yml -p WHERE_TO_INSTALL_MY_ENV
+conda activate WHERE_TO_INSTALL_MY_ENV
+```
+
+### Using the HiC-Pro `Docker` image
+
+A docker image is automatically build and available on [Docker Hub](https://hub.docker.com/repository/docker/nservant/hicpro)
+To pull a Docker image, simply use :
+
+```
+docker pull nservant/hicpro:latest
+```
+
+Note that the `tag` may depend on the HiC-Pro version.
+
+You can also build your own image from the root folder using
+
+```
+docker build -t hicpro:3.0.0 .
+```
+
+### Using HiC-Pro through `Singularity`
 
 HiC-Pro provides a Singularity container to ease its installation process.
 A ready-to-use container is available [here](https://zerkalo.curie.fr/partage/HiC-Pro/singularity_images/hicpro_latest_ubuntu.img).
@@ -41,7 +75,7 @@ In order to build you own Singularity image;
 2- Build the singularity HiC-Pro image using the 'Singularity' file available in the HiC-Pro root directory.
 
 ```
-sudo singularity build hicpro_latest_ubuntu.img MY_INSTALL_PATH/HiC-Pro/Singularity
+sudo singularity build hicpro_latest_ubuntu.img MY_INSTALL_PATH/HiC-Pro/envs/Singularity
 ```
 
 3- Run HiC-pro
@@ -64,16 +98,16 @@ HiC-Pro -h
 The HiC-Pro pipeline requires the following dependencies :
 
 - The [bowtie2](http://bowtie-bio.sourceforge.net/bowtie2/index.shtml) mapper
-- Python (>2.7) with *pysam (>=0.8.3)*, *bx-python(>=0.5.0)*, *numpy(>=1.8.2)*, and *scipy(>=0.15.1)* libraries.  
-**Note that the current version does not support python 3**
+- Python (>3.7) with *pysam (>=0.15.4)*, *bx-python(>=0.8.8)*, *numpy(>=1.18.1)*, and *scipy(>=1.4.1)* libraries.  
+**Note that the current version no longer supports python 2**
 - R with the *RColorBrewer* and *ggplot2 (>2.2.1)* packages
 - g++ compiler
-- samtools (>1.1)
+- samtools (>1.9)
 - Unix sort (**which support -V option**) is required ! For Mac OS user, please install the GNU core utilities !
 
 Note that Bowtie >2.2.2 is strongly recommanded for allele specific analysis.  
 
-To install HiC-Pro (>=2.7.8), be sure to have the appropriate rights and run :
+To install HiC-Pro, be sure to have the appropriate rights and run :
 
 ```
 tar -zxvf HiC-Pro-master.tar.gz
@@ -81,15 +115,6 @@ cd HiC-Pro-master
 ## Edit config-install.txt file if necessary
 make configure
 make install
-```
-
-For older version (<2.7.8), the following process can be used
-
-```
-tar -zxvf HiC-Pro-master.tar.gz
-cd HiC-Pro-master
-## Edit config-install.txt file if necessary
-make CONFIG_SYS=config-install.txt install
 ```
 
 Note that if some of these dependencies are not installed (i.e. not detected in the $PATH), HiC-Pro will try to install them.  
@@ -100,9 +125,9 @@ You can also edit the *config-install.txt* file and manually defined the paths t
 |---------------|-------------------------------------------------------------------------------|
 | PREFIX        | Path to installation folder                                                   |
 | BOWTIE2_PATH  | Full path the bowtie2 installation directory                                  |
-| SAMTOOLS_PATH | Full path to the samtools installation directory (>1.1   )                    |
+| SAMTOOLS_PATH | Full path to the samtools installation directory                              |
 | R_PATH        | Full path to the R installation directory                                     |
-| PYTHON_PATH   | Full path to the python installation directory (>2.7 - python3 not supported) |
+| PYTHON_PATH   | Full path to the python installation directory                                |
 | CLUSTER_SYS   | Scheduler to use for cluster submission. Must be TORQUE, SGE, SLURM or LSF    |
 
 
@@ -155,7 +180,7 @@ First have a look at the help message !
   usage : HiC-Pro -i INPUT -o OUTPUT -c CONFIG [-s ANALYSIS_STEP] [-p] [-h] [-v]
   Use option -h|--help for more information
 
-  HiC-Pro 2.11.3
+  HiC-Pro 3.0.0
   ---------------
   OPTIONS
 
@@ -238,7 +263,7 @@ Small fastq files (2M reads) extracted from the Dixon et al. 2012 paper are avai
  ## Run HiC-Pro
  time HICPRO_INSTALL_DIR/bin/HiC-Pro -c config_test_latest.txt -i test_data -o hicpro_latest_test
 
-Run HiC-Pro 2.11.3
+Run HiC-Pro 3.0.0
 --------------------------------------------
 Thu Mar 19, 12:18:10 (UTC+0100)
 Bowtie2 alignment step1 ...

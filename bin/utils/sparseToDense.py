@@ -41,34 +41,43 @@ def load_lengths_perchr(filename, add_name=True):
     lengths = [(data[:, 0] == i).sum() for i in u[np.argsort(idx)]]
     if add_name:
         return (np.array(lengths), u[np.argsort(idx)])
-    else:
-        return np.array(lengths)
+    return np.array(lengths)
 
 
 if __name__ == "__main__":
     import argparse
     parser = argparse.ArgumentParser()
     parser.add_argument("filename")
-    parser.add_argument("-b", "--bins", help="BED file with bins coordinates. If provided the chromosome lengths are used to define the output matrix size")
-    parser.add_argument("-g", "--org", help="Reference genome. Used if --ins is specified", default='org')
+    parser.add_argument("-b", "--bins", help="BED file with bins coordinates.\
+                         If provided the chromosome lengths are used to\
+                         define the output matrix size")
+    parser.add_argument("-g", "--org", help="Reference genome.\
+                         Used if --ins is specified", default='org')
 
-    parser.add_argument("-d", "--di", help="If specified the output matrix is formatted for Dixon et al. TADs calling (directionality index). In this case --bins is required", action='store_true')
-    parser.add_argument("-i", "--ins", help="If specified the output matrix is formatted for Crane et al. TADs calling (insulation score). In this case --bins is required", action='store_true')
-    parser.add_argument("-c", "--perchr", help="If specified intrachromosomal maps are written per chromosome as individual dense matrices. In this case, --bins must also be specified", action='store_true')
+    parser.add_argument("-d", "--di", help="If specified the output matrix is\
+                         formatted for Dixon et al. TADs calling (directionality index).\
+                         In this case --bins is required", action='store_true')
+    parser.add_argument("-i", "--ins", help="If specified the output matrix is\
+                         formatted for Crane et al. TADs calling (insulation score)\
+                         .In this case --bins is required", action='store_true')
+    parser.add_argument("-c", "--perchr", help="If specified intrachromosomal\
+                         maps are written per chromosome as individual dense\
+                         matrices. In this case, --bins must also be specified", 
+                        action='store_true')
     parser.add_argument("-o", "--output", help="Output filename")
 
     args = parser.parse_args()
 
     if args.di is True and args.bins is None:
-        print "--bins parameter is required when --di is specified"
+        print("--bins parameter is required when --di is specified")
         sys.exit(1)
 
     if args.ins is True and args.bins is None:
-        print "--bins parameter is required when --is is specified"
+        print("--bins parameter is required when --is is specified")
         sys.exit(1)
 
     if args.perchr is True and args.bins is None:
-        print "--bins parameter is required when --perchr is specified"
+        print("--bins parameter is required when --perchr is specified")
         sys.exit(1)
     
     ## bin option
@@ -90,7 +99,7 @@ if __name__ == "__main__":
     if args.di is True or args.ins is True:
         bins = load_bed(args.bins)
         if len(bins) != counts.shape[1]:
-            print "Error -  number of rows in BED and matrix files are not equal"
+            print("Error -  number of rows in BED and matrix files are not equal")
             sys.exit(1)
 
     if args.ins is True:
@@ -103,7 +112,7 @@ if __name__ == "__main__":
     if args.perchr is False:
         counts = counts.toarray()
         counts = counts + counts.T
-        counts[np.diag_indices_from(counts)] /= 2
+        counts[np.diag_indices_from(counts)] = counts[np.diag_indices_from(counts)] / 2
         counts = np.round(counts, 3)
 
         ## Output name for save
@@ -130,11 +139,14 @@ if __name__ == "__main__":
         lc = np.concatenate([np.array([0]), lengths.cumsum()])
 
         for i in range(1, len(lc)):
-            print str(chrnames[i-1]) + "..."
-            idxintra = np.where(((counts.row >= lc[i-1]) & (counts.row<lc[i])) & ((counts.col>=lc[i-1]) & (counts.col<lc[i])))[0]
+            print("{}...".format(str(chrnames[i-1])))
+            idxintra = np.where(((counts.row >= lc[i-1]) & (counts.row<lc[i])) & 
+                                ((counts.col>=lc[i-1]) & (counts.col<lc[i])))[0]
          
             ## Subset the counts array and rescale the index based on cumulative lengths
-            counts_perchr = sparse.coo_matrix((counts.data[idxintra], (counts.row[idxintra] - lc[i-1], counts.col[idxintra] - lc[i-1])), shape=(lengths[i-1], lengths[i-1]))
+            counts_perchr = sparse.coo_matrix((counts.data[idxintra],
+           (counts.row[idxintra] - lc[i-1], counts.col[idxintra] - lc[i-1])), 
+            shape=(lengths[i-1], lengths[i-1]))
             counts_perchr = counts_perchr.toarray()
             counts_perchr = counts_perchr + counts_perchr.T
             counts_perchr[np.diag_indices_from(counts_perchr)] /= 2

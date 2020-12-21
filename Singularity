@@ -40,15 +40,16 @@ From: ubuntu:latest
 
     # external tools
     echo "Installing dependancies ... "
-    conda install -y bowtie2
-    conda install -y samtools
+    conda install -y bowtie2=2.3.5
+    conda install -y samtools=1.9
 
-    # Python (>2.7) with *pysam (>=0.8.3)*, *bx(>=0.5.0)*, *numpy(>=1.8.2)*, and *scipy(>=0.15.1)* libraries
-    conda install -y -c conda-forge python=2.7.15
-    conda install -y -c anaconda scipy=1.2.1 
-    conda install -y -c anaconda numpy=1.16.3
-    conda install -y -c bcbio bx-python=0.8.2
-    conda install -y -c bioconda pysam=0.15.2 
+    # Python (>3.7.0) with *pysam (>=0.8.3)*, *bx(>=0.5.0)*, *numpy(>=1.8.2)*, and *scipy(>=0.15.1)* libraries
+    conda install -y -c conda-forge python=3.7.6
+    conda install -y -c conda-forge scipy 
+    conda install -y -c conda-forge numpy 
+    conda install -y -c bioconda bx-python 
+    conda install -y -c bioconda pysam 
+    conda install -y -c bioconda iced
 
     # Install R
     conda update readline
@@ -59,13 +60,13 @@ From: ubuntu:latest
     conda install -c r r-gridbase=0.4_7	
 
     # Install MultiQC
-    conda install -c bioconda multiqc=1.7 
+    conda install -c bioconda multiqc=1.8
    
     # Install HiC-pro
     echo "Installing latest HiC-Pro release ..."
     #VERSION=$(curl -s https://github.com/nservant/HiC-Pro/releases/latest | egrep -o '2.[0-9]*.[0-9]*')
     #echo "v"$VERSION".zip" | wget --base=http://github.com/nservant/HiC-Pro/archive/ -i - -O hicpro_latest.zip && unzip hicpro_latest.zip
-    VERSION="devel"
+    VERSION="devel_py3"
     echo $VERSION".zip" | wget --base=http://github.com/nservant/HiC-Pro/archive/ -i - -O hicpro_latest.zip && unzip hicpro_latest.zip
     
     cd $(echo HiC-Pro-$VERSION)

@@ -7,15 +7,15 @@ Feel free to contact nicolas.servant@curie.fr for any suggestion.
 
 The documentation has the following pages:
 
-- ![Welcome page](README.md)
+- [Welcome page](README.md)
 - Using HiC-Pro
-  - ![How to use HiC-Pro ?](MANUAL.md)
-  - ![HiC-Pro results](RESULTS.md)
-  - ![Allele-specific analysis](AS.md)
-  - ![HiC-Pro Utilities](UTILS.md)
-- ![Compatibility with other softwares](COMPATIBILITY.md)
-- ![User cases](USER_CASES.md)
+  - [How to use HiC-Pro ?](MANUAL.md)
+  - [HiC-Pro results](RESULTS.md)
+  - [Allele-specific analysis](AS.md)
+  - [HiC-Pro Utilities](UTILS.md)
+- [Compatibility with other softwares](COMPATIBILITY.md)
+- [User cases](USER_CASES.md)
 - Help
-  - ![Reported errors](ERRORS.md)
-  - ![FAQ](FAQ.md)
+  - [Reported errors](ERRORS.md)
+  - [FAQ](FAQ.md)
 

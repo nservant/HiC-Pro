@@ -24,17 +24,17 @@ except OSError:
 
 
 if filename.endswith('.gz'):
-    prefix = re.sub('((.fastq)|(.fq)).gz','_part',os.path.join(out, os.path.basename(filename)))
-    cmd = "zcat %s | split -l %d -d - %s" % (
+    prefix = re.sub('((.fastq)|(.fq)).gz','_part', os.path.join(out, os.path.basename(filename)))
+    cmd = "zcat {} | split -l {} -d - {}".format(
         filename, nlines, prefix)
 else:
-    prefix = re.sub('(.fastq)|(.fq)','_part',os.path.join(out, os.path.basename(filename)))
-    cmd = "split -l %d -d %s %s" % (
+    prefix = re.sub('(.fastq)|(.fq)','_part', os.path.join(out, os.path.basename(filename)))
+    cmd = "split -l {} -d {} {}".format(
         nlines, filename, prefix)
 
 retcode = subprocess.call(cmd, shell=True)
 if retcode != 0:
-    print "split file failed with return code %d", retcode
+    print("split file failed with return code {}".format(retcode))
     sys.exit(1)
 
 files = glob(os.path.join(prefix + "*"))

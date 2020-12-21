@@ -14,22 +14,67 @@ The installation process will generate a config-system.txt file which defines al
 ## 
 
 Dependencies are checked during installation.
-A couple of tools such as bowtie2 and samtools (>1.0) can be automatically installed if not detected.
+A couple of tools such as `bowtie2` and `samtools` (>=1.9) can be automatically installed if not detected.
 Others have to be installed before starting the installation :
 
 - R (http://www.r-project.org/) with the following packages
 --- ggplot2 (>2.2.1)
 --- RColorBrewer
 --- grid
-- Python libraries :
---- bx-python (>=0.5.0) - https://pypi.python.org/pypi/bx-python
---- numpy (>=1.8.2) - http://www.scipy.org/scipylib/download.html
---- scipy (>=0.15.1) - http://www.scipy.org/scipylib/download.html
---- pysam (>=0.8.3) - https://github.com/pysam-developers/pysam
---- argparse if python <= 2.6
+- Python (>3.7) libraries :
+--- bx-python (>=0.8.8) - https://pypi.python.org/pypi/bx-python
+--- numpy (>=1.18.1) - http://www.scipy.org/scipylib/download.html
+--- scipy (>=1.4.1) - http://www.scipy.org/scipylib/download.html
+--- pysam (>=0.15.4) - https://github.com/pysam-developers/pysam
+--- argparse 
 
 Note that the iced module is also required (https://github.com/hiclib/iced). 
-Iced is part of the HiC-Pro source code, but can also be installed independantly (>=2.2)
+Iced is no longer part of the HiC-Pro source code, and should be independantly installed
+
+
+##
+## Containers
+##
+
+If you do not want to install all dependencies manually, HiC-Pro version 3.X now provides `conda`, `Docker` and `Singularity` recipes.
+
+### Using HiC-Pro through `conda`
+
+In order to ease the installation of HiC-Pro dependancies, we provide a `yml` file for conda with all required tools.
+In order to build your conda environment, first install [miniconda](https://docs.conda.io/en/latest/miniconda.html) and use :
+
+```
+conda env create -f MY_INSTALL_PATH/HiC-Pro/environment.yml -p WHERE_TO_INSTALL_MY_ENV
+conda activate WHERE_TO_INSTALL_MY_ENV
+```
+
+### Using the HiC-Pro `Docker` image
+
+A docker image is automatically build and available on [Docker Hub](https://hub.docker.com/repository/docker/nservant/hicpro)
+To pull a Docker image, simply use :
+
+```
+docker pull nservant/hicpro:latest
+```
+
+Note that the `tag` may depend on the HiC-Pro version.
+
+You can also build your own image from the root folder using
+
+```
+docker build -t hicpro:3.0.0 .
+```
+
+### Using HiC-Pro through `Singularity`
+
+HiC-Pro provides a Singularity container to ease its installation process.
+A ready-to-use container is available [here](https://zerkalo.curie.fr/partage/HiC-Pro/singularity_images/hicpro_latest_ubuntu.img).
+
+In order to build you own Singularity image, use :
+
+```
+sudo singularity build hicpro_latest_ubuntu.img MY_INSTALL_PATH/HiC-Pro/envs/Singularity
+```
 
 ##
 ## Install HiC-Pro

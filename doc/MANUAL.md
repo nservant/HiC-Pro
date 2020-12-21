@@ -45,14 +45,15 @@ In order to process the raw data, HiC-Pro requires three annotation files. Note 
 
 Copy and edit the configuration file *'config-hicpro.txt'* in your local folder. The '[]' options are optional and can be undefined.
 
-| SYSTEM         |                                        |
-|----------------|----------------------------------------|
-| N_CPU          | Number of CPU allows per job           |
-| LOGFILE        | Name of the main log file              |
-| [JOB_NAME  ]   | Name of the job on the custer          |
-| [JOB_MEM]      | Memory (RAM) required per job          |
-| [JOB_WALLTIME] | WallTime allows per job                |
-| [JOB_MAIL]     | User mail for PBS/Torque report        |
+| SYSTEM         |                                                                                                                      |
+|----------------|----------------------------------------------------------------------------------------------------------------------|
+| N_CPU          | Number of CPU allows per job                                                                                         |
+| SORT_RAM       | The memory for samtools sort (in Mo). Note that this number will be divided by the N_CPU to have a memory per thread |
+| LOGFILE        | Name of the main log file                                                                                            |
+| [JOB_NAME  ]   | Name of the job on the custer                                                                                        |
+| [JOB_MEM]      | Memory (RAM) required per job                                                                                        |
+| [JOB_WALLTIME] | WallTime allows per job                                                                                              |
+| [JOB_MAIL]     | User mail for PBS/Torque report                                                                                      |
 
 ----------------
 
@@ -69,12 +70,12 @@ Copy and edit the configuration file *'config-hicpro.txt'* in your local folder.
 
 ----------------
 
-| ANNOTATION FILES      |                                                                                                                                   |
-|-----------------------|-----------------------------------------------------------------------------------------------------------------------------------|
-| REFERENCE_GENOME      | Reference genome prefix used for genome indexes. *Default: hg19*                                                                  |
-| GENOME_SIZE           | Chromsome size file. Loaded from the ANNOTATION folder in the HiC-Pro installation directory. *Default: chrom_hg19.sizes*         |
-| [CAPTURE_TARGET]      | BED file of target regions to focus on (mainly used for capture Hi-C data)                                                        |
-| [ALLELE_SPECIFIC_SNP] | VCF file to SNPs which can be used to distinguish parental origin. See the [allele specific section]( AS.md) for details   |
+| ANNOTATION FILES      |                                                                                                                                              |
+|-----------------------|----------------------------------------------------------------------------------------------------------------------------------------------|
+| REFERENCE_GENOME      | Reference genome prefix used for genome indexes. *Default: hg19*                                                                             |
+| GENOME_SIZE           | Chromsome size file. Loaded from the ANNOTATION folder in the HiC-Pro installation directory. *Default: chrom_hg19.sizes*                    |
+| [CAPTURE_TARGET]      | BED file of target regions to focus on (mainly used for capture Hi-C data)                                                                   |
+| [ALLELE_SPECIFIC_SNP] | VCF file (.vcf or .vcf.gz) to SNPs which can be used to distinguish parental origin. See the [allele specific section]( AS.md) for details   |
 
 ----------------
 
@@ -130,7 +131,37 @@ Copy and edit the configuration file *'config-hicpro.txt'* in your local folder.
 | EPS                               | The relative increment in the results before declaring convergence. *Default: 0.1*                                      |
 
 
-## Run HiC-Pro through Singularity
+## Containers
+
+### Bulid a `conda` environment
+                                                                                                                                                                                      
+In order to ease the installation of HiC-Pro dependancies, we provide a `.yml` file for conda with all required tools.
+In order to build your conda environment, first install [miniconda](https://docs.conda.io/en/latest/miniconda.html) and use :
+
+```
+conda env create -f MY_INSTALL_PATH/HiC-Pro/environment.yml -p WHERE_TO_INSTALL_MY_ENV
+conda activate WHERE_TO_INSTALL_MY_ENV
+```
+
+### Using the HiC-Pro `Docker` image
+
+A docker image is automatically build and available on [Docker Hub](https://hub.docker.com/repository/docker/nservant/hicpro)
+To pull a Docker image, simply use :
+
+```
+docker pull nservant/hicpro:latest
+```
+
+Note that the `tag` may depend on the HiC-Pro version.
+
+You can also build your own image from the root folder using
+
+```
+docker build -t hicpro:3.0.0 .
+```
+
+
+### Run HiC-Pro through `Singularity`
 
 HiC-Pro provides a Singularity container to ease its installation process.
 A ready-to-use container is available [here](https://zerkalo.curie.fr/partage/HiC-Pro/singularity_images/hicpro_latest_ubuntu.img).
