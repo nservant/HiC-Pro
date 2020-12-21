@@ -70,12 +70,12 @@ Copy and edit the configuration file *'config-hicpro.txt'* in your local folder.
 
 ----------------
 
-| ANNOTATION FILES      |                                                                                                                                   |
-|-----------------------|-----------------------------------------------------------------------------------------------------------------------------------|
-| REFERENCE_GENOME      | Reference genome prefix used for genome indexes. *Default: hg19*                                                                  |
-| GENOME_SIZE           | Chromsome size file. Loaded from the ANNOTATION folder in the HiC-Pro installation directory. *Default: chrom_hg19.sizes*         |
-| [CAPTURE_TARGET]      | BED file of target regions to focus on (mainly used for capture Hi-C data)                                                        |
-| [ALLELE_SPECIFIC_SNP] | VCF file to SNPs which can be used to distinguish parental origin. See the [allele specific section]( AS.md) for details   |
+| ANNOTATION FILES      |                                                                                                                                              |
+|-----------------------|----------------------------------------------------------------------------------------------------------------------------------------------|
+| REFERENCE_GENOME      | Reference genome prefix used for genome indexes. *Default: hg19*                                                                             |
+| GENOME_SIZE           | Chromsome size file. Loaded from the ANNOTATION folder in the HiC-Pro installation directory. *Default: chrom_hg19.sizes*                    |
+| [CAPTURE_TARGET]      | BED file of target regions to focus on (mainly used for capture Hi-C data)                                                                   |
+| [ALLELE_SPECIFIC_SNP] | VCF file (.vcf or .vcf.gz) to SNPs which can be used to distinguish parental origin. See the [allele specific section]( AS.md) for details   |
 
 ----------------
 

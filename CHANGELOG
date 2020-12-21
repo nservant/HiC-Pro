@@ -3,6 +3,8 @@ CHANGES IN VERSION 3.0.0
 
 NEW FEATURES
 
+  o vcf file can be zipped in vcf.gz
+
   o Add a Dockerfile for automatic Docker build on DockerHub
 
   o Set up Travis continuous testing
@@ -14,6 +16,8 @@ NEW FEATURES
   o HiC-Pro is now based on python3. /!\ Python2 is no longer maintained /!\
 
 SIGNIFICANT USER-VISIBLE CHANGES
+
+  o SORT_RAM is not divided by N_CPU for samtools (#369)
 
   o Fix bug in make_viewpoints.py if multiple viewpoints are specified in the bed file
 
