@@ -25,7 +25,7 @@ except OSError:
 
 if filename.endswith('.gz'):
     prefix = re.sub('((.fastq)|(.fq)).gz','_part', os.path.join(out, os.path.basename(filename)))
-    cmd = "zcat {} | split -l {} -d - {}".format(
+    cmd = "zcat -fc {} | split -l {} -d - {}".format(
         filename, nlines, prefix)
 else:
     prefix = re.sub('(.fastq)|(.fq)','_part', os.path.join(out, os.path.basename(filename)))
