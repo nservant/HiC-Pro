@@ -41,8 +41,13 @@ mapping_combine()
 
     ## Set a default for legacy config files that do not have SORT_RAM set
     if [[ "${SORT_RAM}" == "" ]]; then
-       SORT_RAM="768M"
+       SORT_RAM="768"
     fi
+
+    ## Divide the SORT_RAM by the number of Cpus
+    SORT_RAM=$(echo ${SORT_RAM} | sed -e 's/M$//')
+    SORT_RAM=$(( ${SORT_RAM}/${N_CPU} ))
+    
     
     ## Merge local and global alignment
     if [[ -e ${BOWTIE2_GLOBAL_OUTPUT_DIR}/${prefix}.bwt2glob.bam && -e ${BOWTIE2_LOCAL_OUTPUT_DIR}/${prefix}.bwt2glob.unmap_bwt2loc.bam ]]; then
@@ -51,7 +56,7 @@ mapping_combine()
 	exec_cmd $cmd 2>&1
 
         ## Sort merge file. In theory, should be perform by "merge -n", but do not work in some cases ... depending on read name ?
-	cmd="${SAMTOOLS_PATH}/samtools sort -@ ${N_CPU} -m ${SORT_RAM} -n -T ${TMP_DIR}/$tmp_prefix -o ${BOWTIE2_FINAL_OUTPUT_DIR}/${prefix}.bwt2merged.sorted.bam ${BOWTIE2_FINAL_OUTPUT_DIR}/${prefix}.bwt2merged.bam"
+	cmd="${SAMTOOLS_PATH}/samtools sort -@ ${N_CPU} -m ${SORT_RAM}M -n -T ${TMP_DIR}/$tmp_prefix -o ${BOWTIE2_FINAL_OUTPUT_DIR}/${prefix}.bwt2merged.sorted.bam ${BOWTIE2_FINAL_OUTPUT_DIR}/${prefix}.bwt2merged.bam"
         exec_cmd $cmd 2>&1
     
 	cmd="mv ${BOWTIE2_FINAL_OUTPUT_DIR}/${prefix}.bwt2merged.sorted.bam ${BOWTIE2_FINAL_OUTPUT_DIR}/${prefix}.bwt2merged.bam"

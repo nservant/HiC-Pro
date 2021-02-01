@@ -17,7 +17,7 @@ import sys
 import os
 import re
 import pysam
-
+import gzip
 
 def usage():
     """Usage function"""
@@ -93,7 +93,10 @@ def load_vcf(in_file, filter_qual=False, verbose=False, debug=False):
     if verbose:
         print("## Loading VCF file {} ...".format(in_file))
 
-    vcf_handle = open(in_file)    
+    if in_file.endswith(".gz"):
+        vcf_handle = gzip.open(in_file, 'rt')
+    else:
+        vcf_handle = open(in_file)    
     header = []
     samples = []
     snps = {}
