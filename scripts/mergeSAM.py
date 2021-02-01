@@ -234,7 +234,7 @@ if __name__ == "__main__":
                 ## both mapped
                 elif r1.is_unmapped == False and r2.is_unmapped == False:
                     ## quality
-                    if mapq != None and (r1.mapping_quality < int(mapq) and r2.mapping_quality < int(mapq)):
+                    if mapq != None and (r1.mapping_quality < int(mapq) or r2.mapping_quality < int(mapq)):
                         lowq_pairs_counter += 1
                         continue
                  

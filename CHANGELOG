@@ -1,8 +1,5 @@
-CHANGES IN VERSION 3.1.0
-
-SIGNIFICANT USER-VISIBLE CHANGES
-
-   o Changes behavior of mapq filter. Remove read pairs only if both reads are < mapq
+***********************************
+CHANGES IN VERSION 3.1.0dev
 
 BUG FIXES
 
