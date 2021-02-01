@@ -3,7 +3,7 @@
 ## Paths and Settings  - Start editing here !
 #########################################################################
 
-PREFIX = /bioinfo/users/nservant/Apps/
+PREFIX = 
 BOWTIE2_PATH = 
 SAMTOOLS_PATH = 
 R_PATH = 
