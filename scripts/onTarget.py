@@ -129,7 +129,7 @@ if __name__ == "__main__":
         
     # Read the SAM/BAM file
     if verbose:
-        print("## Opening valid pairs file {}...".format(inFile), file=sys.stderr))
+        print("## Opening valid pairs file {}...".format(inFile), file=sys.stderr)
     
     vp_handle = open(inFile)
 
@@ -156,12 +156,12 @@ if __name__ == "__main__":
             if len(res1) > 0 and len(res2) > 0:
                 ontarget_counter += 1
                 ontarget_cap_cap_counter += 1
-                print line.strip()
+                print(line.strip())
             elif len(res1) > 0 or len(res2) > 0:
                 ontarget_counter += 1
                 ontarget_cap_rep_counter += 1
                 if not cis:
-                    print line.strip()
+                    print(line.strip())
 
         if statsFile is not None:
             if verbose:
