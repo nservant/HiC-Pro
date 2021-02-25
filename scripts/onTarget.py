@@ -55,7 +55,7 @@ def load_bed(in_file, verbose=False):
     intervals = {}
     if verbose:
         print("## Loading BED file {} ...".format(in_file), file=sys.stderr)
-    with open(infile, 'r') as bed_handle:
+    with open(in_file, 'r') as bed_handle:
         nline = 0
         for line in bed_handle:
             nline +=1
