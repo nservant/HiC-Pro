@@ -1,6 +1,9 @@
 ***********************************
 CHANGES IN VERSION 3.1.0dev
 
+SIGNIFICANT USER-VISIBLE CHANGES
+   o Move to iced 0.5.8
+
 BUG FIXES
 
    o Fix small bug in digest_genome.py (#429)
