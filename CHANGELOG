@@ -3,6 +3,7 @@ CHANGES IN VERSION 3.1.0dev
 
 BUG FIXES
 
+   o Fix small bug in digest_genome.py (#429)
    o PR split_reads by kevm2 (#401)
 
 ***********************************
