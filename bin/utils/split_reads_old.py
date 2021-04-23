@@ -41,14 +41,7 @@ files = glob(os.path.join(prefix + "*"))
 files.sort()
 
 for ifile in files:
-
-    # splitting on _part to get the main section of the
-    # name and the split
-    main, split = os.path.basename(ifile).split('_part')
-
-    # constructing the file name
-    new_base = '{}_{}.fastq'.format(split, main)
-    new_file = os.path.join(os.path.dirname(ifile), new_base)
-
-    # update the ifile name
-    shutil.move(ifile, new_file)
+    shutil.move(ifile,
+                os.path.join(os.path.dirname(ifile),
+                             os.path.basename(ifile)[-2:] + "_" +
+                             os.path.basename(ifile)[:-7] + ".fastq"))
