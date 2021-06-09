@@ -2,11 +2,17 @@
 CHANGES IN VERSION 3.1.0dev
 
 SIGNIFICANT USER-VISIBLE CHANGES
+
    o Move to iced 0.5.8
 
 BUG FIXES
 
+   o Force tdd conda package in environment.yml (#413)
+
+   o Look for ice command in PYTHON_PATH
+
    o Fix small bug in digest_genome.py (#429)
+
    o PR split_reads by kevm2 (#401)
 
 ***********************************
