@@ -65,7 +65,7 @@ REPORT_CAPTURE_REPORTER = 1
 #######################################################################
 
 GENOME_FRAGMENT = HindIII_resfrag_hg19.bed
-LIGATION_SITE = AAGCTAGCTT
+LIGATION_SITE = A^GATCT
 MIN_FRAG_SIZE = 
 MAX_FRAG_SIZE =
 MIN_INSERT_SIZE =
