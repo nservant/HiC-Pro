@@ -17,8 +17,7 @@ dependencies:
   - r-ggplot2=3.1.1
   - r-rcolorbrewer=1.1_2
   - r-gridbase=0.4_7
-
-  - tbb=2020.2=hc9558a2_0
+  - conda-forge::tbb=2020.2=hc9558a2_0
   - bowtie2=2.3.5
   - samtools=1.9
   - multiqc=1.8
