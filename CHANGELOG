@@ -2,7 +2,8 @@
 version-3.1.0dev
 
 SIGNIFICANT USER-VISIBLE CHANGES
-   - Move to iced 0.5.8
+   - Move to iced 0.5.9 (#433)
+   - update conda env
 
 BUG FIXES
   - Fix small bug in digest_genome.py (#429)

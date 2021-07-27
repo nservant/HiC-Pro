@@ -1,12 +1,13 @@
 #! /usr/bin/env python
-
+from __future__ import print_function
 import sys
 import argparse
 import numpy as np
 from scipy import sparse
 
 import iced
-from iced.io import loadtxt, savetxt
+from iced.io import load_counts, savetxt, write_counts
+
 
 parser = argparse.ArgumentParser("ICE normalization")
 parser.add_argument('filename',
@@ -40,12 +41,13 @@ parser.add_argument("--eps", "-e", default=0.1, type=float,
                     help="Precision")
 parser.add_argument("--dense", "-d", default=False, action="store_true")
 parser.add_argument("--output-bias", "-b", default=False, help="Output the bias vector")
-parser.add_argument("--verbose", "-v", default=False)
+parser.add_argument("--verbose", "-v", default=False, type=bool)
+parser.add_argument("--base", default=None, type=int,
+                    help="Indicates whether the matrix file is 0 or 1-based")
 
 
 args = parser.parse_args()
 filename = args.filename
-filename = filename.encode()
 
 # Deprecating filtering_perc option
 filter_low_counts = None
@@ -65,22 +67,20 @@ if "--filtering_perc" is None and "--filter_low_counts_perc" not in sys.argv:
 elif args.filter_low_counts_perc is not None:
     filter_low_counts_perc = args.filter_low_counts_perc
 
+if args.base is None:
+    base = 1
+    print("Assuming the file is 1-based. If this is not the desired option, "
+          "set option --base to 0")
+else:
+    base = args.base
+
 if args.verbose:
     print("Using iced version %s" % iced.__version__)
     print("Loading files...")
 
 # Loads file as i, j, counts
-i, j, data = loadtxt(filename).T
+counts = load_counts(filename, base=base)
 
-# Detecting whether the file is 0 or 1 based.
-if min(i.min(), j.min()) == 0:
-    index_base = 0
-    N = max(i.max(), j.max()) + 1
-    counts = sparse.coo_matrix((data, (i, j)), shape=(N, N), dtype=float)
-else:
-    index_base = 1
-    N = max(i.max(), j.max())
-    counts = sparse.coo_matrix((data, (i - 1, j - 1)), shape=(N, N), dtype=float)
 
 if args.dense:
     counts = np.array(counts.todense())
@@ -103,24 +103,25 @@ if args.filter_high_counts_perc != 0:
 
 counts, bias = iced.normalization.ICE_normalization(
     counts, max_iter=args.max_iter, copy=False,
-    verbose=int(args.verbose), eps=args.eps, output_bias=True)
+    verbose=args.verbose, eps=args.eps, output_bias=True)
 
 if args.results_filename is None:
     results_filename = ".".join(
         filename.split(".")[:-1]) + "_normalized." + filename.split(".")[-1]
-    results_filename = results_filename.encode()
 else:
     results_filename = args.results_filename
-    results_filename = results_filename.encode()
 
 counts = sparse.coo_matrix(counts)
 
 if args.verbose:
     print("Writing results...")
 
-savetxt(
-    results_filename, counts.col + index_base, counts.row + index_base, counts.data)
+#write_counts(results_filename, counts)
+write_counts(
+    results_filename,
+    counts, base=base)
+
 
 
 if args.output_bias:
-    np.savetxt(results_filename.decode() + ".biases", bias)
+    np.savetxt(results_filename + ".biases", bias)
