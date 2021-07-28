@@ -2,7 +2,7 @@
 version-3.1.0dev
 
 SIGNIFICANT USER-VISIBLE CHANGES
-   - Move to iced 0.5.9 (#433)
+   - Move to iced 0.5.10 (#433)
    - update conda env
 
 BUG FIXES
