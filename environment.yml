@@ -8,7 +8,7 @@ dependencies:
   - conda-forge::python=3.8.10=h49503c6_1_cpython
   - conda-forge::scipy=1.7.0=py38h7b17777_1
   - conda-forge::numpy=1.21.1=py38h9894fe3_0
-  - bioconda::iced=0.5.9=py38h803c66d_0
+  - bioconda::iced=0.5.10=py38h803c66d_0
   - bioconda::bx-python=0.8.11=py38h024e602_1
   - bioconda::pysam=0.16.0.1=py38hf7546f9_3
   - bioconda::cooler=0.8.11=pyh3252c3a_0
