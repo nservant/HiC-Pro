@@ -165,7 +165,6 @@ if __name__ == "__main__":
         vcf_handle = gzip.open(vcfFile)
     else:
         vcf_handle = open(vcfFile)
-    print("type of file: {}".format(type(vcf_handle)), file=sys.stderr)
     header = []
     samples = []
     altidx = -1
@@ -182,7 +181,7 @@ if __name__ == "__main__":
 
     for line in vcf_handle:
         try:
-            line = line.rstrip().decode() #in case of bytes object
+            line = line.rstrip()
         except TypeError:
              continue
         #print >> sys.stderr, line
@@ -196,7 +195,6 @@ if __name__ == "__main__":
         elif line.startswith('#'):
             header = line.split('\t')
             samples = [s.split('.')[0] for s in header[9:]]
-            print("samples = [ {} ]".format(samples), file=sys.stderr)
             for  i in range(len(samples)):
                 if samples[i] == refSample:
                     refidx = i
