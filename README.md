@@ -56,7 +56,7 @@ Note that the `tag` may depend on the HiC-Pro version.
 You can also build your own image from the root folder using
 
 ```
-docker build -t hicpro:3.0.0 .
+docker build -t hicpro:3.1.0 .
 ```
 
 ### Using HiC-Pro through `Singularity`
@@ -180,7 +180,7 @@ First have a look at the help message !
   usage : HiC-Pro -i INPUT -o OUTPUT -c CONFIG [-s ANALYSIS_STEP] [-p] [-h] [-v]
   Use option -h|--help for more information
 
-  HiC-Pro 3.0.0
+  HiC-Pro 3.1.0
   ---------------
   OPTIONS
 
@@ -263,7 +263,7 @@ Small fastq files (2M reads) extracted from the Dixon et al. 2012 paper are avai
  ## Run HiC-Pro
  time HICPRO_INSTALL_DIR/bin/HiC-Pro -c config_test_latest.txt -i test_data -o hicpro_latest_test
 
-Run HiC-Pro 3.0.0
+Run HiC-Pro 3.1.0
 --------------------------------------------
 Thu Mar 19, 12:18:10 (UTC+0100)
 Bowtie2 alignment step1 ...
