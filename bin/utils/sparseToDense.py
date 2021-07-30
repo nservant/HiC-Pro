@@ -149,7 +149,7 @@ if __name__ == "__main__":
             shape=(lengths[i-1], lengths[i-1]))
             counts_perchr = counts_perchr.toarray()
             counts_perchr = counts_perchr + counts_perchr.T
-            counts_perchr[np.diag_indices_from(counts_perchr)] /= 2
+            counts_perchr[np.diag_indices_from(counts_perchr)] = counts_perchr[np.diag_indices_from(counts_perchr)] / 2
             counts_perchr = np.round(counts_perchr, 3)
             
             ## Output name for save
