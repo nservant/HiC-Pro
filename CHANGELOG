@@ -1,5 +1,5 @@
 ***********************************
-version-3.1.0dev
+version-3.1.0
 
 SIGNIFICANT USER-VISIBLE CHANGES
    - Move to iced 0.5.10 (#433)

@@ -128,13 +128,13 @@ fi
 
 
 ## check if ice is in the PATH
-if [[ $MAKE_OPTS == "" || $MAKE_OPTS =~ "ice_norm" ]]; then
-    which ice > /dev/null
-    if [ $? != "0" ]; then
-	echo -e "Error: The 'ice' command is not in your path. Please check where the 'iced' python package has been installed and update your PATH !"
-	exit 1;
-    fi
-fi
+#if [[ $MAKE_OPTS == "" || $MAKE_OPTS =~ "ice_norm" ]]; then
+#    which ice > /dev/null
+#    if [ $? != "0" ]; then
+#	echo -e "Error: The 'ice' command is not in your path. Please check where the 'iced' python package has been installed and update your PATH !"
+#	exit 1;
+#    fi
+#fi
 
 #####################
 ## Check Config file
