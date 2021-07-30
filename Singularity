@@ -7,6 +7,9 @@ From: ubuntu:latest
 %pre
     apt-get install -y debootstrap
 
+%files
+    environment.yml /opt/environment.yml
+
 %post
     apt-get update
     apt-get install -y wget
@@ -39,35 +42,16 @@ From: ubuntu:latest
     conda clean --packages -y
 
     # external tools
-    echo "Installing dependancies ... "
-    conda install -y bowtie2=2.3.5
-    conda install -y samtools=1.9
+    echo "Installing conda environment ... "
+    conda env create -f /opt/environment.yml
+    echo "source activate HiC-Pro_v3.1.0" > ~/.bashrc
 
-    # Python (>3.7.0) with *pysam (>=0.8.3)*, *bx(>=0.5.0)*, *numpy(>=1.8.2)*, and *scipy(>=0.15.1)* libraries
-    conda install -y -c conda-forge python=3.7.6
-    conda install -y -c conda-forge scipy 
-    conda install -y -c conda-forge numpy 
-    conda install -y -c bioconda bx-python 
-    conda install -y -c bioconda pysam 
-    conda install -y -c bioconda iced
-
-    # Install R
-    conda update readline
-    #conda install -c conda-forge readline=6.2
-    conda install -c r r-base=3.5.1
-    conda install -c r r-ggplot2=2.2.1
-    conda install -c r r-rcolorbrewer=1.1_2
-    conda install -c r r-gridbase=0.4_7	
-
-    # Install MultiQC
-    conda install -c bioconda multiqc=1.8
-   
     # Install HiC-pro
     echo "Installing latest HiC-Pro release ..."
-    #VERSION=$(curl -s https://github.com/nservant/HiC-Pro/releases/latest | egrep -o '2.[0-9]*.[0-9]*')
-    #echo "v"$VERSION".zip" | wget --base=http://github.com/nservant/HiC-Pro/archive/ -i - -O hicpro_latest.zip && unzip hicpro_latest.zip
-    VERSION="devel_py3"
-    echo $VERSION".zip" | wget --base=http://github.com/nservant/HiC-Pro/archive/ -i - -O hicpro_latest.zip && unzip hicpro_latest.zip
+    VERSION=$(curl -s https://github.com/nservant/HiC-Pro/releases/latest | egrep -o 'v3.[0-9]*.[0-9]*')
+    echo "v"$VERSION".zip" | wget --base=http://github.com/nservant/HiC-Pro/archive/ -i - -O hicpro_latest.zip && unzip hicpro_latest.zip
+    #VERSION="devel_py3"
+    #echo $VERSION".zip" | wget --base=http://github.com/nservant/HiC-Pro/archive/ -i - -O hicpro_latest.zip && unzip hicpro_latest.zip
     
     cd $(echo HiC-Pro-$VERSION)
     make configure
