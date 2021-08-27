@@ -15,6 +15,8 @@
 NORMAL="\\033[0;39m"
 RED="\\033[0;31m"
 BLUE="\\033[0;34m"
+GREEN="\\033[0;32m"
+YELLOW="\\033[1;33m"
 SOFT="HiC-Pro"
 
 ## 0 =
@@ -68,8 +70,8 @@ function usage {
     exit;
 }
 
-echo -e "$RED""Make sure internet connection works for your shell prompt under current user's privilege ...""$NORMAL";
-echo -e "$BLUE""Starting $SOFT installation ...""$NORMAL";
+echo -e "$YELLOW""Make sure internet connection works for your shell prompt under current user's privilege ...""$NORMAL";
+echo -e "$NORMAL""Starting $SOFT installation !""$NORMAL";
 
 
 ################### Initialize ###################
@@ -188,7 +190,6 @@ PREFIX_BIN=${PREFIX}
 if [ ! -w $PREFIX_BIN ]; then
    quiet=1
 fi
-
 if [[ $quiet == 0 ]]; then
     echo "Where should missing software prerequisites be installed ? [$PREFIX_BIN] "
     read ans
@@ -217,63 +218,60 @@ if [ ! -w $PREFIX_BIN ]; then
 fi 
 
 ################  Python  ###################
-echo "Checking dependencies ... "
+echo "Checking dependencies"
 
 wasInstalled=0;
-echo "Checking Python libraries ..."
-python ../scripts/install/check_pythonlib.py > install_packages_check.Rout
+echo -n "- Python libraries ..."
+python ../scripts/install/check_pythonlib.py > check_python.log 2>&1
 if [ $? == "0" ]; then
-    echo -e "$BLUE""The required Python libraries appear to be already installed. ""$NORMAL"
+    echo -e "$GREEN""OK""$NORMAL"
     wasInstalled=1;
 else
-    echo -e "$RED""Can not proceed without the required Python libraries, please install them and re-run""$NORMAL"
+    echo -e "$RED""\nCan not proceed without the required Python libraries, please install them and re-run""$NORMAL"
     exit 1;
 fi
 
 
 ################  R  ###################
-
 wasInstalled=0;
+echo -n "- R installation ..."
 which R > /dev/null;
 if [ $? == "0" ]; then
-    echo "Checking R installation ..."
-    R CMD BATCH ../scripts/install/check_Rpackages.R > check_Rpackages.Rout
+    R CMD BATCH ../scripts/install/check_Rpackages.R > check_Rpackages.log
     check=`grep proc.time check_Rpackages.Rout`;
     if [ $? == "0" ]; then
-	echo -e "$BLUE""The required R packages appear to be already installed. ""$NORMAL"
+	echo -e "$GREEN""OK""$NORMAL"
 	wasInstalled=1;
     fi
 else
-    echo -e "$RED""Can not proceed without R, please install and re-run""$NORMAL"
+    echo -e "$RED""\nCan not proceed without R, please install and re-run""$NORMAL"
     exit 1;
 fi
 
 #Install R Packages
 if [ $wasInstalled == 0 ]; then
-    echo "Installing missing R packages ..."
+    echo -n "\n  -- Installing missing R packages ..."
     R CMD BATCH ../scripts/install/install_Rpackages.R install_Rpackages.Rout
-
     R CMD BATCH ../scripts/install/check_Rpackages.R > check_Rpackages.Rout
     check=`grep proc.time check_Rpackages.Rout`;
     if [ $? == "0" ]; then
-	echo -e "$BLUE""R packages appear to be installed successfully""$NORMAL"
+	echo -e "$GREEN""OK""$NORMAL"
     else
-	echo -e "$RED""R packages NOT installed successfully. Look at the tmp/install_Rpackages.Rout for additional informations""$NORMAL"; exit 1;
+	echo -e "$RED""\nR packages NOT installed successfully. Look at the tmp/install_Rpackages.Rout for additional informations""$NORMAL"; exit 1;
     fi
 fi
 
 ################ Bowtie2 ###################
-
 wasInstalled=0;
+echo -n "- Bowtie2 installation ..."
 which bowtie2 > /dev/null;
-if [ $? = "0" ]; then
-	echo -e "$BLUE""Bowtie2 Aligner appears to be already installed. ""$NORMAL"
-	wasInstalled=1;
+if [ $? == "0" ]; then
+    echo -e "$GREEN""OK""$NORMAL"
+    wasInstalled=1;
 fi
 
-
 if [ $wasInstalled == 0 ]; then
-    echo "Installing Bowtie2 ..."
+    echo -e -n "\n -- Installing Bowtie2 ..."
     $get bowtie2-2.3.5-source.zip http://sourceforge.net/projects/bowtie-bio/files/bowtie2/2.3.5/bowtie2-2.3.5-source.zip/download
     unzip bowtie2-2.3.5-source.zip
     cd bowtie2-2.3.5
@@ -288,31 +286,30 @@ fi
 if [ $wasInstalled == 0 ]; then
     check=`bowtie2 --version 2>&1`;
     if [ $? = "0" ]; then
-	echo -e "$BLUE""Bowtie2 Aligner appears to be installed successfully""$NORMAL"
+	echo -e "$GREEN""OK""$NORMAL"
     else
-	echo -e "$RED""Bowtie2 Aligner NOT installed successfully""$NORMAL"; exit 1;
+	echo -e "$RED""\nBowtie2 Aligner NOT installed successfully""$NORMAL"; exit 1;
     fi
 fi
 
 ################ samtools  ###################
 
 wasInstalled=0;
+echo -n "- Samtools installation ..."
 which samtools > /dev/null
-if [ $? = "0" ]; then
-        
+if [ $? == "0" ]; then
     samver=`samtools 2>&1 | grep Version | cut -d" " -f2`
     vercomp $samver "1.0"
     if [[ $? == 2 ]]; then
-	echo -e "$RED""samtools v1.0 or higher is needed [$samver detected].""NORMAL"
+	echo -e "$RED""\nsamtools v1.0 or higher is required [$samver detected].""NORMAL"
 	exit 1;
     fi
-
-	echo -e "$BLUE""Samtools appears to be already installed. ""$NORMAL"
-	wasInstalled=1;
+    echo -e "$GREEN""OK""$NORMAL"
+    wasInstalled=1;
 fi
 
 if [ $wasInstalled == 0 ]; then
-    echo "Installing samtools ..."
+    echo -n "\n  -- Installing samtools ..."
     #From sources
     $get samtools-1.10.tar.bz2  http://sourceforge.net/projects/samtools/files/samtools/1.10/samtools-1.10.tar.bz2/download
     tar -xvjpf samtools-1.10.tar.bz2
@@ -327,9 +324,9 @@ fi
 if [ $wasInstalled == 0 ]; then
     check=`samtools view -h 2>&1 | grep -i options`;
     if [ $? = "0" ]; then
-	echo -e "$BLUE""samtools appears to be installed successfully""$NORMAL"
+	echo -e "$GREEN""OK""$NORMAL"
     else
-	echo -e "$RED""samtools NOT installed successfully""$NORMAL"; exit 1;
+	echo -e "$RED""\nsamtools NOT installed successfully""$NORMAL"; exit 1;
     fi
 fi
 
@@ -337,11 +334,11 @@ fi
 cd ..
 rm -rf ./tmp
 
-echo -e "$RED""Dependencies checked !""$NORMAL"
+#echo -e "$GREEN""\nDependencies checked !""$NORMAL"
 
 ################ Create the config-system file ###################
 CUR_DIR=`pwd`
-echo -e "$BLUE""Check $SOFT configuration ... ""$NORMAL"
+echo -e "$NORMAL""\nChecking $SOFT configuration""$NORMAL"
 
 echo "#######################################################################" > config-system.txt
 echo "## $SOFT - System settings" >> config-system.txt
@@ -354,28 +351,28 @@ echo "## using the 'which' command" >> config-system.txt
 echo "#######################################################################" >> config-system.txt
 
 which R > /dev/null
-if [ $? = "0" ]; then
+if [ $? == "0" ]; then
     echo "R_PATH = "`dirname $(which R)` >> config-system.txt
 else
     die "R_PATH not found. Exit." 
 fi
 
 which bowtie2 > /dev/null
-if [ $? = "0" ]; then
+if [ $? == "0" ]; then
     echo "BOWTIE2_PATH = "`dirname $(which bowtie2)`  >> config-system.txt
 else
     die "BOWTIE2_PATH not found. Exit." 
 fi
 
 which samtools > /dev/null
-if [ $? = "0" ]; then
+if [ $? == "0" ]; then
     echo "SAMTOOLS_PATH = "`dirname $(which samtools)`  >> config-system.txt
 else
     die "SAMTOOLS_PATH not found. Exit." 
 fi
 
 which python > /dev/null
-if [ $? = "0" ]; then
+if [ $? == "0" ]; then
     echo "PYTHON_PATH = "`dirname $(which python)` >> config-system.txt
 else
     die "PYTHON_PATH not found. Exit."
@@ -388,25 +385,25 @@ echo "ANNOT_DIR = ${install_dir}/annotation" >> config-system.txt
 
 ## deal with scheduler system
 if [ -z "$CLUSTER_SYS" ]; then 
-    echo -e "$RED""Warning : Scheduler system not defined - Default is Torque/PBS""$NORMAL"
+    echo -e "$YELLOW""Warning : Scheduler system not defined - Default is Torque/PBS""$NORMAL"
     CLUSTER_SYS="TORQUE"; 
 fi
 if [ $CLUSTER_SYS == "TORQUE" ]; then 
     #ln -s scripts/make_torque_scripts.sh scripts/make_cluster_scripts.sh
     echo "CLUSTER_SCRIPT = ${install_dir}/scripts/make_torque_script.sh" >> config-system.txt
-    echo -e "$BLUE""Configuration for TORQUE/PBS system.""$NORMAL"
+    echo -n "- Configuration for TORQUE/PBS system ..."
 elif [ $CLUSTER_SYS == "SGE" ]; then 
     #ln -s scripts/make_sge_scripts.sh scripts/make_cluster_scripts.sh
     echo "CLUSTER_SCRIPT = ${install_dir}/scripts/make_sge_script.sh" >> config-system.txt
-    echo -e "$BLUE""Configuration for SGE system.""$NORMAL"
+    echo -n "- Configuration for SGE system ..."
 elif [ $CLUSTER_SYS == "SLURM" ]; then 
     #ln -s scripts/make_sge_scripts.sh scripts/make_cluster_scripts.sh
     echo "CLUSTER_SCRIPT = ${install_dir}/scripts/make_slurm_script.sh" >> config-system.txt
-    echo -e "$BLUE""Configuration for SLURM system.""$NORMAL"
+    echo -n "- Configuration for SLURM system ..."
 elif [ $CLUSTER_SYS == "LSF" ]; then 
     #ln -s scripts/make_sge_scripts.sh scripts/make_cluster_scripts.sh
     echo "CLUSTER_SCRIPT = ${install_dir}/scripts/make_lsf_script.sh" >> config-system.txt
-    echo -e "$BLUE""Configuration for LSF system.""$NORMAL"
+    echo -n "- Configuration for LSF system ..."
 else
     die "$CLUSTER_SYS unknown. 'TORQUE/SGE/SLURM/LSF' systems are currently supported. Please change the CLUSTER_SYS variable and re-run the installation process. Exit."
 fi
@@ -416,6 +413,6 @@ fi
 if [ ! -w $PREFIX ]; then
     die "Cannot install HiCPro in $PREFIX directory. Maybe missing super-user (root) permissions to write there. Please specify another directory in the config-install.txt file (PREFIX=)";
 fi 
-
-echo ;
+echo -e "$GREEN""OK""$NORMAL"
+echo -e "$GREEN""\ndone !""$NORMAL"
 ## End of dependencies check ##
