@@ -335,7 +335,7 @@ Hi-C data can contain several sources of biases which has to be corrected. HiC-P
 ### Browsing the results
 
 All outputs follow the input organization, with one folder per sample.
-See the [results](Results.md) section for more information.
+See the [results](RESULTS.md) section for more information.
 
 * *bowtie_results*
 
