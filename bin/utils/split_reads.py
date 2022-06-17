@@ -25,11 +25,11 @@ except OSError:
 
 if filename.endswith('.gz'):
     prefix = re.sub('((.fastq)|(.fq)).gz','_part', os.path.join(out, os.path.basename(filename)))
-    cmd = "zcat -fc {} | split -l {} -d - {}".format(
+    cmd = "zcat -fc {} | split -l {} -d - {} --filter='gzip >$FILE'".format(
         filename, nlines, prefix)
 else:
     prefix = re.sub('(.fastq)|(.fq)','_part', os.path.join(out, os.path.basename(filename)))
-    cmd = "split -l {} -d {} {}".format(
+    cmd = "split -l {} -d {} {} --filter='gzip >$FILE'".format(
         nlines, filename, prefix)
 
 retcode = subprocess.call(cmd, shell=True)
@@ -44,4 +44,4 @@ for ifile in files:
     shutil.move(ifile,
                 os.path.join(os.path.dirname(ifile),
                              os.path.basename(ifile)[-2:] + "_" +
-                             os.path.basename(ifile)[:-7] + ".fastq"))
+                             os.path.basename(ifile)[:-7] + ".fq.gz"))
