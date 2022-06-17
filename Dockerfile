@@ -36,4 +36,5 @@ RUN cd /tmp && \
     cd .. && \
     rm -fr HiC-Pro*
 
-RUN /HiC-Pro_3.1.0/bin/HiC-Pro -h
+ENTRYPOINT /HiC-Pro_3.1.0/bin/HiC-Pro
+CMD ["-h"]
