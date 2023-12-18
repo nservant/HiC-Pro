@@ -62,7 +62,7 @@ docker build -t hicpro:3.1.0 .
 ### Using HiC-Pro through `Singularity`
 
 HiC-Pro provides a Singularity container to ease its installation process.
-A ready-to-use container is available [here](https://zerkalo.curie.fr/partage/HiC-Pro/singularity_images/hicpro_latest_ubuntu.img).
+A ready-to-use container is available [here](https://zenodo.org/records/8376626)
 
 In order to build you own Singularity image;
 
@@ -251,7 +251,7 @@ Once executed succesfully (may take several hours), run the step using:
 
 ## Test Dataset
 
-The test dataset and associated results are available [here](https://zerkalo.curie.fr/partage/HiC-Pro/).
+The test dataset and associated results are available [here](https://zenodo.org/records/10401822).
 Small fastq files (2M reads) extracted from the Dixon et al. 2012 paper are available for test.
 
 ```
