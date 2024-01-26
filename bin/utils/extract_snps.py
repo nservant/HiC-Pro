@@ -313,7 +313,11 @@ if __name__ == "__main__":
                         snp_counter += 1
                         #altg[0]="1/1"
                         ##print chrom + "\t" + fields[1] + "\t" + fields[2] + "\t" + geno[0] + "\t" + geno[1] + "\t" + fields[5] + "\t" + fields[6] + "\t" + fields[7] + "\t" + fields[8] + "\t" + ":".join(altg)
-                        print("{}\t{}\t{}\t{}\t{}\t{}\t{}\t{}\tGT\t0|1".format(chrom, fields[1], fields[2], geno[0], geno[1], fields[5], fields[6], fields[7]))
+                        print(
+                            "{}\t{}\t{}\t{}\t{}\t{}\t{}\t{}\tGT\t0|1".format(
+                                chrom, fields[1], fields[2],geno[0], geno[1], fields[5], fields[6], fields[7]
+                            )
+                        )
 
                 else:
                     badqual_counter += 1
