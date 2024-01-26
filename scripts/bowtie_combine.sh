@@ -62,7 +62,7 @@ mapping_combine()
 	cmd="mv ${BOWTIE2_FINAL_OUTPUT_DIR}/${prefix}.bwt2merged.sorted.bam ${BOWTIE2_FINAL_OUTPUT_DIR}/${prefix}.bwt2merged.bam"
         exec_cmd $cmd 2>&1
     
-    elif [[ ${LIGATTION_SITE} == "" ]]; then
+    elif [[ ${LIGATION_SITE} == "" ]]; then
 	
 	cmd="ln -f -s ../../bwt2_global/${prefix}.bwt2glob.bam ${BOWTIE2_FINAL_OUTPUT_DIR}/${prefix}.bwt2merged.bam "
 	exec_cmd $cmd 2>&1

@@ -173,7 +173,7 @@ if __name__ == "__main__":
         elif opt in ("-t", "--targetFile"):
             targetFile = arg
         elif opt in ("-e", "--exclusion"):
-            exclusionSize = arg
+            exclusionSize = int(arg)
         elif opt in ("-o", "--oprefix"):
             oprefix = arg
         elif opt in ("-c", "--cis"):

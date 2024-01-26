@@ -1,4 +1,15 @@
 ***********************************
+version-3.1.1
+
+SIGNIFICANT USER-VISIBLE CHANGES
+  - Pull request from qiyubio to zip output of split_reads.py
+  - Pull request from yeroslaviz in docs
+  - Pull request from claymcleod on DOCKER image
+
+BUG FIXES
+  - Bug in extract_snps.py utility with addition \space in secondary allele
+
+***********************************
 version-3.1.0
 
 SIGNIFICANT USER-VISIBLE CHANGES
