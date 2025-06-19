@@ -96,3 +96,11 @@ MAX_ITER = 100
 FILTER_LOW_COUNT_PERC = 0.02
 FILTER_HIGH_COUNT_PERC = 0
 EPS = 0.1
+
+# -------------------------------------------------------------------------
+# Ensure Make sees at least one target in the config,
+# preventing the “make: *** No targets.  Stop.” failure
+# when HiC-Pro parses your config via `make -f config -p -n`.
+
+_dummy_target_:
+
