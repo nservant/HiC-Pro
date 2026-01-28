@@ -63,7 +63,7 @@ Regions around the capture are usually excluded from the profile ('-e' parameter
 ### hicpro2juicebox.sh OR 'How can I load my HiC-Pro data into Juicebox visualization software ?'
 
 The hicpro2juicebox.sh utility allows to generate input file for Juicebox.  
-It can be use both for restriction fragment Hi-C or Dnase Hi-C by specifying the -f FRAGMENT_FILE option. Note that in this case, it is advice to use the HiC-Pro annotation file, as the fragment name is expected to be HiC_CHROMOSOME_FRAGMENTNUMBER.  
+It can be use both for restriction fragment Hi-C or Dnase Hi-C by specifying the -r FRAGMENT_FILE option. Note that in this case, it is advice to use the HiC-Pro annotation file, as the fragment name is expected to be HiC_CHROMOSOME_FRAGMENTNUMBER.  
 This utility requires HiC-Pro version 2.7.6 or later, and the installation of [Juicer command line tools](https://github.com/theaidenlab/juicer/wiki/Download)
 
 ```
@@ -71,7 +71,7 @@ This utility requires HiC-Pro version 2.7.6 or later, and the installation of [J
    HICPRO_PATH/bin/utils/hicpro2juicebox.sh -i hicpro_res/hic_results/data/dixon_2M/dixon_2M_allValidPairs -g chrom_hg19.sizes -j /usr/local/juicer/juicer_tools.1.7.5_linux_x64_jcuda.0.8.jar
 
    ## Convert HiC-Pro output to Juicebox input up to restriction fragment resolution
-   HICPRO_PATH/bin/utils/hicpro2juicebox.sh -i hicpro_res/hic_results/data/dixon_2M/dixon_2M_allValidPairs -g chrom_hg19.sizes -j /usr/local/juicer/juicer_tools.1.7.5_linux_x64_jcuda.0.8.jar -f  HICPRO_PATH/data_info/HindIII_resfrag_hg19.bed
+   HICPRO_PATH/bin/utils/hicpro2juicebox.sh -i hicpro_res/hic_results/data/dixon_2M/dixon_2M_allValidPairs -g chrom_hg19.sizes -j /usr/local/juicer/juicer_tools.1.7.5_linux_x64_jcuda.0.8.jar -r  HICPRO_PATH/data_info/HindIII_resfrag_hg19.bed
 ```
 
 ### sparseToDense.py OR 'How can I convert HiC-Pro output into dense format ?'
