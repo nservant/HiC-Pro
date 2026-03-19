@@ -125,9 +125,9 @@ Copy and edit the configuration file *'config-hicpro.txt'* in your local folder.
 | NORMALIZATION                     |                                                                                                                         |
 |-----------------------------------|-------------------------------------------------------------------------------------------------------------------------|
 | MAX_ITER                          | Maximum number of iteration for ICE normalization. *Default: 100*                                                       |
-| SPARSE_FILTERING - **deprecated** | Define which pourcentage of bins with high sparsity should be force to zero. *Default: 0.02*                            |
-| FILTER_LOW_COUNT_PERC             | Define which pourcentage of bins with low counts should be force to zero. *Default: 0.02*. Replace SPARSE_FILTERING     |
-| FILTER_HIGH_COUNT_PERC            | Define which pourcentage of bins with low counts should be discarded before normalization. *Default: 0*                 |
+| SPARSE_FILTERING - **deprecated** | Define which percentage of bins with high sparsity should be force to zero. *Default: 0.02*                            |
+| FILTER_LOW_COUNT_PERC             | Define which percentage of bins with low counts should be force to zero. *Default: 0.02*. Replace SPARSE_FILTERING     |
+| FILTER_HIGH_COUNT_PERC            | Define which percentage of bins with high counts should be discarded before normalization. *Default: 0*                 |
 | EPS                               | The relative increment in the results before declaring convergence. *Default: 0.1*                                      |
 
 
